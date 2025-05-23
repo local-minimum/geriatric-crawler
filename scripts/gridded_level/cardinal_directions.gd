@@ -10,7 +10,7 @@ enum CardinalDirection {
     DOWN
 }
 
-func direction_to_vector(direction: CardinalDirection) -> Vector3i:
+static func direction_to_vector(direction: CardinalDirection) -> Vector3i:
     match direction:
         CardinalDirection.NONE: return Vector3i.ZERO
         CardinalDirection.NORTH: return Vector3i.FORWARD
@@ -23,3 +23,6 @@ func direction_to_vector(direction: CardinalDirection) -> Vector3i:
             push_error("Invalid direction: %s" % direction)
             print_stack()
             return Vector3i.ZERO
+
+static func translate(coordinates: Vector3i, direction: CardinalDirection) -> Vector3i:
+    return coordinates + direction_to_vector(direction)

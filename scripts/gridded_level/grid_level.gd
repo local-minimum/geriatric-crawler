@@ -9,6 +9,9 @@ var nodeSpacing: Vector3 = Vector3.ZERO
 
 var _nodes: Dictionary[Vector3i, GridNode] = {}
 
+func _init() -> void:
+    _sync_nodes()
+
 func get_grid_node(coordinates: Vector3i) -> GridNode:
     if _nodes.has(coordinates):
         return _nodes[coordinates]
@@ -20,9 +23,6 @@ func get_grid_node(coordinates: Vector3i) -> GridNode:
 
 func has_grid_node(coordinates: Vector3i) -> bool:
     return _nodes.has(coordinates)
-
-func _init() -> void:
-    _sync_nodes()
 
 func _sync_nodes() -> void:
     _nodes.clear()
