@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://cyok25kuqu374"]
+
+[ext_resource type="Script" uid="uid://vhd085que0kg" path="res://scripts/gridded_level/grid_node.gd" id="1_havcr"]
+
+[node name="SimpleNode" type="Node3D"]
+script = ExtResource("1_havcr")
