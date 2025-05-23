@@ -14,6 +14,8 @@ func _ready() -> void:
 
     if _nodes.size() == 0:
         push_warning("Level %s is empty" % name)
+    else:
+        print_debug("Level %s has %s nodes" % [name, _nodes.size()])
 
 func get_grid_node(coordinates: Vector3i) -> GridNode:
     if _nodes.has(coordinates):
