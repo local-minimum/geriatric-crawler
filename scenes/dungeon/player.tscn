@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=3 uid="uid://bfoog3fb4v5ij"]
+
+[ext_resource type="Script" uid="uid://uuoluocfjbjd" path="res://scripts/gridded_level/grid_player.gd" id="1_edujd"]
+
+[node name="Player" type="Node3D"]
+script = ExtResource("1_edujd")
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.1, 0.45)

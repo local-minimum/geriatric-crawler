@@ -1,0 +1,2 @@
+extends GridEntity
+class_name GridPlayer

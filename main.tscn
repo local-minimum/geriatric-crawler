@@ -1,6 +1,7 @@
-[gd_scene load_steps=4 format=3 uid="uid://5mvkmlsl4h3x"]
+[gd_scene load_steps=5 format=3 uid="uid://5mvkmlsl4h3x"]
 
 [ext_resource type="PackedScene" uid="uid://dwqcwbgj8p6q0" path="res://scenes/dungeon/test_level.tscn" id="1_ig7tw"]
+[ext_resource type="PackedScene" uid="uid://bfoog3fb4v5ij" path="res://scenes/dungeon/player.tscn" id="2_0xm2m"]
 
 [sub_resource type="Environment" id="Environment_ig7tw"]
 
@@ -10,12 +11,11 @@
 
 [node name="TestLevel" parent="." instance=ExtResource("1_ig7tw")]
 
-[node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0319853, 0.568383, 0.717175)
-
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_ig7tw")
 camera_attributes = SubResource("CameraAttributesPractical_0xm2m")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(0.804687, 0.403004, -0.435967, 0, 0.734323, 0.678801, 0.5937, -0.546222, 0.5909, 0.865872, 2.80495, 0)
+
+[node name="Player" parent="." instance=ExtResource("2_0xm2m")]
