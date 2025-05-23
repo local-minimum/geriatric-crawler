@@ -11,29 +11,29 @@ nodeSpacing = Vector3(0, 0.4, 0)
 [node name="SimpleNode" parent="." instance=ExtResource("2_xi460")]
 
 [node name="SimpleNode2" parent="." instance=ExtResource("2_xi460")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.8055)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.5)
 coordinates = Vector3i(0, 0, -1)
 
 [node name="SimpleNode3" parent="." instance=ExtResource("2_xi460")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -4.01833)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -3)
 coordinates = Vector3i(0, 0, -2)
 
 [node name="SimpleNode8" parent="." instance=ExtResource("2_xi460")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.82075, 0, -4.01833)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.5, 0, -3)
 coordinates = Vector3i(-1, 0, -2)
 
 [node name="SimpleNode4" parent="." instance=ExtResource("2_xi460")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -5.85635)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -4.5)
 coordinates = Vector3i(0, 0, -3)
 
 [node name="SimpleNode7" parent="." instance=ExtResource("2_xi460")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.79467, 0, -5.85635)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 0, -6)
 coordinates = Vector3i(1, 0, -3)
 
 [node name="SimpleNode5" parent="." instance=ExtResource("2_xi460")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -8.00438)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -6)
 coordinates = Vector3i(0, 0, -4)
 
 [node name="SimpleNode6" parent="." instance=ExtResource("2_xi460")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.78982, 0, -8.00438)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 0, -4.5)
 coordinates = Vector3i(1, 0, -4)
