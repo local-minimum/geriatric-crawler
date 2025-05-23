@@ -11,7 +11,7 @@
 [node name="TestLevel" parent="." instance=ExtResource("1_ig7tw")]
 
 [node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(0.999656, 0, -0.0262118, 0.0207646, 0.610283, 0.791911, 0.0159967, -0.792183, 0.610074, -0.0319853, 2.10692, 0.751578)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0319853, 0.568383, 0.717175)
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_ig7tw")
