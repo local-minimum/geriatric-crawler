@@ -9,7 +9,9 @@ script = ExtResource("1_dd1ob")
 [node name="SimpleNode" parent="." instance=ExtResource("2_xi460")]
 
 [node name="SimpleNode2" parent="." instance=ExtResource("2_xi460")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.8055)
 coordinates = Vector3i(1, 0, 0)
 
 [node name="SimpleNode3" parent="." instance=ExtResource("2_xi460")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -4.01833)
 coordinates = Vector3i(2, 0, 0)
