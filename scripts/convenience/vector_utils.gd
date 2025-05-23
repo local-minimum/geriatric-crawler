@@ -1,6 +1,6 @@
 class_name VectorUtils
 
-static func rotate_ccw(direction: Vector3i, up: Vector3i) -> Vector3i:
+static func rotate_cw(direction: Vector3i, up: Vector3i) -> Vector3i:
     if up.y > 0:
         return Vector3i(-direction.z, direction.y, direction.x)
     elif up.y < 0:
@@ -18,7 +18,7 @@ static func rotate_ccw(direction: Vector3i, up: Vector3i) -> Vector3i:
     print_stack()
     return direction
 
-static func rotate_cw(direction: Vector3i, up: Vector3i) -> Vector3i:
+static func rotate_ccw(direction: Vector3i, up: Vector3i) -> Vector3i:
     if up.y < 0:
         return Vector3i(-direction.z, direction.y, direction.x)
     elif up.y > 0:
