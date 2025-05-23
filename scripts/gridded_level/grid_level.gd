@@ -9,8 +9,11 @@ var nodeSpacing: Vector3 = Vector3.ZERO
 
 var _nodes: Dictionary[Vector3i, GridNode] = {}
 
-func _init() -> void:
+func _ready() -> void:
     _sync_nodes()
+
+    if _nodes.size() == 0:
+        push_warning("Level %s is empty" % name)
 
 func get_grid_node(coordinates: Vector3i) -> GridNode:
     if _nodes.has(coordinates):

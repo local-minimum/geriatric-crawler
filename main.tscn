@@ -1,3 +1,10 @@
-[gd_scene format=3 uid="uid://5mvkmlsl4h3x"]
+[gd_scene load_steps=2 format=3 uid="uid://5mvkmlsl4h3x"]
+
+[ext_resource type="PackedScene" uid="uid://dwqcwbgj8p6q0" path="res://scenes/dungeon/test_level.tscn" id="1_ig7tw"]
 
 [node name="Main" type="Node3D"]
+
+[node name="TestLevel" parent="." instance=ExtResource("1_ig7tw")]
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(0.999656, 0, -0.0262118, 0, 1, 0, 0.0262118, 0, 0.999656, -0.0319853, 0.517654, 0.751578)
