@@ -88,10 +88,18 @@ func neighbour(direction: CardinalDirections.CardinalDirection) -> GridNode:
 
     return null
 
-func may_enter(_entity: GridEntity, _move_direction: CardinalDirections.CardinalDirection) -> bool:
-    return true
+func may_enter(_entity: GridEntity, move_direction: CardinalDirections.CardinalDirection) -> bool:
+    var anchor: GridAnchor = get_anchor(CardinalDirections.invert(move_direction))
 
-func may_exit(_entity: GridEntity, move_direction: CardinalDirections.CardinalDirection) -> bool:
-    if (move_direction == CardinalDirections.CardinalDirection.DOWN):
+    return anchor == null || anchor.pass_through_reverse
+
+func may_exit(entity: GridEntity, move_direction: CardinalDirections.CardinalDirection) -> bool:
+    var anchor: GridAnchor = get_anchor(move_direction)
+
+    if anchor == null:
+        return true
+
+    if anchor.can_anchor(entity):
         return false
-    return true
+
+    return anchor.pass_through_on_refuse

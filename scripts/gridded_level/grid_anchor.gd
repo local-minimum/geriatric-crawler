@@ -11,7 +11,11 @@ var required_transportation_mode: TransportationMode
 ## Example if the anchor is the down (or up) direction and is a water surface
 ## and the entity cannot swim, it should sink through the anchor.
 @export
-var fall_through_on_refuse: bool
+var pass_through_on_refuse: bool
+
+## If it is possible to pass through the anchor into the node
+@export
+var pass_through_reverse: bool
 
 func can_anchor(entity: GridEntity) -> bool:
     return entity.transportation_abilities.has_all(required_transportation_mode.get_flags())
