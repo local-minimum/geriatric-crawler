@@ -131,7 +131,7 @@ static func roll_ccw(look_direction: CardinalDirection, down: CardinalDirection)
         print_stack()
         return [look_direction, down]
 
-    var v_direction_as_up: Vector3i = direction_to_vector(invert(look_direction))
+    var v_direction_as_up: Vector3i = direction_to_vector(look_direction)
     var v_down: Vector3i = direction_to_vector(down)
     var result: Vector3i = VectorUtils.rotate_ccw(v_down, v_direction_as_up)
     return [look_direction, vector_to_direction(result)]
@@ -142,7 +142,7 @@ static func roll_cw(look_direction: CardinalDirection, down: CardinalDirection) 
         print_stack()
         return [look_direction, down]
 
-    var v_direction_as_up: Vector3i = direction_to_vector(invert(look_direction))
+    var v_direction_as_up: Vector3i = direction_to_vector(look_direction)
     var v_down: Vector3i = direction_to_vector(down)
     var result: Vector3i = VectorUtils.rotate_cw(v_down, v_direction_as_up)
     return [look_direction, vector_to_direction(result)]
@@ -157,8 +157,10 @@ static func calculate_innner_corner(
     elif move_direction == invert(look_direction):
         return pitch_down(look_direction, down)
     elif move_direction == yaw_ccw(look_direction, down)[0]:
+        print_debug("Moving %s is a counter-clockwise yaw from look direction" % move_direction)
         return roll_cw(look_direction, down)
     elif move_direction == yaw_cw(look_direction, down)[0]:
+        print_debug("Moving %s is a clockwise yaw from look direction" % move_direction)
         return roll_ccw(look_direction, down)
     else:
         push_error("movement %s is not inner corner movement when %s is down" % [move_direction, down])

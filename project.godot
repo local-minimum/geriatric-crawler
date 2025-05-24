@@ -27,7 +27,6 @@ gdscript/warnings/return_value_discarded=1
 
 [display]
 
-window/size/mode=4
 window/size/borderless=true
 window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"

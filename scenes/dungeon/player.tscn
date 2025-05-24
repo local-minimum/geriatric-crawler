@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3 uid="uid://bfoog3fb4v5ij"]
+[gd_scene load_steps=7 format=3 uid="uid://bfoog3fb4v5ij"]
 
 [ext_resource type="Script" uid="uid://uuoluocfjbjd" path="res://scripts/gridded_level/grid_player.gd" id="1_edujd"]
 [ext_resource type="Script" uid="uid://b8a6yvndcxtpa" path="res://scripts/gridded_level/transportation_mode.gd" id="2_vrljn"]
@@ -14,6 +14,13 @@ script = ExtResource("2_vrljn")
 mode = 1
 metadata/_custom_type_script = "uid://b8a6yvndcxtpa"
 
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_vrljn"]
+radius = 0.25
+height = 1.0
+
+[sub_resource type="BoxMesh" id="BoxMesh_vsvsq"]
+size = Vector3(0.3, 0.2, 0.2)
+
 [node name="Player" type="Node3D"]
 script = ExtResource("1_edujd")
 look_direction = 2
@@ -22,4 +29,15 @@ transportation_mode = SubResource("Resource_vrljn")
 
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0.5)
+cull_mask = 524287
 fov = 80.0
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+layers = 524288
+mesh = SubResource("CapsuleMesh_vrljn")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="MeshInstance3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.263586, -0.230638)
+layers = 524288
+mesh = SubResource("BoxMesh_vsvsq")

@@ -29,10 +29,10 @@ func attempt_move(move_direction: CardinalDirections.CardinalDirection) -> bool:
     if node.may_exit(self, move_direction):
         var neighbour: GridNode = node.neighbour(move_direction)
         if neighbour != null && neighbour.may_enter(self, move_direction):
-            global_position = neighbour.global_position
 
             var anchor: GridAnchor = neighbour.get_anchor(down)
             update_entity_anchorage(neighbour, anchor)
+            sync_position()
 
             return true
 
@@ -41,8 +41,11 @@ func attempt_move(move_direction: CardinalDirections.CardinalDirection) -> bool:
     if internal_anchor == null || !internal_anchor.can_anchor(self):
         return false
 
+    var was_excotic_walk: bool = transportation_mode.has_any(TransportationMode.EXOTIC_WALKS)
+
     update_entity_anchorage(node, internal_anchor)
-    if transportation_mode.has_any(TransportationMode.EXOTIC_WALKS):
+
+    if transportation_mode.has_any(TransportationMode.EXOTIC_WALKS) || was_excotic_walk:
         var updated_directions: Array[CardinalDirections.CardinalDirection]  = CardinalDirections.calculate_innner_corner(move_direction, look_direction, down)
         print_debug("%s was looking %s, down %s -> looking %s, down %s" % [
             name,
@@ -53,6 +56,7 @@ func attempt_move(move_direction: CardinalDirections.CardinalDirection) -> bool:
         ])
         look_direction = updated_directions[0]
         down = updated_directions[1]
+        sync_position()
         orient()
         return true
 
@@ -67,6 +71,7 @@ func update_entity_anchorage(node: GridNode, anchor: GridAnchor, deferred: bool 
         transportation_mode.mode = TransportationMode.NONE
 
     print_debug("%s is now %s" % [name, transportation_mode.humanize()])
+    print_stack()
 
 func attempt_rotate(clockwise: bool) -> bool:
     if clockwise:
@@ -75,6 +80,16 @@ func attempt_rotate(clockwise: bool) -> bool:
         look_direction = CardinalDirections.yaw_ccw(look_direction, down)[0]
     orient()
     return true
+
+func sync_position() -> void:
+    var anchor: GridAnchor = get_grid_anchor()
+    if anchor != null:
+        global_position = anchor.global_position
+        return
+
+    var node: GridNode = get_grid_node()
+    if node != null:
+        global_position = node.global_position
 
 func orient() -> void:
     look_at(
