@@ -43,6 +43,22 @@ static func vector_to_direction(vector: Vector3i) -> CardinalDirection:
             push_error("Vector %s is not a cardinal vector" % vector)
             print_stack()
             return CardinalDirection.NONE
+
+static func node_planar_rotation_to_direction(node: Node3D) -> CardinalDirection:
+    var y_rotation: int = roundi(node.rotation_degrees.y / 90) * 90
+    y_rotation = posmod(y_rotation, 360)
+    match y_rotation:
+        0: return CardinalDirection.NORTH
+        90: return CardinalDirection.WEST
+        180: return CardinalDirection.SOUTH
+        270: return CardinalDirection.EAST
+        _:
+            push_error(
+                "Illegal calculation, the y-rotation %s isn't a cardinal direction (node %s's rotation %s)" % [y_rotation, node, node.rotation_degrees]
+            )
+            print_stack()
+            return CardinalDirection.NONE
+
 #
 # Checks
 #
@@ -50,6 +66,8 @@ static func vector_to_direction(vector: Vector3i) -> CardinalDirection:
 static func is_parallell(direction: CardinalDirection, other: CardinalDirection) -> bool:
     return direction == other || direction == invert(other)
 
+static func is_planar_cardinal(direction: CardinalDirection) -> bool:
+    return ALL_PLANAR_DIRECTIONS.has(direction)
 #
 # Modifying a direction
 #
