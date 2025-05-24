@@ -5,8 +5,6 @@ var node: GridNode
 
 func _ready() -> void:
     node = _find_node_parent(self)
-    if (node != null):
-        parent_to_node()
 
 func parent_to_node() -> void:
     if node == null:
@@ -14,8 +12,8 @@ func parent_to_node() -> void:
 
     var parent: Node = self.get_parent()
     if node != parent:
-        reparent(node, true)
         print_debug("%s has parent %s but wants %s" % [name, parent, node])
+        reparent(node, true)
 
 func _find_node_parent(current: Node) ->  GridNode:
     var parent: Node = current.get_parent()
