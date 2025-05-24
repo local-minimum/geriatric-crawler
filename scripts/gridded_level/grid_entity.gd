@@ -45,6 +45,8 @@ func update_entity_anchorage(node: GridNode, anchor: GridAnchor, deferred: bool 
         set_grid_node(node, deferred)
         transportation_mode.mode = TransportationMode.NONE
 
+    print_debug("%s is now %s" % [name, transportation_mode.humanize()])
+
 func attempt_rotate(clockwise: bool) -> bool:
     if clockwise:
         look_direction = CardinalDirections.yaw_cw(look_direction, down)

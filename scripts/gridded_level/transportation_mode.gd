@@ -39,6 +39,33 @@ func get_flags() -> Array[int]:
 
     return flags
 
+static func get_flag_name(flag: int) -> String:
+    match flag:
+        NONE: return "None"
+        WALKING: return "Walking"
+        FLYING: return "Flying"
+        CLIMBING: return "Climbing"
+        WALL_WALKING: return "Wall Walking"
+        CEILING_WALKING: return "Ceiling Walking"
+        SQUEEZING: return "Squeezing"
+        SWIMMING: return "Swimming"
+        _:
+            push_error("%s is not a transportation mode flag")
+            print_stack()
+            return ""
+
+func get_flag_names() -> Array[String]:
+    var flags: Array[String] = []
+
+    for flag: int in ALL_FLAGS:
+        if has_flag(flag):
+            flags.append(get_flag_name(flag))
+
+    return flags
+
 ## Return of one transportation mode with another
 func intersection(other: TransportationMode) -> int:
     return mode & other.mode
+
+func humanize() -> String:
+    return ", ".join(get_flag_names())
