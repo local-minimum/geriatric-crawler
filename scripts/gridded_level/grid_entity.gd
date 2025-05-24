@@ -35,6 +35,27 @@ func attempt_move(move_direction: CardinalDirections.CardinalDirection) -> bool:
             update_entity_anchorage(neighbour, anchor)
 
             return true
+
+    var internal_anchor: GridAnchor = node.get_anchor(move_direction)
+
+    if internal_anchor == null || !internal_anchor.can_anchor(self):
+        return false
+
+    update_entity_anchorage(node, internal_anchor)
+    if transportation_mode.has_any(TransportationMode.EXOTIC_WALKS):
+        var updated_directions: Array[CardinalDirections.CardinalDirection]  = CardinalDirections.calculate_innner_corner(move_direction, look_direction, down)
+        print_debug("%s was looking %s, down %s -> looking %s, down %s" % [
+            name,
+            CardinalDirections.name(look_direction),
+            CardinalDirections.name(down),
+            CardinalDirections.name(updated_directions[0]),
+            CardinalDirections.name(updated_directions[1])
+        ])
+        look_direction = updated_directions[0]
+        down = updated_directions[1]
+        orient()
+        return true
+
     return false
 
 func update_entity_anchorage(node: GridNode, anchor: GridAnchor, deferred: bool = false) -> void:
@@ -49,9 +70,9 @@ func update_entity_anchorage(node: GridNode, anchor: GridAnchor, deferred: bool 
 
 func attempt_rotate(clockwise: bool) -> bool:
     if clockwise:
-        look_direction = CardinalDirections.yaw_cw(look_direction, down)
+        look_direction = CardinalDirections.yaw_cw(look_direction, down)[0]
     else:
-        look_direction = CardinalDirections.yaw_ccw(look_direction, down)
+        look_direction = CardinalDirections.yaw_ccw(look_direction, down)[0]
     orient()
     return true
 

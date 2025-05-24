@@ -4,6 +4,9 @@ class_name GridNode
 @export
 var coordinates: Vector3i
 
+@export
+var entry_requires_anchor: bool
+
 var level: GridLevel
 
 var _anchors: Dictionary[CardinalDirections.CardinalDirection, GridAnchor] = {}
@@ -88,8 +91,13 @@ func neighbour(direction: CardinalDirections.CardinalDirection) -> GridNode:
 
     return null
 
-func may_enter(_entity: GridEntity, move_direction: CardinalDirections.CardinalDirection) -> bool:
+func may_enter(entity: GridEntity, move_direction: CardinalDirections.CardinalDirection) -> bool:
     var anchor: GridAnchor = get_anchor(CardinalDirections.invert(move_direction))
+
+    if entry_requires_anchor:
+        var down_anchor: GridAnchor = get_anchor(entity.down)
+        if down_anchor == null || !down_anchor.can_anchor(entity):
+            return false
 
     return anchor == null || anchor.pass_through_reverse
 

@@ -22,10 +22,10 @@ func _input(event: InputEvent) -> void:
             if attempt_move(CardinalDirections.invert(look_direction)):
                 print_debug("Backward")
         elif event.is_action_pressed("crawl_strafe_left"):
-            if attempt_move(CardinalDirections.yaw_ccw(look_direction, down)):
+            if attempt_move(CardinalDirections.yaw_ccw(look_direction, down)[0]):
                 print_debug("Strafe Left")
         elif event.is_action_pressed("crawl_strafe_right"):
-            if attempt_move(CardinalDirections.yaw_cw(look_direction, down)):
+            if attempt_move(CardinalDirections.yaw_cw(look_direction, down)[0]):
                 print_debug("Strafe Right")
         elif event.is_action_pressed("crawl_turn_left"):
             if attempt_rotate(false):

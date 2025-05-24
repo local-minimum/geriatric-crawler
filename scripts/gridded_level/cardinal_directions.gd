@@ -68,6 +68,7 @@ static func is_parallell(direction: CardinalDirection, other: CardinalDirection)
 
 static func is_planar_cardinal(direction: CardinalDirection) -> bool:
     return ALL_PLANAR_DIRECTIONS.has(direction)
+
 #
 # Modifying a direction
 #
@@ -86,30 +87,86 @@ static func invert(direction: CardinalDirection) -> CardinalDirection:
             print_stack()
             return CardinalDirection.NONE
 
-static func yaw_ccw(direction: CardinalDirection, down: CardinalDirection) -> CardinalDirection:
-    if is_parallell(direction, down):
-        push_error("Attempting to yaw %s with %s as down" % [direction, down])
+static func yaw_ccw(look_direction: CardinalDirection, down: CardinalDirection) -> Array[CardinalDirection]:
+    if is_parallell(look_direction, down):
+        push_error("Attempting to yaw %s with %s as down" % [look_direction, down])
         print_stack()
-        return direction
+        return [look_direction, down]
 
-    var v_direction: Vector3i = direction_to_vector(direction)
+    var v_direction: Vector3i = direction_to_vector(look_direction)
     var v_up: Vector3i = direction_to_vector(invert(down))
     var result: Vector3i = VectorUtils.rotate_ccw(v_direction, v_up)
-    return vector_to_direction(result)
+    return [vector_to_direction(result), down]
 
-static func yaw_cw(direction: CardinalDirection, down: CardinalDirection) -> CardinalDirection:
-    if is_parallell(direction, down):
-        push_error("Attempting to yaw %s with %s as down" % [direction, down])
+static func yaw_cw(look_direction: CardinalDirection, down: CardinalDirection) -> Array[CardinalDirection]:
+    if is_parallell(look_direction, down):
+        push_error("Attempting to yaw %s with %s as down" % [look_direction, down])
         print_stack()
-        return direction
+        return [look_direction, down]
 
-    var v_direction: Vector3i = direction_to_vector(direction)
+    var v_direction: Vector3i = direction_to_vector(look_direction)
     var v_up: Vector3i = direction_to_vector(invert(down))
     var result: Vector3i = VectorUtils.rotate_cw(v_direction, v_up)
-    return vector_to_direction(result)
+    return [vector_to_direction(result), down]
+
+static func pitch_up(look_direction: CardinalDirection, down: CardinalDirection) -> Array[CardinalDirection]:
+    if is_parallell(look_direction, down):
+        push_error("Attempting to pitch %s with %s as down" % [look_direction, down])
+        print_stack()
+        return [look_direction, down]
+
+    return [invert(down), look_direction]
+
+static func pitch_down(look_direction: CardinalDirection, down: CardinalDirection) -> Array[CardinalDirection]:
+    if is_parallell(look_direction, down):
+        push_error("Attempting to pitch %s with %s as down" % [look_direction, down])
+        print_stack()
+        return [look_direction, down]
+
+    return [down, invert(look_direction)]
+
+static func roll_ccw(look_direction: CardinalDirection, down: CardinalDirection) -> Array[CardinalDirection]:
+    if is_parallell(look_direction, down):
+        push_error("Attempting to bank %s with %s as down" % [look_direction, down])
+        print_stack()
+        return [look_direction, down]
+
+    var v_direction_as_up: Vector3i = direction_to_vector(invert(look_direction))
+    var v_down: Vector3i = direction_to_vector(down)
+    var result: Vector3i = VectorUtils.rotate_ccw(v_down, v_direction_as_up)
+    return [look_direction, vector_to_direction(result)]
+
+static func roll_cw(look_direction: CardinalDirection, down: CardinalDirection) -> Array[CardinalDirection]:
+    if is_parallell(look_direction, down):
+        push_error("Attempting to bank %s with %s as down" % [look_direction, down])
+        print_stack()
+        return [look_direction, down]
+
+    var v_direction_as_up: Vector3i = direction_to_vector(invert(look_direction))
+    var v_down: Vector3i = direction_to_vector(down)
+    var result: Vector3i = VectorUtils.rotate_cw(v_down, v_direction_as_up)
+    return [look_direction, vector_to_direction(result)]
+
+static func calculate_innner_corner(
+    move_direction: CardinalDirection,
+    look_direction: CardinalDirection,
+    down: CardinalDirection,
+) -> Array[CardinalDirection]:
+    if move_direction == look_direction:
+        return pitch_up(look_direction, down)
+    elif move_direction == invert(look_direction):
+        return pitch_down(look_direction, down)
+    elif move_direction == yaw_ccw(look_direction, down)[0]:
+        return roll_cw(look_direction, down)
+    elif move_direction == yaw_cw(look_direction, down)[0]:
+        return roll_ccw(look_direction, down)
+    else:
+        push_error("movement %s is not inner corner movement when %s is down" % [move_direction, down])
+        print_stack()
+        return [look_direction, down]
 
 #
-# To vectors
+# To other objects
 #
 
 static func direction_to_vector(direction: CardinalDirection) -> Vector3i:
@@ -125,6 +182,9 @@ static func direction_to_vector(direction: CardinalDirection) -> Vector3i:
             push_error("Invalid direction: %s" % direction)
             print_stack()
             return Vector3i.ZERO
+
+static func name(direction: CardinalDirection) -> String:
+    return CardinalDirection.find_key(direction)
 
 #
 # Operating on other objects

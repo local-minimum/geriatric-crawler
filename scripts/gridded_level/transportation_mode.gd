@@ -12,6 +12,8 @@ const SWIMMING : int = 64
 
 const ALL_FLAGS: Array[int] = [WALKING, FLYING, CLIMBING, WALL_WALKING, CEILING_WALKING, SQUEEZING, SWIMMING]
 
+const EXOTIC_WALKS: Array[int] = [WALL_WALKING, CEILING_WALKING]
+
 @export_flags("Walking", "Flying", "Climbing", "Wall Walking", "Ceiling Walking", "Squeezing", "Swimming")
 var mode: int = 0
 
