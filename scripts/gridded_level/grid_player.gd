@@ -5,10 +5,13 @@ class_name GridPlayer
 var spawn_node: GridNode
 
 func _ready() -> void:
-    super()
     if spawn_node != null:
-        node = spawn_node
-        parent_to_node()
+        var anchor: GridAnchor = spawn_node.get_anchor(down)
+        update_entity_anchorage(spawn_node, anchor, true)
+
+    # We do super afterwards to not get uneccesary warning about player not being
+    # preset as a child of a node
+    super()
 
 func _input(event: InputEvent) -> void:
     if !event.is_echo():

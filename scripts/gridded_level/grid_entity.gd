@@ -17,7 +17,11 @@ func _ready() -> void:
     super()
     orient()
 
+func falling() -> bool:
+    return transportation_mode.mode == TransportationMode.NONE
+
 func attempt_move(move_direction: CardinalDirections.CardinalDirection) -> bool:
+    var node: GridNode = get_grid_node()
     if node == null:
         push_error("Player %s not inside dungeon")
         return false
@@ -25,12 +29,21 @@ func attempt_move(move_direction: CardinalDirections.CardinalDirection) -> bool:
     if node.may_exit(self, move_direction):
         var neighbour: GridNode = node.neighbour(move_direction)
         if neighbour != null && neighbour.may_enter(self, move_direction):
-            node = neighbour
             global_position = neighbour.global_position
-            parent_to_node()
+
+            var anchor: GridAnchor = neighbour.get_anchor(down)
+            update_entity_anchorage(neighbour, anchor)
 
             return true
     return false
+
+func update_entity_anchorage(node: GridNode, anchor: GridAnchor, deferred: bool = false) -> void:
+    if anchor != null:
+        set_grid_anchor(anchor, deferred)
+        transportation_mode.mode = transportation_abilities.intersection(anchor.required_transportation_mode)
+    else:
+        set_grid_node(node, deferred)
+        transportation_mode.mode = TransportationMode.NONE
 
 func attempt_rotate(clockwise: bool) -> bool:
     if clockwise:

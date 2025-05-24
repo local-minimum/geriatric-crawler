@@ -40,5 +40,5 @@ func get_flags() -> Array[int]:
     return flags
 
 ## Return of one transportation mode with another
-func intersection(other: int) -> int:
-    return mode & other
+func intersection(other: TransportationMode) -> int:
+    return mode & other.mode
