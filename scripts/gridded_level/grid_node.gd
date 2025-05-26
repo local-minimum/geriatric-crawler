@@ -75,6 +75,9 @@ func get_anchor(direction: CardinalDirections.CardinalDirection) -> GridAnchor:
         return _anchors[direction]
     return null
 
+func get_center_pos() -> Vector3:
+    return global_position + Vector3.UP * level.nodeSize * 0.5
+
 #
 # Navigation
 #

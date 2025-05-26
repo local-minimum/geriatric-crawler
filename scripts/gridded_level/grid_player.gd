@@ -14,6 +14,9 @@ func _ready() -> void:
     super()
 
 func _input(event: InputEvent) -> void:
+    if transportation_mode.mode == TransportationMode.NONE:
+        return
+
     if !event.is_echo():
         if event.is_action_pressed("crawl_forward"):
             if attempt_move(look_direction):

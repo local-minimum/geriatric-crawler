@@ -26,6 +26,8 @@ func attempt_move(move_direction: CardinalDirections.CardinalDirection) -> bool:
         push_error("Player %s not inside dungeon")
         return false
 
+    var was_excotic_walk: bool = transportation_mode.has_any(TransportationMode.EXOTIC_WALKS)
+
     if node.may_exit(self, move_direction):
         var neighbour: GridNode = node.neighbour(move_direction)
         if neighbour != null && neighbour.may_enter(self, move_direction):
@@ -34,14 +36,20 @@ func attempt_move(move_direction: CardinalDirections.CardinalDirection) -> bool:
             update_entity_anchorage(neighbour, anchor)
             sync_position()
 
+            if was_excotic_walk:
+                if look_direction == CardinalDirections.CardinalDirection.DOWN:
+                    look_direction = CardinalDirections.pitch_up(look_direction, down)[0]
+                elif look_direction == CardinalDirections.CardinalDirection.UP:
+                    look_direction = CardinalDirections.pitch_down(look_direction, down)[0]
+                down = CardinalDirections.CardinalDirection.DOWN
+                orient()
+
             return true
 
     var internal_anchor: GridAnchor = node.get_anchor(move_direction)
 
     if internal_anchor == null || !internal_anchor.can_anchor(self):
         return false
-
-    var was_excotic_walk: bool = transportation_mode.has_any(TransportationMode.EXOTIC_WALKS)
 
     update_entity_anchorage(node, internal_anchor)
 
@@ -89,7 +97,7 @@ func sync_position() -> void:
 
     var node: GridNode = get_grid_node()
     if node != null:
-        global_position = node.global_position
+        global_position = node.get_center_pos()
 
 func orient() -> void:
     look_at(
