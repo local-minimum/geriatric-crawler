@@ -1,0 +1,22 @@
+[gd_scene load_steps=5 format=3 uid="uid://deupet1cvom4e"]
+
+[ext_resource type="PackedScene" uid="uid://ch5ikbo0mh4nb" path="res://models/ceiling-flat.blend" id="1_nucg1"]
+[ext_resource type="Script" uid="uid://bsjvh2o2oob57" path="res://scripts/gridded_level/level_features/grid_anchor.gd" id="2_bvxtf"]
+[ext_resource type="Script" uid="uid://b8a6yvndcxtpa" path="res://scripts/gridded_level/transportation_mode.gd" id="3_0130q"]
+
+[sub_resource type="Resource" id="Resource_p0hg4"]
+script = ExtResource("3_0130q")
+mode = 16
+metadata/_custom_type_script = "uid://b8a6yvndcxtpa"
+
+[node name="basic_ceiling" type="Node3D"]
+
+[node name="ceiling-flat2" parent="." instance=ExtResource("1_nucg1")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.6, 0)
+
+[node name="GridAnchor" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.6, 0)
+script = ExtResource("2_bvxtf")
+direction = 5
+required_transportation_mode = SubResource("Resource_p0hg4")
+metadata/_custom_type_script = "uid://bsjvh2o2oob57"
