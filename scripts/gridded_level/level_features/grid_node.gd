@@ -9,11 +9,13 @@ var entry_requires_anchor: bool
 
 var level: GridLevel
 
+var _anchors_inited: bool = false
 var _anchors: Dictionary[CardinalDirections.CardinalDirection, GridAnchor] = {}
 
 func _ready() -> void:
     level = _find_level_parent(self)
-    _init_anchors()
+    if !_anchors_inited:
+        _init_anchors()
 
 func _find_level_parent(node: Node) -> GridLevel:
     var parent: Node = node.get_parent()
@@ -32,7 +34,6 @@ func _find_level_parent(node: Node) -> GridLevel:
 #
 
 func _init_anchors() -> void:
-    _anchors.clear()
     for anchor: GridAnchor in find_children("*", "GridAnchor"):
         if _anchors.has(anchor.direction):
             push_warning(
@@ -41,6 +42,8 @@ func _init_anchors() -> void:
             continue
 
         _anchors[anchor.direction] = anchor
+
+    _anchors_inited = true
 
 func remove_anchor(anchor: GridAnchor) -> bool:
     if !_anchors.has(anchor.direction):
@@ -57,6 +60,9 @@ func remove_anchor(anchor: GridAnchor) -> bool:
     return false
 
 func add_anchor(anchor: GridAnchor) -> bool:
+    if !_anchors_inited:
+        _init_anchors()
+
     if _anchors.has(anchor.direction):
         push_warning(
             "Node %s already has an anchor %s in the %s direction - ignoring" % [name, _anchors[anchor.direction], anchor.direction],
@@ -71,12 +77,15 @@ func add_anchor(anchor: GridAnchor) -> bool:
     return success
 
 func get_anchor(direction: CardinalDirections.CardinalDirection) -> GridAnchor:
+    if !_anchors_inited:
+        _init_anchors()
+
     if _anchors.has(direction):
         return _anchors[direction]
     return null
 
 func get_center_pos() -> Vector3:
-    return global_position + Vector3.UP * level.nodeSize * 0.5
+    return global_position + Vector3.UP * level.node_size * 0.5
 
 #
 # Navigation

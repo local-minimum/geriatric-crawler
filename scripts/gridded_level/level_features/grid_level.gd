@@ -2,10 +2,10 @@ extends Node3D
 class_name GridLevel
 
 @export
-var nodeSize: Vector3 = Vector3(3, 3, 3)
+var node_size: Vector3 = Vector3(3, 3, 3)
 
 @export
-var nodeSpacing: Vector3 = Vector3.ZERO
+var node_spacing: Vector3 = Vector3.ZERO
 
 var _nodes: Dictionary[Vector3i, GridNode] = {}
 
@@ -45,7 +45,7 @@ func remove_node(node: GridNode) -> bool:
 
 func _node_anchor_position(coordinates: Vector3i) -> Vector3:
     var pos: Vector3 = Vector3(coordinates)
-    return position + (nodeSize + nodeSpacing) * pos
+    return position + (node_size + node_spacing) * pos
 
 func sync_node(node: GridNode) -> void:
     _nodes[node.coordinates] = node

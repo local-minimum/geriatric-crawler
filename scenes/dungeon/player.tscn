@@ -1,7 +1,19 @@
-[gd_scene load_steps=5 format=3 uid="uid://bfoog3fb4v5ij"]
+[gd_scene load_steps=9 format=3 uid="uid://bfoog3fb4v5ij"]
 
 [ext_resource type="Script" uid="uid://uuoluocfjbjd" path="res://scripts/gridded_level/entities/grid_player.gd" id="1_edujd"]
-[ext_resource type="Script" uid="uid://c7chl5drkyuws" path="res://scripts/gridded_level/entities/entity_fall_behavior.gd" id="2_vrljn"]
+[ext_resource type="Script" uid="uid://b8a6yvndcxtpa" path="res://scripts/gridded_level/transportation_mode.gd" id="2_vrljn"]
+[ext_resource type="Script" uid="uid://c7chl5drkyuws" path="res://scripts/gridded_level/entities/entity_fall_behavior.gd" id="3_6bcr7"]
+[ext_resource type="Script" uid="uid://meibvvwp8mvg" path="res://scripts/gridded_level/entities/movement_planner.gd" id="4_se4x3"]
+
+[sub_resource type="Resource" id="Resource_2f68n"]
+script = ExtResource("2_vrljn")
+mode = 61
+metadata/_custom_type_script = "uid://b8a6yvndcxtpa"
+
+[sub_resource type="Resource" id="Resource_nvxe3"]
+script = ExtResource("2_vrljn")
+mode = 1
+metadata/_custom_type_script = "uid://b8a6yvndcxtpa"
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_vrljn"]
 radius = 0.25
@@ -10,9 +22,12 @@ height = 1.0
 [sub_resource type="BoxMesh" id="BoxMesh_vsvsq"]
 size = Vector3(0.3, 0.2, 0.2)
 
-[node name="Player" type="Node3D"]
+[node name="Player" type="Node3D" node_paths=PackedStringArray("planner")]
 script = ExtResource("1_edujd")
+transportation_abilities = SubResource("Resource_2f68n")
+transportation_mode = SubResource("Resource_nvxe3")
 can_jump_off_walls = true
+planner = NodePath("MovementPlanner")
 
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0.5)
@@ -30,6 +45,11 @@ layers = 524288
 mesh = SubResource("BoxMesh_vsvsq")
 
 [node name="EntityFallBehavior" type="Node3D" parent="." node_paths=PackedStringArray("entity")]
-script = ExtResource("2_vrljn")
+script = ExtResource("3_6bcr7")
 entity = NodePath("..")
 metadata/_custom_type_script = "uid://c7chl5drkyuws"
+
+[node name="MovementPlanner" type="Node3D" parent="." node_paths=PackedStringArray("entity")]
+script = ExtResource("4_se4x3")
+entity = NodePath("..")
+metadata/_custom_type_script = "uid://meibvvwp8mvg"

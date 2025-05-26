@@ -205,6 +205,77 @@ static func direction_to_vector(direction: CardinalDirection) -> Vector3i:
             print_stack()
             return Vector3i.ZERO
 
+static func direction_to_ortho_plane(direction: CardinalDirection) -> Vector3i:
+    match direction:
+        CardinalDirection.NONE: return Vector3i.ZERO
+        CardinalDirection.NORTH: return Vector3i(1, 1, 0)
+        CardinalDirection.SOUTH: return Vector3i(1, 1, 0)
+        CardinalDirection.WEST: return Vector3i(0, 1, 1)
+        CardinalDirection.EAST: return Vector3i(0, 1, 1)
+        CardinalDirection.UP: return Vector3i(1, 0, 1)
+        CardinalDirection.DOWN: return Vector3i(1, 0, 1)
+        _:
+            push_error("Invalid direction: %s" % direction)
+            print_stack()
+            return Vector3i.ZERO
+
+static func direction_to_axis(direction: CardinalDirection) -> Vector3:
+    match  direction:
+        CardinalDirection.NONE: return Vector3.ZERO
+        CardinalDirection.UP: return Vector3.UP
+        CardinalDirection.DOWN: return Vector3.UP
+        CardinalDirection.WEST: return Vector3.LEFT
+        CardinalDirection.EAST: return Vector3.LEFT
+        CardinalDirection.NORTH: return Vector3.BACK
+        CardinalDirection.SOUTH: return Vector3.BACK
+        _:
+            push_error("Invalid direction: %" % direction)
+            print_stack()
+            return Vector3.ZERO
+
+static func angle_around_axis(direction: CardinalDirection, down: CardinalDirection) -> float:
+    match down:
+        CardinalDirection.DOWN:
+            match direction:
+                CardinalDirection.NORTH: return 0
+                CardinalDirection.WEST: return 90
+                CardinalDirection.SOUTH: return 180
+                CardinalDirection.EAST: return 270
+        CardinalDirection.UP:
+            match direction:
+                CardinalDirection.NORTH: return 180
+                CardinalDirection.WEST: return 270
+                CardinalDirection.SOUTH: return 0
+                CardinalDirection.EAST: return 90
+        CardinalDirection.WEST:
+            match direction:
+                CardinalDirection.UP: return 0
+                CardinalDirection.SOUTH: return 90
+                CardinalDirection.DOWN: return 180
+                CardinalDirection.NORTH: return 270
+        CardinalDirection.EAST:
+            match direction:
+                CardinalDirection.UP: return 180
+                CardinalDirection.SOUTH: return 270
+                CardinalDirection.DOWN: return 0
+                CardinalDirection.NORTH: return 90
+        CardinalDirection.NORTH:
+            match direction:
+                CardinalDirection.UP: return 0
+                CardinalDirection.WEST: return 90
+                CardinalDirection.DOWN: return 180
+                CardinalDirection.EAST: return 270
+        CardinalDirection.SOUTH:
+            match direction:
+                CardinalDirection.UP: return 180
+                CardinalDirection.WEST: return 270
+                CardinalDirection.DOWN: return 0
+                CardinalDirection.EAST: return 90
+
+    push_error("Invalid direction %s with %s as down" % [direction, down])
+    print_stack()
+    return 0
+
 static func name(direction: CardinalDirection) -> String:
     return CardinalDirection.find_key(direction)
 

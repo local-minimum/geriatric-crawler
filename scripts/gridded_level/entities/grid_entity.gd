@@ -16,6 +16,12 @@ var transportation_mode: TransportationMode
 @export
 var can_jump_off_walls: bool
 
+@export
+var planner: MovementPlanner
+
+@export
+var instant_step: bool
+
 func _ready() -> void:
     super()
     orient()
@@ -23,124 +29,21 @@ func _ready() -> void:
 func falling() -> bool:
     return transportation_mode.mode == TransportationMode.NONE
 
+var tween: Tween
+
 func attempt_move(move_direction: CardinalDirections.CardinalDirection) -> bool:
-    var node: GridNode = get_grid_node()
-    if node == null:
-        push_error("Player %s not inside dungeon")
-        return false
+    if tween:
+        tween.kill()
 
-    var was_excotic_walk: bool = transportation_mode.has_any(TransportationMode.EXOTIC_WALKS)
-
-    # We're in the air but moving onto an anchor of the current node
-    if _handle_landing(node, move_direction):
-        return true
-
-    if _handle_node_transition(node, move_direction, was_excotic_walk):
-        return true
-
-    return _handle_node_internal_transition(node, move_direction, was_excotic_walk)
-
-func _handle_landing(node: GridNode, move_direction: CardinalDirections.CardinalDirection) -> bool:
-    if _anchor == null:
-        var land_anchor: GridAnchor = node.get_anchor(move_direction)
-        if land_anchor != null && land_anchor.can_anchor(self):
-            update_entity_anchorage(node, land_anchor)
-            sync_position()
-
-            return true
-    return false
-
-func _handle_node_transition(
-    node: GridNode,
-    move_direction: CardinalDirections.CardinalDirection,
-    was_excotic_walk: bool,
-) -> bool:
-    if node.may_exit(self, move_direction):
-        var neighbour: GridNode = node.neighbour(move_direction)
-        if neighbour != null && neighbour.may_enter(self, move_direction):
-
-            var neighbour_anchor: GridAnchor = neighbour.get_anchor(down)
-
-            if neighbour_anchor == null && _handle_outer_corner_transition(move_direction, neighbour):
-                return true
-
-            if was_excotic_walk && !can_jump_off_walls && neighbour_anchor == null:
-                return false
-
-            update_entity_anchorage(neighbour, neighbour_anchor)
-            sync_position()
-
-            if was_excotic_walk && neighbour_anchor == null:
-                if look_direction == CardinalDirections.CardinalDirection.DOWN:
-                    look_direction = CardinalDirections.pitch_up(look_direction, down)[0]
-                elif look_direction == CardinalDirections.CardinalDirection.UP:
-                    look_direction = CardinalDirections.pitch_down(look_direction, down)[0]
-                down = CardinalDirections.CardinalDirection.DOWN
-                orient()
-
-            return true
-    return false
-
-func _handle_outer_corner_transition(
-    move_direction: CardinalDirections.CardinalDirection,
-    neighbour: GridNode,
-) -> bool:
-    if _anchor == null || !neighbour.may_transit(self, move_direction, down):
-        return false
-
-    var target: GridNode = neighbour.neighbour(down)
-    if target == null || !target.may_enter(self, down):
-        return false
-
-    var updated_directions: Array[CardinalDirections.CardinalDirection] = CardinalDirections.calculate_outer_corner(
-        move_direction, look_direction, down)
-
-    var target_anchor: GridAnchor = target.get_anchor(updated_directions[1])
-
-    if target_anchor == null || !target_anchor.can_anchor(self):
-        return false
-
-    look_direction = updated_directions[0]
-    down = updated_directions[1]
-
-    update_entity_anchorage(target, target_anchor)
-    sync_position()
-    orient()
-
-    return true
-
-
-func _handle_node_internal_transition(
-    node: GridNode,
-    move_direction: CardinalDirections.CardinalDirection,
-    was_excotic_walk: bool,
-) -> bool:
-    var internal_anchor: GridAnchor = node.get_anchor(move_direction)
-
-    if internal_anchor == null || !internal_anchor.can_anchor(self):
-        return false
-
-    update_entity_anchorage(node, internal_anchor)
-
-    if transportation_mode.has_any(TransportationMode.EXOTIC_WALKS) || was_excotic_walk:
-        var updated_directions: Array[CardinalDirections.CardinalDirection] = CardinalDirections.calculate_innner_corner(
-            move_direction, look_direction, down)
-
-        # print_debug("%s was looking %s, down %s -> looking %s, down %s" % [
-            # name,
-            # CardinalDirections.name(look_direction),
-            # CardinalDirections.name(down),
-            # CardinalDirections.name(updated_directions[0]),
-            # CardinalDirections.name(updated_directions[1])
-        # ])
-
-        look_direction = updated_directions[0]
-        down = updated_directions[1]
-        sync_position()
-        orient()
-        return true
-
-    return false
+    tween = planner.move_entity(move_direction)
+    if tween != null:
+        if instant_step:
+            tween.pause()
+            var t: float = 999
+            while tween.custom_step(t):
+                t *= 2
+        tween.play()
+    return tween != null
 
 func update_entity_anchorage(node: GridNode, anchor: GridAnchor, deferred: bool = false) -> void:
     if anchor != null:

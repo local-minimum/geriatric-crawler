@@ -4,13 +4,22 @@ class_name GridNodeFeature
 var _node: GridNode
 var _anchor: GridAnchor
 
+var _inited: bool
+
 func _ready() -> void:
     if _node == null:
         _node = _find_node_parent(self)
+        _inited = true
+
 
 func get_grid_node() -> GridNode:
     if _anchor != null:
         return _anchor.get_grid_node()
+
+    if !_inited && _node == null:
+        _node = _find_node_parent(self)
+        _inited = true
+
     return _node
 
 func set_grid_node(node: GridNode, deferred: bool = false) -> void:
