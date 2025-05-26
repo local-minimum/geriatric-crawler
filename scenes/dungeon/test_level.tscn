@@ -24,107 +24,109 @@ script = ExtResource("1_dd1ob")
 nodeSize = Vector3(1.5, 2.6, 1.5)
 nodeSpacing = Vector3(0, 0.4, 0)
 
-[node name="SimpleNode" parent="." instance=ExtResource("2_xi460")]
-
-[node name="SimpleNode2" parent="." instance=ExtResource("2_xi460")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.5)
-coordinates = Vector3i(0, 0, -1)
-
-[node name="SimpleNode3" parent="." instance=ExtResource("2_xi460")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -3)
-coordinates = Vector3i(0, 0, -2)
-
-[node name="basic_ceiling" parent="SimpleNode3" instance=ExtResource("4_pgxau")]
-
-[node name="SimpleNode8" parent="." instance=ExtResource("2_xi460")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.5, 0, -3)
-coordinates = Vector3i(-1, 0, -2)
-
-[node name="basic_ceiling" parent="SimpleNode8" instance=ExtResource("4_pgxau")]
-
-[node name="BasicWall" parent="SimpleNode8" instance=ExtResource("3_q8nfi")]
-transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0, 0)
-
-[node name="SimpleNode4" parent="." instance=ExtResource("2_xi460")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -4.5)
-coordinates = Vector3i(0, 0, -3)
-
-[node name="SimpleNode7" parent="." instance=ExtResource("2_xi460")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 0, -4.5)
-coordinates = Vector3i(1, 0, -3)
-
-[node name="SimpleNode5" parent="." instance=ExtResource("2_xi460")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -6)
-coordinates = Vector3i(0, 0, -4)
-
-[node name="SimpleNode12" parent="." instance=ExtResource("2_xi460")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -7.5)
-coordinates = Vector3i(0, 0, -5)
-
-[node name="BasicWall" parent="SimpleNode12" instance=ExtResource("3_q8nfi")]
-transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 0, 0, 0)
-
-[node name="SimpleNode6" parent="." instance=ExtResource("2_xi460")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 0, -6)
-coordinates = Vector3i(1, 0, -4)
-
-[node name="BasicWall" parent="SimpleNode6" instance=ExtResource("3_q8nfi")]
-
-[node name="SimpleNode9" parent="." instance=ExtResource("2_xi460")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.5, 0, -6)
-coordinates = Vector3i(3, 0, -4)
-
-[node name="BasicWall" parent="SimpleNode9" instance=ExtResource("3_q8nfi")]
-
-[node name="SimpleNode10" parent="." instance=ExtResource("2_xi460")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 0, -6)
-coordinates = Vector3i(4, 0, -4)
-
-[node name="SimpleNode11" parent="." instance=ExtResource("2_xi460")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 0, -4.5)
-coordinates = Vector3i(4, 0, -3)
-
-[node name="BasicWall" parent="SimpleNode11" instance=ExtResource("3_q8nfi")]
-transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 0, 0, 0)
-
-[node name="BasicWall2" parent="SimpleNode11" instance=ExtResource("3_q8nfi")]
-transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, 0)
-
-[node name="basic_ceiling" parent="SimpleNode11" instance=ExtResource("4_pgxau")]
-
-[node name="EmptyNode" parent="." instance=ExtResource("4_r7xyg")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 0, -6)
-coordinates = Vector3i(2, 0, -4)
-
-[node name="BasicWall" parent="EmptyNode" instance=ExtResource("3_q8nfi")]
-
 [node name="Player" parent="." node_paths=PackedStringArray("spawn_node") instance=ExtResource("3_m6mav")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0145968, -0.00857759, 0.00070858)
-spawn_node = NodePath("../SimpleNode")
+spawn_node = NodePath("../LevelGeometry/SimpleNode")
 look_direction = 1
 transportation_abilities = SubResource("Resource_kmgg5")
 transportation_mode = SubResource("Resource_pgxau")
 
-[node name="EmptyNode2" parent="." instance=ExtResource("4_r7xyg")]
+[node name="LevelGeometry" type="Node3D" parent="."]
+
+[node name="EmptyNode2" parent="LevelGeometry" instance=ExtResource("4_r7xyg")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.5, 0, -4.5)
 coordinates = Vector3i(3, 0, -3)
 
-[node name="basic_ceiling" parent="EmptyNode2" instance=ExtResource("4_pgxau")]
+[node name="basic_ceiling" parent="LevelGeometry/EmptyNode2" instance=ExtResource("4_pgxau")]
 
-[node name="EmptyNode3" parent="." instance=ExtResource("4_r7xyg")]
+[node name="EmptyNode3" parent="LevelGeometry" instance=ExtResource("4_r7xyg")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 0, -4.5)
 coordinates = Vector3i(2, 0, -3)
 
-[node name="basic_ceiling" parent="EmptyNode3" instance=ExtResource("4_pgxau")]
+[node name="basic_ceiling" parent="LevelGeometry/EmptyNode3" instance=ExtResource("4_pgxau")]
 
-[node name="EmptyNode4" parent="." instance=ExtResource("4_r7xyg")]
+[node name="EmptyNode4" parent="LevelGeometry" instance=ExtResource("4_r7xyg")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 0, -3)
 coordinates = Vector3i(2, 0, -2)
 
-[node name="basic_ceiling" parent="EmptyNode4" instance=ExtResource("4_pgxau")]
+[node name="basic_ceiling" parent="LevelGeometry/EmptyNode4" instance=ExtResource("4_pgxau")]
 
-[node name="EmptyNode5" parent="." instance=ExtResource("4_r7xyg")]
+[node name="EmptyNode5" parent="LevelGeometry" instance=ExtResource("4_r7xyg")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 0, -3)
 coordinates = Vector3i(1, 0, -2)
 
-[node name="basic_ceiling" parent="EmptyNode5" instance=ExtResource("4_pgxau")]
+[node name="basic_ceiling" parent="LevelGeometry/EmptyNode5" instance=ExtResource("4_pgxau")]
+
+[node name="SimpleNode" parent="LevelGeometry" instance=ExtResource("2_xi460")]
+
+[node name="SimpleNode2" parent="LevelGeometry" instance=ExtResource("2_xi460")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.5)
+coordinates = Vector3i(0, 0, -1)
+
+[node name="SimpleNode3" parent="LevelGeometry" instance=ExtResource("2_xi460")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -3)
+coordinates = Vector3i(0, 0, -2)
+
+[node name="basic_ceiling" parent="LevelGeometry/SimpleNode3" instance=ExtResource("4_pgxau")]
+
+[node name="SimpleNode8" parent="LevelGeometry" instance=ExtResource("2_xi460")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.5, 0, -3)
+coordinates = Vector3i(-1, 0, -2)
+
+[node name="basic_ceiling" parent="LevelGeometry/SimpleNode8" instance=ExtResource("4_pgxau")]
+
+[node name="BasicWall" parent="LevelGeometry/SimpleNode8" instance=ExtResource("3_q8nfi")]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0, 0)
+
+[node name="SimpleNode4" parent="LevelGeometry" instance=ExtResource("2_xi460")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -4.5)
+coordinates = Vector3i(0, 0, -3)
+
+[node name="SimpleNode7" parent="LevelGeometry" instance=ExtResource("2_xi460")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 0, -4.5)
+coordinates = Vector3i(1, 0, -3)
+
+[node name="SimpleNode5" parent="LevelGeometry" instance=ExtResource("2_xi460")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -6)
+coordinates = Vector3i(0, 0, -4)
+
+[node name="SimpleNode12" parent="LevelGeometry" instance=ExtResource("2_xi460")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -7.5)
+coordinates = Vector3i(0, 0, -5)
+
+[node name="BasicWall" parent="LevelGeometry/SimpleNode12" instance=ExtResource("3_q8nfi")]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 0, 0, 0)
+
+[node name="SimpleNode6" parent="LevelGeometry" instance=ExtResource("2_xi460")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 0, -6)
+coordinates = Vector3i(1, 0, -4)
+
+[node name="BasicWall" parent="LevelGeometry/SimpleNode6" instance=ExtResource("3_q8nfi")]
+
+[node name="SimpleNode9" parent="LevelGeometry" instance=ExtResource("2_xi460")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.5, 0, -6)
+coordinates = Vector3i(3, 0, -4)
+
+[node name="BasicWall" parent="LevelGeometry/SimpleNode9" instance=ExtResource("3_q8nfi")]
+
+[node name="SimpleNode10" parent="LevelGeometry" instance=ExtResource("2_xi460")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 0, -6)
+coordinates = Vector3i(4, 0, -4)
+
+[node name="SimpleNode11" parent="LevelGeometry" instance=ExtResource("2_xi460")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 0, -4.5)
+coordinates = Vector3i(4, 0, -3)
+
+[node name="BasicWall" parent="LevelGeometry/SimpleNode11" instance=ExtResource("3_q8nfi")]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 0, 0, 0)
+
+[node name="BasicWall2" parent="LevelGeometry/SimpleNode11" instance=ExtResource("3_q8nfi")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, 0)
+
+[node name="basic_ceiling" parent="LevelGeometry/SimpleNode11" instance=ExtResource("4_pgxau")]
+
+[node name="EmptyNode" parent="LevelGeometry" instance=ExtResource("4_r7xyg")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 0, -6)
+coordinates = Vector3i(2, 0, -4)
+
+[node name="BasicWall" parent="LevelGeometry/EmptyNode" instance=ExtResource("3_q8nfi")]

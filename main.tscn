@@ -17,5 +17,13 @@ camera_attributes = SubResource("CameraAttributesPractical_0xm2m")
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(0.804687, 0.403004, -0.435967, 0, 0.734323, 0.678801, 0.5937, -0.546222, 0.5909, 0.865872, 2.80495, 0)
 
+[node name="DirectionalLight3D2" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.781738, -0.423305, 0.457928, 0.623607, 0.530644, -0.574048, 3.11011e-07, 0.734323, 0.678801, 0.865872, 2.80495, 0)
+light_energy = 0.257
+
+[node name="DirectionalLight3D3" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.552773, -0.219924, -0.803788, 0.623607, 0.530644, -0.574048, 0.552772, -0.818567, -0.15618, 0.865872, 2.80495, 0)
+light_energy = 0.257
+
 [node name="DebugCam" type="Camera3D" parent="."]
 transform = Transform3D(0.707107, 0, -0.707107, 0, 1, 0, 0.707107, 0, 0.707107, -1, 2, -3)

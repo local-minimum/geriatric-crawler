@@ -12,6 +12,7 @@ size = Vector3(0.3, 0.2, 0.2)
 
 [node name="Player" type="Node3D"]
 script = ExtResource("1_edujd")
+can_jump_off_walls = true
 
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0.5)
