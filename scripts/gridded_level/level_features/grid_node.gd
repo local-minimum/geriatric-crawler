@@ -114,3 +114,10 @@ func may_exit(entity: GridEntity, move_direction: CardinalDirections.CardinalDir
         return false
 
     return anchor.pass_through_on_refuse
+
+func may_transit(
+    entity: GridEntity,
+    move_direction: CardinalDirections.CardinalDirection,
+    exit_direction: CardinalDirections.CardinalDirection,
+) -> bool:
+    return may_enter(entity, move_direction) && may_exit(entity, exit_direction)

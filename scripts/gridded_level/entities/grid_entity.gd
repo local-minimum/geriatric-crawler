@@ -56,11 +56,15 @@ func _handle_node_transition(
         var neighbour: GridNode = node.neighbour(move_direction)
         if neighbour != null && neighbour.may_enter(self, move_direction):
 
-            var anchor: GridAnchor = neighbour.get_anchor(down)
-            update_entity_anchorage(neighbour, anchor)
+            var neighbour_anchor: GridAnchor = neighbour.get_anchor(down)
+
+            if neighbour_anchor == null && _handle_outer_corner_transition(move_direction, neighbour):
+                return true
+
+            update_entity_anchorage(neighbour, neighbour_anchor)
             sync_position()
 
-            if was_excotic_walk && anchor == null:
+            if was_excotic_walk && neighbour_anchor == null:
                 if look_direction == CardinalDirections.CardinalDirection.DOWN:
                     look_direction = CardinalDirections.pitch_up(look_direction, down)[0]
                 elif look_direction == CardinalDirections.CardinalDirection.UP:
@@ -70,6 +74,35 @@ func _handle_node_transition(
 
             return true
     return false
+
+func _handle_outer_corner_transition(
+    move_direction: CardinalDirections.CardinalDirection,
+    neighbour: GridNode,
+) -> bool:
+    if _anchor == null || !neighbour.may_transit(self, move_direction, down):
+        return false
+
+    var target: GridNode = neighbour.neighbour(down)
+    if target == null || !target.may_enter(self, down):
+        return false
+
+    var updated_directions: Array[CardinalDirections.CardinalDirection] = CardinalDirections.calculate_outer_corner(
+        move_direction, look_direction, down)
+
+    var target_anchor: GridAnchor = target.get_anchor(updated_directions[1])
+
+    if target_anchor == null || !target_anchor.can_anchor(self):
+        return false
+
+    look_direction = updated_directions[0]
+    down = updated_directions[1]
+
+    update_entity_anchorage(target, target_anchor)
+    sync_position()
+    orient()
+
+    return true
+
 
 func _handle_node_internal_transition(
     node: GridNode,
@@ -84,7 +117,8 @@ func _handle_node_internal_transition(
     update_entity_anchorage(node, internal_anchor)
 
     if transportation_mode.has_any(TransportationMode.EXOTIC_WALKS) || was_excotic_walk:
-        var updated_directions: Array[CardinalDirections.CardinalDirection]  = CardinalDirections.calculate_innner_corner(move_direction, look_direction, down)
+        var updated_directions: Array[CardinalDirections.CardinalDirection] = CardinalDirections.calculate_innner_corner(
+            move_direction, look_direction, down)
 
         # print_debug("%s was looking %s, down %s -> looking %s, down %s" % [
             # name,

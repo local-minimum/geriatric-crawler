@@ -167,6 +167,26 @@ static func calculate_innner_corner(
         print_stack()
         return [look_direction, down]
 
+static func calculate_outer_corner(
+    move_direction: CardinalDirection,
+    look_direction: CardinalDirection,
+    down: CardinalDirection,
+) -> Array[CardinalDirection]:
+    if move_direction == look_direction:
+        return pitch_down(look_direction, down)
+    elif move_direction == invert(look_direction):
+        return pitch_up(look_direction, down)
+    elif move_direction == yaw_ccw(look_direction, down)[0]:
+        print_debug("Moving %s is a counter-clockwise yaw from look direction" % move_direction)
+        return roll_cw(look_direction, down)
+    elif move_direction == yaw_cw(look_direction, down)[0]:
+        print_debug("Moving %s is a clockwise yaw from look direction" % move_direction)
+        return roll_ccw(look_direction, down)
+    else:
+        push_error("movement %s is not inner corner movement when %s is down" % [move_direction, down])
+        print_stack()
+        return [look_direction, down]
+
 #
 # To other objects
 #
