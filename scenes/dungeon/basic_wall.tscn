@@ -1,7 +1,7 @@
 [gd_scene load_steps=5 format=3 uid="uid://b3heljhlu4hop"]
 
 [ext_resource type="PackedScene" uid="uid://5jxvwawha1ad" path="res://models/thinwall.blend" id="1_r45a3"]
-[ext_resource type="Script" uid="uid://bsjvh2o2oob57" path="res://scripts/gridded_level/grid_anchor.gd" id="2_ia0bt"]
+[ext_resource type="Script" uid="uid://bsjvh2o2oob57" path="res://scripts/gridded_level/level_features/grid_anchor.gd" id="2_ia0bt"]
 [ext_resource type="Script" uid="uid://b8a6yvndcxtpa" path="res://scripts/gridded_level/transportation_mode.gd" id="3_vntuw"]
 
 [sub_resource type="Resource" id="Resource_p5glw"]

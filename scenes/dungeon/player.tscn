@@ -1,6 +1,6 @@
 [gd_scene load_steps=7 format=3 uid="uid://bfoog3fb4v5ij"]
 
-[ext_resource type="Script" uid="uid://uuoluocfjbjd" path="res://scripts/gridded_level/grid_player.gd" id="1_edujd"]
+[ext_resource type="Script" uid="uid://uuoluocfjbjd" path="res://scripts/gridded_level/entities/grid_player.gd" id="1_edujd"]
 [ext_resource type="Script" uid="uid://b8a6yvndcxtpa" path="res://scripts/gridded_level/transportation_mode.gd" id="2_vrljn"]
 
 [sub_resource type="Resource" id="Resource_vsvsq"]

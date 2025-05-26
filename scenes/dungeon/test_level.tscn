@@ -1,6 +1,6 @@
 [gd_scene load_steps=8 format=3 uid="uid://dwqcwbgj8p6q0"]
 
-[ext_resource type="Script" uid="uid://dqe42q7uub84r" path="res://scripts/gridded_level/grid_level.gd" id="1_dd1ob"]
+[ext_resource type="Script" uid="uid://dqe42q7uub84r" path="res://scripts/gridded_level/level_features/grid_level.gd" id="1_dd1ob"]
 [ext_resource type="PackedScene" uid="uid://cyok25kuqu374" path="res://scenes/dungeon/floored_node.tscn" id="2_xi460"]
 [ext_resource type="PackedScene" uid="uid://bfoog3fb4v5ij" path="res://scenes/dungeon/player.tscn" id="3_m6mav"]
 [ext_resource type="PackedScene" uid="uid://b3heljhlu4hop" path="res://scenes/dungeon/basic_wall.tscn" id="3_q8nfi"]
