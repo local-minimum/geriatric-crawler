@@ -19,20 +19,26 @@ func _input(event: InputEvent) -> void:
 
     if !event.is_echo():
         if event.is_action_pressed("crawl_forward"):
-            if attempt_move(look_direction):
-                print_debug("Forward")
+            if !attempt_move(look_direction):
+                print_debug("Refused Forward")
         elif event.is_action_pressed("crawl_backward"):
-            if attempt_move(CardinalDirections.invert(look_direction)):
-                print_debug("Backward")
+            if !attempt_move(CardinalDirections.invert(look_direction)):
+                print_debug("Refused Backward")
         elif event.is_action_pressed("crawl_strafe_left"):
-            if attempt_move(CardinalDirections.yaw_ccw(look_direction, down)[0]):
-                print_debug("Strafe Left")
+            if !attempt_move(CardinalDirections.yaw_ccw(look_direction, down)[0]):
+                print_debug("Refused Strafe Left")
         elif event.is_action_pressed("crawl_strafe_right"):
-            if attempt_move(CardinalDirections.yaw_cw(look_direction, down)[0]):
-                print_debug("Strafe Right")
+            if !attempt_move(CardinalDirections.yaw_cw(look_direction, down)[0]):
+                print_debug("Refused Strafe Right")
         elif event.is_action_pressed("crawl_turn_left"):
-            if attempt_rotate(false):
-                print_debug("Rotate Left")
+            if !attempt_rotate(false):
+                print_debug("Refused Rotate Left")
         elif event.is_action_pressed("crawl_turn_right"):
-            if attempt_rotate(true):
-                print_debug("Rotate Right")
+            if !attempt_rotate(true):
+                print_debug("Refused Rotate Right")
+
+    print_debug("%s looking %s with %s down and has %s transportation" % [
+        name,
+        CardinalDirections.name(look_direction),
+        CardinalDirections.name(down),
+        transportation_mode.humanize()])

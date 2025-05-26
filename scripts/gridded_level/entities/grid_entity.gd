@@ -28,6 +28,30 @@ func attempt_move(move_direction: CardinalDirections.CardinalDirection) -> bool:
 
     var was_excotic_walk: bool = transportation_mode.has_any(TransportationMode.EXOTIC_WALKS)
 
+    # We're in the air but moving onto an anchor of the current node
+    if _handle_landing(node, move_direction):
+        return true
+
+    if _handle_node_transition(node, move_direction, was_excotic_walk):
+        return true
+
+    return _handle_node_internal_transition(node, move_direction, was_excotic_walk)
+
+func _handle_landing(node: GridNode, move_direction: CardinalDirections.CardinalDirection) -> bool:
+    if _anchor == null:
+        var land_anchor: GridAnchor = node.get_anchor(move_direction)
+        if land_anchor != null && land_anchor.can_anchor(self):
+            update_entity_anchorage(node, land_anchor)
+            sync_position()
+
+            return true
+    return false
+
+func _handle_node_transition(
+    node: GridNode,
+    move_direction: CardinalDirections.CardinalDirection,
+    was_excotic_walk: bool,
+) -> bool:
     if node.may_exit(self, move_direction):
         var neighbour: GridNode = node.neighbour(move_direction)
         if neighbour != null && neighbour.may_enter(self, move_direction):
@@ -36,7 +60,7 @@ func attempt_move(move_direction: CardinalDirections.CardinalDirection) -> bool:
             update_entity_anchorage(neighbour, anchor)
             sync_position()
 
-            if was_excotic_walk:
+            if was_excotic_walk && anchor == null:
                 if look_direction == CardinalDirections.CardinalDirection.DOWN:
                     look_direction = CardinalDirections.pitch_up(look_direction, down)[0]
                 elif look_direction == CardinalDirections.CardinalDirection.UP:
@@ -45,7 +69,13 @@ func attempt_move(move_direction: CardinalDirections.CardinalDirection) -> bool:
                 orient()
 
             return true
+    return false
 
+func _handle_node_internal_transition(
+    node: GridNode,
+    move_direction: CardinalDirections.CardinalDirection,
+    was_excotic_walk: bool,
+) -> bool:
     var internal_anchor: GridAnchor = node.get_anchor(move_direction)
 
     if internal_anchor == null || !internal_anchor.can_anchor(self):
@@ -55,13 +85,15 @@ func attempt_move(move_direction: CardinalDirections.CardinalDirection) -> bool:
 
     if transportation_mode.has_any(TransportationMode.EXOTIC_WALKS) || was_excotic_walk:
         var updated_directions: Array[CardinalDirections.CardinalDirection]  = CardinalDirections.calculate_innner_corner(move_direction, look_direction, down)
-        print_debug("%s was looking %s, down %s -> looking %s, down %s" % [
-            name,
-            CardinalDirections.name(look_direction),
-            CardinalDirections.name(down),
-            CardinalDirections.name(updated_directions[0]),
-            CardinalDirections.name(updated_directions[1])
-        ])
+
+        # print_debug("%s was looking %s, down %s -> looking %s, down %s" % [
+            # name,
+            # CardinalDirections.name(look_direction),
+            # CardinalDirections.name(down),
+            # CardinalDirections.name(updated_directions[0]),
+            # CardinalDirections.name(updated_directions[1])
+        # ])
+
         look_direction = updated_directions[0]
         down = updated_directions[1]
         sync_position()
@@ -78,8 +110,8 @@ func update_entity_anchorage(node: GridNode, anchor: GridAnchor, deferred: bool 
         set_grid_node(node, deferred)
         transportation_mode.mode = TransportationMode.NONE
 
-    print_debug("%s is now %s" % [name, transportation_mode.humanize()])
-    print_stack()
+    # print_debug("%s is now %s" % [name, transportation_mode.humanize()])
+    # print_stack()
 
 func attempt_rotate(clockwise: bool) -> bool:
     if clockwise:

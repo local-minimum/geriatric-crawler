@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://dwqcwbgj8p6q0"]
+[gd_scene load_steps=9 format=3 uid="uid://dwqcwbgj8p6q0"]
 
 [ext_resource type="Script" uid="uid://dqe42q7uub84r" path="res://scripts/gridded_level/level_features/grid_level.gd" id="1_dd1ob"]
 [ext_resource type="PackedScene" uid="uid://cyok25kuqu374" path="res://scenes/dungeon/floored_node.tscn" id="2_xi460"]
@@ -7,10 +7,15 @@
 [ext_resource type="Script" uid="uid://b8a6yvndcxtpa" path="res://scripts/gridded_level/transportation_mode.gd" id="4_840jk"]
 [ext_resource type="PackedScene" uid="uid://pqu2j7bbrsdh" path="res://scenes/dungeon/empty_node.tscn" id="4_r7xyg"]
 
-[sub_resource type="Resource" id="Resource_840jk"]
+[sub_resource type="Resource" id="Resource_r7xyg"]
 resource_local_to_scene = true
 script = ExtResource("4_840jk")
 mode = 61
+metadata/_custom_type_script = "uid://b8a6yvndcxtpa"
+
+[sub_resource type="Resource" id="Resource_pgxau"]
+script = ExtResource("4_840jk")
+mode = 0
 metadata/_custom_type_script = "uid://b8a6yvndcxtpa"
 
 [node name="TestLevel" type="Node3D"]
@@ -79,4 +84,5 @@ coordinates = Vector3i(2, 0, -4)
 [node name="Player" parent="." node_paths=PackedStringArray("spawn_node") instance=ExtResource("3_m6mav")]
 spawn_node = NodePath("../SimpleNode")
 look_direction = 1
-transportation_abilities = SubResource("Resource_840jk")
+transportation_abilities = SubResource("Resource_r7xyg")
+transportation_mode = SubResource("Resource_pgxau")

@@ -33,7 +33,7 @@ func _parent_to_node(deferred: bool = false) -> void:
 
     var parent: Node = self.get_parent()
     if _node != parent:
-        print_debug("%s has parent %s but wants node %s" % [name, parent, _node])
+        # print_debug("%s has parent %s but wants node %s" % [name, parent, _node])
         if deferred:
             reparent.call_deferred(_node, true)
         else:
@@ -45,7 +45,7 @@ func _parent_to_anchor(deferred: bool = false) -> void:
 
     var parent: Node = self.get_parent()
     if _anchor != parent:
-        print_debug("%s has parent %s but wants anchor %s" % [name, parent, _anchor])
+        # print_debug("%s has parent %s but wants anchor %s" % [name, parent, _anchor])
         if deferred:
             reparent.call_deferred(_anchor, true)
         else:
