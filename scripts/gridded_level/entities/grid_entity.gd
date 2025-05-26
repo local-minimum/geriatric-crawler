@@ -13,6 +13,9 @@ var transportation_abilities: TransportationMode
 @export
 var transportation_mode: TransportationMode
 
+@export
+var can_jump_off_walls: bool
+
 func _ready() -> void:
     super()
     orient()
@@ -60,6 +63,9 @@ func _handle_node_transition(
 
             if neighbour_anchor == null && _handle_outer_corner_transition(move_direction, neighbour):
                 return true
+
+            if was_excotic_walk && !can_jump_off_walls && neighbour_anchor == null:
+                return false
 
             update_entity_anchorage(neighbour, neighbour_anchor)
             sync_position()
