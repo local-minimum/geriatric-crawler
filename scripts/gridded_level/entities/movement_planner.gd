@@ -23,7 +23,7 @@ func move_entity(move_direction: CardinalDirections.CardinalDirection) -> Tween:
         return null
 
     var anchor: GridAnchor = entity.get_grid_anchor()
-    var tween: Tween = entity.create_tween()
+    var tween: Tween = entity.create_tween().set_parallel()
 
     var was_excotic_walk: bool = entity.transportation_mode.has_any(TransportationMode.EXOTIC_WALKS)
 
@@ -35,6 +35,44 @@ func move_entity(move_direction: CardinalDirections.CardinalDirection) -> Tween:
         return tween
 
     return _handle_node_inner_corner_transition(tween, node, anchor, move_direction)
+
+func rotate_entity(clockwise: bool) -> Tween:
+    var node: GridNode = entity.get_grid_node()
+    if node == null:
+        push_error("Player %s not inside dungeon")
+        return null
+
+    var up: CardinalDirections.CardinalDirection = CardinalDirections.invert(entity.down)
+
+    var target_look_direction: CardinalDirections.CardinalDirection
+    if clockwise:
+        target_look_direction = CardinalDirections.yaw_cw(entity.look_direction, entity.down)[0]
+    else:
+        target_look_direction = CardinalDirections.yaw_ccw(entity.look_direction, entity.down)[0]
+
+    var final_rotation: Transform3D = Transform3D.IDENTITY.looking_at(
+        Vector3(CardinalDirections.direction_to_vector(target_look_direction)),
+        Vector3(CardinalDirections.direction_to_vector(up)),
+        )
+
+    var tween: Tween = entity.create_tween()
+
+    @warning_ignore_start("return_value_discarded")
+    tween.tween_property(
+        entity,
+        "global_transform:basis",
+        final_rotation.basis,
+        turn_time)
+
+    tween.tween_callback(
+        func() -> void:
+            entity.look_direction = target_look_direction
+            entity.orient()
+            entity.is_moving = false).set_delay(turn_time)
+    @warning_ignore_restore("return_value_discarded")
+
+    return tween
+
 
 func _handle_landing(
     tween: Tween,
@@ -55,7 +93,8 @@ func _handle_landing(
             tween.tween_callback(
                 func() -> void:
                     entity.update_entity_anchorage(node, land_anchor)
-                    entity.sync_position())
+                    entity.sync_position()
+                    entity.is_moving = false).set_delay(fall_time * 0.5)
             @warning_ignore_restore("return_value_discarded")
 
             return true
@@ -90,7 +129,8 @@ func _handle_node_transition(
                 tween.tween_callback(
                     func() -> void:
                         entity.update_entity_anchorage(neighbour, neighbour_anchor)
-                        entity.sync_position())
+                        entity.sync_position()
+                        entity.is_moving = false).set_delay(translation_time)
                 @warning_ignore_restore("return_value_discarded")
 
                 return true
@@ -111,13 +151,14 @@ func _handle_node_transition(
                     end_look_direction = CardinalDirections.pitch_down(entity.look_direction, entity.down)[0]
                 var end_down: CardinalDirections.CardinalDirection = CardinalDirections.CardinalDirection.DOWN
 
+                var final_rotation: Transform3D = Transform3D.IDENTITY.looking_at(
+                    Vector3(CardinalDirections.direction_to_vector(end_look_direction)),
+                    Vector3(CardinalDirections.direction_to_vector(CardinalDirections.CardinalDirection.UP)))
+
                 tween.tween_property(
                     entity,
-                    "global_transform",
-                    entity.transform.rotated(
-                        CardinalDirections.direction_to_axis(end_down),
-                        deg_to_rad(CardinalDirections.angle_around_axis(end_look_direction, end_down)),
-                    ),
+                    "global_transform:basis",
+                    final_rotation.basis,
                     translation_time)
 
                 tween.tween_callback(
@@ -126,7 +167,8 @@ func _handle_node_transition(
                         entity.sync_position()
                         entity.look_direction = end_look_direction
                         entity.down = end_down
-                        entity.orient())
+                        entity.orient()
+                        entity.is_moving = false).set_delay(translation_time)
 
                 return true
 
@@ -134,7 +176,8 @@ func _handle_node_transition(
             tween.tween_callback(
                 func() -> void:
                     entity.update_entity_anchorage(neighbour, neighbour_anchor)
-                    entity.sync_position())
+                    entity.sync_position()
+                    entity.is_moving = false).set_delay(translation_time)
 
             @warning_ignore_restore("return_value_discarded")
 
@@ -166,11 +209,11 @@ func _handle_outer_corner_transition(
     var target_edge: Vector3 = target_anchor.get_edge_position(CardinalDirections.invert(entity.down))
     var intermediate: Vector3 = lerp(start_edge, target_edge, 0.5)
 
-    var final_rotation: Transform3D = entity.transform.rotated(
-        CardinalDirections.direction_to_axis(updated_directions[1]),
-        deg_to_rad(CardinalDirections.angle_around_axis(updated_directions[0], updated_directions[1])),
-    )
-    var intermediate_rotation: Basis = lerp(entity.transform.basis, final_rotation.basis, 0.5)
+    var final_rotation: Transform3D = Transform3D.IDENTITY.looking_at(
+        Vector3(CardinalDirections.direction_to_vector(updated_directions[0])),
+        Vector3(CardinalDirections.direction_to_vector(CardinalDirections.invert(updated_directions[1]))),
+        )
+    var intermediate_rotation: Basis = lerp(entity.global_transform.basis, final_rotation.basis, 0.5)
     var half_time: float = translation_time * 0.5
 
     @warning_ignore_start("return_value_discarded")
@@ -182,7 +225,7 @@ func _handle_outer_corner_transition(
 
     tween.tween_property(
         entity,
-        "transform:basis",
+        "global_transform:basis",
         intermediate_rotation,
         half_time).set_trans(Tween.TRANS_QUAD)
 
@@ -193,20 +236,21 @@ func _handle_outer_corner_transition(
         target_anchor.global_position,
         half_time)
 
-    tween.tween_property(
+    second_tween.tween_property(
         entity,
-        "transform:basis",
+        "global_transform:basis",
         final_rotation.basis,
         half_time).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 
-    tween.tween_callback(
+    second_tween.tween_callback(
         func() -> void:
             entity.update_entity_anchorage(target, target_anchor)
             entity.sync_position()
 
             entity.look_direction = updated_directions[0]
             entity.down = updated_directions[1]
-            entity.orient())
+            entity.orient()
+            entity.is_moving = false).set_delay(half_time)
 
     @warning_ignore_restore("return_value_discarded")
 
@@ -230,12 +274,12 @@ func _handle_node_inner_corner_transition(
 
     var start_edge: Vector3 = anchor.get_edge_position(move_direction)
     var target_edge: Vector3 = target_anchor.get_edge_position(CardinalDirections.invert(entity.down))
-    var intermediate: Vector3 = lerp(start_edge, target_edge, 0.5)
+    var intermediate: Vector3 = lerp(start_edge, target_edge, 0)
 
-    var final_rotation: Transform3D = entity.transform.rotated(
-        CardinalDirections.direction_to_axis(updated_directions[1]),
-        deg_to_rad(CardinalDirections.angle_around_axis(updated_directions[0], updated_directions[1])),
-    )
+    var final_rotation: Transform3D = Transform3D.IDENTITY.looking_at(
+        Vector3(CardinalDirections.direction_to_vector(updated_directions[0])),
+        Vector3(CardinalDirections.direction_to_vector(CardinalDirections.invert(updated_directions[1]))),
+        )
     var intermediate_rotation: Basis = lerp(entity.transform.basis, final_rotation.basis, 0.5)
     var half_time: float = translation_time * 0.5
 
@@ -248,7 +292,7 @@ func _handle_node_inner_corner_transition(
 
     tween.tween_property(
         entity,
-        "transform:basis",
+        "global_transform:basis",
         intermediate_rotation,
         half_time).set_trans(Tween.TRANS_QUAD)
 
@@ -259,20 +303,21 @@ func _handle_node_inner_corner_transition(
         target_anchor.global_position,
         half_time)
 
-    tween.tween_property(
+    second_tween.tween_property(
         entity,
-        "transform:basis",
+        "global_transform:basis",
         final_rotation.basis,
         half_time).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 
-    tween.tween_callback(
+    second_tween.tween_callback(
         func() -> void:
             entity.update_entity_anchorage(node, target_anchor)
             entity.sync_position()
 
             entity.look_direction = updated_directions[0]
             entity.down = updated_directions[1]
-            entity.orient())
+            entity.orient()
+            entity.is_moving = false).set_delay(half_time)
 
     @warning_ignore_restore("return_value_discarded")
 

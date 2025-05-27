@@ -13,7 +13,9 @@ var _anchors_inited: bool = false
 var _anchors: Dictionary[CardinalDirections.CardinalDirection, GridAnchor] = {}
 
 func _ready() -> void:
-    level = _find_level_parent(self)
+    if level == null:
+        level = _find_level_parent(self)
+
     if !_anchors_inited:
         _init_anchors()
 
@@ -28,6 +30,11 @@ func _find_level_parent(node: Node) -> GridLevel:
         return parent as GridLevel
 
     return _find_level_parent(parent)
+
+func get_level() -> GridLevel:
+    if level == null:
+        level = _find_level_parent(self)
+    return level
 
 #
 # Anchors

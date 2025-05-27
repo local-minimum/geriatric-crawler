@@ -22,6 +22,8 @@ var planner: MovementPlanner
 @export
 var instant_step: bool
 
+var is_moving: bool
+
 func _ready() -> void:
     super()
     orient()
@@ -32,18 +34,38 @@ func falling() -> bool:
 var tween: Tween
 
 func attempt_move(move_direction: CardinalDirections.CardinalDirection) -> bool:
+    if is_moving:
+        return false
+
     if tween:
         tween.kill()
 
     tween = planner.move_entity(move_direction)
+    _handle_new_tween()
+
+    return tween != null
+
+func attempt_rotate(clockwise: bool) -> bool:
+    if is_moving:
+        return false
+
+    if tween:
+        tween.kill()
+
+    tween = planner.rotate_entity(clockwise)
+    _handle_new_tween()
+
+    return tween != null
+
+func _handle_new_tween() -> void:
     if tween != null:
+        tween.play()
         if instant_step:
-            tween.pause()
             var t: float = 999
             while tween.custom_step(t):
                 t *= 2
-        tween.play()
-    return tween != null
+        else:
+            is_moving = true
 
 func update_entity_anchorage(node: GridNode, anchor: GridAnchor, deferred: bool = false) -> void:
     if anchor != null:
@@ -55,14 +77,6 @@ func update_entity_anchorage(node: GridNode, anchor: GridAnchor, deferred: bool 
 
     # print_debug("%s is now %s" % [name, transportation_mode.humanize()])
     # print_stack()
-
-func attempt_rotate(clockwise: bool) -> bool:
-    if clockwise:
-        look_direction = CardinalDirections.yaw_cw(look_direction, down)[0]
-    else:
-        look_direction = CardinalDirections.yaw_ccw(look_direction, down)[0]
-    orient()
-    return true
 
 func sync_position() -> void:
     var anchor: GridAnchor = get_grid_anchor()

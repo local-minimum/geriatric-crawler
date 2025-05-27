@@ -25,6 +25,12 @@ func _ready() -> void:
     if set_rotation_from_parent:
         _set_rotation_from_parent()
 
+    _draw_debug_edges()
+
+func _draw_debug_edges() -> void:
+    for edge: CardinalDirections.CardinalDirection in CardinalDirections.orthogonals(direction):
+        _draw_debug_sphere(get_edge_position(edge, false), 0.1)
+
 func _set_rotation_from_parent() -> void:
     var parent: Node3D = get_parent()
     if parent == null:
@@ -37,7 +43,7 @@ func _set_rotation_from_parent() -> void:
 func can_anchor(entity: GridEntity) -> bool:
     return entity.transportation_abilities.has_all(required_transportation_mode.get_flags())
 
-func get_edge_position(edge_direction: CardinalDirections.CardinalDirection) -> Vector3:
+func get_edge_position(edge_direction: CardinalDirections.CardinalDirection, local: bool = false) -> Vector3:
     var node: GridNode = get_grid_node()
     if node == null:
         return global_position
@@ -50,5 +56,27 @@ func get_edge_position(edge_direction: CardinalDirections.CardinalDirection) -> 
         print_stack()
         return global_position
 
-    var size: Vector3 = node.level.node_size * Vector3(CardinalDirections.direction_to_ortho_plane(direction))
-    return global_position + size * 0.5 * Vector3(CardinalDirections.direction_to_vector(edge_direction))
+    var offset: Vector3 = node.get_level().node_size * 0.5 * Vector3(CardinalDirections.direction_to_vector(edge_direction))
+    if local:
+        return offset
+
+    return global_position + offset
+
+func _draw_debug_sphere(location: Vector3, size: float) -> void:
+    # Create sphere with low detail of size.
+    var sphere: SphereMesh = SphereMesh.new()
+    sphere.radial_segments = 4
+    sphere.rings = 4
+    sphere.radius = size
+    sphere.height = size * 2
+    # Bright red material (unshaded).
+    var material: StandardMaterial3D = StandardMaterial3D.new()
+    material.albedo_color = Color(1, 0, 0, 0.5)
+    material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+    sphere.surface_set_material(0, material)
+
+    # Add to meshinstance in the right place.
+    var node: MeshInstance3D = MeshInstance3D.new()
+    add_child(node)
+    node.mesh = sphere
+    node.global_position = location

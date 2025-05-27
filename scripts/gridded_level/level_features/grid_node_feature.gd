@@ -22,19 +22,19 @@ func get_grid_node() -> GridNode:
 
     return _node
 
-func set_grid_node(node: GridNode, deferred: bool = false) -> void:
+func set_grid_node(node: GridNode, _deferred: bool = false) -> void:
     if _anchor != null:
         _anchor = null
     _node = node
-    _parent_to_node(deferred)
+    # _parent_to_node(deferred)
 
 func get_grid_anchor() -> GridAnchor:
     return _anchor
 
-func set_grid_anchor(anchor: GridAnchor, deferred: bool = false) -> void:
+func set_grid_anchor(anchor: GridAnchor, _deferred: bool = false) -> void:
     _anchor = anchor
     _node = _anchor.get_grid_node()
-    _parent_to_anchor(deferred)
+    # _parent_to_anchor(deferred)
 
 func _parent_to_node(deferred: bool = false) -> void:
     if _node == null:

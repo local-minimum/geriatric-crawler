@@ -42,9 +42,11 @@ func _input(event: InputEvent) -> void:
         elif event.is_action_pressed("crawl_turn_right"):
             if !attempt_rotate(true):
                 print_debug("Refused Rotate Right")
+        else:
+            return
 
-    print_debug("%s looking %s with %s down and has %s transportation" % [
-        name,
-        CardinalDirections.name(look_direction),
-        CardinalDirections.name(down),
-        transportation_mode.humanize()])
+        print_debug("%s looking %s with %s down and has %s transportation" % [
+            name,
+            CardinalDirections.name(look_direction),
+            CardinalDirections.name(down),
+            transportation_mode.humanize()])

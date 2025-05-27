@@ -187,6 +187,47 @@ static func calculate_outer_corner(
         print_stack()
         return [look_direction, down]
 
+static func orthogonals(direction: CardinalDirection) -> Array[CardinalDirection]:
+    var ortho: Array[CardinalDirection]
+    var inverted: CardinalDirection = invert(direction)
+
+    for other: CardinalDirection in ALL_DIRECTIONS:
+        if other == direction || other == inverted:
+            continue
+        ortho.append(other)
+
+    return ortho
+
+static func orthogonal_axis(first: CardinalDirection, second: CardinalDirection) -> CardinalDirection:
+    var first_inverse: CardinalDirection = invert(first)
+    if first_inverse == second:
+        push_error("%s and %s are parallel" % [name(first), name(second)])
+        print_stack()
+        return CardinalDirection.NONE
+
+    if first == CardinalDirection.UP || first == CardinalDirection.DOWN:
+        match second:
+            CardinalDirection.WEST: return CardinalDirection.SOUTH
+            CardinalDirection.EAST: return CardinalDirection.SOUTH
+            CardinalDirection.NORTH: return CardinalDirection.EAST
+            CardinalDirection.SOUTH: return CardinalDirection.EAST
+    elif first == CardinalDirection.NORTH || first == CardinalDirection.SOUTH:
+        match second:
+            CardinalDirection.WEST: return CardinalDirection.UP
+            CardinalDirection.EAST: return CardinalDirection.UP
+            CardinalDirection.UP: return CardinalDirection.EAST
+            CardinalDirection.DOWN: return CardinalDirection.EAST
+    elif first == CardinalDirection.WEST || first == CardinalDirection.EAST:
+        match second:
+            CardinalDirection.NORTH: return CardinalDirection.UP
+            CardinalDirection.SOUTH: return CardinalDirection.UP
+            CardinalDirection.UP: return CardinalDirection.SOUTH
+            CardinalDirection.DOWN: return CardinalDirection.SOUTH
+
+    push_error("%s and %s are not orthogonal" % [name(first), name(second)])
+    print_stack()
+    return CardinalDirection.NONE
+
 #
 # To other objects
 #
@@ -237,9 +278,9 @@ static func angle_around_axis(direction: CardinalDirection, down: CardinalDirect
     match down:
         CardinalDirection.DOWN:
             match direction:
-                CardinalDirection.NORTH: return 0
+                CardinalDirection.NORTH: return 180
                 CardinalDirection.WEST: return 90
-                CardinalDirection.SOUTH: return 180
+                CardinalDirection.SOUTH: return 0
                 CardinalDirection.EAST: return 270
         CardinalDirection.UP:
             match direction:
