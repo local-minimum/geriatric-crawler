@@ -79,7 +79,7 @@ func rotate_entity(clockwise: bool) -> Tween:
         func () -> void:
             entity.look_direction = target_look_direction
             entity.orient()
-            entity.is_moving = false)
+            entity.set_is_moving(false))
     @warning_ignore_restore("return_value_discarded")
 
     return tween
@@ -107,7 +107,7 @@ func _handle_landing(
                 func () -> void:
                     entity.update_entity_anchorage(node, land_anchor)
                     entity.sync_position()
-                    entity.is_moving = false)
+                    entity.set_is_moving(false))
             @warning_ignore_restore("return_value_discarded")
 
             return true
@@ -145,7 +145,7 @@ func _handle_node_transition(
                     func () -> void:
                         entity.update_entity_anchorage(neighbour, neighbour_anchor)
                         entity.sync_position()
-                        entity.is_moving = false)
+                        entity.set_is_moving(false))
                 @warning_ignore_restore("return_value_discarded")
 
                 return true
@@ -185,7 +185,7 @@ func _handle_node_transition(
                         entity.look_direction = end_look_direction
                         entity.down = end_down
                         entity.orient()
-                        entity.is_moving = false)
+                        entity.set_is_moving(false))
 
                 return true
 
@@ -195,7 +195,7 @@ func _handle_node_transition(
                 func () -> void:
                     entity.update_entity_anchorage(neighbour, neighbour_anchor)
                     entity.sync_position()
-                    entity.is_moving = false)
+                    entity.set_is_moving(false))
 
             @warning_ignore_restore("return_value_discarded")
 
@@ -316,6 +316,6 @@ func _handle_corner(
             entity.look_direction = updated_directions[0]
             entity.down = updated_directions[1]
             entity.orient()
-            entity.is_moving = false)
+            entity.set_is_moving(false))
 
     @warning_ignore_restore("return_value_discarded")

@@ -22,40 +22,70 @@ var planner: MovementPlanner
 @export
 var instant_step: bool
 
-var is_moving: bool
+var _is_moving: bool
+
+var _next_movement: Movement.MovementType = Movement.MovementType.NONE
+var _next_next_movement: Movement.MovementType = Movement.MovementType.NONE
 
 func _ready() -> void:
     super()
     orient()
+
+func is_moving() -> bool:
+    return _is_moving
+
+func set_is_moving(value: bool) -> void:
+    _is_moving = value
+    if !value && _next_movement != Movement.MovementType.NONE:
+        if attempt_movement(_next_movement, false):
+            _next_movement = _next_next_movement
+            _next_next_movement = Movement.MovementType.NONE
+        else:
+            _clear_queue()
 
 func falling() -> bool:
     return transportation_mode.mode == TransportationMode.NONE
 
 var tween: Tween
 
-func attempt_move(move_direction: CardinalDirections.CardinalDirection) -> bool:
-    if is_moving:
+func attempt_movement(
+    movement: Movement.MovementType,
+    enqueue_if_occupied: bool = true,
+    force: bool = false) -> bool:
+    if movement == Movement.MovementType.NONE:
         return false
+
+    if !force && is_moving():
+        if enqueue_if_occupied:
+            _enqeue_movement(movement)
+
+        return false
+
+    if force:
+        _clear_queue()
 
     if tween:
         tween.kill()
 
-    tween = planner.move_entity(move_direction)
+    if Movement.is_translation(movement):
+        tween = planner.move_entity(Movement.to_direction(movement, look_direction, down))
+    elif Movement.is_turn(movement):
+        tween = planner.rotate_entity(movement == Movement.MovementType.TURN_CLOCKWISE)
+
     _handle_new_tween()
 
     return tween != null
 
-func attempt_rotate(clockwise: bool) -> bool:
-    if is_moving:
-        return false
+func _enqeue_movement(movement: Movement.MovementType) -> void:
+    if _next_movement != Movement.MovementType.NONE:
+        _next_next_movement = movement
+        return
 
-    if tween:
-        tween.kill()
+    _next_movement = movement
 
-    tween = planner.rotate_entity(clockwise)
-    _handle_new_tween()
-
-    return tween != null
+func _clear_queue() -> void:
+    _next_movement = Movement.MovementType.NONE
+    _next_next_movement = Movement.MovementType.NONE
 
 func _handle_new_tween() -> void:
     if tween != null:
@@ -65,7 +95,7 @@ func _handle_new_tween() -> void:
             while tween.custom_step(t):
                 t *= 2
         else:
-            is_moving = true
+            set_is_moving(true)
 
 func update_entity_anchorage(node: GridNode, anchor: GridAnchor, deferred: bool = false) -> void:
     if anchor != null:

@@ -25,22 +25,22 @@ func _input(event: InputEvent) -> void:
 
     if !event.is_echo():
         if event.is_action_pressed("crawl_forward"):
-            if !attempt_move(look_direction):
+            if !attempt_movement(Movement.MovementType.FORWARD):
                 print_debug("Refused Forward")
         elif event.is_action_pressed("crawl_backward"):
-            if !attempt_move(CardinalDirections.invert(look_direction)):
+            if !attempt_movement(Movement.MovementType.BACK):
                 print_debug("Refused Backward")
         elif event.is_action_pressed("crawl_strafe_left"):
-            if !attempt_move(CardinalDirections.yaw_ccw(look_direction, down)[0]):
+            if !attempt_movement(Movement.MovementType.STRAFE_LEFT):
                 print_debug("Refused Strafe Left")
         elif event.is_action_pressed("crawl_strafe_right"):
-            if !attempt_move(CardinalDirections.yaw_cw(look_direction, down)[0]):
+            if !attempt_movement(Movement.MovementType.STRAFE_RIGHT):
                 print_debug("Refused Strafe Right")
         elif event.is_action_pressed("crawl_turn_left"):
-            if !attempt_rotate(false):
+            if !attempt_movement(Movement.MovementType.TURN_COUNTER_CLOCKWISE):
                 print_debug("Refused Rotate Left")
         elif event.is_action_pressed("crawl_turn_right"):
-            if !attempt_rotate(true):
+            if !attempt_movement(Movement.MovementType.TURN_CLOCKWISE):
                 print_debug("Refused Rotate Right")
         else:
             return
