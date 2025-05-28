@@ -5,6 +5,9 @@ class_name GridPlayer
 var spawn_node: GridNode
 
 @export
+var allow_replays: bool = true
+
+@export
 var persist_repeat_moves: bool
 
 func _ready() -> void:
@@ -74,6 +77,9 @@ func _input(event: InputEvent) -> void:
             transportation_mode.humanize()])
 
 func _held_movement(movement: Movement.MovementType) -> void:
+    if !allow_replays:
+        return
+
     if persist_repeat_moves:
         if !_repeat_movement.has(movement):
             _repeat_movement.append(movement)
@@ -84,7 +90,7 @@ func _clear_held_movement(movement: Movement.MovementType) -> void:
     _repeat_movement.erase(movement)
 
 func _process(_delta: float) -> void:
-    if is_moving():
+    if !allow_replays || is_moving():
         return
 
     var count: int = _repeat_movement.size()

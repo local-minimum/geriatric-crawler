@@ -1,0 +1,109 @@
+[gd_scene format=3 uid="uid://dx6ngxriyyq7l"]
+
+[node name="DebugSettingsUI" type="CanvasLayer"]
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 3
+anchor_left = 0.65
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="Control"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 0
+theme_override_constants/margin_top = 40
+theme_override_constants/margin_right = 40
+theme_override_constants/margin_bottom = 40
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Control/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="Movement Settings" type="VBoxContainer" parent="Control/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="Control/MarginContainer/VBoxContainer/Movement Settings"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "Movement"
+
+[node name="Buffer" type="CheckButton" parent="Control/MarginContainer/VBoxContainer/Movement Settings"]
+layout_mode = 2
+text = "Buffer"
+
+[node name="Hold Replays" type="CheckButton" parent="Control/MarginContainer/VBoxContainer/Movement Settings"]
+layout_mode = 2
+text = "Hold Replays"
+
+[node name="Tap Ends Replay" type="CheckButton" parent="Control/MarginContainer/VBoxContainer/Movement Settings"]
+layout_mode = 2
+text = "New Hold Replaces"
+
+[node name="Smooth Movement" type="CheckButton" parent="Control/MarginContainer/VBoxContainer/Movement Settings"]
+layout_mode = 2
+text = "Smooth Movement"
+
+[node name="Concurrent Turning" type="CheckButton" parent="Control/MarginContainer/VBoxContainer/Movement Settings"]
+layout_mode = 2
+text = "Concurrent Turns"
+
+[node name="Tank Animations" type="CheckButton" parent="Control/MarginContainer/VBoxContainer/Movement Settings"]
+layout_mode = 2
+text = "Tank Animaitions
+"
+
+[node name="Camera" type="VBoxContainer" parent="Control/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="Control/MarginContainer/VBoxContainer/Camera"]
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_font_sizes/font_size = 18
+text = "Camera"
+
+[node name="FOV" type="HBoxContainer" parent="Control/MarginContainer/VBoxContainer/Camera"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Label" type="Label" parent="Control/MarginContainer/VBoxContainer/Camera/FOV"]
+layout_mode = 2
+text = "FOV"
+
+[node name="Spacer" type="Control" parent="Control/MarginContainer/VBoxContainer/Camera/FOV"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="HSlider" type="HSlider" parent="Control/MarginContainer/VBoxContainer/Camera/FOV"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+
+[node name="Gameplay" type="VBoxContainer" parent="Control/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="Control/MarginContainer/VBoxContainer/Gameplay"]
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_font_sizes/font_size = 18
+text = "Gameplay"
+
+[node name="Wall Walking" type="CheckButton" parent="Control/MarginContainer/VBoxContainer/Gameplay"]
+layout_mode = 2
+text = "Wall Walking
+"
+
+[node name="Ceiling Walking" type="CheckButton" parent="Control/MarginContainer/VBoxContainer/Gameplay"]
+layout_mode = 2
+text = "Ceiling Walking"
+
+[node name="Jump Off Walls" type="CheckButton" parent="Control/MarginContainer/VBoxContainer/Gameplay"]
+layout_mode = 2
+text = "Jump Off Walls / Ceilings
+"
