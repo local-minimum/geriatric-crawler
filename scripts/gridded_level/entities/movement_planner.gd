@@ -16,6 +16,9 @@ var exotic_translation_time: float = 0.5
 @export
 var turn_time: float = 0.3
 
+@export
+var tank_movement: bool
+
 func move_entity(
     movement: Movement.MovementType,
     move_direction: CardinalDirections.CardinalDirection,
@@ -71,14 +74,17 @@ func rotate_entity(
         # entity.global_transform.basis.get_scale(),
         # final_rotation.basis.get_scale()])
 
-    @warning_ignore_start("return_value_discarded")
-    tween.tween_method(
+    var method_tweener: MethodTweener = tween.tween_method(
         func (value: Basis) -> void:
             entity.global_rotation = value.get_euler(),
         entity.global_basis,
         final_rotation.basis,
         turn_time
-    ).set_trans(Tween.TRANS_SINE)
+    )
+
+    @warning_ignore_start("return_value_discarded")
+    if !tank_movement:
+         method_tweener.set_trans(Tween.TRANS_SINE)
 
     tween.connect(
         "finished",
@@ -102,17 +108,21 @@ func _handle_landing(
         var land_anchor: GridAnchor = node.get_anchor(move_direction)
         if land_anchor != null && land_anchor.can_anchor(entity):
 
-            @warning_ignore_start("return_value_discarded")
-            tween.tween_property(
+            var prop_tweener: PropertyTweener = tween.tween_property(
                 entity,
                 "global_position",
                 land_anchor.global_position,
                 fall_time * 0.5)
 
+            entity.update_entity_anchorage(node, land_anchor)
+
+            @warning_ignore_start("return_value_discarded")
+            if !tank_movement:
+                prop_tweener.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+
             tween.connect(
                 "finished",
                 func () -> void:
-                    entity.update_entity_anchorage(node, land_anchor)
                     entity.sync_position()
                     entity.end_movement(movement))
             @warning_ignore_restore("return_value_discarded")
@@ -141,17 +151,21 @@ func _handle_node_transition(
                 return false
 
             if neighbour_anchor != null:
+                entity.update_entity_anchorage(neighbour, neighbour_anchor)
+
                 @warning_ignore_start("return_value_discarded")
-                tween.tween_property(
+                var prop_tweener: PropertyTweener = tween.tween_property(
                     entity,
                     "global_position",
                     neighbour_anchor.global_position,
-                    translation_time).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+                    translation_time)
+
+                if !tank_movement:
+                    prop_tweener.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 
                 tween.connect(
                     "finished",
                     func () -> void:
-                        entity.update_entity_anchorage(neighbour, neighbour_anchor)
                         entity.sync_position()
                         entity.end_movement(movement))
                 @warning_ignore_restore("return_value_discarded")
@@ -166,6 +180,8 @@ func _handle_node_transition(
                 "global_position",
                 neighbour.get_center_pos(),
                 translation_time)
+
+            entity.update_entity_anchorage(neighbour, null)
 
             if was_excotic_walk:
                 var end_look_direction: CardinalDirections.CardinalDirection = entity.look_direction
@@ -189,7 +205,6 @@ func _handle_node_transition(
                 tween.connect(
                     "finished",
                     func () -> void:
-                        entity.update_entity_anchorage(neighbour, neighbour_anchor)
                         entity.sync_position()
                         entity.look_direction = end_look_direction
                         entity.down = end_down
@@ -203,7 +218,6 @@ func _handle_node_transition(
             tween.connect(
                 "finished",
                 func () -> void:
-                    entity.update_entity_anchorage(neighbour, neighbour_anchor)
                     entity.sync_position()
                     entity.remove_concurrent_movement_block()
                     entity.end_movement(movement))
@@ -297,6 +311,8 @@ func _handle_corner(
 
     entity.block_concurrent_movement()
 
+    entity.update_entity_anchorage(node, target_anchor)
+
     @warning_ignore_start("return_value_discarded")
     tween.tween_property(
         entity,
@@ -304,12 +320,15 @@ func _handle_corner(
         intermediate,
         half_time)
 
-    tween.tween_method(
+    var meth_tweener: MethodTweener = tween.tween_method(
         func (value: Basis) -> void:
             entity.global_rotation = value.get_euler(),
         entity.global_basis,
         intermediate_rotation,
-        half_time).set_trans(Tween.TRANS_QUAD)
+        half_time)
+
+    if !tank_movement:
+        meth_tweener.set_trans(Tween.TRANS_QUAD)
 
     var second_tween: Tween = tween.chain()
     second_tween.tween_property(
@@ -318,19 +337,20 @@ func _handle_corner(
         target_anchor.global_position,
         half_time)
 
-    second_tween.tween_method(
+    var meth_tweener2: MethodTweener = second_tween.tween_method(
         func (value: Basis) -> void:
             entity.global_rotation = value.get_euler(),
         intermediate_rotation,
         final_rotation.basis,
-        half_time).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+        half_time)
+
+    if !tank_movement:
+        meth_tweener2.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 
     second_tween.connect(
         "finished",
         func () -> void:
-            entity.update_entity_anchorage(node, target_anchor)
             entity.sync_position()
-
             entity.look_direction = updated_directions[0]
             entity.down = updated_directions[1]
             entity.orient()
