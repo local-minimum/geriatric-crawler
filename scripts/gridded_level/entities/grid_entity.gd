@@ -25,6 +25,9 @@ var instant_step: bool
 @export
 var concurrent_turns: bool
 
+@export
+var queue_moves: bool = true
+
 var _active_movement: Movement.MovementType = Movement.MovementType.NONE
 var _concurrent_movement: Movement.MovementType = Movement.MovementType.NONE
 var _next_movement: Movement.MovementType = Movement.MovementType.NONE
@@ -87,6 +90,9 @@ func end_movement(movement: Movement.MovementType, start_next_from_queue: bool =
         _attempt_movement_from_queue()
 
 func _attempt_movement_from_queue() -> void:
+    if !queue_moves:
+        return
+
     if _next_movement != Movement.MovementType.NONE:
         if attempt_movement(_next_movement, false):
             _next_movement = _next_next_movement
@@ -116,7 +122,7 @@ func attempt_movement(
         return false
 
     if !_start_movement(movement, force):
-        if enqueue_if_occupied:
+        if enqueue_if_occupied && queue_moves:
             _enqeue_movement(movement)
         # print_debug("%s & %s are active" % [Movement.name(_active_movement), Movement.name(_concurrent_movement)])
         return false

@@ -1,8 +1,50 @@
-[gd_scene format=3 uid="uid://dx6ngxriyyq7l"]
+[gd_scene load_steps=3 format=3 uid="uid://dx6ngxriyyq7l"]
 
-[node name="DebugSettingsUI" type="CanvasLayer"]
+[ext_resource type="Script" uid="uid://bsps2ppohebhk" path="res://scripts/ui/ui_debug_settings.gd" id="1_16j0k"]
+[ext_resource type="Texture2D" uid="uid://426qf31enipp" path="res://icon.svg" id="1_japon"]
 
-[node name="Control" type="Control" parent="."]
+[node name="DebugSettingsUI" type="CanvasLayer" node_paths=PackedStringArray("menu_base", "menu_button", "queue_moves", "replays", "replays_replace", "smooth_movement", "concurrent_turns", "tank_movement", "speed", "fov", "wall_walking", "ceiling_walking", "jump_off")]
+script = ExtResource("1_16j0k")
+menu_base = NodePath("DebugMenu")
+menu_button = NodePath("OpenMenuButton")
+queue_moves = NodePath("DebugMenu/MarginContainer/VBoxContainer/Movement Settings/Buffer")
+replays = NodePath("DebugMenu/MarginContainer/VBoxContainer/Movement Settings/Hold Replays")
+replays_replace = NodePath("DebugMenu/MarginContainer/VBoxContainer/Movement Settings/New Hold Replaces")
+smooth_movement = NodePath("DebugMenu/MarginContainer/VBoxContainer/Movement Settings/Smooth Movement")
+concurrent_turns = NodePath("DebugMenu/MarginContainer/VBoxContainer/Movement Settings/Concurrent Turning")
+tank_movement = NodePath("DebugMenu/MarginContainer/VBoxContainer/Movement Settings/Tank Animations")
+speed = NodePath("DebugMenu/MarginContainer/VBoxContainer/Movement Settings/Speed/Speed Slider")
+fov = NodePath("DebugMenu/MarginContainer/VBoxContainer/Camera/FOV/FOV Slider")
+wall_walking = NodePath("DebugMenu/MarginContainer/VBoxContainer/Gameplay/Wall Walking")
+ceiling_walking = NodePath("DebugMenu/MarginContainer/VBoxContainer/Gameplay/Ceiling Walking")
+jump_off = NodePath("DebugMenu/MarginContainer/VBoxContainer/Gameplay/Jump Off Walls")
+
+[node name="OpenMenuButton" type="Control" parent="."]
+layout_mode = 3
+anchor_left = 0.95
+anchor_right = 1.0
+anchor_bottom = 0.1
+
+[node name="Margin" type="MarginContainer" parent="OpenMenuButton"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 4
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 4
+theme_override_constants/margin_bottom = 4
+
+[node name="OpenMenuButton" type="Button" parent="OpenMenuButton/Margin"]
+layout_mode = 2
+tooltip_text = "Opens debug settings menu"
+icon = ExtResource("1_japon")
+flat = true
+expand_icon = true
+
+[node name="DebugMenu" type="Control" parent="."]
 layout_mode = 3
 anchor_left = 0.65
 anchor_right = 1.0
@@ -10,100 +52,184 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="MarginContainer" type="MarginContainer" parent="Control"]
+[node name="MarginContainerBG" type="MarginContainer" parent="DebugMenu"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/margin_left = 0
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="ColorRect" type="ColorRect" parent="DebugMenu/MarginContainerBG"]
+layout_mode = 2
+color = Color(0.305882, 0, 0.305882, 0.956863)
+
+[node name="MarginContainer" type="MarginContainer" parent="DebugMenu/MarginContainerBG"]
+layout_mode = 2
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+
+[node name="Close Menu Button" type="Button" parent="DebugMenu/MarginContainerBG/MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 0
+tooltip_text = "Close settings"
+text = " X "
+
+[node name="MarginContainer" type="MarginContainer" parent="DebugMenu"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/margin_left = 40
 theme_override_constants/margin_top = 40
 theme_override_constants/margin_right = 40
 theme_override_constants/margin_bottom = 40
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Control/MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="DebugMenu/MarginContainer"]
 layout_mode = 2
+mouse_filter = 2
 theme_override_constants/separation = 16
 
-[node name="Movement Settings" type="VBoxContainer" parent="Control/MarginContainer/VBoxContainer"]
+[node name="Movement Settings" type="VBoxContainer" parent="DebugMenu/MarginContainer/VBoxContainer"]
 layout_mode = 2
+mouse_filter = 2
 
-[node name="Title" type="Label" parent="Control/MarginContainer/VBoxContainer/Movement Settings"]
+[node name="Title" type="Label" parent="DebugMenu/MarginContainer/VBoxContainer/Movement Settings"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 18
 text = "Movement"
 
-[node name="Buffer" type="CheckButton" parent="Control/MarginContainer/VBoxContainer/Movement Settings"]
+[node name="Buffer" type="CheckButton" parent="DebugMenu/MarginContainer/VBoxContainer/Movement Settings"]
 layout_mode = 2
+tooltip_text = "Pressing a second movement key while one is executing, queues it up"
 text = "Buffer"
 
-[node name="Hold Replays" type="CheckButton" parent="Control/MarginContainer/VBoxContainer/Movement Settings"]
+[node name="Hold Replays" type="CheckButton" parent="DebugMenu/MarginContainer/VBoxContainer/Movement Settings"]
 layout_mode = 2
+tooltip_text = "Holding down a key repeats that movement (does not include turning)"
 text = "Hold Replays"
 
-[node name="Tap Ends Replay" type="CheckButton" parent="Control/MarginContainer/VBoxContainer/Movement Settings"]
+[node name="New Hold Replaces" type="CheckButton" parent="DebugMenu/MarginContainer/VBoxContainer/Movement Settings"]
 layout_mode = 2
+tooltip_text = "If, when holding, forward you tap or hold down one of the other buttons such as strife left, this will end future forward movements even if the forward button is kept pressed"
 text = "New Hold Replaces"
 
-[node name="Smooth Movement" type="CheckButton" parent="Control/MarginContainer/VBoxContainer/Movement Settings"]
+[node name="Smooth Movement" type="CheckButton" parent="DebugMenu/MarginContainer/VBoxContainer/Movement Settings"]
 layout_mode = 2
+tooltip_text = "Movement is animated (as opposed to being instant)"
 text = "Smooth Movement"
 
-[node name="Concurrent Turning" type="CheckButton" parent="Control/MarginContainer/VBoxContainer/Movement Settings"]
+[node name="Concurrent Turning" type="CheckButton" parent="DebugMenu/MarginContainer/VBoxContainer/Movement Settings"]
 layout_mode = 2
+tooltip_text = "Turns can be executed at the same time as movements. 
+But not when the movement itself includes turning (such as starting to walk up on a wall)"
 text = "Concurrent Turns"
 
-[node name="Tank Animations" type="CheckButton" parent="Control/MarginContainer/VBoxContainer/Movement Settings"]
+[node name="Tank Animations" type="CheckButton" parent="DebugMenu/MarginContainer/VBoxContainer/Movement Settings"]
 layout_mode = 2
+tooltip_text = "Only applies to smooth animations, if enabled the movement speed is constant during the animation"
 text = "Tank Animaitions
 "
 
-[node name="Camera" type="VBoxContainer" parent="Control/MarginContainer/VBoxContainer"]
+[node name="Speed" type="HBoxContainer" parent="DebugMenu/MarginContainer/VBoxContainer/Movement Settings"]
 layout_mode = 2
+theme_override_constants/separation = 8
 
-[node name="Title" type="Label" parent="Control/MarginContainer/VBoxContainer/Camera"]
+[node name="Label" type="Label" parent="DebugMenu/MarginContainer/VBoxContainer/Movement Settings/Speed"]
+layout_mode = 2
+text = "Speed"
+
+[node name="Spacer" type="Control" parent="DebugMenu/MarginContainer/VBoxContainer/Movement Settings/Speed"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Speed Slider" type="HSlider" parent="DebugMenu/MarginContainer/VBoxContainer/Movement Settings/Speed"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+tooltip_text = "How fast do we move"
+min_value = 0.2
+max_value = 3.0
+step = 0.1
+value = 1.0
+
+[node name="Camera" type="VBoxContainer" parent="DebugMenu/MarginContainer/VBoxContainer"]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="Title" type="Label" parent="DebugMenu/MarginContainer/VBoxContainer/Camera"]
 layout_mode = 2
 size_flags_horizontal = 0
 theme_override_font_sizes/font_size = 18
 text = "Camera"
 
-[node name="FOV" type="HBoxContainer" parent="Control/MarginContainer/VBoxContainer/Camera"]
+[node name="FOV" type="HBoxContainer" parent="DebugMenu/MarginContainer/VBoxContainer/Camera"]
 layout_mode = 2
 theme_override_constants/separation = 8
 
-[node name="Label" type="Label" parent="Control/MarginContainer/VBoxContainer/Camera/FOV"]
+[node name="Label" type="Label" parent="DebugMenu/MarginContainer/VBoxContainer/Camera/FOV"]
 layout_mode = 2
 text = "FOV"
 
-[node name="Spacer" type="Control" parent="Control/MarginContainer/VBoxContainer/Camera/FOV"]
+[node name="Spacer" type="Control" parent="DebugMenu/MarginContainer/VBoxContainer/Camera/FOV"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="HSlider" type="HSlider" parent="Control/MarginContainer/VBoxContainer/Camera/FOV"]
+[node name="FOV Slider" type="HSlider" parent="DebugMenu/MarginContainer/VBoxContainer/Camera/FOV"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 4
+tooltip_text = "How much do we see"
+min_value = 45.0
+max_value = 120.0
+step = 5.0
+value = 80.0
 
-[node name="Gameplay" type="VBoxContainer" parent="Control/MarginContainer/VBoxContainer"]
+[node name="Gameplay" type="VBoxContainer" parent="DebugMenu/MarginContainer/VBoxContainer"]
 layout_mode = 2
+mouse_filter = 2
 
-[node name="Title" type="Label" parent="Control/MarginContainer/VBoxContainer/Gameplay"]
+[node name="Title" type="Label" parent="DebugMenu/MarginContainer/VBoxContainer/Gameplay"]
 layout_mode = 2
 size_flags_horizontal = 0
 theme_override_font_sizes/font_size = 18
 text = "Gameplay"
 
-[node name="Wall Walking" type="CheckButton" parent="Control/MarginContainer/VBoxContainer/Gameplay"]
+[node name="Wall Walking" type="CheckButton" parent="DebugMenu/MarginContainer/VBoxContainer/Gameplay"]
 layout_mode = 2
+tooltip_text = "Can the character walk on walls"
 text = "Wall Walking
 "
 
-[node name="Ceiling Walking" type="CheckButton" parent="Control/MarginContainer/VBoxContainer/Gameplay"]
+[node name="Ceiling Walking" type="CheckButton" parent="DebugMenu/MarginContainer/VBoxContainer/Gameplay"]
 layout_mode = 2
+tooltip_text = "Can the character walk upside down in ceilings"
 text = "Ceiling Walking"
 
-[node name="Jump Off Walls" type="CheckButton" parent="Control/MarginContainer/VBoxContainer/Gameplay"]
+[node name="Jump Off Walls" type="CheckButton" parent="DebugMenu/MarginContainer/VBoxContainer/Gameplay"]
 layout_mode = 2
+tooltip_text = "If there's a void in the movement direction while wall walking, will the character perform a jump off from the wall"
 text = "Jump Off Walls / Ceilings
 "
+
+[connection signal="pressed" from="OpenMenuButton/Margin/OpenMenuButton" to="." method="_on_show_setting_menu"]
+[connection signal="pressed" from="DebugMenu/MarginContainerBG/MarginContainer/Close Menu Button" to="." method="_on_hide_setting_menu"]
+[connection signal="toggled" from="DebugMenu/MarginContainer/VBoxContainer/Movement Settings/Buffer" to="." method="_on_buffer_toggled"]
+[connection signal="toggled" from="DebugMenu/MarginContainer/VBoxContainer/Movement Settings/Hold Replays" to="." method="_on_hold_replays_toggled"]
+[connection signal="toggled" from="DebugMenu/MarginContainer/VBoxContainer/Movement Settings/New Hold Replaces" to="." method="_on_new_hold_replaces_toggled"]
+[connection signal="toggled" from="DebugMenu/MarginContainer/VBoxContainer/Movement Settings/Smooth Movement" to="." method="_on_smooth_movement_toggled"]
+[connection signal="toggled" from="DebugMenu/MarginContainer/VBoxContainer/Movement Settings/Concurrent Turning" to="." method="_on_concurrent_turning_toggled"]
+[connection signal="toggled" from="DebugMenu/MarginContainer/VBoxContainer/Movement Settings/Tank Animations" to="." method="_on_tank_animations_toggled"]
+[connection signal="value_changed" from="DebugMenu/MarginContainer/VBoxContainer/Movement Settings/Speed/Speed Slider" to="." method="_on_speed_slider_value_changed"]
+[connection signal="value_changed" from="DebugMenu/MarginContainer/VBoxContainer/Camera/FOV/FOV Slider" to="." method="_on_fov_slider_value_changed"]
+[connection signal="toggled" from="DebugMenu/MarginContainer/VBoxContainer/Gameplay/Wall Walking" to="." method="_on_wall_walking_toggled"]
+[connection signal="toggled" from="DebugMenu/MarginContainer/VBoxContainer/Gameplay/Ceiling Walking" to="." method="_on_ceiling_walking_toggled"]
+[connection signal="toggled" from="DebugMenu/MarginContainer/VBoxContainer/Gameplay/Jump Off Walls" to="." method="_on_jump_off_walls_toggled"]

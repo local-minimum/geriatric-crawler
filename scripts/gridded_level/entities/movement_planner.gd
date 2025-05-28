@@ -17,6 +17,9 @@ var exotic_translation_time: float = 0.5
 var turn_time: float = 0.3
 
 @export
+var animation_speed: float = 1.0
+
+@export
 var tank_movement: bool
 
 func move_entity(
@@ -79,7 +82,7 @@ func rotate_entity(
             entity.global_rotation = value.get_euler(),
         entity.global_basis,
         final_rotation.basis,
-        turn_time
+        turn_time / animation_speed
     )
 
     @warning_ignore_start("return_value_discarded")
@@ -112,7 +115,7 @@ func _handle_landing(
                 entity,
                 "global_position",
                 land_anchor.global_position,
-                fall_time * 0.5)
+                fall_time * 0.5 / animation_speed)
 
             entity.update_entity_anchorage(node, land_anchor)
 
@@ -158,7 +161,7 @@ func _handle_node_transition(
                     entity,
                     "global_position",
                     neighbour_anchor.global_position,
-                    translation_time)
+                    translation_time / animation_speed)
 
                 if !tank_movement:
                     prop_tweener.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
@@ -179,7 +182,7 @@ func _handle_node_transition(
                 entity,
                 "global_position",
                 neighbour.get_center_pos(),
-                translation_time)
+                translation_time / animation_speed)
 
             entity.update_entity_anchorage(neighbour, null)
 
@@ -200,7 +203,7 @@ func _handle_node_transition(
                         entity.global_rotation = value.get_euler(),
                     entity.global_basis,
                     final_rotation.basis,
-                    translation_time)
+                    translation_time / animation_speed)
 
                 tween.connect(
                     "finished",
@@ -307,7 +310,7 @@ func _handle_corner(
         Vector3(CardinalDirections.direction_to_vector(CardinalDirections.invert(updated_directions[1]))),
         )
     var intermediate_rotation: Basis = lerp(entity.global_transform.basis, final_rotation.basis, 0.5)
-    var half_time: float = translation_time * 0.5
+    var half_time: float = exotic_translation_time * 0.5 / animation_speed
 
     entity.block_concurrent_movement()
 

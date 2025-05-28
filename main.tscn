@@ -1,6 +1,7 @@
-[gd_scene load_steps=4 format=3 uid="uid://5mvkmlsl4h3x"]
+[gd_scene load_steps=5 format=3 uid="uid://5mvkmlsl4h3x"]
 
 [ext_resource type="PackedScene" uid="uid://dwqcwbgj8p6q0" path="res://scenes/dungeon/test_level.tscn" id="1_ig7tw"]
+[ext_resource type="PackedScene" uid="uid://dx6ngxriyyq7l" path="res://scenes/ui/ui_debug_settings.tscn" id="2_0xm2m"]
 
 [sub_resource type="Environment" id="Environment_ig7tw"]
 
@@ -27,3 +28,6 @@ light_energy = 0.257
 
 [node name="DebugCam" type="Camera3D" parent="."]
 transform = Transform3D(0.707107, 0, -0.707107, 0, 1, 0, 0.707107, 0, 0.707107, -1, 2, -3)
+
+[node name="DebugSettingsUI" parent="." node_paths=PackedStringArray("level") instance=ExtResource("2_0xm2m")]
+level = NodePath("../TestLevel")

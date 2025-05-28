@@ -19,9 +19,10 @@ script = ExtResource("4_840jk")
 mode = 0
 metadata/_custom_type_script = "uid://b8a6yvndcxtpa"
 
-[node name="TestLevel" type="Node3D"]
+[node name="TestLevel" type="Node3D" node_paths=PackedStringArray("player")]
 script = ExtResource("1_dd1ob")
 node_size = Vector3(1.5, 2.6, 1.5)
+player = NodePath("Player")
 
 [node name="Player" parent="." node_paths=PackedStringArray("spawn_node") instance=ExtResource("3_m6mav")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0145968, -0.00857759, 0.00070858)

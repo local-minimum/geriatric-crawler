@@ -2,6 +2,9 @@ extends GridEntity
 class_name GridPlayer
 
 @export
+var camera: Camera3D
+
+@export
 var spawn_node: GridNode
 
 @export
