@@ -16,7 +16,10 @@ var exotic_translation_time: float = 0.5
 @export
 var turn_time: float = 0.3
 
-func move_entity(move_direction: CardinalDirections.CardinalDirection) -> Tween:
+func move_entity(
+    movement: Movement.MovementType,
+    move_direction: CardinalDirections.CardinalDirection,
+) -> Tween:
     var node: GridNode = entity.get_grid_node()
     if node == null:
         push_error("Player %s not inside dungeon")
@@ -28,18 +31,21 @@ func move_entity(move_direction: CardinalDirections.CardinalDirection) -> Tween:
     var was_excotic_walk: bool = entity.transportation_mode.has_any(TransportationMode.EXOTIC_WALKS)
 
     # We're in the air but moving onto an anchor of the current node
-    if _handle_landing(tween, node, anchor, move_direction):
+    if _handle_landing(movement, tween, node, anchor, move_direction):
         return tween
 
-    if _handle_node_transition(tween, node, anchor, move_direction, was_excotic_walk):
+    if _handle_node_transition(movement, tween, node, anchor, move_direction, was_excotic_walk):
         return tween
 
-    if !_handle_node_inner_corner_transition(tween, node, anchor, move_direction):
+    if !_handle_node_inner_corner_transition(movement, tween, node, anchor, move_direction):
         tween.kill()
         return null
     return tween
 
-func rotate_entity(clockwise: bool) -> Tween:
+func rotate_entity(
+    movement: Movement.MovementType,
+    clockwise: bool,
+) -> Tween:
     var node: GridNode = entity.get_grid_node()
     if node == null:
         push_error("Player %s not inside dungeon")
@@ -72,20 +78,21 @@ func rotate_entity(clockwise: bool) -> Tween:
         entity.global_basis,
         final_rotation.basis,
         turn_time
-    )
+    ).set_trans(Tween.TRANS_SINE)
 
     tween.connect(
         "finished",
         func () -> void:
             entity.look_direction = target_look_direction
             entity.orient()
-            entity.set_is_moving(false))
+            entity.end_movement(movement))
     @warning_ignore_restore("return_value_discarded")
 
     return tween
 
 
 func _handle_landing(
+    movement: Movement.MovementType,
     tween: Tween,
     node: GridNode,
     anchor: GridAnchor,
@@ -107,13 +114,14 @@ func _handle_landing(
                 func () -> void:
                     entity.update_entity_anchorage(node, land_anchor)
                     entity.sync_position()
-                    entity.set_is_moving(false))
+                    entity.end_movement(movement))
             @warning_ignore_restore("return_value_discarded")
 
             return true
     return false
 
 func _handle_node_transition(
+    movement: Movement.MovementType,
     tween: Tween,
     node: GridNode,
     anchor: GridAnchor,
@@ -126,7 +134,7 @@ func _handle_node_transition(
 
             var neighbour_anchor: GridAnchor = neighbour.get_anchor(entity.down)
 
-            if neighbour_anchor == null && _handle_outer_corner_transition(tween, anchor, move_direction, neighbour):
+            if neighbour_anchor == null && _handle_outer_corner_transition(movement, tween, anchor, move_direction, neighbour):
                 return true
 
             if was_excotic_walk && !entity.can_jump_off_walls && neighbour_anchor == null:
@@ -138,18 +146,19 @@ func _handle_node_transition(
                     entity,
                     "global_position",
                     neighbour_anchor.global_position,
-                    translation_time)
+                    translation_time).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 
                 tween.connect(
                     "finished",
                     func () -> void:
                         entity.update_entity_anchorage(neighbour, neighbour_anchor)
                         entity.sync_position()
-                        entity.set_is_moving(false))
+                        entity.end_movement(movement))
                 @warning_ignore_restore("return_value_discarded")
 
                 return true
 
+            entity.block_concurrent_movement()
 
             @warning_ignore_start("return_value_discarded")
             tween.tween_property(
@@ -158,7 +167,7 @@ func _handle_node_transition(
                 neighbour.get_center_pos(),
                 translation_time)
 
-            if was_excotic_walk && neighbour_anchor == null:
+            if was_excotic_walk:
                 var end_look_direction: CardinalDirections.CardinalDirection = entity.look_direction
                 if entity.look_direction == CardinalDirections.CardinalDirection.DOWN:
                     end_look_direction = CardinalDirections.pitch_up(entity.look_direction, entity.down)[0]
@@ -185,7 +194,8 @@ func _handle_node_transition(
                         entity.look_direction = end_look_direction
                         entity.down = end_down
                         entity.orient()
-                        entity.set_is_moving(false))
+                        entity.remove_concurrent_movement_block()
+                        entity.end_movement(movement))
 
                 return true
 
@@ -195,7 +205,8 @@ func _handle_node_transition(
                 func () -> void:
                     entity.update_entity_anchorage(neighbour, neighbour_anchor)
                     entity.sync_position()
-                    entity.set_is_moving(false))
+                    entity.remove_concurrent_movement_block()
+                    entity.end_movement(movement))
 
             @warning_ignore_restore("return_value_discarded")
 
@@ -203,6 +214,7 @@ func _handle_node_transition(
     return false
 
 func _handle_outer_corner_transition(
+    movement: Movement.MovementType,
     tween: Tween,
     anchor: GridAnchor,
     move_direction: CardinalDirections.CardinalDirection,
@@ -224,6 +236,7 @@ func _handle_outer_corner_transition(
         return false
 
     _handle_corner(
+        movement,
         tween,
         entity.get_grid_node(),
         anchor,
@@ -235,6 +248,7 @@ func _handle_outer_corner_transition(
 
 
 func _handle_node_inner_corner_transition(
+    movement: Movement.MovementType,
     tween: Tween,
     node: GridNode,
     anchor: GridAnchor,
@@ -250,6 +264,7 @@ func _handle_node_inner_corner_transition(
         move_direction, entity.look_direction, entity.down)
 
     _handle_corner(
+        movement,
         tween,
         node,
         anchor,
@@ -261,6 +276,7 @@ func _handle_node_inner_corner_transition(
     return true
 
 func _handle_corner(
+    movement: Movement.MovementType,
     tween: Tween,
     node: GridNode,
     anchor: GridAnchor,
@@ -278,6 +294,8 @@ func _handle_corner(
         )
     var intermediate_rotation: Basis = lerp(entity.global_transform.basis, final_rotation.basis, 0.5)
     var half_time: float = translation_time * 0.5
+
+    entity.block_concurrent_movement()
 
     @warning_ignore_start("return_value_discarded")
     tween.tween_property(
@@ -316,6 +334,7 @@ func _handle_corner(
             entity.look_direction = updated_directions[0]
             entity.down = updated_directions[1]
             entity.orient()
-            entity.set_is_moving(false))
+            entity.remove_concurrent_movement_block()
+            entity.end_movement(movement))
 
     @warning_ignore_restore("return_value_discarded")

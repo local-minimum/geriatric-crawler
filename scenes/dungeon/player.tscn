@@ -28,6 +28,7 @@ transportation_abilities = SubResource("Resource_2f68n")
 transportation_mode = SubResource("Resource_nvxe3")
 can_jump_off_walls = true
 planner = NodePath("MovementPlanner")
+concurrent_turns = true
 
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0.5)
