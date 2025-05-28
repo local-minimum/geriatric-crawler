@@ -24,6 +24,7 @@ size = Vector3(0.3, 0.2, 0.2)
 
 [node name="Player" type="Node3D" node_paths=PackedStringArray("planner")]
 script = ExtResource("1_edujd")
+persist_repeat_moves = true
 transportation_abilities = SubResource("Resource_2f68n")
 transportation_mode = SubResource("Resource_nvxe3")
 can_jump_off_walls = true
