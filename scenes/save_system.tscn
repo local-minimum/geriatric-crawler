@@ -1,0 +1,12 @@
+[gd_scene load_steps=3 format=3 uid="uid://xqedv5aeal6n"]
+
+[ext_resource type="Script" uid="uid://bkjlt23hansuv" path="res://scripts/savesystem/save_system.gd" id="1_iwv0b"]
+[ext_resource type="Script" uid="uid://bemcpr6cqtnb3" path="res://scripts/savesystem/disk_json_storage_provider.gd" id="2_7c2yx"]
+
+[node name="SaveSystem" type="Node" node_paths=PackedStringArray("storage_provider")]
+script = ExtResource("1_iwv0b")
+storage_provider = NodePath("StorageProvider")
+metadata/_custom_type_script = "uid://bkjlt23hansuv"
+
+[node name="StorageProvider" type="Node" parent="."]
+script = ExtResource("2_7c2yx")

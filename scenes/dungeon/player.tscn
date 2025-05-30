@@ -22,7 +22,7 @@ height = 1.0
 [sub_resource type="BoxMesh" id="BoxMesh_vsvsq"]
 size = Vector3(0.3, 0.2, 0.2)
 
-[node name="Player" type="Node3D" node_paths=PackedStringArray("camera", "planner")]
+[node name="Player" type="Node3D" node_paths=PackedStringArray("camera", "planner") groups=["Persistant"]]
 script = ExtResource("1_edujd")
 camera = NodePath("Camera3D")
 persist_repeat_moves = true
