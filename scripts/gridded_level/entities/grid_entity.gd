@@ -1,6 +1,11 @@
 extends GridNodeFeature
 class_name GridEntity
 
+const _LOOK_DIRECTION_KEY: String = "look_direction"
+const _DOWN_KEY: String = "down"
+const _ANCHOR_KEY: String = "anchor"
+const _COORDINATES_KEY: String = "coordinates"
+
 @export
 var look_direction: CardinalDirections.CardinalDirection
 
@@ -210,15 +215,22 @@ func sync_position() -> void:
     var node: GridNode = get_grid_node()
     if node != null:
         global_position = node.get_center_pos()
+        return
+
+    push_error("%s doesn't have either a node or anchor set" % name)
+    print_stack()
+
 
 func orient() -> void:
+    if look_direction == CardinalDirections.CardinalDirection.NONE || down == CardinalDirections.CardinalDirection.NONE:
+        push_warning("Cannot orient looking %s and down %s" % [
+            CardinalDirections.name(look_direction),
+            CardinalDirections.name(down)
+        ])
+        print_stack()
+        return
+
     look_at(
         global_position + Vector3(CardinalDirections.direction_to_vector(look_direction)),
         CardinalDirections.direction_to_vector(CardinalDirections.invert(down)),
     )
-
-# func _process(_delta: float) -> void:
-    # if is_moving():
-        # return
-#
-    # _attempt_movement_from_queue()

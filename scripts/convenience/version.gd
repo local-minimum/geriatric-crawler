@@ -7,9 +7,6 @@ var _version: String
 var _version_tuple: Array[int]
 var _tuple_trail: String
 
-func _init() -> void:
-    _parse()
-
 func _parse() -> void:
     var r: RegEx = RegEx.new()
     if r.compile("(\\d+)\\.(\\d+).(\\d+)(.*)") != OK:

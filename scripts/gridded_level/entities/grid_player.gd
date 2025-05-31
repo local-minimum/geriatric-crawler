@@ -100,3 +100,58 @@ func _process(_delta: float) -> void:
     if count > 0:
         if !attempt_movement(_repeat_movement[count - 1], false):
             _clear_held_movement(_repeat_movement[count - 1])
+
+
+func save() -> Dictionary:
+    var anchor: GridAnchor = get_grid_anchor()
+    var anchor_direction: CardinalDirections.CardinalDirection = CardinalDirections.CardinalDirection.NONE
+    if anchor != null:
+        anchor_direction = anchor.direction
+
+
+    return {
+        _LOOK_DIRECTION_KEY: look_direction,
+        _ANCHOR_KEY: anchor_direction,
+        _COORDINATES_KEY: coordnates(),
+        _DOWN_KEY: down
+    }
+
+func initial_state() -> Dictionary:
+    # TODO: Note safely used on player that has moved
+    return {
+        _LOOK_DIRECTION_KEY: look_direction,
+        _DOWN_KEY: down,
+        _ANCHOR_KEY: down,
+        _COORDINATES_KEY: spawn_node.coordinates
+    }
+
+func load_from_save(level: GridLevel, save_data: Dictionary) -> void:
+    if save_data.has(_LOOK_DIRECTION_KEY) && save_data.has(_ANCHOR_KEY) && save_data.has(_COORDINATES_KEY):
+        var coords: Vector3i = save_data[_COORDINATES_KEY]
+        var node: GridNode = level.get_grid_node(coords)
+
+        if node == null:
+            push_error("Trying to load player onto coordinates %s but there's no node there. Returning to spawn" % coords)
+            node = level.player.spawn_node
+
+        var look: CardinalDirections.CardinalDirection = save_data[_LOOK_DIRECTION_KEY]
+        var down_direction: CardinalDirections.CardinalDirection = save_data[_DOWN_KEY]
+        var anchor_direction: CardinalDirections.CardinalDirection = save_data[_ANCHOR_KEY]
+
+        look_direction = look
+        down = down_direction
+
+        if anchor_direction == CardinalDirections.CardinalDirection.NONE:
+            set_grid_node(node)
+        else:
+            var anchor: GridAnchor = node.get_anchor(anchor_direction)
+            if anchor == null:
+                push_error("Trying to load player onto coordinates %s and anchor %s but node lacks anchor in that direction" % [coords, anchor_direction])
+                set_grid_node(node)
+            else:
+                set_grid_anchor(anchor)
+
+        sync_position()
+        orient()
+
+        camera.make_current()

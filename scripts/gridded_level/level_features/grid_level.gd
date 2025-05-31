@@ -1,6 +1,8 @@
 extends Node3D
 class_name GridLevel
 
+const LEVEL_GROUP: String = "grid-level"
+
 @export
 var node_size: Vector3 = Vector3(3, 3, 3)
 
@@ -11,6 +13,9 @@ var node_spacing: Vector3 = Vector3.ZERO
 var player: GridPlayer
 
 var _nodes: Dictionary[Vector3i, GridNode] = {}
+
+func _init() -> void:
+    add_to_group(LEVEL_GROUP)
 
 func _ready() -> void:
     _sync_nodes()

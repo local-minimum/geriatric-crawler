@@ -45,6 +45,9 @@ var jump_off: CheckButton
 @export
 var level: GridLevel
 
+@export
+var save_system: SaveSystem
+
 var inited: bool
 
 func _on_show_setting_menu() -> void:
@@ -128,3 +131,11 @@ func _on_fov_slider_value_changed(value: float) -> void:
         return
 
     level.player.camera.fov = value
+
+func _on_save_button_pressed() -> void:
+    save_system.save_last_slot()
+
+
+func _on_load_button_pressed() -> void:
+    if !save_system.load_last_save():
+        pass

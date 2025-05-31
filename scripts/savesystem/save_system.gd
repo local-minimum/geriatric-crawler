@@ -46,8 +46,9 @@ func _init() -> void:
         _session_start = Time.get_ticks_msec()
 
 func save_slot(slot: int) -> void:
-    if _current_save == null:
+    if _current_save == null || _current_save.is_empty():
         _current_save = _load_save_data_or_default_initial_data(slot)
+
     var data: Dictionary = _collect_save_data(_current_save)
 
     if !storage_provider.store_data(slot, data):
@@ -55,7 +56,9 @@ func save_slot(slot: int) -> void:
         save_fail.emit(slot)
         return
 
+    _current_save = data
     _current_save_slot = slot
+    print_debug("Saved %s to slot %s" % [_current_save, _current_save_slot])
 
 func save_last_slot() -> void:
     save_slot(_current_save_slot)
@@ -64,8 +67,10 @@ func _collect_save_data(save_data: Dictionary) -> Dictionary:
 
     var current_level: String = level_saver.get_level_name()
 
-    var levels: Dictionary = save_data[_LEVEL_SAVE_KEY]
-    var updated_levels: Dictionary = levels.duplicate()
+    var updated_levels: Dictionary = {}
+    if save_data.has(_LEVEL_SAVE_KEY):
+        var levels: Dictionary = save_data[_LEVEL_SAVE_KEY]
+        updated_levels = levels.duplicate()
 
     @warning_ignore_start("return_value_discarded")
     updated_levels.erase(current_level)
@@ -112,7 +117,7 @@ func _collect_global_game_save_data(save_data: Dictionary, current_level: String
 
     var level_history: Array[String] = save_data[_GLOBAL_GAME_STATE_KEY][_LEVEL_HISTORY_KEY]
     if level_history.size() == 0 || level_history[level_history.size() - 1] != current_level:
-        level_history = level_history + [current_level]
+        level_history = level_history + ([current_level] as Array[String])
 
     return {
         _LEVEL_HISTORY_KEY: level_history,
@@ -127,7 +132,7 @@ func _collect_inital_global_game_save_data() -> Dictionary:
     _session_start = Time.get_ticks_msec()
 
     return {
-        _LEVEL_HISTORY_KEY: [],
+        _LEVEL_HISTORY_KEY: [] as Array[String],
         _LEVEL_TO_LOAD_KEY: level_saver.get_level_to_load(),
         _TOTAL_PLAYTIME_KEY: 0,
         _SESSION_PLAYTIME_KEY: 0,
@@ -136,7 +141,7 @@ func _collect_inital_global_game_save_data() -> Dictionary:
 
 func _load_save_data_or_default_initial_data(slot: int) -> Dictionary:
     var data: Dictionary = storage_provider.retrieve_data(slot)
-    if data.size != 0:
+    if !data.is_empty():
         return data
 
     print_debug("This is an entirely new save slot")
@@ -164,7 +169,7 @@ func _load_save_data_or_default_initial_data(slot: int) -> Dictionary:
 
 func load_slot(slot: int) -> bool:
     var data: Dictionary = storage_provider.retrieve_data(slot)
-    if data.size() == 0:
+    if data.is_empty() || data == null:
         push_error("Failed to load from slot %s using %s" % [slot, storage_provider])
         load_fail.emit(slot)
         return false
@@ -200,9 +205,19 @@ func load_slot(slot: int) -> bool:
             push_warning("Save extension '%s' doesn't have any data in save" % key)
 
     # Load save for current level
-    var level_data: Dictionary = data[_LEVEL_SAVE_KEY][wanted_level]
-    level_saver.load_from_save(level_data)
+    if data.has(_LEVEL_SAVE_KEY):
+        var levels_data: Dictionary = data[_LEVEL_SAVE_KEY]
+        if levels_data.has(wanted_level):
+            var level_data: Dictionary = levels_data[wanted_level]
+            level_saver.load_from_save(level_data)
+        else:
+            push_warning("Level %s not in %s" % [wanted_level, levels_data])
+            level_saver.load_from_save(level_saver.get_initial_save_state())
+    else:
+        push_warning("No levels info in save %s" % data)
+        level_saver.load_from_save(level_saver.get_initial_save_state())
 
+    print_debug("Loaded save slot %s" % slot)
     return true
 
 func load_new_root_scene_by_level_name(wanted_level: String) -> bool:

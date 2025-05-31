@@ -9,7 +9,8 @@ var _inited: bool
 func _ready() -> void:
     if _node == null:
         _node = _find_node_parent(self)
-        _inited = true
+        if _node != null:
+            _inited = true
 
 
 func get_grid_node() -> GridNode:
@@ -26,6 +27,8 @@ func set_grid_node(node: GridNode, _deferred: bool = false) -> void:
     if _anchor != null:
         _anchor = null
     _node = node
+    if !_inited:
+        _inited = true
     # _parent_to_node(deferred)
 
 func get_grid_anchor() -> GridAnchor:
@@ -34,6 +37,8 @@ func get_grid_anchor() -> GridAnchor:
 func set_grid_anchor(anchor: GridAnchor, _deferred: bool = false) -> void:
     _anchor = anchor
     _node = _anchor.get_grid_node()
+    if !_inited:
+        _inited = true
     # _parent_to_anchor(deferred)
 
 func _parent_to_node(deferred: bool = false) -> void:

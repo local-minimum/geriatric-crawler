@@ -1,19 +1,22 @@
 extends SaveStorageProvider
 
 @export
-var save_file_pattern: String = "user://savegame%s.save"
+var save_file_pattern: String = "user://save_game_%s.json"
 
 func store_data(slot: int, save_data: Dictionary) -> bool:
     var save_file: FileAccess = FileAccess.open(save_file_pattern % slot, FileAccess.WRITE)
     if save_file != null:
-        return save_file.store_line(JSON.stringify(save_data))
+        var success: bool = save_file.store_line(JSON.stringify(JSON.from_native(save_data)))
+        if success:
+            print_debug("Saved to %s" % save_file.get_path_absolute())
+        return success
 
     push_error("Could not create file access '%s' with write permissions" % (save_file_pattern % slot))
     return false
 
 func retrieve_data(slot: int) -> Dictionary:
     if !FileAccess.file_exists(save_file_pattern % slot):
-        push_error("There is no file at '%s'" % (save_file_pattern % slot))
+        push_warning("There is no file at '%s'" % (save_file_pattern % slot))
         return {}
 
     var save_file: FileAccess = FileAccess.open(save_file_pattern % slot, FileAccess.READ)
@@ -24,7 +27,7 @@ func retrieve_data(slot: int) -> Dictionary:
 
     var json: JSON = JSON.new()
     if json.parse(save_file.get_line()) == OK:
-        return json.data
+        return JSON.to_native(json.data)
 
     push_error("JSON corrupted in '%s'" % (save_file_pattern % slot))
     return {}
