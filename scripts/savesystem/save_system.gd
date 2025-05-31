@@ -124,7 +124,7 @@ func _collect_global_game_save_data(save_data: Dictionary, current_level: String
         _LEVEL_TO_LOAD_KEY: level_saver.get_level_to_load(),
         _TOTAL_PLAYTIME_KEY: total_playtime,
         _SESSION_PLAYTIME_KEY: session_playtime,
-        _SAVE_TIME_KEY: Time.get_date_string_from_system(true),
+        _SAVE_TIME_KEY: Time.get_datetime_string_from_system(true),
     }
 
 func _collect_inital_global_game_save_data() -> Dictionary:
