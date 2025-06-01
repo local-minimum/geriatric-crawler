@@ -1,0 +1,96 @@
+[gd_scene load_steps=3 format=3 uid="uid://w1rjgsij34eh"]
+
+[ext_resource type="Script" uid="uid://hktghyj0gdcj" path="res://addons/grid_level_digger/grid_level_digger_panel.gd" id="1_fy27w"]
+[ext_resource type="Script" uid="uid://dq6vmugrwwqs6" path="res://addons/grid_level_digger/grid_node_digger.gd" id="2_6po18"]
+
+[node name="GridLevelDiggerPanel" type="Panel" node_paths=PackedStringArray("node_digger", "single_select_group", "info_label")]
+custom_minimum_size = Vector2(400, 400)
+anchors_preset = 9
+anchor_bottom = 1.0
+grow_vertical = 2
+size_flags_horizontal = 3
+script = ExtResource("1_fy27w")
+node_digger = NodePath("VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Node Group")
+single_select_group = NodePath("VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container")
+info_label = NodePath("VBoxContainer/MarginContainer/VBoxContainer/Info Container")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Section Head" type="ColorRect" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 36)
+layout_mode = 2
+color = Color(0.25098, 0.266667, 0.298039, 1)
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/Section Head"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_bottom = 4
+
+[node name="Label" type="Label" parent="VBoxContainer/Section Head/MarginContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 26
+text = "Gridded Level Digger"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 4
+theme_override_constants/margin_right = 4
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/MarginContainer"]
+layout_mode = 2
+
+[node name="Single Selection Container" type="VBoxContainer" parent="VBoxContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="Node Group" type="VBoxContainer" parent="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container" node_paths=PackedStringArray("panel", "coordinates_label", "sync_position_btn")]
+layout_mode = 2
+script = ExtResource("2_6po18")
+panel = NodePath("../../../../..")
+coordinates_label = NodePath("Node/Coordinates")
+sync_position_btn = NodePath("Node/Sync Position")
+
+[node name="Node" type="HBoxContainer" parent="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Node Group"]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Node Group/Node"]
+layout_mode = 2
+text = "Node"
+
+[node name="Coordinates" type="Label" parent="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Node Group/Node"]
+layout_mode = 2
+text = "(0, 0, 0)"
+
+[node name="Spacer" type="Control" parent="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Node Group/Node"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Infer Coordinates" type="Button" parent="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Node Group/Node"]
+layout_mode = 2
+text = "Infer Coords"
+
+[node name="Sync Position" type="Button" parent="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Node Group/Node"]
+layout_mode = 2
+text = "Sync Position"
+
+[node name="Info Container" type="Label" parent="VBoxContainer/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+text = "First select a grid node, or anthing that is a child of a grid node to activate functionality."
+autowrap_mode = 2
+
+[connection signal="pressed" from="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Node Group/Node/Infer Coordinates" to="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Node Group" method="_on_infer_coordinates_pressed"]
+[connection signal="pressed" from="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Node Group/Node/Sync Position" to="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Node Group" method="_on_sync_position_pressed"]
