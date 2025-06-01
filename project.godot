@@ -34,6 +34,10 @@ window/size/borderless=true
 window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
 
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/grid_level_digger/plugin.cfg")
+
 [global_group]
 
 Persistant="Scenes that may be saved and loaded"
