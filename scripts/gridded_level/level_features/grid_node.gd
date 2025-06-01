@@ -14,26 +14,15 @@ var _anchors: Dictionary[CardinalDirections.CardinalDirection, GridAnchor] = {}
 
 func _ready() -> void:
     if level == null:
-        level = _find_level_parent(self)
+        level = GridLevel.find_level_parent(self)
 
     if !_anchors_inited:
         _init_anchors()
 
-func _find_level_parent(node: Node) -> GridLevel:
-    var parent: Node = node.get_parent()
-
-    if parent == null:
-        push_warning("Node at %s not a child of a GridLevel" % coordinates)
-        return null
-
-    if parent is GridLevel:
-        return parent as GridLevel
-
-    return _find_level_parent(parent)
-
 func get_level() -> GridLevel:
     if level == null:
-        level = _find_level_parent(self)
+        level = GridLevel.find_level_parent(self)
+
     return level
 
 #
@@ -137,3 +126,17 @@ func may_transit(
     exit_direction: CardinalDirections.CardinalDirection,
 ) -> bool:
     return may_enter(entity, move_direction) && may_exit(entity, exit_direction)
+
+static func find_node_parent(current: Node, inclusive: bool = true) ->  GridNode:
+    if inclusive && current is GridNode:
+        return current as GridNode
+
+    var parent: Node = current.get_parent()
+
+    if parent == null:
+        return null
+
+    if parent is GridNode:
+        return parent as GridNode
+
+    return find_node_parent(parent, false)

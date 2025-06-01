@@ -8,7 +8,7 @@ var _inited: bool
 
 func _ready() -> void:
     if _node == null:
-        _node = _find_node_parent(self)
+        _node = GridNode.find_node_parent(self)
         if _node != null:
             _inited = true
 
@@ -18,7 +18,9 @@ func get_grid_node() -> GridNode:
         return _anchor.get_grid_node()
 
     if !_inited && _node == null:
-        _node = _find_node_parent(self)
+        _node = GridNode.find_node_parent(self)
+        if _node == null:
+            push_error("%s doesn't have a node as parent" % self)
         _inited = true
 
     return _node
@@ -64,18 +66,6 @@ func _parent_to_anchor(deferred: bool = false) -> void:
             reparent.call_deferred(_anchor, true)
         else:
             reparent(_anchor, true)
-
-func _find_node_parent(current: Node) ->  GridNode:
-    var parent: Node = current.get_parent()
-
-    if parent == null:
-        push_warning("Entity %s not a child of a GridNode" % name)
-        return null
-
-    if parent is GridNode:
-        return parent as GridNode
-
-    return _find_node_parent(parent)
 
 func coordnates() -> Vector3i:
     if _node == null:

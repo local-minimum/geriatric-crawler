@@ -80,3 +80,17 @@ func _draw_debug_sphere(location: Vector3, size: float) -> void:
     add_child(node)
     node.mesh = sphere
     node.global_position = location
+
+static func find_anchor_parent(current: Node, inclusive: bool = true) ->  GridAnchor:
+    if inclusive && current is GridAnchor:
+        return current as GridAnchor
+
+    var parent: Node = current.get_parent()
+
+    if parent == null:
+        return null
+
+    if parent is GridAnchor:
+        return parent as GridAnchor
+
+    return find_anchor_parent(parent, false)
