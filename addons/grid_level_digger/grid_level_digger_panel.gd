@@ -8,8 +8,9 @@ var _anchor: GridAnchor
 
 var _selected_inside_level: bool
 
-var undo_redo : EditorUndoRedoManager
+var undo_redo: EditorUndoRedoManager
 
+var all_level_nodes: Array[GridNode] = []
 
 @export
 var node_digger: GridNodeDigger
@@ -38,6 +39,19 @@ func set_level(level: GridLevel) -> void:
     _draw_debug_node_meshes()
     _sync_ui()
 
+func _update_level_if_needed(grid_node: GridNode) -> bool:
+    var level: GridLevel = GridLevel.find_level_parent(grid_node)
+    if level != _level:
+        _level = level
+
+        all_level_nodes.clear()
+        all_level_nodes.append_array(level.find_children("", "GridNode"))
+
+        return true
+
+    return false
+
+
 func set_grid_node(grid_node: GridNode) -> void:
     if grid_node == _node:
         if !_selected_inside_level:
@@ -45,9 +59,8 @@ func set_grid_node(grid_node: GridNode) -> void:
             _sync_ui()
         return
 
-    var level: GridLevel = GridLevel.find_level_parent(grid_node)
-    if level != _level:
-        _level = level
+    if !_update_level_if_needed(grid_node) && !all_level_nodes.has(grid_node):
+        all_level_nodes.append(grid_node)
 
     _node = grid_node
     _anchor = null
@@ -65,11 +78,10 @@ func set_grid_anchor(grid_anchor: GridAnchor) -> void:
 
     var grid_node: GridNode = GridNode.find_node_parent(grid_anchor)
     if grid_node != _node:
-        _node = grid_node
+        if !_update_level_if_needed(grid_node) && !all_level_nodes.has(grid_node):
+            all_level_nodes.append(grid_node)
 
-        var level: GridLevel = GridLevel.find_level_parent(grid_node)
-        if level != _level:
-            _level = level
+        _node = grid_node
 
         _draw_debug_node_meshes()
 

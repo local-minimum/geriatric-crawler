@@ -86,6 +86,60 @@ text = "Infer Coords"
 layout_mode = 2
 text = "Sync Position"
 
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Node Group"]
+layout_mode = 2
+
+[node name="GridContainer" type="GridContainer" parent="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Node Group/HBoxContainer"]
+layout_mode = 2
+columns = 4
+
+[node name="Turn Left" type="Button" parent="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Node Group/HBoxContainer/GridContainer"]
+layout_mode = 2
+text = "F"
+
+[node name="Forward" type="Button" parent="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Node Group/HBoxContainer/GridContainer"]
+layout_mode = 2
+text = "F"
+
+[node name="Turn Right" type="Button" parent="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Node Group/HBoxContainer/GridContainer"]
+layout_mode = 2
+text = "F"
+
+[node name="Up" type="Button" parent="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Node Group/HBoxContainer/GridContainer"]
+layout_mode = 2
+text = "U"
+
+[node name="Straif Left" type="Button" parent="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Node Group/HBoxContainer/GridContainer"]
+layout_mode = 2
+text = "L"
+
+[node name="Back" type="Button" parent="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Node Group/HBoxContainer/GridContainer"]
+layout_mode = 2
+text = "B"
+
+[node name="Straif Right" type="Button" parent="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Node Group/HBoxContainer/GridContainer"]
+layout_mode = 2
+text = "R"
+
+[node name="Down" type="Button" parent="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Node Group/HBoxContainer/GridContainer"]
+layout_mode = 2
+text = "D"
+
+[node name="Control" type="Control" parent="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Node Group/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Node Group/HBoxContainer"]
+layout_mode = 2
+
+[node name="Auto-Dig" type="CheckButton" parent="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Node Group/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+text = "Auto-dig"
+
+[node name="Auto-Clear-Walls" type="CheckButton" parent="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Node Group/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+text = "Auto-clear thin walls"
+
 [node name="Info Container" type="Label" parent="VBoxContainer/MarginContainer/VBoxContainer"]
 custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
