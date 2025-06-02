@@ -189,16 +189,16 @@ func _enact_translation(movement: Movement.MovementType) -> void:
 
 func _sync_viewport_camera() -> void:
     if _follow_cam:
-        # TODO: Rotate offset
         var position = GridLevel.node_position_from_coordinates(panel._level, _coordinates)
         var target = position + CardinalDirections.direction_to_look_vector(_look_direction)
         var cam_position: Vector3 = position + CardinalDirections.direction_to_planar_rotation(_look_direction) * _cam_offset
-        for view_idx: int in [0] as Array[int]:
-            var view: SubViewport = EditorInterface.get_editor_viewport_3d(view_idx)
 
-            var cam: Camera3D = view.get_camera_3d()
-            cam.global_position = cam_position
-            cam.look_at(target)
+        # TODO: Figure out how to know which viewport to update
+        var view: SubViewport = EditorInterface.get_editor_viewport_3d(0)
+
+        var cam: Camera3D = view.get_camera_3d()
+        cam.global_position = cam_position
+        cam.look_at(target)
 
 func _draw_debug_arrow() -> void:
     _remove_debug_arrow()
