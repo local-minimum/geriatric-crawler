@@ -17,6 +17,15 @@ var sync_position_btn: Button
 @export
 var infer_coordinates_btn: Button
 
+@export
+var cam_offset_x: SpinBox
+
+@export
+var cam_offset_y: SpinBox
+
+@export
+var cam_offset_z: SpinBox
+
 func sync(force_coordinates: bool) -> void:
     var node: GridNode = panel.get_grid_node()
     if node == null:
@@ -48,6 +57,14 @@ func sync(force_coordinates: bool) -> void:
         coordinates_label.visible = false
 
     _sync_look_direction(0)
+
+    if !_cam_offset_synced:
+        _cam_offset_syncing = true
+        cam_offset_x.value = _cam_offset.x
+        cam_offset_y.value = _cam_offset.y
+        cam_offset_z.value = _cam_offset.z
+        _cam_offset_syncing = false
+        _cam_offset_synced = true
 
 func _on_sync_position_pressed() -> void:
     var node: GridNode = panel.get_grid_node_at(_coordinates)
@@ -88,6 +105,9 @@ var _auto_clear_walls: bool
 var _auto_add_walls: bool
 var _auto_dig: bool
 var _follow_cam: bool
+var _cam_offset_synced: bool
+var _cam_offset_syncing: bool
+var _cam_offset: Vector3 = Vector3(0, 0.5, 0)
 
 var _coordinates_valid: bool
 var _coordinates: Vector3i
@@ -103,6 +123,22 @@ func _on_auto_wall_toggled(toggled_on:bool) -> void:
 
 func _on_follow_cam_toggled(toggled_on:bool) -> void:
     _follow_cam = toggled_on
+
+
+func _on_cam_offset_z_value_changed(value:float) -> void:
+    if _cam_offset_syncing: return
+    _cam_offset.z = value
+    _sync_viewport_camera()
+
+func _on_cam_offset_y_value_changed(value:float) -> void:
+    if _cam_offset_syncing: return
+    _cam_offset.y = value
+    _sync_viewport_camera()
+
+func _on_cam_offset_x_value_changed(value:float) -> void:
+    if _cam_offset_syncing: return
+    _cam_offset.x = value
+    _sync_viewport_camera()
 
 var _look_direction: CardinalDirections.CardinalDirection = CardinalDirections.CardinalDirection.NORTH
 
@@ -136,40 +172,33 @@ var _debug_arrow_mesh: MeshInstance3D
 
 func _sync_look_direction(rot: float) -> void:
     _draw_debug_arrow()
-
-    if panel._level != null:
-
-        if _follow_cam && rot != 0:
-            for view_idx: int in [0] as Array[int]:
-                var view: SubViewport = EditorInterface.get_editor_viewport_3d(view_idx)
-
-                var cam: Camera3D = view.get_camera_3d()
-                cam.global_rotate(Vector3.UP, rot)
-
+    _sync_viewport_camera()
 
 func _enact_translation(movement: Movement.MovementType) -> void:
     if !Movement.is_translation(movement) || panel._level == null: return
 
     var direction: CardinalDirections.CardinalDirection = Movement.to_direction(movement, _look_direction, CardinalDirections.CardinalDirection.DOWN)
 
-    var new_coordinates: Vector3i = CardinalDirections.translate(_coordinates, direction)
+    _coordinates = CardinalDirections.translate(_coordinates, direction)
 
-    if _follow_cam:
-        var old_coordinates: Vector3i = _coordinates
-        for view_idx: int in [0] as Array[int]:
-            var view: SubViewport = EditorInterface.get_editor_viewport_3d(view_idx)
-
-            var cam: Camera3D = view.get_camera_3d()
-            var old_position: Vector3 = GridLevel.node_position_from_coordinates(panel._level, old_coordinates)
-            var new_position: Vector3 = GridLevel.node_position_from_coordinates(panel._level, new_coordinates)
-            cam.translate(new_position - old_position)
-            print_debug((new_position - old_position))
-
-    _coordinates = new_coordinates
+    _sync_viewport_camera()
     _draw_debug_arrow()
 
     sync(false)
     panel.draw_debug_node_meshes(_coordinates)
+
+func _sync_viewport_camera() -> void:
+    if _follow_cam:
+        # TODO: Rotate offset
+        var position = GridLevel.node_position_from_coordinates(panel._level, _coordinates)
+        var target = position + CardinalDirections.direction_to_look_vector(_look_direction)
+        var cam_position: Vector3 = position + CardinalDirections.direction_to_planar_rotation(_look_direction) * _cam_offset
+        for view_idx: int in [0] as Array[int]:
+            var view: SubViewport = EditorInterface.get_editor_viewport_3d(view_idx)
+
+            var cam: Camera3D = view.get_camera_3d()
+            cam.global_position = cam_position
+            cam.look_at(target)
 
 func _draw_debug_arrow() -> void:
     _remove_debug_arrow()

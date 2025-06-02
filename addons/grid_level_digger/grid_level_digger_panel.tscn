@@ -64,7 +64,7 @@ layout_mode = 2
 layout_mode = 2
 theme_override_constants/separation = 6
 
-[node name="Grid Node Digger" type="VBoxContainer" parent="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container" node_paths=PackedStringArray("panel", "node_type_label", "coordinates_label", "sync_position_btn", "infer_coordinates_btn")]
+[node name="Grid Node Digger" type="VBoxContainer" parent="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container" node_paths=PackedStringArray("panel", "node_type_label", "coordinates_label", "sync_position_btn", "infer_coordinates_btn", "cam_offset_x", "cam_offset_y", "cam_offset_z")]
 layout_mode = 2
 script = ExtResource("2_6po18")
 panel = NodePath("../../../../..")
@@ -72,6 +72,9 @@ node_type_label = NodePath("Node/Title")
 coordinates_label = NodePath("Node/Coordinates")
 sync_position_btn = NodePath("Node/Sync Position")
 infer_coordinates_btn = NodePath("Node/Infer Coordinates")
+cam_offset_x = NodePath("MarginContainer/Follow Offset/Cam Offset X")
+cam_offset_y = NodePath("MarginContainer/Follow Offset/Cam Offset Y")
+cam_offset_z = NodePath("MarginContainer/Follow Offset/Cam Offset Z")
 
 [node name="Node" type="HBoxContainer" parent="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Grid Node Digger"]
 layout_mode = 2
@@ -173,6 +176,48 @@ layout_mode = 2
 theme_override_constants/h_separation = 8
 text = "Auto-add walls"
 
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Grid Node Digger"]
+layout_mode = 2
+theme_override_constants/margin_left = 8
+
+[node name="Follow Offset" type="HBoxContainer" parent="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Grid Node Digger/MarginContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Grid Node Digger/MarginContainer/Follow Offset"]
+layout_mode = 2
+text = "Cam Offset"
+
+[node name="Spacer" type="Control" parent="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Grid Node Digger/MarginContainer/Follow Offset"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Cam Offset X" type="SpinBox" parent="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Grid Node Digger/MarginContainer/Follow Offset"]
+layout_mode = 2
+size_flags_horizontal = 8
+step = 0.1
+allow_greater = true
+allow_lesser = true
+prefix = "X"
+select_all_on_focus = true
+
+[node name="Cam Offset Y" type="SpinBox" parent="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Grid Node Digger/MarginContainer/Follow Offset"]
+layout_mode = 2
+size_flags_horizontal = 8
+step = 0.1
+allow_greater = true
+allow_lesser = true
+prefix = "Y"
+select_all_on_focus = true
+
+[node name="Cam Offset Z" type="SpinBox" parent="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Grid Node Digger/MarginContainer/Follow Offset"]
+layout_mode = 2
+size_flags_horizontal = 8
+step = 0.1
+allow_greater = true
+allow_lesser = true
+prefix = "Z"
+select_all_on_focus = true
+
 [node name="Info Container" type="Label" parent="VBoxContainer/MarginContainer/VBoxContainer"]
 custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
@@ -193,3 +238,6 @@ autowrap_mode = 2
 [connection signal="toggled" from="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Grid Node Digger/HBoxContainer/VBoxContainer/Auto-Dig" to="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Grid Node Digger" method="_on_auto_dig_toggled"]
 [connection signal="toggled" from="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Grid Node Digger/HBoxContainer/VBoxContainer/Auto-Clear-Walls" to="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Grid Node Digger" method="_on_auto_clear_walls_toggled"]
 [connection signal="toggled" from="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Grid Node Digger/HBoxContainer/VBoxContainer/Auto-Wall" to="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Grid Node Digger" method="_on_auto_wall_toggled"]
+[connection signal="value_changed" from="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Grid Node Digger/MarginContainer/Follow Offset/Cam Offset X" to="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Grid Node Digger" method="_on_cam_offset_x_value_changed"]
+[connection signal="value_changed" from="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Grid Node Digger/MarginContainer/Follow Offset/Cam Offset Y" to="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Grid Node Digger" method="_on_cam_offset_y_value_changed"]
+[connection signal="value_changed" from="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Grid Node Digger/MarginContainer/Follow Offset/Cam Offset Z" to="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Grid Node Digger" method="_on_cam_offset_z_value_changed"]

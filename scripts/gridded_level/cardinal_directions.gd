@@ -288,6 +288,20 @@ static func direction_to_axis(direction: CardinalDirection) -> Vector3:
             print_stack()
             return Vector3.ZERO
 
+static func direction_to_planar_rotation(direction: CardinalDirection) -> Quaternion:
+    match direction:
+        CardinalDirection.NORTH: return Quaternion.IDENTITY
+        CardinalDirection.WEST: return Quaternion.from_euler(Vector3(0, PI * 0.5, 0))
+        CardinalDirection.SOUTH: return Quaternion.from_euler(Vector3(0, PI, 0))
+        CardinalDirection.EAST: return Quaternion.from_euler(Vector3(0, PI * -0.5, 0))
+        _:
+            push_error(
+                "Illegal calculation, %s isn't a planar cardinal direction" % direction
+            )
+            print_stack()
+            return Quaternion.IDENTITY
+
+
 static func angle_around_axis(direction: CardinalDirection, down: CardinalDirection) -> float:
     match down:
         CardinalDirection.DOWN:
