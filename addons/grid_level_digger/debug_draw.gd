@@ -33,6 +33,7 @@ static func wireframe_box(
     var une: Vector3 = lne + y_size
 
     immediate_mesh.surface_begin(Mesh.PRIMITIVE_LINES, mat)
+
     immediate_mesh.surface_add_vertex(lsw)
     immediate_mesh.surface_add_vertex(lse)
 
@@ -98,6 +99,60 @@ static func sphere(
 
     mesh.global_position = pos
     return mesh
+
+static func arrow(
+    node: Node3D,
+    origin: Vector3,
+    target: Vector3,
+    color = Color.WHITE_SMOKE,
+    shaft_width: float = 0.1,
+    head_width: float = 0.2,
+    head_proportion: float = 0.15,
+) -> MeshInstance3D:
+    var mesh: MeshInstance3D = MeshInstance3D.new()
+    var immediate_mesh: ImmediateMesh = ImmediateMesh.new()
+    var mat: ORMMaterial3D = ORMMaterial3D.new()
+
+    mesh.mesh = immediate_mesh
+    mesh.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+
+    mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+    mat.albedo_color = color
+    mat.cull_mode = BaseMaterial3D.CULL_DISABLED
+
+    var vector: Vector3 = target - origin
+    var ortho: Vector3 = Quaternion.from_euler(Vector3(0, PI * 0.5, 0)) * vector.normalized()
+    var head_offset: Vector3 = vector * (1 - head_proportion)
+
+    var head_start_mid: Vector3 = origin + head_offset
+
+    var shaft_start_left: Vector3 = origin + ortho * shaft_width
+    var shaft_start_right: Vector3 = origin - ortho * shaft_width
+    var shaft_end_left: Vector3 = shaft_start_left + head_offset
+    var shaft_end_right: Vector3 = shaft_start_right + head_offset
+
+    var head_left: Vector3 = head_start_mid + ortho * head_width
+    var head_right: Vector3 = head_start_mid - ortho * head_width
+
+    immediate_mesh.surface_begin(Mesh.PRIMITIVE_TRIANGLES, mat)
+
+    immediate_mesh.surface_add_vertex(shaft_start_left)
+    immediate_mesh.surface_add_vertex(shaft_end_left)
+    immediate_mesh.surface_add_vertex(shaft_start_right)
+
+    immediate_mesh.surface_add_vertex(shaft_start_right)
+    immediate_mesh.surface_add_vertex(shaft_end_left)
+    immediate_mesh.surface_add_vertex(shaft_end_right)
+
+    immediate_mesh.surface_add_vertex(head_left)
+    immediate_mesh.surface_add_vertex(target)
+    immediate_mesh.surface_add_vertex(head_right)
+
+    immediate_mesh.surface_end()
+
+    node.get_tree().root.add_child(mesh)
+    return mesh
+
 
 static func direction_to_color(direction: CardinalDirections.CardinalDirection) -> Color:
     match direction:

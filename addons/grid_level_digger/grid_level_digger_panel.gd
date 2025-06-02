@@ -139,20 +139,22 @@ func draw_debug_node_meshes(coordinates: Vector3i) -> void:
             _level.node_size,
             Color.MAGENTA)
 
-        _node_debug_center = DebugDraw.sphere(_level, center, DebugDraw.direction_to_color(CardinalDirections.CardinalDirection.NONE))
 
         var node: GridNode = get_grid_node_at(coordinates)
 
         if node != null:
+            _node_debug_center = DebugDraw.sphere(_level, center, DebugDraw.direction_to_color(CardinalDirections.CardinalDirection.NONE))
+
             for anchor: Node in node.find_children("", "GridAnchor"):
                 if anchor is GridAnchor:
-                    var direction: CardinalDirections.CardinalDirection = anchor.direction
-                    if anchor.set_rotation_from_parent:
-                        direction = CardinalDirections.node_planar_rotation_to_direction(anchor.get_parent())
+                    if anchor.required_transportation_mode.mode != TransportationMode.NONE:
+                        var direction: CardinalDirections.CardinalDirection = anchor.direction
+                        if anchor.set_rotation_from_parent:
+                            direction = CardinalDirections.node_planar_rotation_to_direction(anchor.get_parent())
 
-                    _node_debug_anchors.append(
-                        DebugDraw.sphere(node, anchor.global_position, DebugDraw.direction_to_color(direction), 0.1)
-                    )
+                        _node_debug_anchors.append(
+                            DebugDraw.sphere(node, anchor.global_position, DebugDraw.direction_to_color(direction), 0.1)
+                        )
 
 func _clear_node_debug_frame() -> void:
     if _node_debug_mesh != null:
@@ -178,3 +180,4 @@ func remove_debug_nodes() -> void:
     _clear_node_debug_frame()
     _clear_node_debug_center()
     _clear_node_debug_anchors()
+    node_digger.remove_debug_nodes()

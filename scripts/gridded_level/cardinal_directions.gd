@@ -246,6 +246,20 @@ static func direction_to_vector(direction: CardinalDirection) -> Vector3i:
             print_stack()
             return Vector3i.ZERO
 
+static func direction_to_look_vector(direction: CardinalDirection) -> Vector3:
+    match direction:
+        CardinalDirection.NONE: return Vector3.ZERO
+        CardinalDirection.NORTH: return Vector3.FORWARD
+        CardinalDirection.SOUTH: return Vector3.BACK
+        CardinalDirection.WEST: return Vector3.LEFT
+        CardinalDirection.EAST: return Vector3.RIGHT
+        CardinalDirection.UP: return Vector3.UP
+        CardinalDirection.DOWN: return Vector3.DOWN
+        _:
+            push_error("Invalid direction: %s" % direction)
+            print_stack()
+            return Vector3.ZERO
+
 static func direction_to_ortho_plane(direction: CardinalDirection) -> Vector3i:
     match direction:
         CardinalDirection.NONE: return Vector3i.ZERO

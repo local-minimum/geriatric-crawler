@@ -124,9 +124,24 @@ func _on_turn_left_pressed() -> void:
     _look_direction = CardinalDirections.yaw_ccw(_look_direction, CardinalDirections.CardinalDirection.DOWN)[0]
     _sync_look_direction()
 
+var _debug_arrow_mesh: MeshInstance3D
+
 func _sync_look_direction() -> void:
     # TODO: Show look direction
-    pass
+    if _debug_arrow_mesh != null:
+        _debug_arrow_mesh.queue_free()
+
+    if panel._level != null:
+
+        var center: Vector3 = GridLevel.node_center(panel._level, _coordinates)
+        var target: Vector3 = center + CardinalDirections.direction_to_look_vector(_look_direction) * 0.75
+
+        _debug_arrow_mesh = DebugDraw.arrow(
+            panel._level,
+            center,
+            target,
+            Color.MAGENTA,
+        )
 
 func _enact_translation(movement: Movement.MovementType) -> void:
     if !Movement.is_translation(movement): return
@@ -134,3 +149,8 @@ func _enact_translation(movement: Movement.MovementType) -> void:
     _coordinates = CardinalDirections.translate(_coordinates, direction)
     sync(false)
     panel.draw_debug_node_meshes(_coordinates)
+
+func remove_debug_nodes() -> void:
+    if _debug_arrow_mesh == null:
+        _debug_arrow_mesh.queue_free()
+        _debug_arrow_mesh = null
