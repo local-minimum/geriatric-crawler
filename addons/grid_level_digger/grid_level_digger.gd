@@ -23,7 +23,7 @@ func _enter_tree() -> void:
 func _exit_tree() -> void:
     remove_control_from_container(EditorPlugin.CONTAINER_INSPECTOR_BOTTOM, panel)
 
-    editor_selection.disconnect("select_changed", _on_selection_change)
+    editor_selection.disconnect("selection_changed", _on_selection_change)
 
     panel.remove_debug_nodes()
     panel.queue_free()

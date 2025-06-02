@@ -27,6 +27,13 @@ func get_level() -> GridLevel:
 func get_grid_node() -> GridNode:
     return _node
 
+func get_grid_node_at(coordinates: Vector3i) -> GridNode:
+    var idx = all_level_nodes.find_custom(func (n: GridNode) -> bool: return n.coordinates == coordinates)
+    if idx < 0:
+        return null
+    return all_level_nodes[idx]
+
+
 func get_grid_anchor() -> GridAnchor:
     return _anchor
 
@@ -96,7 +103,7 @@ func _sync_ui() -> void:
     if _selected_inside_level:
         node_digger.visible = _node != null
         if _node != null:
-            node_digger.sync()
+            node_digger.sync(true)
 
         info_label.visible = false
         single_select_group.visible = true
@@ -109,31 +116,43 @@ var _node_debug_center: MeshInstance3D
 var _node_debug_anchors: Array[MeshInstance3D] = []
 
 func _draw_debug_node_meshes() -> void:
+    if _node != null:
+        draw_debug_node_meshes(_node.coordinates)
+        return
+
     _clear_node_debug_frame()
     _clear_node_debug_center()
     _clear_node_debug_anchors()
 
-    if _node != null && _level != null:
-        var center: Vector3 = GridLevel.node_center(_level, _node.coordinates)
+func draw_debug_node_meshes(coordinates: Vector3i) -> void:
+    print_debug(coordinates)
+    _clear_node_debug_frame()
+    _clear_node_debug_center()
+    _clear_node_debug_anchors()
+
+    if _level != null:
+        var center: Vector3 = GridLevel.node_center(_level, coordinates)
 
         _node_debug_mesh = DebugDraw.wireframe_box(
-            _node,
+            _level,
             center,
             _level.node_size,
             Color.MAGENTA)
 
-        _node_debug_center = DebugDraw.sphere(_node, center, DebugDraw.direction_to_color(CardinalDirections.CardinalDirection.NONE))
+        _node_debug_center = DebugDraw.sphere(_level, center, DebugDraw.direction_to_color(CardinalDirections.CardinalDirection.NONE))
 
-        for anchor: Node in _node.find_children("", "GridAnchor"):
-            if anchor is GridAnchor:
-                var direction: CardinalDirections.CardinalDirection = anchor.direction
-                if anchor.set_rotation_from_parent:
-                    direction = CardinalDirections.node_planar_rotation_to_direction(anchor.get_parent())
+        var node: GridNode = get_grid_node_at(coordinates)
 
-                _node_debug_anchors.append(
-                    DebugDraw.sphere(_node, anchor.global_position, DebugDraw.direction_to_color(direction), 0.1)
-                )
-        return
+        if node != null:
+            for anchor: Node in node.find_children("", "GridAnchor"):
+                if anchor is GridAnchor:
+                    var direction: CardinalDirections.CardinalDirection = anchor.direction
+                    if anchor.set_rotation_from_parent:
+                        direction = CardinalDirections.node_planar_rotation_to_direction(anchor.get_parent())
+
+                    _node_debug_anchors.append(
+                        DebugDraw.sphere(node, anchor.global_position, DebugDraw.direction_to_color(direction), 0.1)
+                    )
 
 func _clear_node_debug_frame() -> void:
     if _node_debug_mesh != null:

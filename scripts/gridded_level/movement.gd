@@ -9,6 +9,7 @@ enum MovementType {
     TURN_CLOCKWISE,
     TURN_COUNTER_CLOCKWISE,
     ABS_DOWN,
+    ABS_UP,
 }
 
 static func is_turn(movement: MovementType) -> bool:
@@ -38,6 +39,8 @@ static func to_direction(
             return CardinalDirections.yaw_cw(look_direction, down)[0]
         MovementType.ABS_DOWN:
             return CardinalDirections.CardinalDirection.DOWN
+        MovementType.ABS_UP:
+            return CardinalDirections.CardinalDirection.UP
 
     return CardinalDirections.CardinalDirection.NONE
 
@@ -51,6 +54,7 @@ static func name(movement: MovementType) -> String:
         MovementType.TURN_CLOCKWISE: return "Turn right"
         MovementType.TURN_COUNTER_CLOCKWISE: return "Turn left"
         MovementType.ABS_DOWN: return "Absolute down"
+        MovementType.ABS_UP: return "Absolute up"
         _:
             push_error("%s is not a movement" % movement)
             print_stack()
