@@ -47,7 +47,7 @@ func sync(force_coordinates: bool) -> void:
         infer_coordinates_btn.visible = false
         coordinates_label.visible = false
 
-    _sync_look_direction()
+    _sync_look_direction(0)
 
 func _on_sync_position_pressed() -> void:
     var node: GridNode = panel.get_grid_node_at(_coordinates)
@@ -85,16 +85,24 @@ func _on_infer_coordinates_pressed() -> void:
 
 
 var _auto_clear_walls: bool
+var _auto_add_walls: bool
 var _auto_dig: bool
+var _follow_cam: bool
+
 var _coordinates_valid: bool
 var _coordinates: Vector3i
+
+func _on_auto_dig_toggled(toggled_on:bool) -> void:
+    _auto_dig = toggled_on
 
 func _on_auto_clear_walls_toggled(toggled_on:bool) -> void:
     _auto_clear_walls = toggled_on
 
+func _on_auto_wall_toggled(toggled_on:bool) -> void:
+    _auto_add_walls = toggled_on
 
-func _on_auto_dig_toggled(toggled_on:bool) -> void:
-    _auto_dig = toggled_on
+func _on_follow_cam_toggled(toggled_on:bool) -> void:
+    _follow_cam = toggled_on
 
 var _look_direction: CardinalDirections.CardinalDirection = CardinalDirections.CardinalDirection.NORTH
 
@@ -118,39 +126,68 @@ func _on_forward_pressed() -> void:
 
 func _on_turn_right_pressed() -> void:
     _look_direction = CardinalDirections.yaw_cw(_look_direction, CardinalDirections.CardinalDirection.DOWN)[0]
-    _sync_look_direction()
+    _sync_look_direction(PI * 0.5)
 
 func _on_turn_left_pressed() -> void:
     _look_direction = CardinalDirections.yaw_ccw(_look_direction, CardinalDirections.CardinalDirection.DOWN)[0]
-    _sync_look_direction()
+    _sync_look_direction(-PI * 0.5)
 
 var _debug_arrow_mesh: MeshInstance3D
 
-func _sync_look_direction() -> void:
-    # TODO: Show look direction
-    if _debug_arrow_mesh != null:
-        _debug_arrow_mesh.queue_free()
+func _sync_look_direction(rot: float) -> void:
+    _draw_debug_arrow()
 
     if panel._level != null:
 
-        var center: Vector3 = GridLevel.node_center(panel._level, _coordinates)
-        var target: Vector3 = center + CardinalDirections.direction_to_look_vector(_look_direction) * 0.75
+        if _follow_cam && rot != 0:
+            for view_idx: int in [0] as Array[int]:
+                var view: SubViewport = EditorInterface.get_editor_viewport_3d(view_idx)
 
-        _debug_arrow_mesh = DebugDraw.arrow(
-            panel._level,
-            center,
-            target,
-            Color.MAGENTA,
-        )
+                var cam: Camera3D = view.get_camera_3d()
+                cam.global_rotate(Vector3.UP, rot)
+
 
 func _enact_translation(movement: Movement.MovementType) -> void:
-    if !Movement.is_translation(movement): return
+    if !Movement.is_translation(movement) || panel._level == null: return
+
     var direction: CardinalDirections.CardinalDirection = Movement.to_direction(movement, _look_direction, CardinalDirections.CardinalDirection.DOWN)
-    _coordinates = CardinalDirections.translate(_coordinates, direction)
+
+    var new_coordinates: Vector3i = CardinalDirections.translate(_coordinates, direction)
+
+    if _follow_cam:
+        var old_coordinates: Vector3i = _coordinates
+        for view_idx: int in [0] as Array[int]:
+            var view: SubViewport = EditorInterface.get_editor_viewport_3d(view_idx)
+
+            var cam: Camera3D = view.get_camera_3d()
+            var old_position: Vector3 = GridLevel.node_position_from_coordinates(panel._level, old_coordinates)
+            var new_position: Vector3 = GridLevel.node_position_from_coordinates(panel._level, new_coordinates)
+            cam.translate(new_position - old_position)
+            print_debug((new_position - old_position))
+
+    _coordinates = new_coordinates
+    _draw_debug_arrow()
+
     sync(false)
     panel.draw_debug_node_meshes(_coordinates)
 
+func _draw_debug_arrow() -> void:
+    _remove_debug_arrow()
+
+    var center: Vector3 = GridLevel.node_center(panel._level, _coordinates)
+    var target: Vector3 = center + CardinalDirections.direction_to_look_vector(_look_direction) * 0.75
+
+    _debug_arrow_mesh = DebugDraw.arrow(
+        panel._level,
+        center,
+        target,
+        Color.MAGENTA,
+    )
+
 func remove_debug_nodes() -> void:
-    if _debug_arrow_mesh == null:
+    _remove_debug_arrow()
+
+func _remove_debug_arrow() -> void:
+    if _debug_arrow_mesh != null:
         _debug_arrow_mesh.queue_free()
         _debug_arrow_mesh = null

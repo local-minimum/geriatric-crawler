@@ -99,51 +99,59 @@ text = "Sync Position"
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Grid Node Digger"]
 layout_mode = 2
 
-[node name="GridContainer" type="GridContainer" parent="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Grid Node Digger/HBoxContainer"]
+[node name="VBoxContainer2" type="VBoxContainer" parent="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Grid Node Digger/HBoxContainer"]
+layout_mode = 2
+
+[node name="Navigation Buttons" type="GridContainer" parent="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Grid Node Digger/HBoxContainer/VBoxContainer2"]
 layout_mode = 2
 columns = 4
 
-[node name="Turn Left" type="Button" parent="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Grid Node Digger/HBoxContainer/GridContainer"]
+[node name="Turn Left" type="Button" parent="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Grid Node Digger/HBoxContainer/VBoxContainer2/Navigation Buttons"]
 layout_mode = 2
 theme_override_constants/icon_max_width = 24
 icon = ExtResource("3_ylrbt")
 
-[node name="Forward" type="Button" parent="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Grid Node Digger/HBoxContainer/GridContainer"]
+[node name="Forward" type="Button" parent="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Grid Node Digger/HBoxContainer/VBoxContainer2/Navigation Buttons"]
 layout_mode = 2
 theme_override_constants/icon_max_width = 24
 icon = ExtResource("4_ylrbt")
 
-[node name="Turn Right" type="Button" parent="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Grid Node Digger/HBoxContainer/GridContainer"]
+[node name="Turn Right" type="Button" parent="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Grid Node Digger/HBoxContainer/VBoxContainer2/Navigation Buttons"]
 layout_mode = 2
 theme_override_constants/icon_max_width = 24
 icon = ExtResource("3_n23lo")
 
-[node name="Up" type="Button" parent="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Grid Node Digger/HBoxContainer/GridContainer"]
+[node name="Up" type="Button" parent="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Grid Node Digger/HBoxContainer/VBoxContainer2/Navigation Buttons"]
 layout_mode = 2
 theme_override_constants/icon_max_width = 24
 icon = ExtResource("5_cswv1")
 
-[node name="Strafe Left" type="Button" parent="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Grid Node Digger/HBoxContainer/GridContainer"]
+[node name="Strafe Left" type="Button" parent="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Grid Node Digger/HBoxContainer/VBoxContainer2/Navigation Buttons"]
 layout_mode = 2
 theme_override_constants/icon_max_width = 24
 icon = ExtResource("6_uh4v4")
 
-[node name="Back" type="Button" parent="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Grid Node Digger/HBoxContainer/GridContainer"]
+[node name="Back" type="Button" parent="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Grid Node Digger/HBoxContainer/VBoxContainer2/Navigation Buttons"]
 layout_mode = 2
 theme_override_constants/icon_max_width = 24
 icon = ExtResource("7_56aqn")
 
-[node name="Strafe Right" type="Button" parent="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Grid Node Digger/HBoxContainer/GridContainer"]
+[node name="Strafe Right" type="Button" parent="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Grid Node Digger/HBoxContainer/VBoxContainer2/Navigation Buttons"]
 layout_mode = 2
 theme_override_constants/icon_max_width = 24
 icon = ExtResource("8_veu6e")
 
-[node name="Down" type="Button" parent="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Grid Node Digger/HBoxContainer/GridContainer"]
+[node name="Down" type="Button" parent="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Grid Node Digger/HBoxContainer/VBoxContainer2/Navigation Buttons"]
 layout_mode = 2
 theme_override_constants/icon_max_width = 24
 icon = ExtResource("9_cnqku")
 
-[node name="Control" type="Control" parent="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Grid Node Digger/HBoxContainer"]
+[node name="Follow Cam" type="CheckButton" parent="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Grid Node Digger/HBoxContainer/VBoxContainer2"]
+layout_mode = 2
+theme_override_constants/h_separation = 8
+text = "Follow Cam"
+
+[node name="Spacer" type="Control" parent="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Grid Node Digger/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 
@@ -152,11 +160,18 @@ layout_mode = 2
 
 [node name="Auto-Dig" type="CheckButton" parent="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Grid Node Digger/HBoxContainer/VBoxContainer"]
 layout_mode = 2
+theme_override_constants/h_separation = 8
 text = "Auto-dig"
 
 [node name="Auto-Clear-Walls" type="CheckButton" parent="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Grid Node Digger/HBoxContainer/VBoxContainer"]
 layout_mode = 2
+theme_override_constants/h_separation = 8
 text = "Auto-clear thin walls"
+
+[node name="Auto-Wall" type="CheckButton" parent="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Grid Node Digger/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/h_separation = 8
+text = "Auto-add walls"
 
 [node name="Info Container" type="Label" parent="VBoxContainer/MarginContainer/VBoxContainer"]
 custom_minimum_size = Vector2(200, 0)
@@ -166,13 +181,15 @@ autowrap_mode = 2
 
 [connection signal="pressed" from="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Grid Node Digger/Node/Infer Coordinates" to="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Grid Node Digger" method="_on_infer_coordinates_pressed"]
 [connection signal="pressed" from="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Grid Node Digger/Node/Sync Position" to="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Grid Node Digger" method="_on_sync_position_pressed"]
-[connection signal="pressed" from="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Grid Node Digger/HBoxContainer/GridContainer/Turn Left" to="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Grid Node Digger" method="_on_turn_left_pressed"]
-[connection signal="pressed" from="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Grid Node Digger/HBoxContainer/GridContainer/Forward" to="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Grid Node Digger" method="_on_forward_pressed"]
-[connection signal="pressed" from="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Grid Node Digger/HBoxContainer/GridContainer/Turn Right" to="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Grid Node Digger" method="_on_turn_right_pressed"]
-[connection signal="pressed" from="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Grid Node Digger/HBoxContainer/GridContainer/Up" to="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Grid Node Digger" method="_on_up_pressed"]
-[connection signal="pressed" from="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Grid Node Digger/HBoxContainer/GridContainer/Strafe Left" to="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Grid Node Digger" method="_on_strafe_left_pressed"]
-[connection signal="pressed" from="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Grid Node Digger/HBoxContainer/GridContainer/Back" to="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Grid Node Digger" method="_on_back_pressed"]
-[connection signal="pressed" from="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Grid Node Digger/HBoxContainer/GridContainer/Strafe Right" to="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Grid Node Digger" method="_on_strafe_right_pressed"]
-[connection signal="pressed" from="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Grid Node Digger/HBoxContainer/GridContainer/Down" to="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Grid Node Digger" method="_on_down_pressed"]
+[connection signal="pressed" from="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Grid Node Digger/HBoxContainer/VBoxContainer2/Navigation Buttons/Turn Left" to="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Grid Node Digger" method="_on_turn_left_pressed"]
+[connection signal="pressed" from="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Grid Node Digger/HBoxContainer/VBoxContainer2/Navigation Buttons/Forward" to="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Grid Node Digger" method="_on_forward_pressed"]
+[connection signal="pressed" from="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Grid Node Digger/HBoxContainer/VBoxContainer2/Navigation Buttons/Turn Right" to="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Grid Node Digger" method="_on_turn_right_pressed"]
+[connection signal="pressed" from="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Grid Node Digger/HBoxContainer/VBoxContainer2/Navigation Buttons/Up" to="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Grid Node Digger" method="_on_up_pressed"]
+[connection signal="pressed" from="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Grid Node Digger/HBoxContainer/VBoxContainer2/Navigation Buttons/Strafe Left" to="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Grid Node Digger" method="_on_strafe_left_pressed"]
+[connection signal="pressed" from="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Grid Node Digger/HBoxContainer/VBoxContainer2/Navigation Buttons/Back" to="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Grid Node Digger" method="_on_back_pressed"]
+[connection signal="pressed" from="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Grid Node Digger/HBoxContainer/VBoxContainer2/Navigation Buttons/Strafe Right" to="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Grid Node Digger" method="_on_strafe_right_pressed"]
+[connection signal="pressed" from="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Grid Node Digger/HBoxContainer/VBoxContainer2/Navigation Buttons/Down" to="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Grid Node Digger" method="_on_down_pressed"]
+[connection signal="toggled" from="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Grid Node Digger/HBoxContainer/VBoxContainer2/Follow Cam" to="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Grid Node Digger" method="_on_follow_cam_toggled"]
 [connection signal="toggled" from="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Grid Node Digger/HBoxContainer/VBoxContainer/Auto-Dig" to="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Grid Node Digger" method="_on_auto_dig_toggled"]
 [connection signal="toggled" from="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Grid Node Digger/HBoxContainer/VBoxContainer/Auto-Clear-Walls" to="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Grid Node Digger" method="_on_auto_clear_walls_toggled"]
+[connection signal="toggled" from="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Grid Node Digger/HBoxContainer/VBoxContainer/Auto-Wall" to="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Grid Node Digger" method="_on_auto_wall_toggled"]

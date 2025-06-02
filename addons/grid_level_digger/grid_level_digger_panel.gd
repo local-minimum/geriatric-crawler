@@ -125,7 +125,6 @@ func _draw_debug_node_meshes() -> void:
     _clear_node_debug_anchors()
 
 func draw_debug_node_meshes(coordinates: Vector3i) -> void:
-    print_debug(coordinates)
     _clear_node_debug_frame()
     _clear_node_debug_center()
     _clear_node_debug_anchors()

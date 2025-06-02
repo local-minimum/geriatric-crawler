@@ -78,7 +78,7 @@ static func node_coordinates_from_position(level: GridLevel, grid_node: GridNode
 
 static func node_position_from_coordinates(level: GridLevel, coordinates: Vector3i) -> Vector3:
     var pos: Vector3 = Vector3(coordinates)
-    return level.position + (level.node_size + level.node_spacing) * pos
+    return level.global_position + (level.node_size + level.node_spacing) * pos
 
 static func node_center(level: GridLevel, coordintes: Vector3i) -> Vector3:
     return node_position_from_coordinates(level, coordintes) + Vector3.UP * level.node_size * 0.5
