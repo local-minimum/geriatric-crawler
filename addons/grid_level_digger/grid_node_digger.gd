@@ -73,13 +73,13 @@ func _on_sync_position_pressed() -> void:
     if node != null && level != null:
         var new_position: Vector3 = GridLevel.node_position_from_coordinates(level, node.coordinates)
 
-        panel.undo_redo.create_action("GridLevelDigger: Sync node position")
+        if new_position != node.global_position:
+            panel.undo_redo.create_action("GridLevelDigger: Sync node position")
 
-        panel.undo_redo.add_do_property(node, "position", new_position)
-        panel.undo_redo.add_undo_property(node, "position", node.position)
+            panel.undo_redo.add_do_property(node, "global_position", new_position)
+            panel.undo_redo.add_undo_property(node, "global_position", node.global_position)
 
-        panel.undo_redo.commit_action()
-
+            panel.undo_redo.commit_action()
 
 func _on_infer_coordinates_pressed() -> void:
     var node: GridNode = panel.get_grid_node_at(_coordinates)
@@ -89,16 +89,18 @@ func _on_infer_coordinates_pressed() -> void:
         var new_coordinates: Vector3i = GridLevel.node_coordinates_from_position(level, node)
         var new_position: Vector3 = GridLevel.node_position_from_coordinates(level, new_coordinates)
 
-        panel.undo_redo.create_action("GridLevelDigger: Infer node coordinates")
+        if new_coordinates != node.coordinates || new_position != node.global_position:
 
-        panel.undo_redo.add_do_property(node, "global_position", new_position)
-        panel.undo_redo.add_undo_property(node, "global_position", node.global_position)
+            panel.undo_redo.create_action("GridLevelDigger: Infer node coordinates")
 
-        panel.undo_redo.add_do_property(node, "coordinates", new_coordinates)
-        panel.undo_redo.add_undo_property(node, "coordinates", node.coordinates)
+            panel.undo_redo.add_do_property(node, "global_position", new_position)
+            panel.undo_redo.add_undo_property(node, "global_position", node.global_position)
 
-        panel.undo_redo.commit_action()
-        sync(true)
+            panel.undo_redo.add_do_property(node, "coordinates", new_coordinates)
+            panel.undo_redo.add_undo_property(node, "coordinates", node.coordinates)
+
+            panel.undo_redo.commit_action()
+            sync(true)
 
 
 var _auto_clear_walls: bool
@@ -175,7 +177,7 @@ func _sync_look_direction(rot: float) -> void:
     _sync_viewport_camera()
 
 func _enact_translation(movement: Movement.MovementType) -> void:
-    if !Movement.is_translation(movement) || panel._level == null: return
+    if !Movement.is_translation(movement) || panel.level == null: return
 
     var direction: CardinalDirections.CardinalDirection = Movement.to_direction(movement, _look_direction, CardinalDirections.CardinalDirection.DOWN)
 
@@ -191,10 +193,10 @@ func _enact_translation(movement: Movement.MovementType) -> void:
     panel.draw_debug_node_meshes(_coordinates)
 
 func _perform_auto_dig(old_coordinates: Vector3i, dig_direction: CardinalDirections.CardinalDirection) -> void:
-    if !_auto_dig || panel._level == null:
+    if !_auto_dig || panel.level == null:
         return
 
-    var level: GridLevel = panel._level
+    var level: GridLevel = panel.level
 
     var existing_node = panel.get_grid_node_at(_coordinates)
 
@@ -248,7 +250,7 @@ func _undo_auto_dig_node(coordinates: Vector3i) -> void:
 
 func _sync_viewport_camera() -> void:
     if _follow_cam:
-        var position = GridLevel.node_position_from_coordinates(panel._level, _coordinates)
+        var position = GridLevel.node_position_from_coordinates(panel.level, _coordinates)
         var target = position + CardinalDirections.direction_to_look_vector(_look_direction)
         var cam_position: Vector3 = position + CardinalDirections.direction_to_planar_rotation(_look_direction) * _cam_offset
 
@@ -262,11 +264,11 @@ func _sync_viewport_camera() -> void:
 func _draw_debug_arrow() -> void:
     _remove_debug_arrow()
 
-    var center: Vector3 = GridLevel.node_center(panel._level, _coordinates)
+    var center: Vector3 = GridLevel.node_center(panel.level, _coordinates)
     var target: Vector3 = center + CardinalDirections.direction_to_look_vector(_look_direction) * 0.75
 
     _debug_arrow_mesh = DebugDraw.arrow(
-        panel._level,
+        panel.level,
         center,
         target,
         Color.MAGENTA,

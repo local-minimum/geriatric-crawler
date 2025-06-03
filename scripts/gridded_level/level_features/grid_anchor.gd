@@ -17,27 +17,20 @@ var pass_through_on_refuse: bool
 @export
 var pass_through_reverse: bool
 
-@export
-var set_rotation_from_parent: bool
-
 func _ready() -> void:
     super()
-    if set_rotation_from_parent:
-        _set_rotation_from_parent()
 
-    _draw_debug_edges()
+    var node_side: GridNodeSide = GridNodeSide.find_node_side_parent(self)
+    if node_side == null:
+        push_error("%s doesn't have a GridNodeSide parent" % name)
+    elif !CardinalDirections.is_parallell(direction, node_side.direction):
+        push_error("%s's direction %s isn't parallell to the GridNodeSide direction %s" % [name, direction, node_side.direction])
+
+    # _draw_debug_edges()
 
 func _draw_debug_edges() -> void:
     for edge: CardinalDirections.CardinalDirection in CardinalDirections.orthogonals(direction):
         _draw_debug_sphere(get_edge_position(edge, false), 0.1)
-
-func _set_rotation_from_parent() -> void:
-    var parent: Node3D = get_parent()
-    if parent == null:
-        return
-
-    direction = CardinalDirections.node_planar_rotation_to_direction(parent)
-    # print_debug("%s is anchor in direction %s" % [name, CardinalDirections.name(direction)])
 
 
 func can_anchor(entity: GridEntity) -> bool:

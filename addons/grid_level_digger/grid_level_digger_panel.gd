@@ -2,7 +2,7 @@
 extends Panel
 class_name GridLevelDiggerPanel
 
-var _level: GridLevel
+var level: GridLevel
 var _node: GridNode
 var _anchor: GridAnchor
 
@@ -16,13 +16,16 @@ var all_level_nodes: Array[GridNode] = []
 var node_digger: GridNodeDigger
 
 @export
+var level_actions: GridLevelActions
+
+@export
 var single_select_group: Control
 
 @export
 var info_label: Control
 
 func get_level() -> GridLevel:
-    return _level
+    return level
 
 func get_grid_node() -> GridNode:
     return _node
@@ -46,72 +49,92 @@ func get_grid_anchor() -> GridAnchor:
     return _anchor
 
 func set_level(level: GridLevel) -> void:
-    _level = level
+    self.level = level
     _node = null
     _anchor = null
     _selected_inside_level = true
 
+    all_level_nodes.clear()
+
+    if level != null:
+        all_level_nodes.append_array(level.find_children("", "GridNode"))
+
     _draw_debug_node_meshes()
-    _sync_ui()
+    sync_ui()
 
 func _update_level_if_needed(grid_node: GridNode) -> bool:
     var level: GridLevel = GridLevel.find_level_parent(grid_node)
-    if level != _level:
-        _level = level
+    if level != level:
+        self.level = level
 
         all_level_nodes.clear()
-        all_level_nodes.append_array(level.find_children("", "GridNode"))
+
+        if level != null:
+            all_level_nodes.append_array(level.find_children("", "GridNode"))
 
         return true
 
-    return false
+    elif all_level_nodes.size() == 0:
+        all_level_nodes.append_array(level.find_children("", "GridNode"))
 
+    return false
 
 func set_grid_node(grid_node: GridNode) -> void:
     if grid_node == _node:
         if !_selected_inside_level:
             _selected_inside_level = true
-            _sync_ui()
+            sync_ui()
         return
 
     if !_update_level_if_needed(grid_node) && !all_level_nodes.has(grid_node):
-        all_level_nodes.append(grid_node)
+        if all_level_nodes.size() == 0:
+            all_level_nodes.append_array(level.find_children("", "GridNode"))
+        else:
+            all_level_nodes.append(grid_node)
 
     _node = grid_node
     _anchor = null
     _selected_inside_level = true
 
     _draw_debug_node_meshes()
-    _sync_ui()
+    sync_ui()
 
 func set_grid_anchor(grid_anchor: GridAnchor) -> void:
     if _anchor == grid_anchor:
         if !_selected_inside_level:
             _selected_inside_level = true
-            _sync_ui()
+            sync_ui()
         return
 
     var grid_node: GridNode = GridNode.find_node_parent(grid_anchor)
     if grid_node != _node:
         if !_update_level_if_needed(grid_node) && !all_level_nodes.has(grid_node):
-            all_level_nodes.append(grid_node)
+            if all_level_nodes.size() == 0:
+                all_level_nodes.append_array(level.find_children("", "GridNode"))
+            else:
+                all_level_nodes.append(grid_node)
 
         _node = grid_node
 
         _draw_debug_node_meshes()
 
     _selected_inside_level = true
-    _sync_ui()
+    sync_ui()
 
 func set_not_selected_level() -> void:
     _selected_inside_level = false
-    _sync_ui()
+    sync_ui()
 
-func _sync_ui() -> void:
+func sync_ui() -> void:
     if _selected_inside_level:
         node_digger.visible = _node != null
-        if _node != null:
+        level_actions.visible = _node == null && level != null
+
+        if node_digger.visible:
             node_digger.sync(true)
+
+        if level_actions.visible:
+            level_actions.sync_ui()
 
         info_label.visible = false
         single_select_group.visible = true
@@ -137,31 +160,27 @@ func draw_debug_node_meshes(coordinates: Vector3i) -> void:
     _clear_node_debug_center()
     _clear_node_debug_anchors()
 
-    if _level != null:
-        var center: Vector3 = GridLevel.node_center(_level, coordinates)
+    if level != null:
+        var center: Vector3 = GridLevel.node_center(level, coordinates)
 
         _node_debug_mesh = DebugDraw.wireframe_box(
-            _level,
+            level,
             center,
-            _level.node_size,
+            level.node_size,
             Color.MAGENTA)
 
 
         var node: GridNode = get_grid_node_at(coordinates)
 
         if node != null:
-            _node_debug_center = DebugDraw.sphere(_level, center, DebugDraw.direction_to_color(CardinalDirections.CardinalDirection.NONE))
+            _node_debug_center = DebugDraw.sphere(level, center, DebugDraw.direction_to_color(CardinalDirections.CardinalDirection.NONE))
 
-            for anchor: Node in node.find_children("", "GridAnchor"):
-                if anchor is GridAnchor:
-                    if anchor.required_transportation_mode.mode != TransportationMode.NONE:
-                        var direction: CardinalDirections.CardinalDirection = anchor.direction
-                        if anchor.set_rotation_from_parent:
-                            direction = CardinalDirections.node_planar_rotation_to_direction(anchor.get_parent())
-
-                        _node_debug_anchors.append(
-                            DebugDraw.sphere(node, anchor.global_position, DebugDraw.direction_to_color(direction), 0.1)
-                        )
+            for node_side: GridNodeSide in node.find_children("", "GridNodeSide"):
+                var anchor: GridAnchor = node_side.anchor
+                if anchor.required_transportation_mode.mode != TransportationMode.NONE:
+                    _node_debug_anchors.append(
+                        DebugDraw.sphere(node, anchor.global_position, DebugDraw.direction_to_color(node_side.direction), 0.1)
+                    )
 
 func _clear_node_debug_frame() -> void:
     if _node_debug_mesh != null:

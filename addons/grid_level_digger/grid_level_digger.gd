@@ -48,8 +48,10 @@ func _on_selection_change() -> void:
             panel.set_level(grid_level)
             return
 
+        print_debug("Selection outside level (%s)" % selection.name)
         panel.set_not_selected_level()
         return
 
     # TODO: Multi select features
     panel.set_not_selected_level()
+    print_debug("Multiple items selected (%s)" % selections.size())

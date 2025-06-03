@@ -80,8 +80,16 @@ static func node_coordinates_from_position(level: GridLevel, grid_node: GridNode
     return Vector3i(roundi(raw_coords.x), roundi(raw_coords.y), roundi(raw_coords.z))
 
 static func node_position_from_coordinates(level: GridLevel, coordinates: Vector3i) -> Vector3:
+    if level == null:
+        push_error("Called without a level")
+        print_stack()
+        return Vector3.ZERO
     var pos: Vector3 = Vector3(coordinates)
     return level.global_position + (level.node_size + level.node_spacing) * pos
 
 static func node_center(level: GridLevel, coordintes: Vector3i) -> Vector3:
+    if level == null:
+        push_error("Called without a level")
+        print_stack()
+        return Vector3.ZERO
     return node_position_from_coordinates(level, coordintes) + Vector3.UP * level.node_size * 0.5

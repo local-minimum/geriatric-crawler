@@ -6,6 +6,11 @@ static func wireframe_box(
     size: Vector3,
     color: Color = Color.WHITE_SMOKE,
 ) -> MeshInstance3D:
+    if node == null:
+        push_error("Node is null")
+        print_stack()
+        return null
+
     var mesh: MeshInstance3D = MeshInstance3D.new()
     var immediate_mesh: ImmediateMesh = ImmediateMesh.new()
     var mat: ORMMaterial3D = ORMMaterial3D.new()
@@ -81,6 +86,11 @@ static func sphere(
     color = Color.WHITE_SMOKE,
     radius: float = 0.075,
 ) -> MeshInstance3D:
+    if node == null:
+        push_error("Node is null")
+        print_stack()
+        return null
+
     var mesh: MeshInstance3D = MeshInstance3D.new()
     var sphere: SphereMesh = SphereMesh.new()
     var mat: ORMMaterial3D = ORMMaterial3D.new()
@@ -95,7 +105,6 @@ static func sphere(
     sphere.height = 2 * radius
     sphere.material = mat
 
-    print_stack()
     node.get_tree().root.add_child(mesh)
 
     mesh.global_position = pos
@@ -110,6 +119,11 @@ static func arrow(
     head_width: float = 0.2,
     head_proportion: float = 0.15,
 ) -> MeshInstance3D:
+    if node == null:
+        push_error("Node is null")
+        print_stack()
+        return null
+
     var mesh: MeshInstance3D = MeshInstance3D.new()
     var immediate_mesh: ImmediateMesh = ImmediateMesh.new()
     var mat: ORMMaterial3D = ORMMaterial3D.new()
