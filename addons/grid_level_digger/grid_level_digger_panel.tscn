@@ -65,7 +65,7 @@ layout_mode = 2
 layout_mode = 2
 theme_override_constants/separation = 6
 
-[node name="Grid Node Digger" type="VBoxContainer" parent="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container" node_paths=PackedStringArray("panel", "node_type_label", "coordinates_label", "sync_position_btn", "infer_coordinates_btn", "cam_offset_x", "cam_offset_y", "cam_offset_z")]
+[node name="Grid Node Digger" type="VBoxContainer" parent="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container" node_paths=PackedStringArray("panel", "node_type_label", "coordinates_label", "sync_position_btn", "infer_coordinates_btn", "cam_offset_x", "cam_offset_y", "cam_offset_z", "grid_node_picker")]
 layout_mode = 2
 script = ExtResource("2_6po18")
 panel = NodePath("../../../../..")
@@ -76,6 +76,7 @@ infer_coordinates_btn = NodePath("Node/Infer Coordinates")
 cam_offset_x = NodePath("MarginContainer/Follow Offset/Cam Offset X")
 cam_offset_y = NodePath("MarginContainer/Follow Offset/Cam Offset Y")
 cam_offset_z = NodePath("MarginContainer/Follow Offset/Cam Offset Z")
+grid_node_picker = NodePath("../HBoxContainer/GridNodePicker")
 
 [node name="Node" type="HBoxContainer" parent="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Grid Node Digger"]
 layout_mode = 2

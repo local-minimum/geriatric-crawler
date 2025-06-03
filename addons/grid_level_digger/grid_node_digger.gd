@@ -225,7 +225,7 @@ func _do_auto_dig_node(level: GridLevel, grid_node_resource: Resource, coordinat
     var node: GridNode = raw_node
 
     node.coordinates = coordinates
-    node.name = "Node @ %s" % coordinates
+    node.name = "Node %s" % coordinates
 
     var new_position: Vector3 = GridLevel.node_position_from_coordinates(level, node.coordinates)
     var node_parent = level.level_geometry
@@ -282,6 +282,23 @@ func _remove_debug_arrow() -> void:
         _debug_arrow_mesh = null
 
 
+@export
+var grid_node_picker: GridNodePicker
 var _grid_node_resource: Resource
+var _forcing_resource_change: bool
 func _on_grid_node_picker_resource_changed(resource:Resource) -> void:
+    if _forcing_resource_change:
+        return
+
+    if resource == null:
+        _grid_node_resource = null
+        return
+
+    if !grid_node_picker.is_valid(resource):
+        _forcing_resource_change = true
+        grid_node_picker.edited_resource = null
+        _grid_node_resource = null
+        push_warning("%s is not a GridNode" % resource)
+        _forcing_resource_change = false
+
     _grid_node_resource = resource
