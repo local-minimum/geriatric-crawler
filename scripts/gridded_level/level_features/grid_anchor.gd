@@ -24,7 +24,9 @@ func _ready() -> void:
     if node_side == null:
         push_error("%s doesn't have a GridNodeSide parent" % name)
     elif !CardinalDirections.is_parallell(direction, node_side.direction):
-        push_error("%s's direction %s isn't parallell to the GridNodeSide direction %s" % [name, direction, node_side.direction])
+        # TODO: Something is fishy here
+        GridNodeSide.set_direction_from_rotation(node_side)
+        # push_error("%s's direction %s isn't parallell to the GridNodeSide direction %s" % [name, direction, node_side.direction])
 
     # _draw_debug_edges()
 

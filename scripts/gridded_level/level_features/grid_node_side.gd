@@ -40,7 +40,19 @@ static func set_direction_from_rotation(node_side: GridNodeSide) -> void:
     node_side.direction = CardinalDirections.node_planar_rotation_to_direction(node_side)
 
     if node_side.anchor != null:
-        node_side.anchor.direction = node_side.anchor.direction
+        node_side.anchor.direction = node_side.direction
 
     if node_side.negative_anchor != null:
         node_side.negative_anchor.direction = CardinalDirections.invert(node_side.direction)
+
+static func get_node_side(node: GridNode, side_direction: CardinalDirections.CardinalDirection) -> GridNodeSide:
+    if node == null:
+        push_warning("Calling to get a node side of null element")
+        print_stack()
+        return null
+
+    for side: GridNodeSide in node.find_children("", "GridNodeSide"):
+        if side.direction == side_direction:
+            return side
+
+    return null

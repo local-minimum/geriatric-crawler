@@ -54,4 +54,7 @@ func _on_selection_change() -> void:
 
     # TODO: Multi select features
     panel.set_not_selected_level()
-    print_debug("Multiple items selected (%s)" % selections.size())
+    if selections.size():
+        print_debug("Multiple items selected (%s)" % selections.size())
+    else:
+        print_debug("Nothing selected")

@@ -30,16 +30,37 @@ func get_level() -> GridLevel:
 #
 
 func _init_anchors() -> void:
-    for anchor: GridAnchor in find_children("*", "GridAnchor"):
-        if _anchors.has(anchor.direction):
+    for side: GridNodeSide in find_children("", "GridNodeSide"):
+        if side.anchor == null:
+            continue
+
+        if _anchors.has(side.direction):
             push_warning(
-                "Node %s has duplicate anchors in the %s direction, skipping %s" % [name, anchor.direction, anchor],
+                "Node %s has duplicate anchors in the %s direction, skipping %s" % [name, side.direction, side],
             )
             continue
 
-        _anchors[anchor.direction] = anchor
+        _anchors[side.direction] = side.anchor
+
+    for dir: CardinalDirections.CardinalDirection in CardinalDirections.ALL_DIRECTIONS:
+        if _anchors.has(dir):
+            continue
+
+        var n: GridNode = neighbour(dir)
+
+        if n == null:
+            continue
+
+        var inverse: CardinalDirections.CardinalDirection = CardinalDirections.invert(dir)
+        for n_side: GridNodeSide in n.find_children("", "GridNodeSide"):
+            if n_side.direction != inverse:
+                continue
+
+            if n_side.negative_anchor != null:
+                _anchors[dir] = n_side.negative_anchor
 
     _anchors_inited = true
+
 
 func remove_anchor(anchor: GridAnchor) -> bool:
     if !_anchors.has(anchor.direction):

@@ -64,7 +64,7 @@ func set_level(level: GridLevel) -> void:
 
 func _update_level_if_needed(grid_node: GridNode) -> bool:
     var level: GridLevel = GridLevel.find_level_parent(grid_node)
-    if level != level:
+    if self.level != level:
         self.level = level
 
         all_level_nodes.clear()
@@ -81,6 +81,7 @@ func _update_level_if_needed(grid_node: GridNode) -> bool:
 
 func set_grid_node(grid_node: GridNode) -> void:
     if grid_node == _node:
+        _update_level_if_needed(grid_node)
         if !_selected_inside_level:
             _selected_inside_level = true
             sync_ui()

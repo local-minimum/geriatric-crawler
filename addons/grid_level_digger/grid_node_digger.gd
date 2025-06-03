@@ -18,6 +18,12 @@ var sync_position_btn: Button
 var infer_coordinates_btn: Button
 
 @export
+var auto_clear_sides: CheckButton
+
+@export
+var auto_add_sides: CheckButton
+
+@export
 var cam_offset_x: SpinBox
 
 @export
@@ -25,6 +31,12 @@ var cam_offset_y: SpinBox
 
 @export
 var cam_offset_z: SpinBox
+
+func _ready() -> void:
+    if auto_clear_sides != null:
+        auto_clear_sides.button_pressed = true
+    if auto_add_sides != null:
+        auto_add_sides.button_pressed = true
 
 func sync(force_coordinates: bool) -> void:
     var node: GridNode = panel.get_grid_node()
@@ -187,36 +199,94 @@ func _enact_translation(movement: Movement.MovementType) -> void:
     _sync_viewport_camera()
     _draw_debug_arrow()
 
-    sync(false)
-
     _perform_auto_dig(old_coordinates, direction)
+    sync(false)
     panel.draw_debug_node_meshes(_coordinates)
 
 func _perform_auto_dig(old_coordinates: Vector3i, dig_direction: CardinalDirections.CardinalDirection) -> void:
     if !_auto_dig || panel.level == null:
+        print_debug("0")
         return
 
+    print_debug("digstart")
     var level: GridLevel = panel.level
 
-    var existing_node = panel.get_grid_node_at(_coordinates)
+    var target_node = panel.get_grid_node_at(_coordinates)
 
-    if existing_node == null && _grid_node_resource == null:
+    if target_node == null && _grid_node_resource == null:
         push_warning("Could not auto-dig at %s because no dig-node selected" % _coordinates)
         return
 
-    if existing_node == null:
+    print_debug("dig target %s" % target_node)
+    if target_node == null:
 
+        print_debug("1")
         panel.undo_redo.create_action("GridLevelDigger: Auto-dig node @ %s" % _coordinates)
 
         panel.undo_redo.add_do_method(self, "_do_auto_dig_node", level, _grid_node_resource, _coordinates)
         panel.undo_redo.add_undo_method(self, "_undo_auto_dig_node", _coordinates)
 
         panel.undo_redo.commit_action()
+
+        target_node = panel.get_grid_node_at(_coordinates)
+
+    for dir: CardinalDirections.CardinalDirection in CardinalDirections.ALL_DIRECTIONS:
+        var neighbor: GridNode = panel.get_grid_node_at(CardinalDirections.translate(_coordinates, dir))
+        if auto_clear_sides && neighbor != null:
+            _remove_node_side(target_node, dir)
+            _remove_node_side(neighbor, CardinalDirections.invert(dir))
+        if auto_add_sides:
+            var side_resource: Resource = _get_resource_from_direction(dir)
+            _add_node_side(side_resource, level, target_node, neighbor, dir)
+
+func _get_resource_from_direction(dir: CardinalDirections.CardinalDirection) -> Resource:
+    if CardinalDirections.is_planar_cardinal(dir):
+        return _grid_wall_resource
+    elif dir == CardinalDirections.CardinalDirection.UP:
+        return _grid_ceiling_resource
+    elif dir == CardinalDirections.CardinalDirection.DOWN:
+        return _grid_floor_resource
+    return null
+
+func _remove_node_side(node: GridNode, side_direction: CardinalDirections.CardinalDirection) -> void:
+    if node == null:
         return
 
-    print_debug("Not digging because node %s exists at %s" % [existing_node, _coordinates])
+    var side = GridNodeSide.get_node_side(node, side_direction)
+    if side != null:
+        side.queue_free()
+
+func _add_node_side(resource: Resource, level: GridLevel, node: GridNode, neighbour: GridNode, side_direction: CardinalDirections.CardinalDirection) -> void:
+    if node == null || neighbour != null || resource == null:
+        return
+
+    var side = GridNodeSide.get_node_side(node, side_direction)
+    if side != null:
+        return
+
+    var raw_node: Node = resource.instantiate()
+    if raw_node is not GridNodeSide:
+        push_error("Grid Node template is not a GridNode")
+        raw_node.queue_free()
+        return
+
+    side = raw_node
+    side.direction = side_direction
+
+    side.name = "Side %s" % CardinalDirections.name(side_direction)
+
+    node.add_child(side, true)
+
+    side.position = Vector3.ZERO
+    if CardinalDirections.is_planar_cardinal(side_direction):
+        side.global_rotation = CardinalDirections.direction_to_planar_rotation(side_direction).get_euler()
+
+    side.owner = level.get_tree().edited_scene_root
+    if side.infer_direction_from_rotation:
+        GridNodeSide.set_direction_from_rotation(side)
 
 func _do_auto_dig_node(level: GridLevel, grid_node_resource: Resource, coordinates: Vector3i) -> void:
+    print_debug("2")
     var raw_node: Node = grid_node_resource.instantiate()
     if raw_node is not GridNode:
         push_error("Grid Node template is not a GridNode")
@@ -228,6 +298,7 @@ func _do_auto_dig_node(level: GridLevel, grid_node_resource: Resource, coordinat
     node.coordinates = coordinates
     node.name = "Node %s" % coordinates
 
+    print_debug("3")
     var new_position: Vector3 = GridLevel.node_position_from_coordinates(level, node.coordinates)
     var node_parent = level.level_geometry
     if node_parent == null:
@@ -235,8 +306,11 @@ func _do_auto_dig_node(level: GridLevel, grid_node_resource: Resource, coordinat
 
     panel.add_grid_node(node)
     node_parent.add_child(node, true)
-    node.position = new_position
-    node.owner = node_parent.get_tree().edited_scene_root
+    print_debug("4")
+
+    node.global_position = new_position
+    print_debug("5")
+    node.owner = level.get_tree().edited_scene_root
     print_debug("Auto-dug %s for %s" % [node, level])
 
 func _undo_auto_dig_node(coordinates: Vector3i) -> void:
