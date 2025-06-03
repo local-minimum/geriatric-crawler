@@ -12,6 +12,9 @@ var node_spacing: Vector3 = Vector3.ZERO
 @export
 var player: GridPlayer
 
+@export
+var level_geometry: Node3D
+
 var _nodes: Dictionary[Vector3i, GridNode] = {}
 
 func _init() -> void:

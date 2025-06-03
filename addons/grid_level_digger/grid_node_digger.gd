@@ -115,7 +115,7 @@ var _coordinates: Vector3i
 func _on_auto_dig_toggled(toggled_on:bool) -> void:
     _auto_dig = toggled_on
 
-func _on_auto_clear_walls_toggled(toggled_on:bool) -> void:
+func _on_auto_clear_toggled(toggled_on:bool) -> void:
     _auto_clear_walls = toggled_on
 
 func _on_auto_wall_toggled(toggled_on:bool) -> void:
@@ -179,13 +179,73 @@ func _enact_translation(movement: Movement.MovementType) -> void:
 
     var direction: CardinalDirections.CardinalDirection = Movement.to_direction(movement, _look_direction, CardinalDirections.CardinalDirection.DOWN)
 
+    var old_coordinates: Vector3i = _coordinates
     _coordinates = CardinalDirections.translate(_coordinates, direction)
 
     _sync_viewport_camera()
     _draw_debug_arrow()
 
     sync(false)
+
+    _perform_auto_dig(old_coordinates, direction)
     panel.draw_debug_node_meshes(_coordinates)
+
+func _perform_auto_dig(old_coordinates: Vector3i, dig_direction: CardinalDirections.CardinalDirection) -> void:
+    if !_auto_dig || panel._level == null:
+        return
+
+    var level: GridLevel = panel._level
+
+    var existing_node = panel.get_grid_node_at(_coordinates)
+
+    if existing_node == null && _grid_node_resource == null:
+        push_warning("Could not auto-dig at %s because no dig-node selected" % _coordinates)
+        return
+
+    if existing_node == null:
+
+        panel.undo_redo.create_action("GridLevelDigger: Auto-dig node @ %s" % _coordinates)
+
+        panel.undo_redo.add_do_method(self, "_do_auto_dig_node", level, _grid_node_resource, _coordinates)
+        panel.undo_redo.add_undo_method(self, "_undo_auto_dig_node", _coordinates)
+
+        panel.undo_redo.commit_action()
+        # _do_auto_dig_node(level, _grid_node_resource, _coordinates)
+        return
+
+    print_debug("Not digging because node %s exists at %s" % [existing_node, _coordinates])
+
+func _do_auto_dig_node(level: GridLevel, grid_node_resource: Resource, coordinates: Vector3i) -> void:
+    var raw_node: Node = grid_node_resource.instantiate()
+    if raw_node is not GridNode:
+        push_error("Grid Node template is not a GridNode")
+        raw_node.queue_free()
+        return
+
+    var node: GridNode = raw_node
+
+    node.coordinates = coordinates
+    node.name = "Node @ %s" % coordinates
+
+    var new_position: Vector3 = GridLevel.node_position_from_coordinates(level, node.coordinates)
+    var node_parent = level.level_geometry
+    if node_parent == null:
+        node_parent = level
+
+    panel.add_grid_node(node)
+    node_parent.add_child(node, true)
+    node.position = new_position
+    node.owner = node_parent.get_tree().edited_scene_root
+    print_debug("Auto-dug %s for %s" % [node, level])
+
+func _undo_auto_dig_node(coordinates: Vector3i) -> void:
+    var node: GridNode = panel.get_grid_node_at(coordinates)
+    if node == null:
+        return
+
+    panel.remove_grid_node(node)
+    node.queue_free()
+
 
 func _sync_viewport_camera() -> void:
     if _follow_cam:
@@ -220,3 +280,8 @@ func _remove_debug_arrow() -> void:
     if _debug_arrow_mesh != null:
         _debug_arrow_mesh.queue_free()
         _debug_arrow_mesh = null
+
+
+var _grid_node_resource: Resource
+func _on_grid_node_picker_resource_changed(resource:Resource) -> void:
+    _grid_node_resource = resource

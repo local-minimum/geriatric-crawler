@@ -95,6 +95,7 @@ static func sphere(
     sphere.height = 2 * radius
     sphere.material = mat
 
+    print_stack()
     node.get_tree().root.add_child(mesh)
 
     mesh.global_position = pos

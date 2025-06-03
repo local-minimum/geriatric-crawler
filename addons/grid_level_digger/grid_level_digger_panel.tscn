@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://w1rjgsij34eh"]
+[gd_scene load_steps=12 format=3 uid="uid://w1rjgsij34eh"]
 
 [ext_resource type="Script" uid="uid://hktghyj0gdcj" path="res://addons/grid_level_digger/grid_level_digger_panel.gd" id="1_fy27w"]
 [ext_resource type="Script" uid="uid://dq6vmugrwwqs6" path="res://addons/grid_level_digger/grid_node_digger.gd" id="2_6po18"]
@@ -10,9 +10,10 @@
 [ext_resource type="Texture2D" uid="uid://cp6jnxtmrxel6" path="res://addons/grid_level_digger/sprites/kenney game icons/PNG/White/1x/arrowDown.png" id="7_56aqn"]
 [ext_resource type="Texture2D" uid="uid://bqpbcv4tfwq2h" path="res://addons/grid_level_digger/sprites/kenney game icons/PNG/White/1x/arrowRight.png" id="8_veu6e"]
 [ext_resource type="Texture2D" uid="uid://d0b7f5ynetioe" path="res://addons/grid_level_digger/sprites/kenney game icons/PNG/White/1x/down.png" id="9_cnqku"]
+[ext_resource type="Script" uid="uid://cgrkqhmr483hm" path="res://addons/grid_level_digger/controls/grid_node_picker.gd" id="11_cswv1"]
 
 [node name="GridLevelDiggerPanel" type="Panel" node_paths=PackedStringArray("node_digger", "single_select_group", "info_label")]
-custom_minimum_size = Vector2(400, 400)
+custom_minimum_size = Vector2(400, 600)
 anchors_preset = 9
 anchor_bottom = 1.0
 grow_vertical = 2
@@ -166,10 +167,10 @@ layout_mode = 2
 theme_override_constants/h_separation = 8
 text = "Auto-dig"
 
-[node name="Auto-Clear-Walls" type="CheckButton" parent="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Grid Node Digger/HBoxContainer/VBoxContainer"]
+[node name="Auto-Clear" type="CheckButton" parent="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Grid Node Digger/HBoxContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_constants/h_separation = 8
-text = "Auto-clear thin walls"
+text = "Auto-clear sides"
 
 [node name="Auto-Wall" type="CheckButton" parent="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Grid Node Digger/HBoxContainer/VBoxContainer"]
 layout_mode = 2
@@ -218,6 +219,27 @@ allow_lesser = true
 prefix = "Z"
 select_all_on_focus = true
 
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/HBoxContainer"]
+layout_mode = 2
+text = "Dig Node"
+
+[node name="Spacer" type="Control" parent="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="GridNodePicker" type="EditorResourcePicker" parent="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/HBoxContainer"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 2.0
+base_type = "GridNode"
+toggle_mode = true
+script = ExtResource("11_cswv1")
+metadata/_custom_type_script = "uid://cgrkqhmr483hm"
+
 [node name="Info Container" type="Label" parent="VBoxContainer/MarginContainer/VBoxContainer"]
 custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
@@ -236,8 +258,9 @@ autowrap_mode = 2
 [connection signal="pressed" from="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Grid Node Digger/HBoxContainer/VBoxContainer2/Navigation Buttons/Down" to="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Grid Node Digger" method="_on_down_pressed"]
 [connection signal="toggled" from="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Grid Node Digger/HBoxContainer/VBoxContainer2/Follow Cam" to="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Grid Node Digger" method="_on_follow_cam_toggled"]
 [connection signal="toggled" from="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Grid Node Digger/HBoxContainer/VBoxContainer/Auto-Dig" to="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Grid Node Digger" method="_on_auto_dig_toggled"]
-[connection signal="toggled" from="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Grid Node Digger/HBoxContainer/VBoxContainer/Auto-Clear-Walls" to="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Grid Node Digger" method="_on_auto_clear_walls_toggled"]
+[connection signal="toggled" from="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Grid Node Digger/HBoxContainer/VBoxContainer/Auto-Clear" to="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Grid Node Digger" method="_on_auto_clear_toggled"]
 [connection signal="toggled" from="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Grid Node Digger/HBoxContainer/VBoxContainer/Auto-Wall" to="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Grid Node Digger" method="_on_auto_wall_toggled"]
 [connection signal="value_changed" from="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Grid Node Digger/MarginContainer/Follow Offset/Cam Offset X" to="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Grid Node Digger" method="_on_cam_offset_x_value_changed"]
 [connection signal="value_changed" from="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Grid Node Digger/MarginContainer/Follow Offset/Cam Offset Y" to="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Grid Node Digger" method="_on_cam_offset_y_value_changed"]
 [connection signal="value_changed" from="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Grid Node Digger/MarginContainer/Follow Offset/Cam Offset Z" to="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Grid Node Digger" method="_on_cam_offset_z_value_changed"]
+[connection signal="resource_changed" from="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/HBoxContainer/GridNodePicker" to="VBoxContainer/MarginContainer/VBoxContainer/Single Selection Container/Grid Node Digger" method="_on_grid_node_picker_resource_changed"]

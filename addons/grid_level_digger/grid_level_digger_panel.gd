@@ -33,6 +33,14 @@ func get_grid_node_at(coordinates: Vector3i) -> GridNode:
         return null
     return all_level_nodes[idx]
 
+func add_grid_node(node: GridNode) -> void:
+    if all_level_nodes.has(node):
+        return
+
+    all_level_nodes.append(node)
+
+func remove_grid_node(node: GridNode) -> void:
+    all_level_nodes.erase(node)
 
 func get_grid_anchor() -> GridAnchor:
     return _anchor
@@ -170,6 +178,8 @@ func _clear_node_debug_anchors() -> void:
         return
 
     for mesh: MeshInstance3D in _node_debug_anchors:
+        if mesh == null:
+            continue
         mesh.queue_free()
 
     _node_debug_anchors.clear()
