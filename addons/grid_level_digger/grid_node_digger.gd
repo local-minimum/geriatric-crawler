@@ -210,7 +210,6 @@ func _perform_auto_dig(old_coordinates: Vector3i, dig_direction: CardinalDirecti
         panel.undo_redo.add_undo_method(self, "_undo_auto_dig_node", _coordinates)
 
         panel.undo_redo.commit_action()
-        # _do_auto_dig_node(level, _grid_node_resource, _coordinates)
         return
 
     print_debug("Not digging because node %s exists at %s" % [existing_node, _coordinates])
@@ -282,10 +281,11 @@ func _remove_debug_arrow() -> void:
         _debug_arrow_mesh = null
 
 
-@export
-var grid_node_picker: GridNodePicker
-var _grid_node_resource: Resource
 var _forcing_resource_change: bool
+
+@export
+var grid_node_picker: ValidatingEditorNodePicker
+var _grid_node_resource: Resource
 func _on_grid_node_picker_resource_changed(resource:Resource) -> void:
     if _forcing_resource_change:
         return
@@ -298,7 +298,67 @@ func _on_grid_node_picker_resource_changed(resource:Resource) -> void:
         _forcing_resource_change = true
         grid_node_picker.edited_resource = null
         _grid_node_resource = null
-        push_warning("%s is not a GridNode" % resource)
+        push_warning("%s is not a %s" % [resource, grid_node_picker.root_class_name])
         _forcing_resource_change = false
 
     _grid_node_resource = resource
+
+@export
+var grid_ceiling_picker: ValidatingEditorNodePicker
+var _grid_ceiling_resource: Resource
+func _on_grid_ceiling_picker_resource_changed(resource:Resource) -> void:
+    if _forcing_resource_change:
+        return
+
+    if resource == null:
+        _grid_ceiling_resource = null
+        return
+
+    if !grid_ceiling_picker.is_valid(resource):
+        _forcing_resource_change = true
+        grid_ceiling_picker.edited_resource = null
+        _grid_ceiling_resource = null
+        push_warning("%s is not a %s" % [resource, grid_ceiling_picker.root_class_name])
+        _forcing_resource_change = false
+
+    _grid_ceiling_resource = resource
+
+@export
+var grid_floor_picker: ValidatingEditorNodePicker
+var _grid_floor_resource: Resource
+func _on_grid_floor_picker_resource_changed(resource:Resource) -> void:
+    if _forcing_resource_change:
+        return
+
+    if resource == null:
+        _grid_floor_resource = null
+        return
+
+    if !grid_floor_picker.is_valid(resource):
+        _forcing_resource_change = true
+        grid_floor_picker.edited_resource = null
+        _grid_floor_resource = null
+        push_warning("%s is not a %s" % [resource, grid_floor_picker.root_class_name])
+        _forcing_resource_change = false
+
+    _grid_floor_resource = resource
+
+@export
+var grid_wall_picker: ValidatingEditorNodePicker
+var _grid_wall_resource: Resource
+func _on_grid_wall_picker_resource_changed(resource:Resource) -> void:
+    if _forcing_resource_change:
+        return
+
+    if resource == null:
+        _grid_wall_resource = null
+        return
+
+    if !grid_wall_picker.is_valid(resource):
+        _forcing_resource_change = true
+        grid_wall_picker.edited_resource = null
+        _grid_wall_resource = null
+        push_warning("%s is not a %s" % [resource, grid_wall_picker.root_class_name])
+        _forcing_resource_change = false
+
+    _grid_wall_resource = resource

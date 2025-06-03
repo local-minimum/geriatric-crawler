@@ -1,8 +1,9 @@
 @tool
 extends EditorResourcePicker
-class_name GridNodePicker
+class_name ValidatingEditorNodePicker
 
-const SCENE_ROOT_TYPE: String = "GridNode"
+@export
+var root_class_name: String = "GridNode"
 
 func _ready() -> void:
     base_type = "PackedScene"
@@ -16,5 +17,5 @@ func is_valid(resource: Resource) -> bool:
             return false
         var root_script_raw: Variant = scene_state.get_node_property_value(0, 0)
         if root_script_raw is Script:
-            return root_script_raw.get_global_name() == SCENE_ROOT_TYPE
+            return root_script_raw.get_global_name() == root_class_name
     return false
