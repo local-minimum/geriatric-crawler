@@ -259,6 +259,7 @@ func _handle_outer_corner_transition(
         anchor,
         target_anchor,
         move_direction,
+        CardinalDirections.invert(entity.down),
         updated_directions
     )
     return true
@@ -287,6 +288,7 @@ func _handle_node_inner_corner_transition(
         anchor,
         target_anchor,
         move_direction,
+        entity.down,
         updated_directions
     )
 
@@ -299,17 +301,19 @@ func _handle_corner(
     anchor: GridAnchor,
     target_anchor: GridAnchor,
     move_direction: CardinalDirections.CardinalDirection,
+    target_anchor_edge: CardinalDirections.CardinalDirection,
     updated_directions: Array[CardinalDirections.CardinalDirection],
 ) -> void:
     var start_edge: Vector3 = anchor.get_edge_position(move_direction)
-    var target_edge: Vector3 = target_anchor.get_edge_position(CardinalDirections.invert(entity.down))
+    var target_edge: Vector3 = target_anchor.get_edge_position(target_anchor_edge)
     var intermediate: Vector3 = lerp(start_edge, target_edge, 0.5)
 
     var final_rotation: Transform3D = Transform3D.IDENTITY.looking_at(
         Vector3(CardinalDirections.direction_to_vector(updated_directions[0])),
         Vector3(CardinalDirections.direction_to_vector(CardinalDirections.invert(updated_directions[1]))),
         )
-    var intermediate_rotation: Basis = lerp(entity.global_transform.basis, final_rotation.basis, 0.5)
+
+    var intermediate_rotation: Basis = lerp(entity.global_transform.basis.orthonormalized(), final_rotation.basis.orthonormalized(), 0.5)
     var half_time: float = exotic_translation_time * 0.5 / animation_speed
 
     entity.block_concurrent_movement()

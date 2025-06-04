@@ -109,14 +109,15 @@ func get_center_pos() -> Vector3:
 #
 
 func neighbour(direction: CardinalDirections.CardinalDirection) -> GridNode:
-    if level == null:
+    var _level: GridLevel = get_level()
+    if _level == null:
         push_error("Node at %s not part of a level" % coordinates)
         return null
 
     var neighbour_coords: Vector3i = CardinalDirections.translate(coordinates, direction)
 
-    if level.has_grid_node(neighbour_coords):
-        return level.get_grid_node(neighbour_coords)
+    if _level.has_grid_node(neighbour_coords):
+        return _level.get_grid_node(neighbour_coords)
 
     return null
 
