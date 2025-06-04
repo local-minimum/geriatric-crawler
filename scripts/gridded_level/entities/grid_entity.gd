@@ -66,7 +66,7 @@ func _start_movement(movement: Movement.MovementType, force: bool) -> bool:
         # print_debug("Movement %s accepted as concurrent" % [Movement.name(movement)])
         _concurrent_movement = movement
     else:
-        print_debug("Movement refused: busy")
+        # print_debug("Movement refused: busy")
         return false
 
     return true
@@ -129,7 +129,9 @@ func attempt_movement(
     if !_start_movement(movement, force):
         if enqueue_if_occupied && queue_moves:
             _enqeue_movement(movement)
-        print_debug("%s & %s are active" % [Movement.name(_active_movement), Movement.name(_concurrent_movement)])
+            return true
+
+        # print_debug("%s & %s are active" % [Movement.name(_active_movement), Movement.name(_concurrent_movement)])
         return false
 
     if force:

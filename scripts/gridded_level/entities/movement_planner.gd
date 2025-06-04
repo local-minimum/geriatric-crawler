@@ -36,7 +36,6 @@ func move_entity(
 
     var was_excotic_walk: bool = entity.transportation_mode.has_any(TransportationMode.EXOTIC_WALKS)
 
-    print_debug("Move")
     # We're in the air but moving onto an anchor of the current node
     if _handle_landing(movement, tween, node, anchor, move_direction):
         return tween
@@ -142,7 +141,6 @@ func _handle_node_transition(
     move_direction: CardinalDirections.CardinalDirection,
     was_excotic_walk: bool,
 ) -> bool:
-    print_debug("Node transition")
     if node.may_exit(entity, move_direction):
         var neighbour: GridNode = node.neighbour(move_direction)
         if neighbour == null:
@@ -243,10 +241,10 @@ func _handle_outer_corner_transition(
     neighbour: GridNode,
 ) -> bool:
     if anchor == null || !neighbour.may_transit(entity, move_direction, entity.down):
-        if anchor == null:
-            print_debug("Anchor is null")
-        else:
-            print_debug("We may not transit %s entering %s exiting %s" % [neighbour.name, move_direction, entity.down])
+        # if anchor == null:
+            # print_debug("Anchor is null")
+        # else:
+            # print_debug("We may not transit %s entering %s exiting %s" % [neighbour.name, move_direction, entity.down])
         return false
 
     var updated_directions: Array[CardinalDirections.CardinalDirection] = CardinalDirections.calculate_outer_corner(
@@ -254,20 +252,20 @@ func _handle_outer_corner_transition(
 
     var target: GridNode = neighbour.neighbour(entity.down)
     if target == null || !target.may_enter(entity, entity.down, updated_directions[1]):
-        if target == null:
-            print_debug("Target is null")
-        else:
-            print_debug("We may not enter %s from %s" % [target.name, entity.down])
+        # if target == null:
+            # print_debug("Target is null")
+        # else:
+            # print_debug("We may not enter %s from %s" % [target.name, entity.down])
         return false
 
 
     var target_anchor: GridAnchor = target.get_anchor(updated_directions[1])
 
     if target_anchor == null || !target_anchor.can_anchor(entity):
-        if target_anchor == null:
-            print_debug("%s doesn't have an anchor %s" % [target.name, updated_directions[1]])
-        else:
-            print_debug("%s of %s doesn't alow us to anchor" % [target_anchor.name, target.name])
+        # if target_anchor == null:
+            # print_debug("%s doesn't have an anchor %s" % [target.name, updated_directions[1]])
+        # else:
+            # print_debug("%s of %s doesn't alow us to anchor" % [target_anchor.name, target.name])
         return false
 
     _handle_corner(
@@ -331,7 +329,7 @@ func _handle_corner(
         Vector3(CardinalDirections.direction_to_vector(CardinalDirections.invert(updated_directions[1]))),
         )
 
-    var intermediate_rotation: Basis = lerp(entity.global_transform.basis.orthonormalized(), final_rotation.basis.orthonormalized(), 0.5)
+    var intermediate_rotation: Quaternion = lerp(entity.global_transform.basis.get_rotation_quaternion(), final_rotation.basis.get_rotation_quaternion(), 0.5)
     var half_time: float = exotic_translation_time * 0.5 / animation_speed
 
     entity.block_concurrent_movement()
@@ -346,9 +344,9 @@ func _handle_corner(
         half_time)
 
     var meth_tweener: MethodTweener = tween.tween_method(
-        func (value: Basis) -> void:
+        func (value: Quaternion) -> void:
             entity.global_rotation = value.get_euler(),
-        entity.global_basis,
+        entity.global_basis.get_rotation_quaternion(),
         intermediate_rotation,
         half_time)
 
@@ -363,10 +361,10 @@ func _handle_corner(
         half_time)
 
     var meth_tweener2: MethodTweener = second_tween.tween_method(
-        func (value: Basis) -> void:
+        func (value: Quaternion) -> void:
             entity.global_rotation = value.get_euler(),
         intermediate_rotation,
-        final_rotation.basis,
+        final_rotation.basis.get_rotation_quaternion(),
         half_time)
 
     if !tank_movement:

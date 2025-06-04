@@ -73,11 +73,12 @@ func _input(event: InputEvent) -> void:
         else:
             return
 
-        print_debug("%s looking %s with %s down and has %s transportation" % [
-            name,
-            CardinalDirections.name(look_direction),
-            CardinalDirections.name(down),
-            transportation_mode.humanize()])
+        # print_debug("%s @ %s looking %s with %s down and has %s transportation" % [
+            # name,
+            # coordnates(),
+            # CardinalDirections.name(look_direction),
+            # CardinalDirections.name(down),
+            # transportation_mode.humanize()])
 
 func _held_movement(movement: Movement.MovementType) -> void:
     if !allow_replays:
