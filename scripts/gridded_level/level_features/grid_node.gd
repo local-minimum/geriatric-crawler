@@ -121,11 +121,16 @@ func neighbour(direction: CardinalDirections.CardinalDirection) -> GridNode:
 
     return null
 
-func may_enter(entity: GridEntity, move_direction: CardinalDirections.CardinalDirection) -> bool:
+func may_enter(
+    entity: GridEntity,
+    move_direction: CardinalDirections.CardinalDirection,
+    anchor_direction: CardinalDirections.CardinalDirection,
+    ignore_require_anchor: bool = false,
+) -> bool:
     var anchor: GridAnchor = get_anchor(CardinalDirections.invert(move_direction))
 
-    if entry_requires_anchor:
-        var down_anchor: GridAnchor = get_anchor(entity.down)
+    if entry_requires_anchor && !ignore_require_anchor:
+        var down_anchor: GridAnchor = get_anchor(anchor_direction)
         if down_anchor == null || !down_anchor.can_anchor(entity):
             return false
 
@@ -138,6 +143,8 @@ func may_exit(entity: GridEntity, move_direction: CardinalDirections.CardinalDir
         return true
 
     if anchor.can_anchor(entity):
+        print_debug("Cannot exit %s from %s because we can anchor on %s" % [move_direction, name, anchor.name])
+        print_stack()
         return false
 
     return anchor.pass_through_on_refuse
@@ -147,7 +154,7 @@ func may_transit(
     move_direction: CardinalDirections.CardinalDirection,
     exit_direction: CardinalDirections.CardinalDirection,
 ) -> bool:
-    return may_enter(entity, move_direction) && may_exit(entity, exit_direction)
+    return may_enter(entity, move_direction, entity.down, true) && may_exit(entity, exit_direction)
 
 static func find_node_parent(current: Node, inclusive: bool = true) ->  GridNode:
     if inclusive && current is GridNode:

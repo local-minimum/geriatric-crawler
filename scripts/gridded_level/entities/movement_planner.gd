@@ -36,6 +36,7 @@ func move_entity(
 
     var was_excotic_walk: bool = entity.transportation_mode.has_any(TransportationMode.EXOTIC_WALKS)
 
+    print_debug("Move")
     # We're in the air but moving onto an anchor of the current node
     if _handle_landing(movement, tween, node, anchor, move_direction):
         return tween
@@ -141,14 +142,18 @@ func _handle_node_transition(
     move_direction: CardinalDirections.CardinalDirection,
     was_excotic_walk: bool,
 ) -> bool:
+    print_debug("Node transition")
     if node.may_exit(entity, move_direction):
         var neighbour: GridNode = node.neighbour(move_direction)
-        if neighbour != null && neighbour.may_enter(entity, move_direction):
+        if neighbour == null:
+            return false
+
+        if _handle_outer_corner_transition(movement, tween, anchor, move_direction, neighbour):
+            return true
+
+        if neighbour.may_enter(entity, move_direction, entity.down):
 
             var neighbour_anchor: GridAnchor = neighbour.get_anchor(entity.down)
-
-            if neighbour_anchor == null && _handle_outer_corner_transition(movement, tween, anchor, move_direction, neighbour):
-                return true
 
             if was_excotic_walk && !entity.can_jump_off_walls && neighbour_anchor == null:
                 return false
@@ -238,18 +243,31 @@ func _handle_outer_corner_transition(
     neighbour: GridNode,
 ) -> bool:
     if anchor == null || !neighbour.may_transit(entity, move_direction, entity.down):
-        return false
-
-    var target: GridNode = neighbour.neighbour(entity.down)
-    if target == null || !target.may_enter(entity, entity.down):
+        if anchor == null:
+            print_debug("Anchor is null")
+        else:
+            print_debug("We may not transit %s entering %s exiting %s" % [neighbour.name, move_direction, entity.down])
         return false
 
     var updated_directions: Array[CardinalDirections.CardinalDirection] = CardinalDirections.calculate_outer_corner(
         move_direction, entity.look_direction, entity.down)
 
+    var target: GridNode = neighbour.neighbour(entity.down)
+    if target == null || !target.may_enter(entity, entity.down, updated_directions[1]):
+        if target == null:
+            print_debug("Target is null")
+        else:
+            print_debug("We may not enter %s from %s" % [target.name, entity.down])
+        return false
+
+
     var target_anchor: GridAnchor = target.get_anchor(updated_directions[1])
 
     if target_anchor == null || !target_anchor.can_anchor(entity):
+        if target_anchor == null:
+            print_debug("%s doesn't have an anchor %s" % [target.name, updated_directions[1]])
+        else:
+            print_debug("%s of %s doesn't alow us to anchor" % [target_anchor.name, target.name])
         return false
 
     _handle_corner(

@@ -129,7 +129,7 @@ func attempt_movement(
     if !_start_movement(movement, force):
         if enqueue_if_occupied && queue_moves:
             _enqeue_movement(movement)
-        # print_debug("%s & %s are active" % [Movement.name(_active_movement), Movement.name(_concurrent_movement)])
+        print_debug("%s & %s are active" % [Movement.name(_active_movement), Movement.name(_concurrent_movement)])
         return false
 
     if force:
