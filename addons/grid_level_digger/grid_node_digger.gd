@@ -115,8 +115,9 @@ func _on_infer_coordinates_pressed() -> void:
             sync(true)
 
 
-var _auto_clear_walls: bool
-var _auto_add_walls: bool
+var _auto_clear_walls: bool = true
+var _preserve_vertical: bool = true
+var _auto_add_walls: bool = true
 var _auto_dig: bool
 var _follow_cam: bool
 var _cam_offset_synced: bool
@@ -133,11 +134,14 @@ func _on_auto_clear_toggled(toggled_on:bool) -> void:
     _auto_clear_walls = toggled_on
 
 func _on_auto_wall_toggled(toggled_on:bool) -> void:
+    print_debug("Auto-add walls %s" % toggled_on)
     _auto_add_walls = toggled_on
 
 func _on_follow_cam_toggled(toggled_on:bool) -> void:
     _follow_cam = toggled_on
 
+func _on_preserve_vertical_toggled(toggled_on:bool) -> void:
+    _preserve_vertical = toggled_on
 
 func _on_cam_offset_z_value_changed(value:float) -> void:
     if _cam_offset_syncing: return
@@ -205,6 +209,10 @@ func _enact_translation(movement: Movement.MovementType) -> void:
 
 func _perform_auto_dig(old_coordinates: Vector3i, dig_direction: CardinalDirections.CardinalDirection) -> void:
     if !_auto_dig || panel.level == null:
+        if !_auto_dig:
+            print_debug("Not digging")
+        if panel.level == null:
+            print_debug("No level")
         return
 
     var level: GridLevel = panel.level
@@ -227,12 +235,14 @@ func _perform_auto_dig(old_coordinates: Vector3i, dig_direction: CardinalDirecti
 
     for dir: CardinalDirections.CardinalDirection in CardinalDirections.ALL_DIRECTIONS:
         var neighbor: GridNode = panel.get_grid_node_at(CardinalDirections.translate(_coordinates, dir))
-        if auto_clear_sides && neighbor != null:
+
+        if _auto_clear_walls && neighbor != null && (!_preserve_vertical || CardinalDirections.is_planar_cardinal(dir)):
             _remove_node_side(target_node, dir)
             _remove_node_side(neighbor, CardinalDirections.invert(dir))
-        if auto_add_sides && may_wall:
+
+        if _auto_add_walls && may_wall:
             var side_resource: Resource = _get_resource_from_direction(dir)
-            _add_node_side(side_resource, level, target_node, neighbor, dir)
+            _add_node_side(side_resource, level, target_node, neighbor, dir, _preserve_vertical)
 
 func _get_resource_from_direction(dir: CardinalDirections.CardinalDirection) -> Resource:
     if CardinalDirections.is_planar_cardinal(dir):
@@ -252,8 +262,17 @@ func _remove_node_side(node: GridNode, side_direction: CardinalDirections.Cardin
         side.queue_free()
         EditorInterface.mark_scene_as_unsaved()
 
-func _add_node_side(resource: Resource, level: GridLevel, node: GridNode, neighbour: GridNode, side_direction: CardinalDirections.CardinalDirection) -> void:
-    if node == null || neighbour != null || resource == null:
+func _add_node_side(
+    resource: Resource,
+    level: GridLevel,
+    node: GridNode,
+    neighbour: GridNode,
+    side_direction: CardinalDirections.CardinalDirection,
+    treat_elevation_as_separate: bool) -> void:
+    if node == null || resource == null:
+        return
+
+    if neighbour != null && (!treat_elevation_as_separate || CardinalDirections.is_planar_cardinal(side_direction)):
         return
 
     var side = GridNodeSide.get_node_side(node, side_direction)
