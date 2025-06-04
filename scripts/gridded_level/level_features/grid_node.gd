@@ -129,7 +129,7 @@ func may_enter(
 ) -> bool:
     var anchor: GridAnchor = get_anchor(CardinalDirections.invert(move_direction))
 
-    if entry_requires_anchor && !ignore_require_anchor:
+    if entry_requires_anchor && !ignore_require_anchor && !(entity.falling() && move_direction == CardinalDirections.CardinalDirection.DOWN):
         var down_anchor: GridAnchor = get_anchor(anchor_direction)
         if down_anchor == null || !down_anchor.can_anchor(entity):
             return false

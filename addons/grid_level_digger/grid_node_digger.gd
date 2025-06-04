@@ -250,6 +250,7 @@ func _remove_node_side(node: GridNode, side_direction: CardinalDirections.Cardin
     var side = GridNodeSide.get_node_side(node, side_direction)
     if side != null:
         side.queue_free()
+        EditorInterface.mark_scene_as_unsaved()
 
 func _add_node_side(resource: Resource, level: GridLevel, node: GridNode, neighbour: GridNode, side_direction: CardinalDirections.CardinalDirection) -> void:
     if node == null || neighbour != null || resource == null:
@@ -280,6 +281,8 @@ func _add_node_side(resource: Resource, level: GridLevel, node: GridNode, neighb
     if side.infer_direction_from_rotation:
         GridNodeSide.set_direction_from_rotation(side)
 
+    EditorInterface.mark_scene_as_unsaved()
+
 func _do_auto_dig_node(level: GridLevel, grid_node_resource: Resource, coordinates: Vector3i) -> void:
     var raw_node: Node = grid_node_resource.instantiate()
     if raw_node is not GridNode:
@@ -302,6 +305,7 @@ func _do_auto_dig_node(level: GridLevel, grid_node_resource: Resource, coordinat
 
     node.global_position = new_position
     node.owner = level.get_tree().edited_scene_root
+    EditorInterface.mark_scene_as_unsaved()
 
 func _undo_auto_dig_node(coordinates: Vector3i) -> void:
     var node: GridNode = panel.get_grid_node_at(coordinates)

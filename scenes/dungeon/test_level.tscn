@@ -620,3 +620,118 @@ transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0, 
 direction = 3
 
 [node name="Side DOWN" parent="LevelGeometry/Node (-7, -1, -1)" instance=ExtResource("10_r1g7e")]
+
+[node name="Node (-9, 0, -2)" parent="LevelGeometry" instance=ExtResource("7_rvj20")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13.515, -0.0310373, -3.02192)
+coordinates = Vector3i(-9, 0, -2)
+entry_requires_anchor = false
+
+[node name="Side NORTH" parent="LevelGeometry/Node (-9, 0, -2)" instance=ExtResource("3_q8nfi")]
+
+[node name="Side SOUTH" parent="LevelGeometry/Node (-9, 0, -2)" instance=ExtResource("3_q8nfi")]
+transform = Transform3D(-1, 0, -1.50996e-07, 0, 1, 0, 1.50996e-07, 0, -1, 0, 0, 0)
+direction = 2
+
+[node name="Side WEST" parent="LevelGeometry/Node (-9, 0, -2)" instance=ExtResource("3_q8nfi")]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0, 0)
+direction = 3
+
+[node name="Side UP" parent="LevelGeometry/Node (-9, 0, -2)" instance=ExtResource("4_pgxau")]
+
+[node name="Node (-9, -1, -2)" parent="LevelGeometry" instance=ExtResource("7_rvj20")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13.5, -2.6, -3)
+coordinates = Vector3i(-9, -1, -2)
+
+[node name="Side NORTH" parent="LevelGeometry/Node (-9, -1, -2)" instance=ExtResource("3_q8nfi")]
+
+[node name="Side SOUTH" parent="LevelGeometry/Node (-9, -1, -2)" instance=ExtResource("3_q8nfi")]
+transform = Transform3D(-1, 0, -1.50996e-07, 0, 1, 0, 1.50996e-07, 0, -1, 0, 0, 0)
+direction = 2
+
+[node name="Side WEST" parent="LevelGeometry/Node (-9, -1, -2)" instance=ExtResource("3_q8nfi")]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0, 0)
+direction = 3
+
+[node name="Side EAST" parent="LevelGeometry/Node (-9, -1, -2)" instance=ExtResource("3_q8nfi")]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 0, 0, 0)
+direction = 4
+
+[node name="Node (-9, -2, -2)" parent="LevelGeometry" instance=ExtResource("7_rvj20")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13.5, -5.2, -3)
+coordinates = Vector3i(-9, -2, -2)
+
+[node name="Side DOWN" parent="LevelGeometry/Node (-9, -2, -2)" instance=ExtResource("10_r1g7e")]
+
+[node name="Node (-10, -2, -2)" parent="LevelGeometry" instance=ExtResource("7_rvj20")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15, -5.2, -3)
+coordinates = Vector3i(-10, -2, -2)
+
+[node name="Side NORTH" parent="LevelGeometry/Node (-10, -2, -2)" instance=ExtResource("3_q8nfi")]
+
+[node name="Side SOUTH" parent="LevelGeometry/Node (-10, -2, -2)" instance=ExtResource("3_q8nfi")]
+transform = Transform3D(-1, 0, -1.50996e-07, 0, 1, 0, 1.50996e-07, 0, -1, 0, 0, 0)
+direction = 2
+
+[node name="Side WEST" parent="LevelGeometry/Node (-10, -2, -2)" instance=ExtResource("3_q8nfi")]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0, 0)
+direction = 3
+
+[node name="Side UP" parent="LevelGeometry/Node (-10, -2, -2)" instance=ExtResource("4_pgxau")]
+
+[node name="Side DOWN" parent="LevelGeometry/Node (-10, -2, -2)" instance=ExtResource("10_r1g7e")]
+
+[node name="Node (-8, -2, -2)" parent="LevelGeometry" instance=ExtResource("7_rvj20")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12, -5.2, -3)
+coordinates = Vector3i(-8, -2, -2)
+
+[node name="Side NORTH" parent="LevelGeometry/Node (-8, -2, -2)" instance=ExtResource("3_q8nfi")]
+
+[node name="Side SOUTH" parent="LevelGeometry/Node (-8, -2, -2)" instance=ExtResource("3_q8nfi")]
+transform = Transform3D(-1, 0, -1.50996e-07, 0, 1, 0, 1.50996e-07, 0, -1, 0, 0, 0)
+direction = 2
+
+[node name="Side EAST" parent="LevelGeometry/Node (-8, -2, -2)" instance=ExtResource("3_q8nfi")]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 0, 0, 0)
+direction = 4
+
+[node name="Side UP" parent="LevelGeometry/Node (-8, -2, -2)" instance=ExtResource("4_pgxau")]
+
+[node name="Side DOWN" parent="LevelGeometry/Node (-8, -2, -2)" instance=ExtResource("10_r1g7e")]
+
+[node name="Node (-9, -2, -1)" parent="LevelGeometry" instance=ExtResource("7_rvj20")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13.5, -5.2, -1.5)
+coordinates = Vector3i(-9, -2, -1)
+
+[node name="Side SOUTH" parent="LevelGeometry/Node (-9, -2, -1)" instance=ExtResource("3_q8nfi")]
+transform = Transform3D(-1, 0, -1.50996e-07, 0, 1, 0, 1.50996e-07, 0, -1, 0, 0, 0)
+direction = 2
+
+[node name="Side WEST" parent="LevelGeometry/Node (-9, -2, -1)" instance=ExtResource("3_q8nfi")]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0, 0)
+direction = 3
+
+[node name="Side EAST" parent="LevelGeometry/Node (-9, -2, -1)" instance=ExtResource("3_q8nfi")]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 0, 0, 0)
+direction = 4
+
+[node name="Side UP" parent="LevelGeometry/Node (-9, -2, -1)" instance=ExtResource("4_pgxau")]
+
+[node name="Side DOWN" parent="LevelGeometry/Node (-9, -2, -1)" instance=ExtResource("10_r1g7e")]
+
+[node name="Node (-9, -2, -3)" parent="LevelGeometry" instance=ExtResource("7_rvj20")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13.5, -5.2, -4.5)
+coordinates = Vector3i(-9, -2, -3)
+
+[node name="Side NORTH" parent="LevelGeometry/Node (-9, -2, -3)" instance=ExtResource("3_q8nfi")]
+
+[node name="Side WEST" parent="LevelGeometry/Node (-9, -2, -3)" instance=ExtResource("3_q8nfi")]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0, 0)
+direction = 3
+
+[node name="Side EAST" parent="LevelGeometry/Node (-9, -2, -3)" instance=ExtResource("3_q8nfi")]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 0, 0, 0)
+direction = 4
+
+[node name="Side UP" parent="LevelGeometry/Node (-9, -2, -3)" instance=ExtResource("4_pgxau")]
+
+[node name="Side DOWN" parent="LevelGeometry/Node (-9, -2, -3)" instance=ExtResource("10_r1g7e")]
