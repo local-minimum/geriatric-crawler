@@ -205,22 +205,17 @@ func _enact_translation(movement: Movement.MovementType) -> void:
 
 func _perform_auto_dig(old_coordinates: Vector3i, dig_direction: CardinalDirections.CardinalDirection) -> void:
     if !_auto_dig || panel.level == null:
-        print_debug("0")
         return
 
-    print_debug("digstart")
     var level: GridLevel = panel.level
-
     var target_node = panel.get_grid_node_at(_coordinates)
+    var may_wall: bool = true
 
-    if target_node == null && _grid_node_resource == null:
-        push_warning("Could not auto-dig at %s because no dig-node selected" % _coordinates)
-        return
+    if target_node == null && (_grid_node_resource == null || !_grid_node_used):
+        print_debug("Will not auto-dig at %s because no dig-node selected" % _coordinates)
+        may_wall = false
 
-    print_debug("dig target %s" % target_node)
-    if target_node == null:
-
-        print_debug("1")
+    elif target_node == null:
         panel.undo_redo.create_action("GridLevelDigger: Auto-dig node @ %s" % _coordinates)
 
         panel.undo_redo.add_do_method(self, "_do_auto_dig_node", level, _grid_node_resource, _coordinates)
@@ -235,17 +230,17 @@ func _perform_auto_dig(old_coordinates: Vector3i, dig_direction: CardinalDirecti
         if auto_clear_sides && neighbor != null:
             _remove_node_side(target_node, dir)
             _remove_node_side(neighbor, CardinalDirections.invert(dir))
-        if auto_add_sides:
+        if auto_add_sides && may_wall:
             var side_resource: Resource = _get_resource_from_direction(dir)
             _add_node_side(side_resource, level, target_node, neighbor, dir)
 
 func _get_resource_from_direction(dir: CardinalDirections.CardinalDirection) -> Resource:
     if CardinalDirections.is_planar_cardinal(dir):
-        return _grid_wall_resource
+        return _grid_wall_resource if _grid_wall_used else null
     elif dir == CardinalDirections.CardinalDirection.UP:
-        return _grid_ceiling_resource
+        return _grid_ceiling_resource if _grid_ceiling_used else null
     elif dir == CardinalDirections.CardinalDirection.DOWN:
-        return _grid_floor_resource
+        return _grid_floor_resource if _grid_floor_used else null
     return null
 
 func _remove_node_side(node: GridNode, side_direction: CardinalDirections.CardinalDirection) -> void:
@@ -286,7 +281,6 @@ func _add_node_side(resource: Resource, level: GridLevel, node: GridNode, neighb
         GridNodeSide.set_direction_from_rotation(side)
 
 func _do_auto_dig_node(level: GridLevel, grid_node_resource: Resource, coordinates: Vector3i) -> void:
-    print_debug("2")
     var raw_node: Node = grid_node_resource.instantiate()
     if raw_node is not GridNode:
         push_error("Grid Node template is not a GridNode")
@@ -298,7 +292,6 @@ func _do_auto_dig_node(level: GridLevel, grid_node_resource: Resource, coordinat
     node.coordinates = coordinates
     node.name = "Node %s" % coordinates
 
-    print_debug("3")
     var new_position: Vector3 = GridLevel.node_position_from_coordinates(level, node.coordinates)
     var node_parent = level.level_geometry
     if node_parent == null:
@@ -306,12 +299,9 @@ func _do_auto_dig_node(level: GridLevel, grid_node_resource: Resource, coordinat
 
     panel.add_grid_node(node)
     node_parent.add_child(node, true)
-    print_debug("4")
 
     node.global_position = new_position
-    print_debug("5")
     node.owner = level.get_tree().edited_scene_root
-    print_debug("Auto-dug %s for %s" % [node, level])
 
 func _undo_auto_dig_node(coordinates: Vector3i) -> void:
     var node: GridNode = panel.get_grid_node_at(coordinates)
@@ -362,6 +352,8 @@ var _forcing_resource_change: bool
 @export
 var grid_node_picker: ValidatingEditorNodePicker
 var _grid_node_resource: Resource
+var _grid_node_used: bool = true
+
 func _on_grid_node_picker_resource_changed(resource:Resource) -> void:
     if _forcing_resource_change:
         return
@@ -382,6 +374,8 @@ func _on_grid_node_picker_resource_changed(resource:Resource) -> void:
 @export
 var grid_ceiling_picker: ValidatingEditorNodePicker
 var _grid_ceiling_resource: Resource
+var _grid_ceiling_used: bool = true
+
 func _on_grid_ceiling_picker_resource_changed(resource:Resource) -> void:
     if _forcing_resource_change:
         return
@@ -402,6 +396,8 @@ func _on_grid_ceiling_picker_resource_changed(resource:Resource) -> void:
 @export
 var grid_floor_picker: ValidatingEditorNodePicker
 var _grid_floor_resource: Resource
+var _grid_floor_used: bool = true
+
 func _on_grid_floor_picker_resource_changed(resource:Resource) -> void:
     if _forcing_resource_change:
         return
@@ -422,6 +418,8 @@ func _on_grid_floor_picker_resource_changed(resource:Resource) -> void:
 @export
 var grid_wall_picker: ValidatingEditorNodePicker
 var _grid_wall_resource: Resource
+var _grid_wall_used: bool = true
+
 func _on_grid_wall_picker_resource_changed(resource:Resource) -> void:
     if _forcing_resource_change:
         return
@@ -438,3 +436,15 @@ func _on_grid_wall_picker_resource_changed(resource:Resource) -> void:
         _forcing_resource_change = false
 
     _grid_wall_resource = resource
+
+func _on_grid_ceiling_used_toggled(toggled_on:bool) -> void:
+    _grid_ceiling_used = toggled_on
+
+func _on_grid_floor_used_toggled(toggled_on:bool) -> void:
+    _grid_floor_used = toggled_on
+
+func _on_grid_wall_used_toggled(toggled_on:bool) -> void:
+    _grid_wall_used = toggled_on
+
+func _on_grid_node_used_toggled(toggled_on:bool) -> void:
+    _grid_node_used = toggled_on

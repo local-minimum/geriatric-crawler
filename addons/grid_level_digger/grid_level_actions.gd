@@ -27,6 +27,8 @@ func _on_set_all_wall_rotations_pressed() -> void:
 
     panel.sync_ui()
 
+func _on_refresh_level_nodes_pressed() -> void:
+    panel.refresh_level_nodes()
 
 func sync_ui():
     info.text = "Level: %s nodes" % panel.all_level_nodes.size()

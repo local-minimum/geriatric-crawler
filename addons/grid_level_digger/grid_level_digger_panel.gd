@@ -54,24 +54,24 @@ func set_level(level: GridLevel) -> void:
     _anchor = null
     _selected_inside_level = true
 
+    refresh_level_nodes()
+
+    _draw_debug_node_meshes()
+    sync_ui()
+
+func refresh_level_nodes():
     all_level_nodes.clear()
 
     if level != null:
         all_level_nodes.append_array(level.find_children("", "GridNode"))
 
-    _draw_debug_node_meshes()
-    sync_ui()
 
 func _update_level_if_needed(grid_node: GridNode) -> bool:
     var level: GridLevel = GridLevel.find_level_parent(grid_node)
     if self.level != level:
         self.level = level
 
-        all_level_nodes.clear()
-
-        if level != null:
-            all_level_nodes.append_array(level.find_children("", "GridNode"))
-
+        refresh_level_nodes()
         return true
 
     elif all_level_nodes.size() == 0:
@@ -89,7 +89,7 @@ func set_grid_node(grid_node: GridNode) -> void:
 
     if !_update_level_if_needed(grid_node) && !all_level_nodes.has(grid_node):
         if all_level_nodes.size() == 0:
-            all_level_nodes.append_array(level.find_children("", "GridNode"))
+            refresh_level_nodes()
         else:
             all_level_nodes.append(grid_node)
 
@@ -111,7 +111,7 @@ func set_grid_anchor(grid_anchor: GridAnchor) -> void:
     if grid_node != _node:
         if !_update_level_if_needed(grid_node) && !all_level_nodes.has(grid_node):
             if all_level_nodes.size() == 0:
-                all_level_nodes.append_array(level.find_children("", "GridNode"))
+                refresh_level_nodes()
             else:
                 all_level_nodes.append(grid_node)
 
