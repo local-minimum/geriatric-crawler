@@ -114,7 +114,7 @@ func save() -> Dictionary:
     return {
         _LOOK_DIRECTION_KEY: look_direction,
         _ANCHOR_KEY: anchor_direction,
-        _COORDINATES_KEY: coordnates(),
+        _COORDINATES_KEY: coordinates(),
         _DOWN_KEY: down
     }
 

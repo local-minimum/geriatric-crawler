@@ -19,6 +19,35 @@ func is_two_sided() -> bool:
 func _ready() -> void:
     set_direction_from_rotation(self)
 
+var _parent_node: GridNode
+var _inverse_parent_node: GridNode
+
+func _get_parent_node() -> GridNode:
+    if _parent_node == null:
+        _parent_node = GridNode.find_node_parent(self, false)
+    return _parent_node
+
+func _get_inverse_parent_node() -> GridNode:
+    var parent_node: GridNode = _get_parent_node()
+    if parent_node == null:
+        push_warning("%s doesn't have a node parent" % name)
+        print_tree()
+        return null
+
+    _inverse_parent_node = parent_node.neighbour(direction)
+
+    return _inverse_parent_node
+
+func get_grid_node(value: GridAnchor) -> GridNode:
+    if value == anchor:
+        return _get_parent_node()
+    elif value == negative_anchor && negative_anchor != null:
+        return _get_inverse_parent_node()
+
+    push_error("%s of %s is not an anchor of %s" % [value.name, value.get_parent().name, name])
+    print_stack()
+    return null
+
 static func find_node_side_parent(current: Node, inclusive: bool = true) -> GridNodeSide:
     if inclusive && current is GridNodeSide:
         return current as GridNodeSide

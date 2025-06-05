@@ -205,7 +205,7 @@ func update_entity_anchorage(node: GridNode, anchor: GridAnchor, deferred: bool 
         else:
             transportation_mode.mode = TransportationMode.NONE
 
-    # print_debug("%s is now %s" % [name, transportation_mode.humanize()])
+    print_debug("%s is now %s @ %s %s" % [name, transportation_mode.humanize(), node.name, CardinalDirections.name(anchor.direction) if anchor else "airbourne"])
     # print_stack()
 
 func sync_position() -> void:

@@ -1,4 +1,4 @@
-extends GridNodeFeature
+extends Node3D
 class_name GridAnchor
 
 @export
@@ -17,10 +17,22 @@ var pass_through_on_refuse: bool
 @export
 var pass_through_reverse: bool
 
-func _ready() -> void:
-    super()
+var _node_side: GridNodeSide
 
-    var node_side: GridNodeSide = GridNodeSide.find_node_side_parent(self)
+func get_node_side() -> GridNodeSide:
+    if _node_side == null:
+        _node_side = GridNodeSide.find_node_side_parent(self)
+    return _node_side
+
+func get_grid_node() -> GridNode:
+    var side: GridNodeSide = get_node_side()
+    if side == null:
+        return null
+    return side.get_grid_node(self)
+
+
+func _ready() -> void:
+    var node_side: GridNodeSide = get_node_side()
     if node_side == null:
         push_error("%s doesn't have a GridNodeSide parent" % name)
     elif !CardinalDirections.is_parallell(direction, node_side.direction):
@@ -52,6 +64,7 @@ func get_edge_position(edge_direction: CardinalDirections.CardinalDirection, loc
         return global_position
 
     var offset: Vector3 = node.get_level().node_size * 0.5 * Vector3(CardinalDirections.direction_to_vector(edge_direction))
+
     if local:
         return offset
 

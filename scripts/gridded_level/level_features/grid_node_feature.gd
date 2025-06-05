@@ -6,6 +6,8 @@ var _anchor: GridAnchor
 
 var _inited: bool
 
+# TODO: Negative anchors dont find the right node!
+# TODO: I don't think anchors should be grid node features!
 func _ready() -> void:
     if _node == null:
         _node = GridNode.find_node_parent(self)
@@ -29,9 +31,11 @@ func set_grid_node(node: GridNode, _deferred: bool = false) -> void:
     if _anchor != null:
         _anchor = null
     _node = node
+
+    print_debug("Entity %s is now at %s in the air" % [name, coordinates()])
+
     if !_inited:
         _inited = true
-    # _parent_to_node(deferred)
 
 func get_grid_anchor() -> GridAnchor:
     return _anchor
@@ -39,35 +43,13 @@ func get_grid_anchor() -> GridAnchor:
 func set_grid_anchor(anchor: GridAnchor, _deferred: bool = false) -> void:
     _anchor = anchor
     _node = _anchor.get_grid_node()
+
+    print_debug("Entity %s is now at %s %s" % [name, coordinates(), CardinalDirections.name(_anchor.direction)])
+
     if !_inited:
         _inited = true
-    # _parent_to_anchor(deferred)
 
-func _parent_to_node(deferred: bool = false) -> void:
-    if _node == null:
-        return
-
-    var parent: Node = self.get_parent()
-    if _node != parent:
-        # print_debug("%s has parent %s but wants node %s" % [name, parent, _node])
-        if deferred:
-            reparent.call_deferred(_node, true)
-        else:
-            reparent(_node, true)
-
-func _parent_to_anchor(deferred: bool = false) -> void:
-    if _anchor == null:
-        return
-
-    var parent: Node = self.get_parent()
-    if _anchor != parent:
-        # print_debug("%s has parent %s but wants anchor %s" % [name, parent, _anchor])
-        if deferred:
-            reparent.call_deferred(_anchor, true)
-        else:
-            reparent(_anchor, true)
-
-func coordnates() -> Vector3i:
+func coordinates() -> Vector3i:
     if _node == null:
         push_error("Entity %s isn't at a node, accessing its coordinates makes no sense" % name)
         print_stack()

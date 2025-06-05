@@ -147,6 +147,7 @@ func _handle_node_transition(
             return false
 
         if _handle_outer_corner_transition(movement, tween, anchor, move_direction, neighbour):
+            print_debug("Outer corner")
             return true
 
         if neighbour.may_enter(entity, move_direction, entity.down):
@@ -157,6 +158,7 @@ func _handle_node_transition(
                 return false
 
             if neighbour_anchor != null:
+                # Normal movement between two tiles keeping the same down
                 entity.update_entity_anchorage(neighbour, neighbour_anchor)
 
                 @warning_ignore_start("return_value_discarded")
@@ -176,8 +178,10 @@ func _handle_node_transition(
                         entity.end_movement(movement))
                 @warning_ignore_restore("return_value_discarded")
 
+                print_debug("normal normal")
                 return true
 
+            print_debug("%s has no anchor %s" % [neighbour.name, CardinalDirections.name(entity.down)])
             entity.block_concurrent_movement()
 
             @warning_ignore_start("return_value_discarded")
@@ -218,6 +222,7 @@ func _handle_node_transition(
                         entity.remove_concurrent_movement_block()
                         entity.end_movement(movement))
 
+                print_debug("exotic jump-off")
                 return true
 
 
@@ -227,10 +232,12 @@ func _handle_node_transition(
                     entity.sync_position()
                     entity.remove_concurrent_movement_block()
                     entity.end_movement(movement))
-
             @warning_ignore_restore("return_value_discarded")
 
+            print_debug("normal jump-off")
             return true
+
+    print_debug("not allowed to exit")
     return false
 
 func _handle_outer_corner_transition(
@@ -308,6 +315,7 @@ func _handle_node_inner_corner_transition(
         updated_directions
     )
 
+    print_debug("inner corner")
     return true
 
 func _handle_corner(

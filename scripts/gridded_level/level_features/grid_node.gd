@@ -9,15 +9,11 @@ var entry_requires_anchor: bool
 
 var level: GridLevel
 
-var _anchors_inited: bool = false
 var _anchors: Dictionary[CardinalDirections.CardinalDirection, GridAnchor] = {}
 
 func _ready() -> void:
     if level == null:
         level = GridLevel.find_level_parent(self)
-
-    if !_anchors_inited:
-        _init_anchors()
 
 func get_level() -> GridLevel:
     if level == null:
@@ -35,9 +31,10 @@ func _init_anchors() -> void:
             continue
 
         if _anchors.has(side.direction):
-            push_warning(
-                "Node %s has duplicate anchors in the %s direction, skipping %s" % [name, side.direction, side],
-            )
+            if _anchors[side.direction] != side.anchor:
+                push_warning(
+                    "Node %s has duplicate anchors in the %s direction, skipping %s" % [name, side.direction, side],
+                )
             continue
 
         _anchors[side.direction] = side.anchor
@@ -51,15 +48,12 @@ func _init_anchors() -> void:
         if n == null:
             continue
 
-        var inverse: CardinalDirections.CardinalDirection = CardinalDirections.invert(dir)
         for n_side: GridNodeSide in n.find_children("", "GridNodeSide"):
-            if n_side.direction != inverse:
+            if n_side.negative_anchor == null:
                 continue
 
-            if n_side.negative_anchor != null:
+            if n_side.negative_anchor.direction == dir:
                 _anchors[dir] = n_side.negative_anchor
-
-    _anchors_inited = true
 
 
 func remove_anchor(anchor: GridAnchor) -> bool:
@@ -77,8 +71,7 @@ func remove_anchor(anchor: GridAnchor) -> bool:
     return false
 
 func add_anchor(anchor: GridAnchor) -> bool:
-    if !_anchors_inited:
-        _init_anchors()
+    _init_anchors()
 
     if _anchors.has(anchor.direction):
         push_warning(
@@ -94,11 +87,14 @@ func add_anchor(anchor: GridAnchor) -> bool:
     return success
 
 func get_anchor(direction: CardinalDirections.CardinalDirection) -> GridAnchor:
-    if !_anchors_inited:
-        _init_anchors()
+    if _anchors.has(direction):
+        return _anchors[direction]
+
+    _init_anchors()
 
     if _anchors.has(direction):
         return _anchors[direction]
+
     return null
 
 func get_center_pos() -> Vector3:
@@ -108,6 +104,7 @@ func get_center_pos() -> Vector3:
 # Navigation
 #
 
+## Gives the neighbour in a direction, disregarding walls and obstructions
 func neighbour(direction: CardinalDirections.CardinalDirection) -> GridNode:
     var _level: GridLevel = get_level()
     if _level == null:
@@ -141,6 +138,9 @@ func may_exit(entity: GridEntity, move_direction: CardinalDirections.CardinalDir
 
     if anchor == null:
         return true
+
+    print_debug("%s is at %s" % [entity.name, entity.coordinates()])
+    print_debug("anchor %s of %s blocked %s" % [CardinalDirections.name(anchor.direction), name, CardinalDirections.name(move_direction)])
 
     if anchor.can_anchor(entity):
         # print_debug("Cannot exit %s from %s because we can anchor on %s" % [move_direction, name, anchor.name])
