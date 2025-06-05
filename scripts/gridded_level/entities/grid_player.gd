@@ -17,6 +17,7 @@ func _ready() -> void:
     if spawn_node != null:
         var anchor: GridAnchor = spawn_node.get_anchor(down)
         update_entity_anchorage(spawn_node, anchor, true)
+        sync_position()
         print_debug("%s anchors to %s in node %s and mode %s" % [
             name,
             anchor,

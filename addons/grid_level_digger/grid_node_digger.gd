@@ -6,22 +6,19 @@ class_name GridNodeDigger
 var panel: GridLevelDiggerPanel
 
 @export
-var node_type_label: Label
+var style: GridLevelStyle
 
 @export
-var coordinates_label: Label
-
-@export
-var sync_position_btn: Button
-
-@export
-var infer_coordinates_btn: Button
+var auto_digg_btn: CheckButton
 
 @export
 var auto_clear_sides: CheckButton
 
 @export
 var auto_add_sides: CheckButton
+
+@export
+var preserve_vertical_btn: CheckButton
 
 @export
 var cam_offset_x: SpinBox
@@ -38,35 +35,20 @@ func _ready() -> void:
     if auto_add_sides != null:
         auto_add_sides.button_pressed = true
 
-func sync(force_coordinates: bool) -> void:
+    style.on_style_updated.connect(_sync_features)
+
+func _sync_features() -> void:
+    auto_digg_btn.disabled = !style.has_grid_node_resource_selected()
+    _auto_dig = !auto_digg_btn.disabled && auto_digg_btn.button_pressed
+
+    auto_add_sides.disabled = auto_digg_btn.disabled || !style.has_any_side_resource_selected()
+    _auto_add_sides = !auto_add_sides.disabled && auto_add_sides.toggle_mode
+
+    auto_clear_sides.disabled = auto_digg_btn.disabled
+    preserve_vertical_btn.disabled = auto_digg_btn.disabled
+
+func sync() -> void:
     var node: GridNode = panel.get_grid_node()
-    if node == null:
-        if force_coordinates:
-            _coordinates_valid = false
-    else:
-        sync_position_btn.disabled = false
-        if force_coordinates:
-            _coordinates = node.coordinates
-            _coordinates_valid = true
-
-    if _coordinates_valid:
-        var coords_have_node: bool = panel.get_grid_node_at(_coordinates) != null
-        if coords_have_node:
-            sync_position_btn.visible = true
-            infer_coordinates_btn.visible = true
-            node_type_label.text = "Node"
-        else:
-            node_type_label.text = "[EMPTY]"
-            sync_position_btn.visible = false
-            infer_coordinates_btn.visible = false
-
-        coordinates_label.text = "(%s, %s, %s)" % [_coordinates.x, _coordinates.y, _coordinates.z]
-        coordinates_label.visible = true
-    else:
-        node_type_label.text = "Node editing not possible"
-        sync_position_btn.visible = false
-        infer_coordinates_btn.visible = false
-        coordinates_label.visible = false
 
     _sync_look_direction(0)
 
@@ -78,56 +60,19 @@ func sync(force_coordinates: bool) -> void:
         _cam_offset_syncing = false
         _cam_offset_synced = true
 
-func _on_sync_position_pressed() -> void:
-    var node: GridNode = panel.get_grid_node_at(_coordinates)
-    var level: GridLevel = panel.get_level()
-
-    if node != null && level != null:
-        var new_position: Vector3 = GridLevel.node_position_from_coordinates(level, node.coordinates)
-
-        if new_position != node.global_position:
-            panel.undo_redo.create_action("GridLevelDigger: Sync node position")
-
-            panel.undo_redo.add_do_property(node, "global_position", new_position)
-            panel.undo_redo.add_undo_property(node, "global_position", node.global_position)
-
-            panel.undo_redo.commit_action()
-
-func _on_infer_coordinates_pressed() -> void:
-    var node: GridNode = panel.get_grid_node_at(_coordinates)
-    var level: GridLevel = panel.get_level()
-
-    if node != null && level != null:
-        var new_coordinates: Vector3i = GridLevel.node_coordinates_from_position(level, node)
-        var new_position: Vector3 = GridLevel.node_position_from_coordinates(level, new_coordinates)
-
-        if new_coordinates != node.coordinates || new_position != node.global_position:
-
-            panel.undo_redo.create_action("GridLevelDigger: Infer node coordinates")
-
-            panel.undo_redo.add_do_property(node, "global_position", new_position)
-            panel.undo_redo.add_undo_property(node, "global_position", node.global_position)
-
-            panel.undo_redo.add_do_property(node, "coordinates", new_coordinates)
-            panel.undo_redo.add_undo_property(node, "coordinates", node.coordinates)
-
-            panel.undo_redo.commit_action()
-            sync(true)
-
+    _sync_features()
 
 var _auto_clear_walls: bool = true
 var _preserve_vertical: bool = true
-var _auto_add_walls: bool = true
+var _auto_add_sides: bool = true
 var _auto_dig: bool
 var _follow_cam: bool
 var _cam_offset_synced: bool
 var _cam_offset_syncing: bool
 var _cam_offset: Vector3 = Vector3(0, 0.5, 0)
 
-var _coordinates_valid: bool
-var _coordinates: Vector3i
-
 func _on_auto_dig_toggled(toggled_on:bool) -> void:
+    print_debug("Auto-diggs %s" % toggled_on)
     _auto_dig = toggled_on
 
 func _on_auto_clear_toggled(toggled_on:bool) -> void:
@@ -135,7 +80,7 @@ func _on_auto_clear_toggled(toggled_on:bool) -> void:
 
 func _on_auto_wall_toggled(toggled_on:bool) -> void:
     print_debug("Auto-add walls %s" % toggled_on)
-    _auto_add_walls = toggled_on
+    _auto_add_sides = toggled_on
 
 func _on_follow_cam_toggled(toggled_on:bool) -> void:
     _follow_cam = toggled_on
@@ -197,15 +142,14 @@ func _enact_translation(movement: Movement.MovementType) -> void:
 
     var direction: CardinalDirections.CardinalDirection = Movement.to_direction(movement, _look_direction, CardinalDirections.CardinalDirection.DOWN)
 
-    var old_coordinates: Vector3i = _coordinates
-    _coordinates = CardinalDirections.translate(_coordinates, direction)
+    var old_coordinates: Vector3i = panel.coordinates
+    panel.coordinates = CardinalDirections.translate(panel.coordinates, direction)
 
     _sync_viewport_camera()
     _draw_debug_arrow()
 
     _perform_auto_dig(old_coordinates, direction)
-    sync(false)
-    panel.draw_debug_node_meshes(_coordinates)
+    sync()
 
 func _perform_auto_dig(old_coordinates: Vector3i, dig_direction: CardinalDirections.CardinalDirection) -> void:
     if !_auto_dig || panel.level == null:
@@ -216,42 +160,34 @@ func _perform_auto_dig(old_coordinates: Vector3i, dig_direction: CardinalDirecti
         return
 
     var level: GridLevel = panel.level
-    var target_node = panel.get_grid_node_at(_coordinates)
+    var target_node = panel.get_focus_node()
     var may_wall: bool = true
+    var node_resource: Resource = style.get_node_resource()
 
-    if target_node == null && (_grid_node_resource == null || !_grid_node_used):
-        print_debug("Will not auto-dig at %s because no dig-node selected" % _coordinates)
+    if target_node == null && node_resource == null:
+        print_debug("Will not auto-dig at %s because no dig-node selected" % panel.coordinates)
         may_wall = false
 
     elif target_node == null:
-        panel.undo_redo.create_action("GridLevelDigger: Auto-dig node @ %s" % _coordinates)
+        panel.undo_redo.create_action("GridLevelDigger: Auto-dig node @ %s" % panel.coordinates)
 
-        panel.undo_redo.add_do_method(self, "_do_auto_dig_node", level, _grid_node_resource, _coordinates)
-        panel.undo_redo.add_undo_method(self, "_undo_auto_dig_node", _coordinates)
+        panel.undo_redo.add_do_method(self, "_do_auto_dig_node", level, node_resource, panel.coordinates)
+        panel.undo_redo.add_undo_method(self, "_undo_auto_dig_node", panel.coordinates)
 
         panel.undo_redo.commit_action()
 
-        target_node = panel.get_grid_node_at(_coordinates)
+        target_node = panel.get_focus_node()
 
     for dir: CardinalDirections.CardinalDirection in CardinalDirections.ALL_DIRECTIONS:
-        var neighbor: GridNode = panel.get_grid_node_at(CardinalDirections.translate(_coordinates, dir))
+        var neighbor: GridNode = panel.get_grid_node_at(CardinalDirections.translate(panel.coordinates, dir))
 
         if _auto_clear_walls && neighbor != null && (!_preserve_vertical || CardinalDirections.is_planar_cardinal(dir)):
             _remove_node_side(target_node, dir)
             _remove_node_side(neighbor, CardinalDirections.invert(dir))
 
-        if _auto_add_walls && may_wall:
-            var side_resource: Resource = _get_resource_from_direction(dir)
+        if _auto_add_sides && may_wall:
+            var side_resource: Resource = style.get_resource_from_direction(dir)
             _add_node_side(side_resource, level, target_node, neighbor, dir, _preserve_vertical)
-
-func _get_resource_from_direction(dir: CardinalDirections.CardinalDirection) -> Resource:
-    if CardinalDirections.is_planar_cardinal(dir):
-        return _grid_wall_resource if _grid_wall_used else null
-    elif dir == CardinalDirections.CardinalDirection.UP:
-        return _grid_ceiling_resource if _grid_ceiling_used else null
-    elif dir == CardinalDirections.CardinalDirection.DOWN:
-        return _grid_floor_resource if _grid_floor_used else null
-    return null
 
 func _remove_node_side(node: GridNode, side_direction: CardinalDirections.CardinalDirection) -> void:
     if node == null:
@@ -324,6 +260,7 @@ func _do_auto_dig_node(level: GridLevel, grid_node_resource: Resource, coordinat
 
     node.global_position = new_position
     node.owner = level.get_tree().edited_scene_root
+
     EditorInterface.mark_scene_as_unsaved()
 
 func _undo_auto_dig_node(coordinates: Vector3i) -> void:
@@ -337,7 +274,7 @@ func _undo_auto_dig_node(coordinates: Vector3i) -> void:
 
 func _sync_viewport_camera() -> void:
     if _follow_cam:
-        var position = GridLevel.node_position_from_coordinates(panel.level, _coordinates)
+        var position = GridLevel.node_position_from_coordinates(panel.level, panel.coordinates)
         var target = position + CardinalDirections.direction_to_look_vector(_look_direction)
         var cam_position: Vector3 = position + CardinalDirections.direction_to_planar_rotation(_look_direction) * _cam_offset
 
@@ -351,7 +288,7 @@ func _sync_viewport_camera() -> void:
 func _draw_debug_arrow() -> void:
     _remove_debug_arrow()
 
-    var center: Vector3 = GridLevel.node_center(panel.level, _coordinates)
+    var center: Vector3 = GridLevel.node_center(panel.level, panel.coordinates)
     var target: Vector3 = center + CardinalDirections.direction_to_look_vector(_look_direction) * 0.75
 
     _debug_arrow_mesh = DebugDraw.arrow(
@@ -368,106 +305,3 @@ func _remove_debug_arrow() -> void:
     if _debug_arrow_mesh != null:
         _debug_arrow_mesh.queue_free()
         _debug_arrow_mesh = null
-
-
-var _forcing_resource_change: bool
-
-@export
-var grid_node_picker: ValidatingEditorNodePicker
-var _grid_node_resource: Resource
-var _grid_node_used: bool = true
-
-func _on_grid_node_picker_resource_changed(resource:Resource) -> void:
-    if _forcing_resource_change:
-        return
-
-    if resource == null:
-        _grid_node_resource = null
-        return
-
-    if !grid_node_picker.is_valid(resource):
-        _forcing_resource_change = true
-        grid_node_picker.edited_resource = null
-        _grid_node_resource = null
-        push_warning("%s is not a %s" % [resource, grid_node_picker.root_class_name])
-        _forcing_resource_change = false
-
-    _grid_node_resource = resource
-
-@export
-var grid_ceiling_picker: ValidatingEditorNodePicker
-var _grid_ceiling_resource: Resource
-var _grid_ceiling_used: bool = true
-
-func _on_grid_ceiling_picker_resource_changed(resource:Resource) -> void:
-    if _forcing_resource_change:
-        return
-
-    if resource == null:
-        _grid_ceiling_resource = null
-        return
-
-    if !grid_ceiling_picker.is_valid(resource):
-        _forcing_resource_change = true
-        grid_ceiling_picker.edited_resource = null
-        _grid_ceiling_resource = null
-        push_warning("%s is not a %s" % [resource, grid_ceiling_picker.root_class_name])
-        _forcing_resource_change = false
-
-    _grid_ceiling_resource = resource
-
-@export
-var grid_floor_picker: ValidatingEditorNodePicker
-var _grid_floor_resource: Resource
-var _grid_floor_used: bool = true
-
-func _on_grid_floor_picker_resource_changed(resource:Resource) -> void:
-    if _forcing_resource_change:
-        return
-
-    if resource == null:
-        _grid_floor_resource = null
-        return
-
-    if !grid_floor_picker.is_valid(resource):
-        _forcing_resource_change = true
-        grid_floor_picker.edited_resource = null
-        _grid_floor_resource = null
-        push_warning("%s is not a %s" % [resource, grid_floor_picker.root_class_name])
-        _forcing_resource_change = false
-
-    _grid_floor_resource = resource
-
-@export
-var grid_wall_picker: ValidatingEditorNodePicker
-var _grid_wall_resource: Resource
-var _grid_wall_used: bool = true
-
-func _on_grid_wall_picker_resource_changed(resource:Resource) -> void:
-    if _forcing_resource_change:
-        return
-
-    if resource == null:
-        _grid_wall_resource = null
-        return
-
-    if !grid_wall_picker.is_valid(resource):
-        _forcing_resource_change = true
-        grid_wall_picker.edited_resource = null
-        _grid_wall_resource = null
-        push_warning("%s is not a %s" % [resource, grid_wall_picker.root_class_name])
-        _forcing_resource_change = false
-
-    _grid_wall_resource = resource
-
-func _on_grid_ceiling_used_toggled(toggled_on:bool) -> void:
-    _grid_ceiling_used = toggled_on
-
-func _on_grid_floor_used_toggled(toggled_on:bool) -> void:
-    _grid_floor_used = toggled_on
-
-func _on_grid_wall_used_toggled(toggled_on:bool) -> void:
-    _grid_wall_used = toggled_on
-
-func _on_grid_node_used_toggled(toggled_on:bool) -> void:
-    _grid_node_used = toggled_on

@@ -6,11 +6,33 @@ var level: GridLevel
 var _node: GridNode
 var _anchor: GridAnchor
 
-var _selected_inside_level: bool
+var inside_level: bool
+var coordinates: Vector3i = Vector3i.ZERO : set = _set_coords
+func _set_coords(value: Vector3i) -> void:
+    coordinates = value
+    _draw_debug_node_meshes()
 
 var undo_redo: EditorUndoRedoManager
 
 var all_level_nodes: Array[GridNode] = []
+
+@export
+var tab_container: TabContainer
+
+@export
+var about_tab: Control
+
+@export
+var level_tab: Control
+
+@export
+var digging_tab: Control
+
+@export
+var manipulate_tab: Control
+
+@export
+var style_tab: Control
 
 @export
 var node_digger: GridNodeDigger
@@ -19,10 +41,7 @@ var node_digger: GridNodeDigger
 var level_actions: GridLevelActions
 
 @export
-var single_select_group: Control
-
-@export
-var info_label: Control
+var manipulator: GridLevelManipulator
 
 func get_level() -> GridLevel:
     return level
@@ -35,6 +54,9 @@ func get_grid_node_at(coordinates: Vector3i) -> GridNode:
     if idx < 0:
         return null
     return all_level_nodes[idx]
+
+func get_focus_node() -> GridNode:
+    return get_grid_node_at(coordinates)
 
 func add_grid_node(node: GridNode) -> void:
     if all_level_nodes.has(node):
@@ -52,11 +74,11 @@ func set_level(level: GridLevel) -> void:
     self.level = level
     _node = null
     _anchor = null
-    _selected_inside_level = true
+    inside_level = true
+    coordinates = Vector3i.ZERO
 
     refresh_level_nodes()
 
-    _draw_debug_node_meshes()
     sync_ui()
 
 func refresh_level_nodes():
@@ -82,8 +104,8 @@ func _update_level_if_needed(grid_node: GridNode) -> bool:
 func set_grid_node(grid_node: GridNode) -> void:
     if grid_node == _node:
         _update_level_if_needed(grid_node)
-        if !_selected_inside_level:
-            _selected_inside_level = true
+        if !inside_level:
+            inside_level = true
             sync_ui()
         return
 
@@ -95,15 +117,16 @@ func set_grid_node(grid_node: GridNode) -> void:
 
     _node = grid_node
     _anchor = null
-    _selected_inside_level = true
+    inside_level = true
 
-    _draw_debug_node_meshes()
+    coordinates = grid_node.coordinates
+
     sync_ui()
 
 func set_grid_anchor(grid_anchor: GridAnchor) -> void:
     if _anchor == grid_anchor:
-        if !_selected_inside_level:
-            _selected_inside_level = true
+        if !inside_level:
+            inside_level = true
             sync_ui()
         return
 
@@ -116,47 +139,48 @@ func set_grid_anchor(grid_anchor: GridAnchor) -> void:
                 all_level_nodes.append(grid_node)
 
         _node = grid_node
+        if _node != null:
+            coordinates = _node.coordinates
 
-        _draw_debug_node_meshes()
-
-    _selected_inside_level = true
+    inside_level = true
     sync_ui()
 
 func set_not_selected_level() -> void:
-    _selected_inside_level = false
+    inside_level = false
     sync_ui()
 
+func get_tab_index(control: Control) -> int:
+    return control.get_parent().get_children().find(control)
+
 func sync_ui() -> void:
-    if _selected_inside_level:
-        node_digger.visible = _node != null
-        level_actions.visible = _node == null && level != null
+    if inside_level:
+        tab_container.set_tab_disabled(get_tab_index(level_tab), false)
+        tab_container.set_tab_disabled(get_tab_index(digging_tab), false)
+        tab_container.set_tab_disabled(get_tab_index(manipulate_tab), false)
 
-        if node_digger.visible:
-            node_digger.sync(true)
 
-        if level_actions.visible:
-            level_actions.sync_ui()
+        if tab_container.current_tab == get_tab_index(about_tab):
+            tab_container.current_tab = get_tab_index(level_tab)
 
-        info_label.visible = false
-        single_select_group.visible = true
+        level_actions.sync_ui()
+        manipulator.sync()
+        node_digger.sync()
+
+        _draw_debug_node_meshes()
     else:
-        info_label.visible = true
-        single_select_group.visible = false
+        tab_container.set_tab_disabled(get_tab_index(level_tab), true)
+        tab_container.set_tab_disabled(get_tab_index(digging_tab), true)
+        tab_container.set_tab_disabled(get_tab_index(manipulate_tab), true)
+
+        tab_container.current_tab = get_tab_index(about_tab)
+
+        remove_debug_nodes()
 
 var _node_debug_mesh: MeshInstance3D
 var _node_debug_center: MeshInstance3D
 var _node_debug_anchors: Array[MeshInstance3D] = []
 
 func _draw_debug_node_meshes() -> void:
-    if _node != null:
-        draw_debug_node_meshes(_node.coordinates)
-        return
-
-    _clear_node_debug_frame()
-    _clear_node_debug_center()
-    _clear_node_debug_anchors()
-
-func draw_debug_node_meshes(coordinates: Vector3i) -> void:
     _clear_node_debug_frame()
     _clear_node_debug_center()
     _clear_node_debug_anchors()
@@ -203,7 +227,6 @@ func _clear_node_debug_anchors() -> void:
         mesh.queue_free()
 
     _node_debug_anchors.clear()
-
 
 func remove_debug_nodes() -> void:
     _clear_node_debug_frame()

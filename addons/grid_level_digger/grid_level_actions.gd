@@ -6,7 +6,15 @@ class_name GridLevelActions
 var panel: GridLevelDiggerPanel
 
 @export
+var style: GridLevelStyle
+
+@export
 var info: Label
+
+@export
+var origin_tile_btn: Button
+
+
 
 func _on_align_all_nodes_pressed() -> void:
     panel.undo_redo.create_action("GridLevelAction: Sync all node positions")
@@ -32,3 +40,14 @@ func _on_refresh_level_nodes_pressed() -> void:
 
 func sync_ui():
     info.text = "Level: %s nodes" % panel.all_level_nodes.size()
+    var has_origion_node: bool = panel.get_grid_node_at(Vector3i.ZERO) != null
+    origin_tile_btn.disabled = has_origion_node || !style.has_grid_node_resource_selected()
+    if origin_tile_btn.disabled:
+        origin_tile_btn.tooltip_text = "There's already a node at (0, 0, 0)" if has_origion_node else "First select a node scene to instantiate"
+    else:
+        origin_tile_btn.tooltip_text = "Puts a node at (0, 0, 0)"
+
+
+func _on_place_origin_tile_pressed() -> void:
+
+    sync_ui()
