@@ -1,5 +1,22 @@
 class_name DebugDraw
 
+static func _safe_add_mech_to_root(node: Node, mesh: MeshInstance3D) -> bool:
+    var tree: SceneTree = node.get_tree()
+    if tree == null:
+        push_error("Node (%s) is not part of a tree" % node.name)
+        print_stack()
+        mesh.queue_free()
+        return false
+
+    if tree.root == null:
+        push_error("Node's (%s) tree doesn't have a root" % node.name)
+        print_stack()
+        mesh.queue_free()
+        return false
+
+    tree.root.add_child(mesh)
+    return true
+
 static func wireframe_box(
     node: Node3D,
     center: Vector3,
@@ -77,8 +94,9 @@ static func wireframe_box(
 
     immediate_mesh.surface_end()
 
-    node.get_tree().root.add_child(mesh)
-    return mesh
+    if _safe_add_mech_to_root(node, mesh):
+        return mesh
+    return null
 
 static func sphere(
     node: Node3D,
@@ -105,10 +123,10 @@ static func sphere(
     sphere.height = 2 * radius
     sphere.material = mat
 
-    node.get_tree().root.add_child(mesh)
-
-    mesh.global_position = pos
-    return mesh
+    if _safe_add_mech_to_root(node, mesh):
+        mesh.global_position = pos
+        return mesh
+    return null
 
 static func arrow(
     node: Node3D,
@@ -165,8 +183,9 @@ static func arrow(
 
     immediate_mesh.surface_end()
 
-    node.get_tree().root.add_child(mesh)
-    return mesh
+    if _safe_add_mech_to_root(node, mesh):
+        return mesh
+    return null
 
 
 static func direction_to_color(direction: CardinalDirections.CardinalDirection) -> Color:

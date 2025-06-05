@@ -253,6 +253,7 @@ func _add_node_side(
         side.global_rotation = CardinalDirections.direction_to_planar_rotation(side_direction).get_euler()
 
     side.owner = level.get_tree().edited_scene_root
+
     if side.infer_direction_from_rotation:
         GridNodeSide.set_direction_from_rotation(side)
 
