@@ -113,13 +113,12 @@ horizontal_scroll_mode = 0
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="GridLevelActions" type="VBoxContainer" parent="VBoxContainer/TabContainer/Level/ScrollContainer/VBoxContainer" node_paths=PackedStringArray("panel", "style", "info", "origin_tile_btn")]
+[node name="GridLevelActions" type="VBoxContainer" parent="VBoxContainer/TabContainer/Level/ScrollContainer/VBoxContainer" node_paths=PackedStringArray("panel", "style", "info")]
 layout_mode = 2
 script = ExtResource("2_uh4v4")
 panel = NodePath("../../../../../..")
 style = NodePath("../../../../Style/ScrollContainer/VBoxContainer/Style Container")
 info = NodePath("Level Info")
-origin_tile_btn = NodePath("Place origin tile")
 metadata/_custom_type_script = "uid://u8ci3y0p5kpp"
 
 [node name="Level Info" type="Label" parent="VBoxContainer/TabContainer/Level/ScrollContainer/VBoxContainer/GridLevelActions"]
@@ -136,11 +135,6 @@ text = "Align all nodes with grid"
 [node name="Set All Wall Rotations" type="Button" parent="VBoxContainer/TabContainer/Level/ScrollContainer/VBoxContainer/GridLevelActions"]
 layout_mode = 2
 text = "Set all wall directions from rotation"
-
-[node name="Place origin tile" type="Button" parent="VBoxContainer/TabContainer/Level/ScrollContainer/VBoxContainer/GridLevelActions"]
-layout_mode = 2
-tooltip_text = "Place a tile at (0, 0, 0)"
-text = "Place origin tile"
 
 [node name="Digging" type="MarginContainer" parent="VBoxContainer/TabContainer"]
 layout_mode = 2
@@ -162,7 +156,7 @@ size_flags_horizontal = 3
 layout_mode = 2
 theme_override_constants/separation = 6
 
-[node name="Grid Node Digger" type="VBoxContainer" parent="VBoxContainer/TabContainer/Digging/ScrollContainer/VBoxContainer" node_paths=PackedStringArray("panel", "style", "auto_digg_btn", "auto_clear_sides", "auto_add_sides", "preserve_vertical_btn", "cam_offset_x", "cam_offset_y", "cam_offset_z")]
+[node name="Grid Node Digger" type="VBoxContainer" parent="VBoxContainer/TabContainer/Digging/ScrollContainer/VBoxContainer" node_paths=PackedStringArray("panel", "style", "auto_digg_btn", "auto_clear_sides", "auto_add_sides", "preserve_vertical_btn", "cam_offset_x", "cam_offset_y", "cam_offset_z", "place_node_btn")]
 layout_mode = 2
 script = ExtResource("2_6po18")
 panel = NodePath("../../../../../..")
@@ -174,6 +168,7 @@ preserve_vertical_btn = NodePath("HBoxContainer/VBoxContainer/Preserve Vertical"
 cam_offset_x = NodePath("HBoxContainer/VBoxContainer2/Follow Offset/Cam Offset X")
 cam_offset_y = NodePath("HBoxContainer/VBoxContainer2/Follow Offset/Cam Offset Y")
 cam_offset_z = NodePath("HBoxContainer/VBoxContainer2/Follow Offset/Cam Offset Z")
+place_node_btn = NodePath("HBoxContainer/VBoxContainer/Place Node")
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/TabContainer/Digging/ScrollContainer/VBoxContainer/Grid Node Digger"]
 layout_mode = 2
@@ -289,6 +284,10 @@ layout_mode = 2
 theme_override_constants/h_separation = 8
 button_pressed = true
 text = "Auto-add sides"
+
+[node name="Place Node" type="Button" parent="VBoxContainer/TabContainer/Digging/ScrollContainer/VBoxContainer/Grid Node Digger/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+text = "Place node"
 
 [node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/TabContainer/Digging/ScrollContainer/VBoxContainer/Grid Node Digger"]
 layout_mode = 2
@@ -464,7 +463,6 @@ metadata/_custom_type_script = "uid://2cl0qyqo8sb5"
 [connection signal="pressed" from="VBoxContainer/TabContainer/Level/ScrollContainer/VBoxContainer/GridLevelActions/Refresh level nodes" to="VBoxContainer/TabContainer/Level/ScrollContainer/VBoxContainer/GridLevelActions" method="_on_refresh_level_nodes_pressed"]
 [connection signal="pressed" from="VBoxContainer/TabContainer/Level/ScrollContainer/VBoxContainer/GridLevelActions/Align All Nodes" to="VBoxContainer/TabContainer/Level/ScrollContainer/VBoxContainer/GridLevelActions" method="_on_align_all_nodes_pressed"]
 [connection signal="pressed" from="VBoxContainer/TabContainer/Level/ScrollContainer/VBoxContainer/GridLevelActions/Set All Wall Rotations" to="VBoxContainer/TabContainer/Level/ScrollContainer/VBoxContainer/GridLevelActions" method="_on_set_all_wall_rotations_pressed"]
-[connection signal="pressed" from="VBoxContainer/TabContainer/Level/ScrollContainer/VBoxContainer/GridLevelActions/Place origin tile" to="VBoxContainer/TabContainer/Level/ScrollContainer/VBoxContainer/GridLevelActions" method="_on_place_origin_tile_pressed"]
 [connection signal="pressed" from="VBoxContainer/TabContainer/Digging/ScrollContainer/VBoxContainer/Grid Node Digger/HBoxContainer/VBoxContainer2/Navigation Buttons/Turn Left" to="VBoxContainer/TabContainer/Digging/ScrollContainer/VBoxContainer/Grid Node Digger" method="_on_turn_left_pressed"]
 [connection signal="pressed" from="VBoxContainer/TabContainer/Digging/ScrollContainer/VBoxContainer/Grid Node Digger/HBoxContainer/VBoxContainer2/Navigation Buttons/Forward" to="VBoxContainer/TabContainer/Digging/ScrollContainer/VBoxContainer/Grid Node Digger" method="_on_forward_pressed"]
 [connection signal="pressed" from="VBoxContainer/TabContainer/Digging/ScrollContainer/VBoxContainer/Grid Node Digger/HBoxContainer/VBoxContainer2/Navigation Buttons/Turn Right" to="VBoxContainer/TabContainer/Digging/ScrollContainer/VBoxContainer/Grid Node Digger" method="_on_turn_right_pressed"]
@@ -481,6 +479,7 @@ metadata/_custom_type_script = "uid://2cl0qyqo8sb5"
 [connection signal="toggled" from="VBoxContainer/TabContainer/Digging/ScrollContainer/VBoxContainer/Grid Node Digger/HBoxContainer/VBoxContainer/Auto-Clear" to="VBoxContainer/TabContainer/Digging/ScrollContainer/VBoxContainer/Grid Node Digger" method="_on_auto_clear_toggled"]
 [connection signal="toggled" from="VBoxContainer/TabContainer/Digging/ScrollContainer/VBoxContainer/Grid Node Digger/HBoxContainer/VBoxContainer/Preserve Vertical" to="VBoxContainer/TabContainer/Digging/ScrollContainer/VBoxContainer/Grid Node Digger" method="_on_preserve_vertical_toggled"]
 [connection signal="toggled" from="VBoxContainer/TabContainer/Digging/ScrollContainer/VBoxContainer/Grid Node Digger/HBoxContainer/VBoxContainer/Auto-Wall" to="VBoxContainer/TabContainer/Digging/ScrollContainer/VBoxContainer/Grid Node Digger" method="_on_auto_wall_toggled"]
+[connection signal="pressed" from="VBoxContainer/TabContainer/Digging/ScrollContainer/VBoxContainer/Grid Node Digger/HBoxContainer/VBoxContainer/Place Node" to="VBoxContainer/TabContainer/Digging/ScrollContainer/VBoxContainer/Grid Node Digger" method="_on_place_node_pressed"]
 [connection signal="pressed" from="VBoxContainer/TabContainer/Manipulating/ScrollContainer/VBoxContainer/Manipulator/Node/Infer Coordinates" to="VBoxContainer/TabContainer/Manipulating/ScrollContainer/VBoxContainer/Manipulator" method="_on_infer_coordinates_pressed"]
 [connection signal="pressed" from="VBoxContainer/TabContainer/Manipulating/ScrollContainer/VBoxContainer/Manipulator/Node/Sync Position" to="VBoxContainer/TabContainer/Manipulating/ScrollContainer/VBoxContainer/Manipulator" method="_on_sync_position_pressed"]
 [connection signal="toggled" from="VBoxContainer/TabContainer/Style/ScrollContainer/VBoxContainer/Style Container/Dig Node/GridNodeUsed" to="VBoxContainer/TabContainer/Style/ScrollContainer/VBoxContainer/Style Container" method="_on_grid_node_used_toggled"]

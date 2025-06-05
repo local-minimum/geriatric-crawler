@@ -29,6 +29,9 @@ var cam_offset_y: SpinBox
 @export
 var cam_offset_z: SpinBox
 
+@export
+var place_node_btn: Button
+
 func _ready() -> void:
     if auto_clear_sides != null:
         auto_clear_sides.button_pressed = true
@@ -46,6 +49,15 @@ func _sync_features() -> void:
 
     auto_clear_sides.disabled = auto_digg_btn.disabled
     preserve_vertical_btn.disabled = auto_digg_btn.disabled
+
+    var has_origion_node: bool = panel.get_focus_node() != null
+    place_node_btn.disabled = has_origion_node || !style.has_grid_node_resource_selected()
+    if has_origion_node:
+        place_node_btn.tooltip_text = "There's already a node at %s" % panel.coordinates
+    elif place_node_btn.disabled:
+        place_node_btn.tooltip_text = "Style doesn't have a node selected"
+    else:
+        place_node_btn.tooltip_text = "Put a node at %s" % panel.coordinates
 
 func sync() -> void:
     var node: GridNode = panel.get_grid_node()
@@ -142,19 +154,18 @@ func _enact_translation(movement: Movement.MovementType) -> void:
 
     var direction: CardinalDirections.CardinalDirection = Movement.to_direction(movement, _look_direction, CardinalDirections.CardinalDirection.DOWN)
 
-    var old_coordinates: Vector3i = panel.coordinates
     panel.coordinates = CardinalDirections.translate(panel.coordinates, direction)
 
     _sync_viewport_camera()
     _draw_debug_arrow()
 
-    _perform_auto_dig(old_coordinates, direction)
+    _perform_auto_dig(direction)
     sync()
 
-func _perform_auto_dig(old_coordinates: Vector3i, dig_direction: CardinalDirections.CardinalDirection) -> void:
-    if !_auto_dig || panel.level == null:
+func _perform_auto_dig(dig_direction: CardinalDirections.CardinalDirection, ignore_auto_dig: bool = false) -> void:
+    if !(_auto_dig || ignore_auto_dig) || panel.level == null:
         if !_auto_dig:
-            print_debug("Not digging")
+            print_debug("Not digging @ %s" % panel.coordinates)
         if panel.level == null:
             print_debug("No level")
         return
@@ -181,7 +192,8 @@ func _perform_auto_dig(old_coordinates: Vector3i, dig_direction: CardinalDirecti
     for dir: CardinalDirections.CardinalDirection in CardinalDirections.ALL_DIRECTIONS:
         var neighbor: GridNode = panel.get_grid_node_at(CardinalDirections.translate(panel.coordinates, dir))
 
-        if _auto_clear_walls && neighbor != null && (!_preserve_vertical || CardinalDirections.is_planar_cardinal(dir)):
+        var is_traversed = CardinalDirections.invert(dig_direction) == dir
+        if (_auto_clear_walls || is_traversed) && neighbor != null && (!_preserve_vertical || CardinalDirections.is_planar_cardinal(dir) || is_traversed):
             _remove_node_side(target_node, dir)
             _remove_node_side(neighbor, CardinalDirections.invert(dir))
 
@@ -204,7 +216,15 @@ func _add_node_side(
     node: GridNode,
     neighbour: GridNode,
     side_direction: CardinalDirections.CardinalDirection,
-    treat_elevation_as_separate: bool) -> void:
+    treat_elevation_as_separate: bool,
+) -> void:
+    print_debug("%s %s %s with neighbour %s using %s" % [
+        node.name,
+        CardinalDirections.name(side_direction),
+        "Elevation separate" if treat_elevation_as_separate else "Elevation included",
+        neighbour,
+        resource
+    ])
     if node == null || resource == null:
         return
 
@@ -305,3 +325,6 @@ func _remove_debug_arrow() -> void:
     if _debug_arrow_mesh != null:
         _debug_arrow_mesh.queue_free()
         _debug_arrow_mesh = null
+
+func _on_place_node_pressed() -> void:
+    _perform_auto_dig(CardinalDirections.CardinalDirection.NONE, true)
