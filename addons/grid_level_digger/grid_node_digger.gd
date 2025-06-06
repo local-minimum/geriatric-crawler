@@ -118,7 +118,7 @@ func _on_cam_offset_x_value_changed(value:float) -> void:
     _cam_offset.x = value
     _sync_viewport_camera()
 
-var _look_direction: CardinalDirections.CardinalDirection = CardinalDirections.CardinalDirection.NORTH
+var look_direction: CardinalDirections.CardinalDirection = CardinalDirections.CardinalDirection.NORTH
 
 func _on_down_pressed() -> void:
     _enact_translation(Movement.MovementType.ABS_DOWN)
@@ -139,11 +139,11 @@ func _on_forward_pressed() -> void:
     _enact_translation(Movement.MovementType.FORWARD)
 
 func _on_turn_right_pressed() -> void:
-    _look_direction = CardinalDirections.yaw_cw(_look_direction, CardinalDirections.CardinalDirection.DOWN)[0]
+    look_direction = CardinalDirections.yaw_cw(look_direction, CardinalDirections.CardinalDirection.DOWN)[0]
     _sync_look_direction(PI * 0.5)
 
 func _on_turn_left_pressed() -> void:
-    _look_direction = CardinalDirections.yaw_ccw(_look_direction, CardinalDirections.CardinalDirection.DOWN)[0]
+    look_direction = CardinalDirections.yaw_ccw(look_direction, CardinalDirections.CardinalDirection.DOWN)[0]
     _sync_look_direction(-PI * 0.5)
 
 var _debug_arrow_mesh: MeshInstance3D
@@ -155,7 +155,7 @@ func _sync_look_direction(rot: float) -> void:
 func _enact_translation(movement: Movement.MovementType) -> void:
     if !Movement.is_translation(movement) || panel.level == null: return
 
-    var direction: CardinalDirections.CardinalDirection = Movement.to_direction(movement, _look_direction, CardinalDirections.CardinalDirection.DOWN)
+    var direction: CardinalDirections.CardinalDirection = Movement.to_direction(movement, look_direction, CardinalDirections.CardinalDirection.DOWN)
 
     panel.coordinates = CardinalDirections.translate(panel.coordinates, direction)
 
@@ -301,8 +301,8 @@ func _undo_auto_dig_node(coordinates: Vector3i) -> void:
 func _sync_viewport_camera() -> void:
     if _follow_cam:
         var position = GridLevel.node_position_from_coordinates(panel.level, panel.coordinates)
-        var target = position + CardinalDirections.direction_to_look_vector(_look_direction)
-        var cam_position: Vector3 = position + CardinalDirections.direction_to_planar_rotation(_look_direction) * _cam_offset
+        var target = position + CardinalDirections.direction_to_look_vector(look_direction)
+        var cam_position: Vector3 = position + CardinalDirections.direction_to_planar_rotation(look_direction) * _cam_offset
 
         # TODO: Figure out how to know which viewport to update
         var view: SubViewport = EditorInterface.get_editor_viewport_3d(0)
@@ -315,7 +315,7 @@ func _draw_debug_arrow() -> void:
     _remove_debug_arrow()
 
     var center: Vector3 = GridLevel.node_center(panel.level, panel.coordinates)
-    var target: Vector3 = center + CardinalDirections.direction_to_look_vector(_look_direction) * 0.75
+    var target: Vector3 = center + CardinalDirections.direction_to_look_vector(look_direction) * 0.75
 
     _debug_arrow_mesh = DebugDraw.arrow(
         panel.level,
