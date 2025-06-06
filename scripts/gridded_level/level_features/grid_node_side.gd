@@ -5,7 +5,7 @@ class_name GridNodeSide
 var direction: CardinalDirections.CardinalDirection = CardinalDirections.CardinalDirection.DOWN
 
 @export
-var infer_direction_from_rotation: bool
+var infer_direction_from_rotation: bool = true
 
 @export
 var anchor: GridAnchor

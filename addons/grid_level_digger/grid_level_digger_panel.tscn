@@ -66,7 +66,7 @@ vertical_alignment = 1
 [node name="TabContainer" type="TabContainer" parent="VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
-current_tab = 2
+current_tab = 1
 
 [node name="About" type="MarginContainer" parent="VBoxContainer/TabContainer"]
 visible = false
@@ -97,7 +97,6 @@ text = "1. Create scenes for an empty node, a scene for a north wall (tick infer
 autowrap_mode = 2
 
 [node name="Level" type="MarginContainer" parent="VBoxContainer/TabContainer"]
-visible = false
 layout_mode = 2
 size_flags_vertical = 3
 tooltip_text = "Actions on a level"
@@ -113,12 +112,13 @@ horizontal_scroll_mode = 0
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="GridLevelActions" type="VBoxContainer" parent="VBoxContainer/TabContainer/Level/ScrollContainer/VBoxContainer" node_paths=PackedStringArray("panel", "style", "info")]
+[node name="GridLevelActions" type="VBoxContainer" parent="VBoxContainer/TabContainer/Level/ScrollContainer/VBoxContainer" node_paths=PackedStringArray("panel", "style", "info", "organize_btn")]
 layout_mode = 2
 script = ExtResource("2_uh4v4")
 panel = NodePath("../../../../../..")
 style = NodePath("../../../../Style/ScrollContainer/VBoxContainer/Style Container")
 info = NodePath("Level Info")
+organize_btn = NodePath("Organize Nodes Button")
 metadata/_custom_type_script = "uid://u8ci3y0p5kpp"
 
 [node name="Level Info" type="Label" parent="VBoxContainer/TabContainer/Level/ScrollContainer/VBoxContainer/GridLevelActions"]
@@ -136,7 +136,17 @@ text = "Align all nodes with grid"
 layout_mode = 2
 text = "Set all wall directions from rotation"
 
+[node name="Organize Nodes By Elevation" type="CheckButton" parent="VBoxContainer/TabContainer/Level/ScrollContainer/VBoxContainer/GridLevelActions"]
+layout_mode = 2
+button_pressed = true
+text = "Organize nodes by elevation"
+
+[node name="Organize Nodes Button" type="Button" parent="VBoxContainer/TabContainer/Level/ScrollContainer/VBoxContainer/GridLevelActions"]
+layout_mode = 2
+text = "Organize nodes"
+
 [node name="Digging" type="MarginContainer" parent="VBoxContainer/TabContainer"]
+visible = false
 layout_mode = 2
 size_flags_vertical = 3
 tooltip_text = "Blocking out the level by moving the selection around"
@@ -156,11 +166,12 @@ size_flags_horizontal = 3
 layout_mode = 2
 theme_override_constants/separation = 6
 
-[node name="Grid Node Digger" type="VBoxContainer" parent="VBoxContainer/TabContainer/Digging/ScrollContainer/VBoxContainer" node_paths=PackedStringArray("panel", "style", "auto_digg_btn", "auto_clear_sides", "auto_add_sides", "preserve_vertical_btn", "cam_offset_x", "cam_offset_y", "cam_offset_z", "place_node_btn")]
+[node name="Grid Node Digger" type="VBoxContainer" parent="VBoxContainer/TabContainer/Digging/ScrollContainer/VBoxContainer" node_paths=PackedStringArray("panel", "style", "level_actions", "auto_digg_btn", "auto_clear_sides", "auto_add_sides", "preserve_vertical_btn", "cam_offset_x", "cam_offset_y", "cam_offset_z", "place_node_btn")]
 layout_mode = 2
 script = ExtResource("2_6po18")
 panel = NodePath("../../../../../..")
 style = NodePath("../../../../Style/ScrollContainer/VBoxContainer/Style Container")
+level_actions = NodePath("../../../../Level/ScrollContainer/VBoxContainer/GridLevelActions")
 auto_digg_btn = NodePath("HBoxContainer/VBoxContainer/Auto-Dig")
 auto_clear_sides = NodePath("HBoxContainer/VBoxContainer/Auto-Clear")
 auto_add_sides = NodePath("HBoxContainer/VBoxContainer/Auto-Wall")
@@ -463,6 +474,8 @@ metadata/_custom_type_script = "uid://2cl0qyqo8sb5"
 [connection signal="pressed" from="VBoxContainer/TabContainer/Level/ScrollContainer/VBoxContainer/GridLevelActions/Refresh level nodes" to="VBoxContainer/TabContainer/Level/ScrollContainer/VBoxContainer/GridLevelActions" method="_on_refresh_level_nodes_pressed"]
 [connection signal="pressed" from="VBoxContainer/TabContainer/Level/ScrollContainer/VBoxContainer/GridLevelActions/Align All Nodes" to="VBoxContainer/TabContainer/Level/ScrollContainer/VBoxContainer/GridLevelActions" method="_on_align_all_nodes_pressed"]
 [connection signal="pressed" from="VBoxContainer/TabContainer/Level/ScrollContainer/VBoxContainer/GridLevelActions/Set All Wall Rotations" to="VBoxContainer/TabContainer/Level/ScrollContainer/VBoxContainer/GridLevelActions" method="_on_set_all_wall_rotations_pressed"]
+[connection signal="toggled" from="VBoxContainer/TabContainer/Level/ScrollContainer/VBoxContainer/GridLevelActions/Organize Nodes By Elevation" to="VBoxContainer/TabContainer/Level/ScrollContainer/VBoxContainer/GridLevelActions" method="_on_organize_nodes_by_elevation_toggled"]
+[connection signal="pressed" from="VBoxContainer/TabContainer/Level/ScrollContainer/VBoxContainer/GridLevelActions/Organize Nodes Button" to="VBoxContainer/TabContainer/Level/ScrollContainer/VBoxContainer/GridLevelActions" method="_on_organize_nodes_button_pressed"]
 [connection signal="pressed" from="VBoxContainer/TabContainer/Digging/ScrollContainer/VBoxContainer/Grid Node Digger/HBoxContainer/VBoxContainer2/Navigation Buttons/Turn Left" to="VBoxContainer/TabContainer/Digging/ScrollContainer/VBoxContainer/Grid Node Digger" method="_on_turn_left_pressed"]
 [connection signal="pressed" from="VBoxContainer/TabContainer/Digging/ScrollContainer/VBoxContainer/Grid Node Digger/HBoxContainer/VBoxContainer2/Navigation Buttons/Forward" to="VBoxContainer/TabContainer/Digging/ScrollContainer/VBoxContainer/Grid Node Digger" method="_on_forward_pressed"]
 [connection signal="pressed" from="VBoxContainer/TabContainer/Digging/ScrollContainer/VBoxContainer/Grid Node Digger/HBoxContainer/VBoxContainer2/Navigation Buttons/Turn Right" to="VBoxContainer/TabContainer/Digging/ScrollContainer/VBoxContainer/Grid Node Digger" method="_on_turn_right_pressed"]

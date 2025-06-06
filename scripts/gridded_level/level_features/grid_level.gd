@@ -93,3 +93,8 @@ static func node_center(level: GridLevel, coordintes: Vector3i) -> Vector3:
         print_stack()
         return Vector3.ZERO
     return node_position_from_coordinates(level, coordintes) + Vector3.UP * level.node_size * 0.5
+
+static func get_level_geometry_root(level: GridLevel) -> Node3D:
+    if level.level_geometry != null:
+        return level.level_geometry
+    return level

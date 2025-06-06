@@ -5,7 +5,7 @@ class_name GridNode
 var coordinates: Vector3i
 
 @export
-var entry_requires_anchor: bool
+var entry_requires_anchor: bool = true
 
 var level: GridLevel
 

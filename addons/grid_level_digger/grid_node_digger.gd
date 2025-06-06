@@ -9,6 +9,9 @@ var panel: GridLevelDiggerPanel
 var style: GridLevelStyle
 
 @export
+var level_actions: GridLevelActions
+
+@export
 var auto_digg_btn: CheckButton
 
 @export
@@ -272,9 +275,11 @@ func _do_auto_dig_node(level: GridLevel, grid_node_resource: Resource, coordinat
     node.name = "Node %s" % coordinates
 
     var new_position: Vector3 = GridLevel.node_position_from_coordinates(level, node.coordinates)
-    var node_parent = level.level_geometry
-    if node_parent == null:
-        node_parent = level
+    var node_parent: Node3D = (
+        GridLevelActions.get_or_add_elevation_parent(level, node.coordinates.y)
+        if level_actions.organize_by_elevation else
+        GridLevel.get_level_geometry_root(level)
+    )
 
     panel.add_grid_node(node)
     node_parent.add_child(node, true)

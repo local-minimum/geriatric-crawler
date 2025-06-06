@@ -4,7 +4,7 @@ class_name GridLevelDigger
 
 @export
 var panel: GridLevelDiggerPanel
-const TOOL_PANEL = preload("res://addons/grid_level_digger/grid_level_digger_panel.tscn")
+const TOOL_PANEL: Resource = preload("res://addons/grid_level_digger/grid_level_digger_panel.tscn")
 
 var editor_selection: EditorSelection
 

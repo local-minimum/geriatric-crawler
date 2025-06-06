@@ -194,7 +194,6 @@ func _draw_debug_node_meshes() -> void:
             level.node_size,
             Color.MAGENTA)
 
-
         var node: GridNode = get_grid_node_at(coordinates)
 
         if node != null:
