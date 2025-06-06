@@ -13,7 +13,6 @@ metadata/_custom_type_script = "uid://b8a6yvndcxtpa"
 [node name="BasicWall" type="Node3D" node_paths=PackedStringArray("anchor", "negative_anchor")]
 script = ExtResource("1_vntuw")
 direction = 1
-infer_direction_from_rotation = true
 anchor = NodePath("GridAnchor")
 negative_anchor = NodePath("GridAnchorNegative")
 

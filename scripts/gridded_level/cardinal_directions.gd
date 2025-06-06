@@ -45,7 +45,7 @@ static func vector_to_direction(vector: Vector3i) -> CardinalDirection:
             return CardinalDirection.NONE
 
 static func node_planar_rotation_to_direction(node: Node3D) -> CardinalDirection:
-    var y_rotation: int = roundi(node.rotation_degrees.y / 90) * 90
+    var y_rotation: int = roundi(node.global_rotation_degrees.y / 90) * 90
     y_rotation = posmod(y_rotation, 360)
     match y_rotation:
         0: return CardinalDirection.NORTH

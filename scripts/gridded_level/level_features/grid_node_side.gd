@@ -63,7 +63,7 @@ static func find_node_side_parent(current: Node, inclusive: bool = true) -> Grid
     return find_node_side_parent(parent, false)
 
 static func set_direction_from_rotation(node_side: GridNodeSide) -> void:
-    if !node_side.infer_direction_from_rotation:
+    if !node_side.infer_direction_from_rotation || !CardinalDirections.is_planar_cardinal(node_side.direction):
         return
 
     node_side.direction = CardinalDirections.node_planar_rotation_to_direction(node_side)

@@ -13,6 +13,9 @@ var allow_replays: bool = true
 @export
 var persist_repeat_moves: bool
 
+@export
+var repeat_move_delay: float = 100
+
 func _ready() -> void:
     if spawn_node != null:
         var anchor: GridAnchor = spawn_node.get_anchor(down)
@@ -91,17 +94,21 @@ func _held_movement(movement: Movement.MovementType) -> void:
     else:
         _repeat_movement[0] = movement
 
+    _next_move_repeat = Time.get_ticks_msec() + repeat_move_delay
+
 func _clear_held_movement(movement: Movement.MovementType) -> void:
     _repeat_movement.erase(movement)
 
+var _next_move_repeat: float
 func _process(_delta: float) -> void:
-    if !allow_replays || is_moving():
+    if !allow_replays || is_moving() || Time.get_ticks_msec() < _next_move_repeat:
         return
 
     var count: int = _repeat_movement.size()
     if count > 0:
         if !attempt_movement(_repeat_movement[count - 1], false):
             _clear_held_movement(_repeat_movement[count - 1])
+        _next_move_repeat = Time.get_ticks_msec() + repeat_move_delay
 
 
 func save() -> Dictionary:

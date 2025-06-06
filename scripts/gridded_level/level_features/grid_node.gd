@@ -25,15 +25,25 @@ func get_level() -> GridLevel:
 # Anchors
 #
 
+var _anchords_inited: bool
+
 func _init_anchors() -> void:
+    if _anchords_inited: return
+
     for side: GridNodeSide in find_children("", "GridNodeSide"):
+        GridNodeSide.set_direction_from_rotation(side)
+
         if side.anchor == null:
             continue
 
         if _anchors.has(side.direction):
             if _anchors[side.direction] != side.anchor:
                 push_warning(
-                    "Node %s has duplicate anchors in the %s direction, skipping %s" % [name, side.direction, side],
+                    "Node %s has duplicate anchors in the %s direction, skipping %s (for %s)" % [
+                        name,
+                        CardinalDirections.name(side.direction),
+                        side,
+                        _anchors[side.direction]],
                 )
             continue
 
@@ -55,6 +65,7 @@ func _init_anchors() -> void:
             if n_side.negative_anchor.direction == dir:
                 _anchors[dir] = n_side.negative_anchor
 
+    _anchords_inited = true
 
 func remove_anchor(anchor: GridAnchor) -> bool:
     if !_anchors.has(anchor.direction):
@@ -124,14 +135,24 @@ func may_enter(
     anchor_direction: CardinalDirections.CardinalDirection,
     ignore_require_anchor: bool = false,
 ) -> bool:
-    var anchor: GridAnchor = get_anchor(CardinalDirections.invert(move_direction))
+    var entry_direction: CardinalDirections.CardinalDirection = CardinalDirections.invert(move_direction)
+    var entry_anchor: GridAnchor = get_anchor(entry_direction)
 
     if entry_requires_anchor && !ignore_require_anchor && !(entity.falling() && move_direction == CardinalDirections.CardinalDirection.DOWN):
         var down_anchor: GridAnchor = get_anchor(anchor_direction)
         if down_anchor == null || !down_anchor.can_anchor(entity):
+            if down_anchor == null:
+                print_debug("Refused entry anchor in %s missing" % CardinalDirections.name(move_direction))
+            else:
+                print_debug("Refused entry, %s can't be anchored to" % entry_anchor.name)
             return false
 
-    return anchor == null || anchor.pass_through_reverse
+    if entry_anchor != null && !entry_anchor.pass_through_on_refuse:
+        print_debug("Cannot enter %s becuase it has an anchor %s of %s blocking (%s)" % [
+            name, entry_anchor.name, entry_anchor.get_parent().name, CardinalDirections.name(entry_direction)])
+        return false
+
+    return true
 
 func may_exit(entity: GridEntity, move_direction: CardinalDirections.CardinalDirection) -> bool:
     var anchor: GridAnchor = get_anchor(move_direction)
@@ -143,11 +164,15 @@ func may_exit(entity: GridEntity, move_direction: CardinalDirections.CardinalDir
     print_debug("anchor %s of %s blocked %s" % [CardinalDirections.name(anchor.direction), name, CardinalDirections.name(move_direction)])
 
     if anchor.can_anchor(entity):
-        # print_debug("Cannot exit %s from %s because we can anchor on %s" % [move_direction, name, anchor.name])
+        print_debug("Cannot exit %s from %s because we can anchor on %s" % [move_direction, name, anchor.name])
         # print_stack()
         return false
 
-    return anchor.pass_through_on_refuse
+    if anchor.pass_through_on_refuse:
+        return true
+
+    print_debug("Cannot exit %s from %s because  anchor %s" % [move_direction, name, anchor.name])
+    return false
 
 func may_transit(
     entity: GridEntity,

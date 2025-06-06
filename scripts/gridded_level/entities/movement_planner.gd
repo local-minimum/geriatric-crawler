@@ -144,6 +144,7 @@ func _handle_node_transition(
     if node.may_exit(entity, move_direction):
         var neighbour: GridNode = node.neighbour(move_direction)
         if neighbour == null:
+            print_debug("No tile in %s direction" % CardinalDirections.name(move_direction))
             return false
 
         if _handle_outer_corner_transition(movement, tween, anchor, move_direction, neighbour):
