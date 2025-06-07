@@ -384,6 +384,7 @@ text = "Remove Wall
 
 [node name="Add Wall In Front" type="Button" parent="VBoxContainer/TabContainer/Manipulating/ScrollContainer/VBoxContainer/Manipulator/In front"]
 layout_mode = 2
+disabled = true
 text = "Add Wall"
 
 [node name="Ceiling" type="HBoxContainer" parent="VBoxContainer/TabContainer/Manipulating/ScrollContainer/VBoxContainer/Manipulator"]
@@ -403,12 +404,12 @@ text = "Remove Node"
 
 [node name="Remove Ceiling" type="Button" parent="VBoxContainer/TabContainer/Manipulating/ScrollContainer/VBoxContainer/Manipulator/Ceiling"]
 layout_mode = 2
-text = "Remove Wall
-"
+text = "Remove Ceiling"
 
 [node name="Add Ceiling" type="Button" parent="VBoxContainer/TabContainer/Manipulating/ScrollContainer/VBoxContainer/Manipulator/Ceiling"]
 layout_mode = 2
-text = "Add Wall"
+disabled = true
+text = "Add Ceiling"
 
 [node name="Floor" type="HBoxContainer" parent="VBoxContainer/TabContainer/Manipulating/ScrollContainer/VBoxContainer/Manipulator"]
 layout_mode = 2
@@ -427,12 +428,13 @@ text = "Remove Node"
 
 [node name="Remove Floor" type="Button" parent="VBoxContainer/TabContainer/Manipulating/ScrollContainer/VBoxContainer/Manipulator/Floor"]
 layout_mode = 2
-text = "Remove Wall
+text = "Remove Floor
 "
 
 [node name="Add Floor" type="Button" parent="VBoxContainer/TabContainer/Manipulating/ScrollContainer/VBoxContainer/Manipulator/Floor"]
 layout_mode = 2
-text = "Add Wall"
+disabled = true
+text = "Add Floor"
 
 [node name="Style" type="MarginContainer" parent="VBoxContainer/TabContainer"]
 visible = false

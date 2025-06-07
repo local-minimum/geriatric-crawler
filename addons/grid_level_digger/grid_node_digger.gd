@@ -2,6 +2,8 @@
 extends VBoxContainer
 class_name GridNodeDigger
 
+signal on_new_lookdirection()
+
 @export
 var panel: GridLevelDiggerPanel
 
@@ -141,10 +143,12 @@ func _on_forward_pressed() -> void:
 func _on_turn_right_pressed() -> void:
     look_direction = CardinalDirections.yaw_cw(look_direction, CardinalDirections.CardinalDirection.DOWN)[0]
     _sync_look_direction(PI * 0.5)
+    on_new_lookdirection.emit()
 
 func _on_turn_left_pressed() -> void:
     look_direction = CardinalDirections.yaw_ccw(look_direction, CardinalDirections.CardinalDirection.DOWN)[0]
     _sync_look_direction(-PI * 0.5)
+    on_new_lookdirection.emit()
 
 var _debug_arrow_mesh: MeshInstance3D
 
@@ -197,23 +201,28 @@ func _perform_auto_dig(dig_direction: CardinalDirections.CardinalDirection, igno
 
         var is_traversed = CardinalDirections.invert(dig_direction) == dir
         if (_auto_clear_walls || is_traversed) && neighbor != null && (!_preserve_vertical || CardinalDirections.is_planar_cardinal(dir) || is_traversed):
-            _remove_node_side(target_node, dir)
-            _remove_node_side(neighbor, CardinalDirections.invert(dir))
+            remove_node_side(target_node, dir)
+            remove_node_side(neighbor, CardinalDirections.invert(dir))
 
         if _auto_add_sides && may_wall:
             var side_resource: Resource = style.get_resource_from_direction(dir)
-            _add_node_side(side_resource, level, target_node, neighbor, dir, _preserve_vertical)
+            add_node_side(side_resource, level, target_node, neighbor, dir, _preserve_vertical)
 
-func _remove_node_side(node: GridNode, side_direction: CardinalDirections.CardinalDirection) -> void:
+func remove_node_side(
+    node: GridNode,
+    side_direction: CardinalDirections.CardinalDirection,
+) -> bool:
     if node == null:
-        return
+        return false
 
     var side = GridNodeSide.get_node_side(node, side_direction)
     if side != null:
         side.queue_free()
         EditorInterface.mark_scene_as_unsaved()
+        return true
+    return false
 
-func _add_node_side(
+func add_node_side(
     resource: Resource,
     level: GridLevel,
     node: GridNode,
