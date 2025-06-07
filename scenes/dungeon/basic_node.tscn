@@ -4,5 +4,5 @@
 
 [node name="EmptyNode" type="Node3D"]
 script = ExtResource("1_rtu8r")
-entry_requires_anchor = true
+entry_requires_anchor = false
 metadata/_custom_type_script = "uid://vhd085que0kg"

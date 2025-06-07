@@ -17,7 +17,7 @@ metadata/_custom_type_script = "uid://b8a6yvndcxtpa"
 
 [node name="TestLevel" type="Node3D" node_paths=PackedStringArray("player", "level_geometry")]
 script = ExtResource("1_dd1ob")
-node_size = Vector3(2.5, 2.5, 1.5)
+node_size = Vector3(2.5, 2.5, 2.5)
 player = NodePath("Player")
 level_geometry = NodePath("LevelGeometry")
 

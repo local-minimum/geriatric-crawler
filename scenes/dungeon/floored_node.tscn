@@ -1,9 +1,0 @@
-[gd_scene load_steps=3 format=3 uid="uid://cyok25kuqu374"]
-
-[ext_resource type="Script" uid="uid://vhd085que0kg" path="res://scripts/gridded_level/level_features/grid_node.gd" id="1_havcr"]
-[ext_resource type="PackedScene" uid="uid://ddfwexgrpbieg" path="res://scenes/dungeon/basic_floor.tscn" id="2_wg75a"]
-
-[node name="FlooredNode" type="Node3D"]
-script = ExtResource("1_havcr")
-
-[node name="BasicFloor" parent="." instance=ExtResource("2_wg75a")]
