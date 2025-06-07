@@ -85,6 +85,11 @@ crawl_turn_right={
 ]
 }
 
+[layer_names]
+
+3d_render/layer_1="Default"
+3d_render/layer_2="Ceilings"
+
 [rendering]
 
 renderer/rendering_method="gl_compatibility"

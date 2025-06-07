@@ -66,7 +66,7 @@ vertical_alignment = 1
 [node name="TabContainer" type="TabContainer" parent="VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
-current_tab = 3
+current_tab = 1
 
 [node name="About" type="MarginContainer" parent="VBoxContainer/TabContainer"]
 visible = false
@@ -97,7 +97,6 @@ text = "1. Create scenes for an empty node, a scene for a north wall (tick infer
 autowrap_mode = 2
 
 [node name="Level" type="MarginContainer" parent="VBoxContainer/TabContainer"]
-visible = false
 layout_mode = 2
 size_flags_vertical = 3
 tooltip_text = "Actions on a level"
@@ -145,6 +144,28 @@ text = "Organize nodes by elevation"
 [node name="Organize Nodes Button" type="Button" parent="VBoxContainer/TabContainer/Level/ScrollContainer/VBoxContainer/GridLevelActions"]
 layout_mode = 2
 text = "Organize nodes"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/TabContainer/Level/ScrollContainer/VBoxContainer/GridLevelActions"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/TabContainer/Level/ScrollContainer/VBoxContainer/GridLevelActions/HBoxContainer"]
+layout_mode = 2
+text = "Ceiling Layer"
+
+[node name="Ceiling Layer" type="SpinBox" parent="VBoxContainer/TabContainer/Level/ScrollContainer/VBoxContainer/GridLevelActions/HBoxContainer"]
+layout_mode = 2
+min_value = 1.0
+max_value = 20.0
+value = 2.0
+rounded = true
+
+[node name="Spacer" type="Control" parent="VBoxContainer/TabContainer/Level/ScrollContainer/VBoxContainer/GridLevelActions/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Hide Ceiling Layer" type="CheckButton" parent="VBoxContainer/TabContainer/Level/ScrollContainer/VBoxContainer/GridLevelActions/HBoxContainer"]
+layout_mode = 2
+text = "Hide Ceilings"
 
 [node name="Digging" type="MarginContainer" parent="VBoxContainer/TabContainer"]
 visible = false
@@ -306,6 +327,7 @@ layout_mode = 2
 theme_override_constants/margin_left = 8
 
 [node name="Manipulating" type="MarginContainer" parent="VBoxContainer/TabContainer"]
+visible = false
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_constants/margin_left = 4
@@ -560,6 +582,8 @@ metadata/_custom_type_script = "uid://2cl0qyqo8sb5"
 [connection signal="pressed" from="VBoxContainer/TabContainer/Level/ScrollContainer/VBoxContainer/GridLevelActions/Set All Wall Rotations" to="VBoxContainer/TabContainer/Level/ScrollContainer/VBoxContainer/GridLevelActions" method="_on_set_all_wall_rotations_pressed"]
 [connection signal="toggled" from="VBoxContainer/TabContainer/Level/ScrollContainer/VBoxContainer/GridLevelActions/Organize Nodes By Elevation" to="VBoxContainer/TabContainer/Level/ScrollContainer/VBoxContainer/GridLevelActions" method="_on_organize_nodes_by_elevation_toggled"]
 [connection signal="pressed" from="VBoxContainer/TabContainer/Level/ScrollContainer/VBoxContainer/GridLevelActions/Organize Nodes Button" to="VBoxContainer/TabContainer/Level/ScrollContainer/VBoxContainer/GridLevelActions" method="_on_organize_nodes_button_pressed"]
+[connection signal="value_changed" from="VBoxContainer/TabContainer/Level/ScrollContainer/VBoxContainer/GridLevelActions/HBoxContainer/Ceiling Layer" to="VBoxContainer/TabContainer/Level/ScrollContainer/VBoxContainer/GridLevelActions" method="_on_ceiling_layer_value_changed"]
+[connection signal="toggled" from="VBoxContainer/TabContainer/Level/ScrollContainer/VBoxContainer/GridLevelActions/HBoxContainer/Hide Ceiling Layer" to="VBoxContainer/TabContainer/Level/ScrollContainer/VBoxContainer/GridLevelActions" method="_on_hide_ceiling_layer_toggled"]
 [connection signal="pressed" from="VBoxContainer/TabContainer/Digging/ScrollContainer/VBoxContainer/Grid Node Digger/HBoxContainer/VBoxContainer2/Navigation Buttons/Turn Left" to="VBoxContainer/TabContainer/Digging/ScrollContainer/VBoxContainer/Grid Node Digger" method="_on_turn_left_pressed"]
 [connection signal="pressed" from="VBoxContainer/TabContainer/Digging/ScrollContainer/VBoxContainer/Grid Node Digger/HBoxContainer/VBoxContainer2/Navigation Buttons/Forward" to="VBoxContainer/TabContainer/Digging/ScrollContainer/VBoxContainer/Grid Node Digger" method="_on_forward_pressed"]
 [connection signal="pressed" from="VBoxContainer/TabContainer/Digging/ScrollContainer/VBoxContainer/Grid Node Digger/HBoxContainer/VBoxContainer2/Navigation Buttons/Turn Right" to="VBoxContainer/TabContainer/Digging/ScrollContainer/VBoxContainer/Grid Node Digger" method="_on_turn_right_pressed"]

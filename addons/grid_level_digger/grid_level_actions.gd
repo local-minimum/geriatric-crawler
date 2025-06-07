@@ -136,3 +136,13 @@ static func get_or_add_elevation_parent(level: GridLevel, elevation: int) -> Nod
     EditorInterface.mark_scene_as_unsaved()
 
     return new_elevation_node
+
+var _ceiling_layer: int = 2
+
+func _on_hide_ceiling_layer_toggled(toggled_on:bool) -> void:
+    var view: SubViewport = EditorInterface.get_editor_viewport_3d(0)
+    var cam: Camera3D = view.get_camera_3d()
+    cam.set_cull_mask_value(_ceiling_layer, !toggled_on)
+
+func _on_ceiling_layer_value_changed(value:float) -> void:
+    _ceiling_layer = roundi(value)

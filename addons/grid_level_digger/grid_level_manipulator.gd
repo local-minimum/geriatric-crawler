@@ -113,7 +113,6 @@ func _sync_node_side_buttons(node: GridNode) -> void:
         _has_ceiling = _ceiling != null && _ceiling.negative_anchor != null
 
     add_ceiling_button.disabled = !_may_add_ceiling_style || _has_ceiling || !has_node
-    print_debug("%s %s %s" % [_may_add_ceiling_style, _has_ceiling, has_node])
     remove_ceiling_button.disabled = !_has_ceiling
 
     var _floor: GridNodeSide = GridNodeSide.get_node_side(node, CardinalDirections.CardinalDirection.DOWN) if has_node else null
