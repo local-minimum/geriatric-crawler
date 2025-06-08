@@ -1,0 +1,90 @@
+[gd_scene load_steps=8 format=3 uid="uid://d3iceirfj21qw"]
+
+[ext_resource type="Script" uid="uid://dng6kx20nqasv" path="res://scripts/ui/exploration_ui.gd" id="1_jvesw"]
+[ext_resource type="Texture2D" uid="uid://37t534r3ua0p" path="res://sprites/kenny game icons/open-xflipped.png" id="2_m3jmt"]
+[ext_resource type="Texture2D" uid="uid://cev0382nhv46i" path="res://sprites/kenny game icons/arrowUp.png" id="3_rfm22"]
+[ext_resource type="Texture2D" uid="uid://davhidpjbpjq2" path="res://sprites/kenny game icons/open.png" id="4_eifl5"]
+[ext_resource type="Texture2D" uid="uid://bowjve07f2wq0" path="res://sprites/kenny game icons/arrowLeft.png" id="5_4stpx"]
+[ext_resource type="Texture2D" uid="uid://c02to5i50bgby" path="res://sprites/kenny game icons/arrowDown.png" id="6_2458l"]
+[ext_resource type="Texture2D" uid="uid://bm8p8oa78pasu" path="res://sprites/kenny game icons/arrowRight.png" id="7_ld1f6"]
+
+[node name="Exploration UI" type="Panel"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 952.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_jvesw")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.382878, 0.0789909, 0.13108, 1)
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 4
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 4
+theme_override_constants/margin_bottom = 4
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="Spacer" type="Control" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Exploration Movement Controls" type="GridContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 8
+columns = 3
+
+[node name="Turn Left" type="Button" parent="MarginContainer/VBoxContainer/Exploration Movement Controls"]
+layout_mode = 2
+theme_override_constants/icon_max_width = 48
+icon = ExtResource("2_m3jmt")
+
+[node name="Forward" type="Button" parent="MarginContainer/VBoxContainer/Exploration Movement Controls"]
+layout_mode = 2
+theme_override_constants/icon_max_width = 48
+icon = ExtResource("3_rfm22")
+
+[node name="Turn Right" type="Button" parent="MarginContainer/VBoxContainer/Exploration Movement Controls"]
+layout_mode = 2
+theme_override_constants/icon_max_width = 48
+icon = ExtResource("4_eifl5")
+
+[node name="Strafe Left" type="Button" parent="MarginContainer/VBoxContainer/Exploration Movement Controls"]
+layout_mode = 2
+theme_override_constants/icon_max_width = 48
+icon = ExtResource("5_4stpx")
+
+[node name="Back" type="Button" parent="MarginContainer/VBoxContainer/Exploration Movement Controls"]
+layout_mode = 2
+theme_override_constants/icon_max_width = 48
+icon = ExtResource("6_2458l")
+
+[node name="Strafe Right" type="Button" parent="MarginContainer/VBoxContainer/Exploration Movement Controls"]
+layout_mode = 2
+theme_override_constants/icon_max_width = 48
+icon = ExtResource("7_ld1f6")
+
+[connection signal="pressed" from="MarginContainer/VBoxContainer/Exploration Movement Controls/Turn Left" to="." method="_on_turn_left_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/Exploration Movement Controls/Forward" to="." method="_on_forward_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/Exploration Movement Controls/Turn Right" to="." method="_on_turn_right_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/Exploration Movement Controls/Strafe Left" to="." method="_on_strafe_left_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/Exploration Movement Controls/Back" to="." method="_on_back_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/Exploration Movement Controls/Strafe Right" to="." method="_on_strafe_right_pressed"]

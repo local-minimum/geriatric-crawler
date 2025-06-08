@@ -33,9 +33,9 @@ planner = NodePath("MovementPlanner")
 concurrent_turns = true
 
 [node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.08823, 0.43893)
-cull_mask = 524287
-fov = 80.0
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.08823, 1.11805)
+cull_mask = 31
+fov = 60.0
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
@@ -55,4 +55,7 @@ metadata/_custom_type_script = "uid://c7chl5drkyuws"
 [node name="MovementPlanner" type="Node3D" parent="." node_paths=PackedStringArray("entity")]
 script = ExtResource("4_se4x3")
 entity = NodePath("..")
+translation_time = 0.3
+exotic_translation_time = 0.4
+turn_time = 0.2
 metadata/_custom_type_script = "uid://meibvvwp8mvg"

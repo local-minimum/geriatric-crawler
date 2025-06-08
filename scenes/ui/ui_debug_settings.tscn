@@ -4,6 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://426qf31enipp" path="res://icon.svg" id="1_japon"]
 
 [node name="DebugSettingsUI" type="CanvasLayer" node_paths=PackedStringArray("menu_base", "menu_button", "queue_moves", "replays", "replays_replace", "smooth_movement", "concurrent_turns", "tank_movement", "speed", "fov", "wall_walking", "ceiling_walking", "jump_off")]
+layer = 5
 script = ExtResource("1_16j0k")
 menu_base = NodePath("DebugMenu")
 menu_button = NodePath("OpenMenuButton")

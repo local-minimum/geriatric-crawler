@@ -87,8 +87,12 @@ crawl_turn_right={
 
 [layer_names]
 
-3d_render/layer_1="Default"
-3d_render/layer_2="Ceilings"
+3d_render/layer_1="3D Default"
+3d_render/layer_2="3D Ceilings"
+3d_render/layer_3="3D"
+3d_render/layer_4="3D"
+3d_render/layer_5="3D HUD"
+3d_render/layer_11="Main UI"
 
 [rendering]
 
