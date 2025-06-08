@@ -1,8 +1,9 @@
-[gd_scene load_steps=5 format=3 uid="uid://b3heljhlu4hop"]
+[gd_scene load_steps=6 format=3 uid="uid://b3heljhlu4hop"]
 
 [ext_resource type="Script" uid="uid://c6733p4qj68p" path="res://scripts/gridded_level/level_features/grid_node_side.gd" id="1_vntuw"]
 [ext_resource type="Script" uid="uid://bsjvh2o2oob57" path="res://scripts/gridded_level/level_features/grid_anchor.gd" id="2_ia0bt"]
 [ext_resource type="Script" uid="uid://b8a6yvndcxtpa" path="res://scripts/gridded_level/transportation_mode.gd" id="3_vntuw"]
+[ext_resource type="PackedScene" uid="uid://bkv0y26ds4tfv" path="res://models/concreteslab.fbx" id="4_vntuw"]
 
 [sub_resource type="Resource" id="Resource_p5glw"]
 script = ExtResource("3_vntuw")
@@ -13,18 +14,14 @@ metadata/_custom_type_script = "uid://b8a6yvndcxtpa"
 script = ExtResource("1_vntuw")
 direction = 1
 anchor = NodePath("GridAnchor")
-negative_anchor = NodePath("GridAnchorNegative")
+negative_anchor = NodePath("")
 
 [node name="GridAnchor" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.3, -0.697755)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.25, -1.15)
 script = ExtResource("2_ia0bt")
 direction = 1
 required_transportation_mode = SubResource("Resource_p5glw")
 metadata/_custom_type_script = "uid://bsjvh2o2oob57"
 
-[node name="GridAnchorNegative" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.3, -0.697755)
-script = ExtResource("2_ia0bt")
-direction = 2
-required_transportation_mode = SubResource("Resource_p5glw")
-metadata/_custom_type_script = "uid://bsjvh2o2oob57"
+[node name="concreteslab" parent="." instance=ExtResource("4_vntuw")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.25, -1.25)

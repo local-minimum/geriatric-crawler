@@ -33,7 +33,7 @@ planner = NodePath("MovementPlanner")
 concurrent_turns = true
 
 [node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0.5)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.08823, 0.43893)
 cull_mask = 524287
 fov = 80.0
 
