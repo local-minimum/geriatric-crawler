@@ -21,11 +21,9 @@ func _on_turn_right_pressed() -> void:
     if !level.player.attempt_movement(Movement.MovementType.TURN_CLOCKWISE):
         print_debug("Refused Turn Right")
 
-
 func _on_strafe_left_pressed() -> void:
     if !level.player.attempt_movement(Movement.MovementType.STRAFE_LEFT):
         print_debug("Refused Strafe Left")
-
 
 func _on_strafe_right_pressed() -> void:
     if !level.player.attempt_movement(Movement.MovementType.STRAFE_RIGHT):

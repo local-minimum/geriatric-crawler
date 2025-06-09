@@ -45,42 +45,54 @@ theme_override_constants/separation = 4
 [node name="Spacer" type="Control" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
+size_flags_stretch_ratio = 3.0
 
 [node name="Exploration Movement Controls" type="GridContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 8
+size_flags_vertical = 3
 columns = 3
 
 [node name="Turn Left" type="Button" parent="MarginContainer/VBoxContainer/Exploration Movement Controls"]
 layout_mode = 2
-theme_override_constants/icon_max_width = 48
+size_flags_horizontal = 3
+size_flags_vertical = 3
 icon = ExtResource("2_m3jmt")
+expand_icon = true
 
 [node name="Forward" type="Button" parent="MarginContainer/VBoxContainer/Exploration Movement Controls"]
 layout_mode = 2
-theme_override_constants/icon_max_width = 48
+size_flags_horizontal = 3
+size_flags_vertical = 3
 icon = ExtResource("3_rfm22")
+expand_icon = true
 
 [node name="Turn Right" type="Button" parent="MarginContainer/VBoxContainer/Exploration Movement Controls"]
 layout_mode = 2
-theme_override_constants/icon_max_width = 48
+size_flags_horizontal = 3
+size_flags_vertical = 3
 icon = ExtResource("4_eifl5")
+expand_icon = true
 
 [node name="Strafe Left" type="Button" parent="MarginContainer/VBoxContainer/Exploration Movement Controls"]
 layout_mode = 2
-theme_override_constants/icon_max_width = 48
+size_flags_horizontal = 3
+size_flags_vertical = 3
 icon = ExtResource("5_4stpx")
+expand_icon = true
 
 [node name="Back" type="Button" parent="MarginContainer/VBoxContainer/Exploration Movement Controls"]
 layout_mode = 2
-theme_override_constants/icon_max_width = 48
+size_flags_horizontal = 3
+size_flags_vertical = 3
 icon = ExtResource("6_2458l")
+expand_icon = true
 
 [node name="Strafe Right" type="Button" parent="MarginContainer/VBoxContainer/Exploration Movement Controls"]
 layout_mode = 2
-theme_override_constants/icon_max_width = 48
+size_flags_horizontal = 3
+size_flags_vertical = 3
 icon = ExtResource("7_ld1f6")
+expand_icon = true
 
 [connection signal="pressed" from="MarginContainer/VBoxContainer/Exploration Movement Controls/Turn Left" to="." method="_on_turn_left_pressed"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/Exploration Movement Controls/Forward" to="." method="_on_forward_pressed"]

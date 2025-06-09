@@ -10,11 +10,10 @@ script = ExtResource("3_vntuw")
 mode = 8
 metadata/_custom_type_script = "uid://b8a6yvndcxtpa"
 
-[node name="BasicWall" type="Node3D" node_paths=PackedStringArray("anchor", "negative_anchor")]
+[node name="BasicWall" type="Node3D" node_paths=PackedStringArray("anchor")]
 script = ExtResource("1_vntuw")
 direction = 1
 anchor = NodePath("GridAnchor")
-negative_anchor = NodePath("")
 
 [node name="GridAnchor" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.25, -1.15)

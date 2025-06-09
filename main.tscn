@@ -6,6 +6,16 @@
 [ext_resource type="PackedScene" uid="uid://d3iceirfj21qw" path="res://scenes/ui/exploration_ui.tscn" id="4_1bvp3"]
 
 [sub_resource type="Environment" id="Environment_ig7tw"]
+background_mode = 1
+background_color = Color(0.361575, 0.361575, 0.361575, 1)
+ambient_light_color = Color(0.101241, 0.101241, 0.101241, 1)
+fog_enabled = true
+fog_mode = 1
+fog_light_color = Color(0.0430788, 0.0511794, 0.0639149, 1)
+fog_density = 1.0
+fog_depth_curve = 0.659753
+fog_depth_begin = 4.0
+fog_depth_end = 15.0
 
 [sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_0xm2m"]
 
@@ -27,28 +37,25 @@ save_system = NodePath("../SaveSystem")
 [node name="SaveSystem" parent="." instance=ExtResource("3_h2yge")]
 
 [node name="SubViewportContainer" type="SubViewportContainer" parent="."]
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 0.82
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+stretch = true
 
 [node name="SubViewport" type="SubViewport" parent="SubViewportContainer"]
 handle_input_locally = false
 canvas_cull_mask = 4293918751
-size = Vector2i(952, 648)
+size = Vector2i(944, 648)
 render_target_update_mode = 4
 
 [node name="TestLevel" parent="SubViewportContainer/SubViewport" instance=ExtResource("1_ig7tw")]
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="SubViewportContainer/SubViewport"]
 transform = Transform3D(0.804687, 0.403004, -0.435967, 0, 0.734323, 0.678801, 0.5937, -0.546222, 0.5909, 0.865872, 2.80495, 0)
-
-[node name="DirectionalLight3D2" type="DirectionalLight3D" parent="SubViewportContainer/SubViewport"]
-transform = Transform3D(0.781738, -0.423305, 0.457929, 0.623607, 0.530644, -0.574048, 3.11011e-07, 0.734323, 0.6788, 0.865872, 2.80495, 0)
-light_energy = 0.257
-
-[node name="DirectionalLight3D3" type="DirectionalLight3D" parent="SubViewportContainer/SubViewport"]
-transform = Transform3D(-0.552773, -0.219924, -0.803788, 0.623607, 0.530643, -0.574049, 0.552772, -0.818567, -0.156179, 0.865872, 2.80495, 0)
-light_energy = 0.257
+light_color = Color(1, 0.7535, 0.49, 1)
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="SubViewportContainer/SubViewport"]
 environment = SubResource("Environment_ig7tw")
@@ -56,4 +63,7 @@ camera_attributes = SubResource("CameraAttributesPractical_0xm2m")
 
 [node name="Exploration UI" parent="." node_paths=PackedStringArray("level") instance=ExtResource("4_1bvp3")]
 layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.82
+offset_left = 0.0
 level = NodePath("../SubViewportContainer/SubViewport/TestLevel")
