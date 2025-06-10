@@ -97,7 +97,7 @@ func add_anchor(anchor: GridAnchor) -> bool:
 
     return success
 
-func get_anchor(direction: CardinalDirections.CardinalDirection) -> GridAnchor:
+func get_grid_anchor(direction: CardinalDirections.CardinalDirection) -> GridAnchor:
     if _anchors.has(direction):
         return _anchors[direction]
 
@@ -136,10 +136,10 @@ func may_enter(
     ignore_require_anchor: bool = false,
 ) -> bool:
     var entry_direction: CardinalDirections.CardinalDirection = CardinalDirections.invert(move_direction)
-    var entry_anchor: GridAnchor = get_anchor(entry_direction)
+    var entry_anchor: GridAnchor = get_grid_anchor(entry_direction)
 
     if entry_requires_anchor && !ignore_require_anchor && !(entity.falling() && move_direction == CardinalDirections.CardinalDirection.DOWN):
-        var down_anchor: GridAnchor = get_anchor(anchor_direction)
+        var down_anchor: GridAnchor = get_grid_anchor(anchor_direction)
         if down_anchor == null || !down_anchor.can_anchor(entity):
             if down_anchor == null:
                 print_debug("Refused entry anchor in %s missing" % CardinalDirections.name(move_direction))
@@ -155,7 +155,7 @@ func may_enter(
     return true
 
 func may_exit(entity: GridEntity, move_direction: CardinalDirections.CardinalDirection) -> bool:
-    var anchor: GridAnchor = get_anchor(move_direction)
+    var anchor: GridAnchor = get_grid_anchor(move_direction)
 
     if anchor == null:
         return true

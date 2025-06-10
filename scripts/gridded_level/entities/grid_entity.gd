@@ -1,6 +1,9 @@
 extends GridNodeFeature
 class_name GridEntity
 
+signal on_move_start(entity: GridEntity)
+signal on_move_end(entity: GridEntity)
+
 const _LOOK_DIRECTION_KEY: String = "look_direction"
 const _DOWN_KEY: String = "down"
 const _ANCHOR_KEY: String = "anchor"
@@ -75,6 +78,8 @@ func end_movement(movement: Movement.MovementType, start_next_from_queue: bool =
     if _active_movement == movement:
         _active_movement = _concurrent_movement
         _concurrent_movement = Movement.MovementType.NONE
+        if _active_movement != null:
+            on_move_end.emit(self)
     elif _concurrent_movement == movement:
         _concurrent_movement = Movement.MovementType.NONE
     else:
@@ -159,8 +164,10 @@ func attempt_movement(
     if tween == null:
         # This would become a stack overflow if set
         end_movement(movement, false)
+        return false
 
-    return tween != null
+    on_move_start.emit(self)
+    return true
 
 func _enqeue_movement(movement: Movement.MovementType) -> void:
     if _next_movement != Movement.MovementType.NONE:

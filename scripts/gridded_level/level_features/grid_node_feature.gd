@@ -1,29 +1,36 @@
 extends Node3D
 class_name GridNodeFeature
 
+signal on_change_node(feature: GridNodeFeature)
+signal on_change_anchor(feature: GridNodeFeature)
+
 var _node: GridNode
 var _anchor: GridAnchor
 
 var _inited: bool
 
-# TODO: Negative anchors dont find the right node!
-# TODO: I don't think anchors should be grid node features!
 func _ready() -> void:
-    if _node == null:
-        _node = GridNode.find_node_parent(self)
-        if _node != null:
-            _inited = true
+    _init_feature()
 
+func _init_feature() -> void:
+    if _inited:
+        return
+
+    _node = GridNode.find_node_parent(self)
+    _inited = true
+
+func get_level() -> GridLevel:
+    _init_feature()
+
+    if _node != null:
+        return _node.get_level()
+    return null
 
 func get_grid_node() -> GridNode:
+    _init_feature()
+
     if _anchor != null:
         return _anchor.get_grid_node()
-
-    if !_inited && _node == null:
-        _node = GridNode.find_node_parent(self)
-        if _node == null:
-            push_error("%s doesn't have a node as parent" % self)
-        _inited = true
 
     return _node
 
@@ -37,7 +44,11 @@ func set_grid_node(node: GridNode, _deferred: bool = false) -> void:
     if !_inited:
         _inited = true
 
+    on_change_anchor.emit(self)
+    on_change_node.emit(self)
+
 func get_grid_anchor() -> GridAnchor:
+    _init_feature()
     return _anchor
 
 func set_grid_anchor(anchor: GridAnchor, _deferred: bool = false) -> void:
@@ -48,6 +59,9 @@ func set_grid_anchor(anchor: GridAnchor, _deferred: bool = false) -> void:
 
     if !_inited:
         _inited = true
+
+    on_change_anchor.emit(self)
+    on_change_node.emit(self)
 
 func coordinates() -> Vector3i:
     if _node == null:

@@ -18,7 +18,7 @@ var repeat_move_delay: float = 100
 
 func _ready() -> void:
     if spawn_node != null:
-        var anchor: GridAnchor = spawn_node.get_anchor(down)
+        var anchor: GridAnchor = spawn_node.get_grid_anchor(down)
         update_entity_anchorage(spawn_node, anchor, true)
         sync_position()
         print_debug("%s anchors to %s in node %s and mode %s" % [
@@ -129,33 +129,43 @@ func initial_state() -> Dictionary:
         _COORDINATES_KEY: spawn_node.coordinates
     }
 
+func _valid_save_data(save_data: Dictionary) -> bool:
+    return (
+        save_data.has(_LOOK_DIRECTION_KEY) &&
+        save_data.has(_ANCHOR_KEY) &&
+        save_data.has(_COORDINATES_KEY) &&
+        save_data.has(_DOWN_KEY))
+
 func load_from_save(level: GridLevel, save_data: Dictionary) -> void:
-    if save_data.has(_LOOK_DIRECTION_KEY) && save_data.has(_ANCHOR_KEY) && save_data.has(_COORDINATES_KEY):
-        var coords: Vector3i = save_data[_COORDINATES_KEY]
-        var node: GridNode = level.get_grid_node(coords)
+    if !_valid_save_data(save_data):
+        push_error("Player save data is not valid %s" % save_data)
+        return
 
-        if node == null:
-            push_error("Trying to load player onto coordinates %s but there's no node there. Returning to spawn" % coords)
-            node = level.player.spawn_node
+    var coords: Vector3i = save_data[_COORDINATES_KEY]
+    var node: GridNode = level.get_grid_node(coords)
 
-        var look: CardinalDirections.CardinalDirection = save_data[_LOOK_DIRECTION_KEY]
-        var down_direction: CardinalDirections.CardinalDirection = save_data[_DOWN_KEY]
-        var anchor_direction: CardinalDirections.CardinalDirection = save_data[_ANCHOR_KEY]
+    if node == null:
+        push_error("Trying to load player onto coordinates %s but there's no node there. Returning to spawn" % coords)
+        node = level.player.spawn_node
 
-        look_direction = look
-        down = down_direction
+    var look: CardinalDirections.CardinalDirection = save_data[_LOOK_DIRECTION_KEY]
+    var down_direction: CardinalDirections.CardinalDirection = save_data[_DOWN_KEY]
+    var anchor_direction: CardinalDirections.CardinalDirection = save_data[_ANCHOR_KEY]
 
-        if anchor_direction == CardinalDirections.CardinalDirection.NONE:
+    look_direction = look
+    down = down_direction
+
+    if anchor_direction == CardinalDirections.CardinalDirection.NONE:
+        set_grid_node(node)
+    else:
+        var anchor: GridAnchor = node.get_grid_anchor(anchor_direction)
+        if anchor == null:
+            push_error("Trying to load player onto coordinates %s and anchor %s but node lacks anchor in that direction" % [coords, anchor_direction])
             set_grid_node(node)
         else:
-            var anchor: GridAnchor = node.get_anchor(anchor_direction)
-            if anchor == null:
-                push_error("Trying to load player onto coordinates %s and anchor %s but node lacks anchor in that direction" % [coords, anchor_direction])
-                set_grid_node(node)
-            else:
-                set_grid_anchor(anchor)
+            set_grid_anchor(anchor)
 
-        sync_position()
-        orient()
+    sync_position()
+    orient()
 
-        camera.make_current()
+    camera.make_current()

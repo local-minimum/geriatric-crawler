@@ -108,7 +108,7 @@ func _handle_landing(
     move_direction: CardinalDirections.CardinalDirection,
 ) -> bool:
     if anchor == null:
-        var land_anchor: GridAnchor = node.get_anchor(move_direction)
+        var land_anchor: GridAnchor = node.get_grid_anchor(move_direction)
         if land_anchor != null && land_anchor.can_anchor(entity):
 
             var prop_tweener: PropertyTweener = tween.tween_property(
@@ -153,7 +153,7 @@ func _handle_node_transition(
 
         if neighbour.may_enter(entity, move_direction, entity.down):
 
-            var neighbour_anchor: GridAnchor = neighbour.get_anchor(entity.down)
+            var neighbour_anchor: GridAnchor = neighbour.get_grid_anchor(entity.down)
 
             if was_excotic_walk && !entity.can_jump_off_walls && neighbour_anchor == null:
                 return false
@@ -267,7 +267,7 @@ func _handle_outer_corner_transition(
         return false
 
 
-    var target_anchor: GridAnchor = target.get_anchor(updated_directions[1])
+    var target_anchor: GridAnchor = target.get_grid_anchor(updated_directions[1])
 
     if target_anchor == null || !target_anchor.can_anchor(entity):
         # if target_anchor == null:
@@ -296,7 +296,7 @@ func _handle_node_inner_corner_transition(
     anchor: GridAnchor,
     move_direction: CardinalDirections.CardinalDirection,
 ) -> bool:
-    var target_anchor: GridAnchor = node.get_anchor(move_direction)
+    var target_anchor: GridAnchor = node.get_grid_anchor(move_direction)
 
     if target_anchor == null || anchor == null || !target_anchor.can_anchor(entity):
         return false

@@ -30,7 +30,6 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="DebugSettingsUI" parent="." node_paths=PackedStringArray("level", "save_system") instance=ExtResource("2_0xm2m")]
-visible = false
 level = NodePath("../SubViewportContainer/SubViewport/TestLevel")
 save_system = NodePath("../SaveSystem")
 

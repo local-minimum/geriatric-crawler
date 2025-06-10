@@ -41,6 +41,7 @@ enabled=PackedStringArray("res://addons/grid_level_digger/plugin.cfg")
 [global_group]
 
 Persistant="Scenes that may be saved and loaded"
+Encounter="Entity that can trigger effects"
 
 [input]
 
