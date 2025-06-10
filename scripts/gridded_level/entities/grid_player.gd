@@ -40,32 +40,24 @@ func _input(event: InputEvent) -> void:
 
     if !event.is_echo():
         if event.is_action_pressed("crawl_forward"):
-            if !attempt_movement(Movement.MovementType.FORWARD):
-                print_debug("Refused Forward")
-            _held_movement(Movement.MovementType.FORWARD)
+            hold_movement(Movement.MovementType.FORWARD)
         elif event.is_action_released("crawl_forward"):
-            _clear_held_movement(Movement.MovementType.FORWARD)
+            clear_held_movement(Movement.MovementType.FORWARD)
 
         elif event.is_action_pressed("crawl_backward"):
-            if !attempt_movement(Movement.MovementType.BACK):
-                print_debug("Refused Backward")
-            _held_movement(Movement.MovementType.BACK)
+            hold_movement(Movement.MovementType.BACK)
         elif event.is_action_released("crawl_backward"):
-            _clear_held_movement(Movement.MovementType.BACK)
+            clear_held_movement(Movement.MovementType.BACK)
 
         elif event.is_action_pressed("crawl_strafe_left"):
-            if !attempt_movement(Movement.MovementType.STRAFE_LEFT):
-                print_debug("Refused Strafe Left")
-            _held_movement(Movement.MovementType.STRAFE_LEFT)
+            hold_movement(Movement.MovementType.STRAFE_LEFT)
         elif event.is_action_released("crawl_strafe_left"):
-            _clear_held_movement(Movement.MovementType.STRAFE_LEFT)
+            clear_held_movement(Movement.MovementType.STRAFE_LEFT)
 
         elif event.is_action_pressed("crawl_strafe_right"):
-            if !attempt_movement(Movement.MovementType.STRAFE_RIGHT):
-                print_debug("Refused Strafe Right")
-            _held_movement(Movement.MovementType.STRAFE_RIGHT)
+            hold_movement(Movement.MovementType.STRAFE_RIGHT)
         elif event.is_action_released("crawl_strafe_right"):
-            _clear_held_movement(Movement.MovementType.STRAFE_RIGHT)
+            clear_held_movement(Movement.MovementType.STRAFE_RIGHT)
 
         elif event.is_action_pressed("crawl_turn_left"):
             if !attempt_movement(Movement.MovementType.TURN_COUNTER_CLOCKWISE):
@@ -84,8 +76,11 @@ func _input(event: InputEvent) -> void:
             # CardinalDirections.name(down),
             # transportation_mode.humanize()])
 
-func _held_movement(movement: Movement.MovementType) -> void:
-    if !allow_replays:
+func hold_movement(movement: Movement.MovementType) -> void:
+    if !attempt_movement(movement):
+        print_debug("Refused %s" % Movement.name(movement))
+
+    if !allow_replays || Movement.is_turn(movement):
         return
 
     if persist_repeat_moves:
@@ -96,7 +91,7 @@ func _held_movement(movement: Movement.MovementType) -> void:
 
     _next_move_repeat = Time.get_ticks_msec() + repeat_move_delay
 
-func _clear_held_movement(movement: Movement.MovementType) -> void:
+func clear_held_movement(movement: Movement.MovementType) -> void:
     _repeat_movement.erase(movement)
 
 var _next_move_repeat: float
@@ -107,7 +102,7 @@ func _process(_delta: float) -> void:
     var count: int = _repeat_movement.size()
     if count > 0:
         if !attempt_movement(_repeat_movement[count - 1], false):
-            _clear_held_movement(_repeat_movement[count - 1])
+            clear_held_movement(_repeat_movement[count - 1])
         _next_move_repeat = Time.get_ticks_msec() + repeat_move_delay
 
 

@@ -95,8 +95,12 @@ icon = ExtResource("7_ld1f6")
 expand_icon = true
 
 [connection signal="pressed" from="MarginContainer/VBoxContainer/Exploration Movement Controls/Turn Left" to="." method="_on_turn_left_pressed"]
-[connection signal="pressed" from="MarginContainer/VBoxContainer/Exploration Movement Controls/Forward" to="." method="_on_forward_pressed"]
+[connection signal="button_down" from="MarginContainer/VBoxContainer/Exploration Movement Controls/Forward" to="." method="_on_forward_button_down"]
+[connection signal="button_up" from="MarginContainer/VBoxContainer/Exploration Movement Controls/Forward" to="." method="_on_forward_button_up"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/Exploration Movement Controls/Turn Right" to="." method="_on_turn_right_pressed"]
-[connection signal="pressed" from="MarginContainer/VBoxContainer/Exploration Movement Controls/Strafe Left" to="." method="_on_strafe_left_pressed"]
-[connection signal="pressed" from="MarginContainer/VBoxContainer/Exploration Movement Controls/Back" to="." method="_on_back_pressed"]
-[connection signal="pressed" from="MarginContainer/VBoxContainer/Exploration Movement Controls/Strafe Right" to="." method="_on_strafe_right_pressed"]
+[connection signal="button_down" from="MarginContainer/VBoxContainer/Exploration Movement Controls/Strafe Left" to="." method="_on_strafe_left_button_down"]
+[connection signal="button_up" from="MarginContainer/VBoxContainer/Exploration Movement Controls/Strafe Left" to="." method="_on_strafe_left_button_up"]
+[connection signal="button_down" from="MarginContainer/VBoxContainer/Exploration Movement Controls/Back" to="." method="_on_back_button_down"]
+[connection signal="button_up" from="MarginContainer/VBoxContainer/Exploration Movement Controls/Back" to="." method="_on_back_button_up"]
+[connection signal="button_down" from="MarginContainer/VBoxContainer/Exploration Movement Controls/Strafe Right" to="." method="_on_strafe_right_button_down"]
+[connection signal="button_up" from="MarginContainer/VBoxContainer/Exploration Movement Controls/Strafe Right" to="." method="_on_strafe_right_button_up"]
