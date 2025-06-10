@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://dwqcwbgj8p6q0"]
+[gd_scene load_steps=15 format=3 uid="uid://dwqcwbgj8p6q0"]
 
 [ext_resource type="Script" uid="uid://dqe42q7uub84r" path="res://scripts/gridded_level/level_features/grid_level.gd" id="1_dd1ob"]
 [ext_resource type="PackedScene" uid="uid://bfoog3fb4v5ij" path="res://scenes/dungeon/player.tscn" id="3_m6mav"]
@@ -9,6 +9,7 @@
 [ext_resource type="Script" uid="uid://bqahhkn6dpex" path="res://scripts/gridded_level/entities/grid_encounter.gd" id="8_kmgg5"]
 [ext_resource type="PackedScene" uid="uid://ds0fqw6fso67w" path="res://scenes/dungeon/basic_floor.tscn" id="9_4mxkc"]
 [ext_resource type="Script" uid="uid://dexigkhejxn1h" path="res://scripts/gridded_level/level_features/player_facer.gd" id="9_myev5"]
+[ext_resource type="Script" uid="uid://b3kob7bivk342" path="res://scripts/gridded_level/entities/grid_encounter_effect.gd" id="10_rvj20"]
 
 [sub_resource type="Resource" id="Resource_kmgg5"]
 resource_local_to_scene = true
@@ -226,17 +227,22 @@ direction = 3
 
 [node name="Side DOWN" parent="LevelGeometry/Elevation 0/Node (-3, 0, 1)" instance=ExtResource("9_4mxkc")]
 
-[node name="Encounter" type="Node3D" parent="LevelGeometry/Elevation 0/Node (-3, 0, 1)" groups=["Encounter"]]
+[node name="Demo Encounter" type="Node3D" parent="LevelGeometry/Elevation 0/Node (-3, 0, 1)" node_paths=PackedStringArray("effect") groups=["Encounter"]]
 script = ExtResource("8_kmgg5")
 encounter_id = "demo-enemy"
+effect = NodePath("Empty Encounter Effect")
 metadata/_custom_type_script = "uid://bqahhkn6dpex"
 
-[node name="Avatar" type="Node3D" parent="LevelGeometry/Elevation 0/Node (-3, 0, 1)/Encounter"]
+[node name="Avatar" type="Node3D" parent="LevelGeometry/Elevation 0/Node (-3, 0, 1)/Demo Encounter"]
 script = ExtResource("9_myev5")
 
-[node name="EncounterAvatar" type="MeshInstance3D" parent="LevelGeometry/Elevation 0/Node (-3, 0, 1)/Encounter/Avatar"]
+[node name="Encounter Avatar" type="MeshInstance3D" parent="LevelGeometry/Elevation 0/Node (-3, 0, 1)/Demo Encounter/Avatar"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.23567, 0)
 mesh = SubResource("QuadMesh_kmgg5")
+
+[node name="Empty Encounter Effect" type="Node" parent="LevelGeometry/Elevation 0/Node (-3, 0, 1)/Demo Encounter"]
+script = ExtResource("10_rvj20")
+metadata/_custom_type_script = "uid://b3kob7bivk342"
 
 [node name="Node (-3, 0, 0)" parent="LevelGeometry/Elevation 0" instance=ExtResource("4_myev5")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.5, 0, 0)

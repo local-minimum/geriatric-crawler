@@ -16,6 +16,9 @@ var encounter_id: String
 @export
 var repeatable: bool = true
 
+@export
+var effect: GridEncounterEffect
+
 var _triggered: bool
 
 func _ready() -> void:
@@ -46,11 +49,12 @@ func _check_colliding_node(feature: GridNodeFeature) -> void:
         if feature is GridEntity:
             _trigger(feature as GridEntity)
 
-func _trigger(player: GridEntity) -> void:
+func _trigger(entity: GridEntity) -> void:
     if !repeatable && _triggered:
         return
-    print_debug("%s triggers encounter with %s" % [name, player.name])
-    _triggered = true
+
+    if effect != null && effect.invoke(self, entity):
+        _triggered = true
 
 func save() -> Dictionary:
     var anchor: GridAnchor = get_grid_anchor()
