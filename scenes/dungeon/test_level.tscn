@@ -9,9 +9,9 @@
 [ext_resource type="Script" uid="uid://bqahhkn6dpex" path="res://scripts/gridded_level/entities/grid_encounter.gd" id="8_kmgg5"]
 [ext_resource type="PackedScene" uid="uid://ds0fqw6fso67w" path="res://scenes/dungeon/basic_floor.tscn" id="9_4mxkc"]
 [ext_resource type="Script" uid="uid://dexigkhejxn1h" path="res://scripts/gridded_level/level_features/player_facer.gd" id="9_myev5"]
-[ext_resource type="Script" uid="uid://b3kob7bivk342" path="res://scripts/gridded_level/entities/grid_encounter_effect.gd" id="10_rvj20"]
+[ext_resource type="Script" uid="uid://dmpqfljj24gh6" path="res://scripts/gridded_level/entities/encounter_effects/battle_scene_trigger.gd" id="10_rvj20"]
 
-[sub_resource type="Resource" id="Resource_kmgg5"]
+[sub_resource type="Resource" id="Resource_rvj20"]
 resource_local_to_scene = true
 script = ExtResource("4_840jk")
 mode = 61
@@ -40,7 +40,7 @@ level_geometry = NodePath("LevelGeometry")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0145968, -0.00857759, 0.00070858)
 spawn_node = NodePath("../LevelGeometry/Elevation 0/Node (0, 0, 1)")
 look_direction = 1
-transportation_abilities = SubResource("Resource_kmgg5")
+transportation_abilities = SubResource("Resource_rvj20")
 transportation_mode = SubResource("Resource_pgxau")
 
 [node name="LevelGeometry" type="Node3D" parent="."]
@@ -230,7 +230,7 @@ direction = 3
 [node name="Demo Encounter" type="Node3D" parent="LevelGeometry/Elevation 0/Node (-3, 0, 1)" node_paths=PackedStringArray("effect") groups=["Encounter"]]
 script = ExtResource("8_kmgg5")
 encounter_id = "demo-enemy"
-effect = NodePath("Empty Encounter Effect")
+effect = NodePath("Battle Trigger")
 metadata/_custom_type_script = "uid://bqahhkn6dpex"
 
 [node name="Avatar" type="Node3D" parent="LevelGeometry/Elevation 0/Node (-3, 0, 1)/Demo Encounter"]
@@ -240,7 +240,7 @@ script = ExtResource("9_myev5")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.23567, 0)
 mesh = SubResource("QuadMesh_kmgg5")
 
-[node name="Empty Encounter Effect" type="Node" parent="LevelGeometry/Elevation 0/Node (-3, 0, 1)/Demo Encounter"]
+[node name="Battle Trigger" type="Node" parent="LevelGeometry/Elevation 0/Node (-3, 0, 1)/Demo Encounter"]
 script = ExtResource("10_rvj20")
 metadata/_custom_type_script = "uid://b3kob7bivk342"
 

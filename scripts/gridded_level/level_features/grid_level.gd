@@ -15,6 +15,14 @@ var player: GridPlayer
 @export
 var level_geometry: Node3D
 
+var paused: bool:
+    set(value):
+        paused = value
+        if value:
+            player.enable_player()
+        else:
+            player.disable_player()
+
 var _nodes: Dictionary[Vector3i, GridNode] = {}
 
 func _init() -> void:

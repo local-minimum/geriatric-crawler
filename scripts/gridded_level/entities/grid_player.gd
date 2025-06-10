@@ -169,3 +169,21 @@ func load_from_save(level: GridLevel, save_data: Dictionary) -> void:
     orient()
 
     camera.make_current()
+
+func enable_player() -> void:
+    set_process(true)
+    # set_physics_process(true)
+    set_process_input(true)
+    set_process_unhandled_input(true)
+    set_process_unhandled_key_input(true)
+    set_process_shortcut_input(true)
+
+func disable_player() -> void:
+    set_process(false)
+    # set_physics_process(false)
+    set_process_input(false)
+    set_process_unhandled_input(false)
+    set_process_unhandled_key_input(false)
+    set_process_shortcut_input(false)
+
+    clear_queue()

@@ -108,7 +108,7 @@ func _attempt_movement_from_queue() -> void:
             _next_movement = _next_next_movement
             _next_next_movement = Movement.MovementType.NONE
         else:
-            _clear_queue()
+            clear_queue()
             print_debug("Queued movement refused")
 
         # print_debug("Consumed queue, now %s / %s" % [
@@ -125,7 +125,11 @@ var _concurrent_tween: Tween
 func attempt_movement(
     movement: Movement.MovementType,
     enqueue_if_occupied: bool = true,
-    force: bool = false) -> bool:
+    force: bool = false,
+) -> bool:
+    if get_level().paused:
+        return false
+
     if movement == Movement.MovementType.NONE:
         push_error("A none movement cannot be performed")
         print_stack()
@@ -140,7 +144,7 @@ func attempt_movement(
         return false
 
     if force:
-        _clear_queue()
+        clear_queue()
 
     var primary_tween: bool = movement == _active_movement
 
@@ -183,7 +187,7 @@ func _enqeue_movement(movement: Movement.MovementType) -> void:
         # Movement.name(_next_movement),
     # ])
 
-func _clear_queue() -> void:
+func clear_queue() -> void:
     _next_movement = Movement.MovementType.NONE
     _next_next_movement = Movement.MovementType.NONE
 
