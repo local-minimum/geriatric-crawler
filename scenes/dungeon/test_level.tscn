@@ -9,7 +9,7 @@
 [ext_resource type="Script" uid="uid://bqahhkn6dpex" path="res://scripts/gridded_level/entities/grid_encounter.gd" id="8_kmgg5"]
 [ext_resource type="PackedScene" uid="uid://ds0fqw6fso67w" path="res://scenes/dungeon/basic_floor.tscn" id="9_4mxkc"]
 [ext_resource type="Script" uid="uid://dexigkhejxn1h" path="res://scripts/gridded_level/level_features/player_facer.gd" id="9_myev5"]
-[ext_resource type="Script" uid="uid://dmpqfljj24gh6" path="res://scripts/gridded_level/entities/encounter_effects/battle_scene_trigger.gd" id="10_rvj20"]
+[ext_resource type="Script" uid="uid://dmpqfljj24gh6" path="res://scripts/gridded_level/entities/encounter_effects/battle_mode_trigger.gd" id="10_rvj20"]
 
 [sub_resource type="Resource" id="Resource_rvj20"]
 resource_local_to_scene = true

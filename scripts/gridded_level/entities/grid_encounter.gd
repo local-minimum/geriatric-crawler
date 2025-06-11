@@ -20,6 +20,7 @@ var repeatable: bool = true
 var effect: GridEncounterEffect
 
 var _triggered: bool
+var _was_on_node: bool
 
 func _ready() -> void:
     super()
@@ -42,12 +43,17 @@ func _check_colliding_anchor(feature: GridNodeFeature) -> void:
             _trigger(feature as GridEntity)
 
 func _check_colliding_node(feature: GridNodeFeature) -> void:
+    var is_on_node: bool = feature.get_grid_node() == get_grid_node()
+
     if encounter_mode != EncounterMode.NODE:
+        _was_on_node = is_on_node
         return
 
-    if feature.get_grid_node() == get_grid_node():
-        if feature is GridEntity:
+    if is_on_node:
+        if !_was_on_node && feature is GridEntity:
             _trigger(feature as GridEntity)
+
+    _was_on_node = is_on_node
 
 func _trigger(entity: GridEntity) -> void:
     if !repeatable && _triggered:

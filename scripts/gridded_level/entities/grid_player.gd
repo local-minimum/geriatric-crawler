@@ -77,6 +77,9 @@ func _input(event: InputEvent) -> void:
             # transportation_mode.humanize()])
 
 func hold_movement(movement: Movement.MovementType) -> void:
+    if get_level().paused:
+        return
+
     if !attempt_movement(movement):
         print_debug("Refused %s" % Movement.name(movement))
 
@@ -95,6 +98,7 @@ func clear_held_movement(movement: Movement.MovementType) -> void:
     _repeat_movement.erase(movement)
 
 var _next_move_repeat: float
+
 func _process(_delta: float) -> void:
     if !allow_replays || is_moving() || Time.get_ticks_msec() < _next_move_repeat:
         return
@@ -178,6 +182,10 @@ func enable_player() -> void:
     set_process_unhandled_key_input(true)
     set_process_shortcut_input(true)
 
+    # Unclear why repeat moves can appear here if not cleared again
+    clear_queue()
+    _repeat_movement.clear()
+
 func disable_player() -> void:
     set_process(false)
     # set_physics_process(false)
@@ -187,3 +195,4 @@ func disable_player() -> void:
     set_process_shortcut_input(false)
 
     clear_queue()
+    _repeat_movement.clear()

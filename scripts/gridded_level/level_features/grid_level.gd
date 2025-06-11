@@ -15,13 +15,16 @@ var player: GridPlayer
 @export
 var level_geometry: Node3D
 
+@export
+var battle_mode: BattleMode
+
 var paused: bool:
     set(value):
         paused = value
         if value:
-            player.enable_player()
-        else:
             player.disable_player()
+        else:
+            player.enable_player()
 
 var _nodes: Dictionary[Vector3i, GridNode] = {}
 

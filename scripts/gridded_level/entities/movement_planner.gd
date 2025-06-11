@@ -179,7 +179,7 @@ func _handle_node_transition(
                         entity.end_movement(movement))
                 @warning_ignore_restore("return_value_discarded")
 
-                print_debug("normal normal")
+                print_debug("Normal move no exotics")
                 return true
 
             print_debug("%s has no anchor %s" % [neighbour.name, CardinalDirections.name(entity.down)])
