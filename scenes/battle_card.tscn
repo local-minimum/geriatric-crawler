@@ -1,0 +1,86 @@
+[gd_scene load_steps=4 format=3 uid="uid://s73lghpvdp2r"]
+
+[ext_resource type="Texture2D" uid="uid://d14rk0grbqxnd" path="res://sprites/card-background.png" id="1_bh02m"]
+[ext_resource type="Script" uid="uid://cem1vylwvgpi5" path="res://scripts/card_battle/battle_card.gd" id="2_b5gog"]
+[ext_resource type="Texture2D" uid="uid://dxsa43lvagbqa" path="res://addons/grid_level_digger/sprites/kenney game icons/PNG/White/1x/trophy.png" id="3_nay0s"]
+
+[node name="BattleCard" type="NinePatchRect" node_paths=PackedStringArray("suiteIcon", "rankLabel", "cardIcon", "primaryEffect", "divider", "secondaryEffect")]
+custom_minimum_size = Vector2(130, 200)
+offset_right = 130.0
+offset_bottom = 200.0
+texture = ExtResource("1_bh02m")
+patch_margin_left = 11
+patch_margin_top = 12
+patch_margin_right = 12
+patch_margin_bottom = 11
+axis_stretch_horizontal = 2
+axis_stretch_vertical = 2
+script = ExtResource("2_b5gog")
+suiteIcon = NodePath("Suit")
+rankLabel = NodePath("Rank")
+cardIcon = NodePath("CardIcon")
+primaryEffect = NodePath("Info/PrimaryEffect")
+divider = NodePath("Info/Divider")
+secondaryEffect = NodePath("Info/SecondaryEffect")
+
+[node name="CardIcon" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.05
+anchor_top = 0.025
+anchor_right = 0.95
+anchor_bottom = 0.45
+grow_horizontal = 2
+grow_vertical = 2
+expand_mode = 5
+stretch_mode = 5
+
+[node name="Rank" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -40.0
+offset_bottom = 23.0
+grow_horizontal = 0
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+text = "999"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Suit" type="TextureRect" parent="."]
+layout_mode = 0
+offset_right = 32.0
+offset_bottom = 25.0
+texture = ExtResource("3_nay0s")
+expand_mode = 3
+stretch_mode = 5
+
+[node name="Info" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.05
+anchor_top = 0.475
+anchor_right = 0.95
+anchor_bottom = 0.95
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="PrimaryEffect" type="RichTextLabel" parent="Info"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_font_sizes/normal_font_size = 10
+text = "**CARD NAME**
+2-8 DMG to 1 target"
+
+[node name="Divider" type="ColorRect" parent="Info"]
+custom_minimum_size = Vector2(0, 1)
+layout_mode = 2
+color = Color(0.01, 0.01, 0.01, 0.768627)
+
+[node name="SecondaryEffect" type="RichTextLabel" parent="Info"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_font_sizes/normal_font_size = 10
+text = "Next suit bonus x2
+Next suit penalty x4"

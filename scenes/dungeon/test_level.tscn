@@ -22,12 +22,12 @@ script = ExtResource("4_840jk")
 mode = 0
 metadata/_custom_type_script = "uid://b8a6yvndcxtpa"
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_kmgg5"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_rvj20"]
 transparency = 1
 albedo_color = Color(0.77, 0.1848, 0.1848, 1)
 
 [sub_resource type="QuadMesh" id="QuadMesh_kmgg5"]
-material = SubResource("StandardMaterial3D_kmgg5")
+material = SubResource("StandardMaterial3D_rvj20")
 size = Vector2(0.75, 1.25)
 
 [node name="TestLevel" type="Node3D" node_paths=PackedStringArray("player", "level_geometry")]

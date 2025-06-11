@@ -46,6 +46,7 @@ flat = true
 expand_icon = true
 
 [node name="DebugMenu" type="Control" parent="."]
+visible = false
 layout_mode = 3
 anchor_left = 0.65
 anchor_right = 1.0
