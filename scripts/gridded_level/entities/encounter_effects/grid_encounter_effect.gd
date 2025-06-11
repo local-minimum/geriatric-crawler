@@ -1,12 +1,18 @@
 extends Node
 class_name GridEncounterEffect
 
+@export
+var free_encounter_on_complete: bool
+
+var encounter: GridEncounter
+
 ## Thing that happesn when an encounter is triggered.
 ## Returns if could trigger
-func invoke(_encounter: GridEncounter, _player: GridEntity) -> bool:
-    push_warning("Encounter '%s' doesn't have an effect" % _encounter.encounter_id)
+func invoke(triggering_encounter: GridEncounter, _player: GridEntity) -> bool:
+    encounter = triggering_encounter
     return false
 
 ## Optional on complete clean up of effect
 func complete() -> void:
-    push_warning("Encounter effect %s doesn't complete action" % name)
+    if free_encounter_on_complete:
+        encounter.queue_free()

@@ -11,6 +11,8 @@ func enter_battle(battle_trigger: GridEncounterEffect) -> void:
 
     animator.play("fade_in_battle")
     await get_tree().create_timer(1.0).timeout
+    if trigger.free_encounter_on_complete:
+        trigger.encounter.visible = false
     # Show battle
     await get_tree().create_timer(1.0).timeout
     # Let player battle

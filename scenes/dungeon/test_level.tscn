@@ -230,6 +230,7 @@ direction = 3
 [node name="Demo Encounter" type="Node3D" parent="LevelGeometry/Elevation 0/Node (-3, 0, 1)" node_paths=PackedStringArray("effect") groups=["Encounter"]]
 script = ExtResource("8_kmgg5")
 encounter_id = "demo-enemy"
+repeatable = false
 effect = NodePath("Battle Trigger")
 metadata/_custom_type_script = "uid://bqahhkn6dpex"
 
@@ -242,6 +243,7 @@ mesh = SubResource("QuadMesh_kmgg5")
 
 [node name="Battle Trigger" type="Node" parent="LevelGeometry/Elevation 0/Node (-3, 0, 1)/Demo Encounter"]
 script = ExtResource("10_rvj20")
+free_encounter_on_complete = true
 metadata/_custom_type_script = "uid://b3kob7bivk342"
 
 [node name="Node (-3, 0, 0)" parent="LevelGeometry/Elevation 0" instance=ExtResource("4_myev5")]
@@ -405,6 +407,23 @@ direction = 4
 [node name="Side UP" parent="LevelGeometry/Elevation 1/Node (2, 1, -2)" instance=ExtResource("8_72dvb")]
 
 [node name="Side DOWN" parent="LevelGeometry/Elevation 1/Node (2, 1, -2)" instance=ExtResource("9_4mxkc")]
+
+[node name="Demo Encounter" type="Node3D" parent="LevelGeometry/Elevation 1/Node (2, 1, -2)" node_paths=PackedStringArray("effect") groups=["Encounter"]]
+script = ExtResource("8_kmgg5")
+encounter_id = "demo-enemy"
+effect = NodePath("Battle Trigger")
+metadata/_custom_type_script = "uid://bqahhkn6dpex"
+
+[node name="Avatar" type="Node3D" parent="LevelGeometry/Elevation 1/Node (2, 1, -2)/Demo Encounter"]
+script = ExtResource("9_myev5")
+
+[node name="Encounter Avatar" type="MeshInstance3D" parent="LevelGeometry/Elevation 1/Node (2, 1, -2)/Demo Encounter/Avatar"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.23567, 0)
+mesh = SubResource("QuadMesh_kmgg5")
+
+[node name="Battle Trigger" type="Node" parent="LevelGeometry/Elevation 1/Node (2, 1, -2)/Demo Encounter"]
+script = ExtResource("10_rvj20")
+metadata/_custom_type_script = "uid://b3kob7bivk342"
 
 [node name="Node (2, 1, -1)" parent="LevelGeometry/Elevation 1" instance=ExtResource("4_myev5")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 2.5, -2.5)
