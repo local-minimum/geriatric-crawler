@@ -243,7 +243,7 @@ mesh = SubResource("QuadMesh_kmgg5")
 
 [node name="Battle Trigger" type="Node" parent="LevelGeometry/Elevation 0/Node (-3, 0, 1)/Demo Encounter"]
 script = ExtResource("10_rvj20")
-free_encounter_on_complete = true
+hide_encounter_on_trigger = true
 metadata/_custom_type_script = "uid://b3kob7bivk342"
 
 [node name="Node (-3, 0, 0)" parent="LevelGeometry/Elevation 0" instance=ExtResource("4_myev5")]

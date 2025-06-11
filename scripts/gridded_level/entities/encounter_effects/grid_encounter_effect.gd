@@ -1,10 +1,10 @@
 extends Node
 class_name GridEncounterEffect
 
-@export
-var free_encounter_on_complete: bool
-
 var encounter: GridEncounter
+
+@export
+var hide_encounter_on_trigger: bool
 
 ## Thing that happesn when an encounter is triggered.
 ## Returns if could trigger
@@ -14,5 +14,4 @@ func invoke(triggering_encounter: GridEncounter, _player: GridEntity) -> bool:
 
 ## Optional on complete clean up of effect
 func complete() -> void:
-    if free_encounter_on_complete:
-        encounter.queue_free()
+    pass
