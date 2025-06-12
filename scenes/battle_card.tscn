@@ -4,7 +4,7 @@
 [ext_resource type="Script" uid="uid://cem1vylwvgpi5" path="res://scripts/card_battle/battle_card.gd" id="2_b5gog"]
 [ext_resource type="Texture2D" uid="uid://dxsa43lvagbqa" path="res://addons/grid_level_digger/sprites/kenney game icons/PNG/White/1x/trophy.png" id="3_nay0s"]
 
-[node name="BattleCard" type="NinePatchRect" node_paths=PackedStringArray("suiteIcon", "rankLabel", "cardIcon", "primaryEffect", "divider", "secondaryEffect")]
+[node name="BattleCard" type="NinePatchRect" node_paths=PackedStringArray("suite_icon", "rank_label", "card_icon", "primary_effect", "divider", "secondary_effect")]
 custom_minimum_size = Vector2(130, 200)
 offset_right = 130.0
 offset_bottom = 200.0
@@ -16,12 +16,12 @@ patch_margin_bottom = 11
 axis_stretch_horizontal = 2
 axis_stretch_vertical = 2
 script = ExtResource("2_b5gog")
-suiteIcon = NodePath("Suit")
-rankLabel = NodePath("Rank")
-cardIcon = NodePath("CardIcon")
-primaryEffect = NodePath("Info/PrimaryEffect")
+suite_icon = NodePath("Suit")
+rank_label = NodePath("Rank")
+card_icon = NodePath("CardIcon")
+primary_effect = NodePath("Info/PrimaryEffect")
 divider = NodePath("Info/Divider")
-secondaryEffect = NodePath("Info/SecondaryEffect")
+secondary_effect = NodePath("Info/SecondaryEffect")
 
 [node name="CardIcon" type="TextureRect" parent="."]
 layout_mode = 1

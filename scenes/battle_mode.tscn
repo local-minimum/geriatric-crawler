@@ -1,7 +1,8 @@
-[gd_scene load_steps=7 format=3 uid="uid://sx8om7lfql6j"]
+[gd_scene load_steps=8 format=3 uid="uid://sx8om7lfql6j"]
 
 [ext_resource type="Script" uid="uid://cvchbk03g5wag" path="res://scripts/battle_mode.gd" id="1_7wt64"]
 [ext_resource type="Texture2D" uid="uid://cpot0wvcwpcqh" path="res://sprites/battle-bg-test.png" id="2_wpnne"]
+[ext_resource type="Script" uid="uid://deofnypsgkauo" path="res://scripts/card_battle/battle_hand_manager.gd" id="3_wpnne"]
 
 [sub_resource type="Animation" id="Animation_272bh"]
 length = 0.001
@@ -445,6 +446,7 @@ offset_bottom = -0.684998
 grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 3
+script = ExtResource("3_wpnne")
 
 [node name="Control" type="Control" parent="CanvasLayer/CardTargets"]
 layout_mode = 2
