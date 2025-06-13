@@ -22,8 +22,12 @@ func _ready() -> void:
 func enter_battle(battle_trigger: GridEncounterEffect) -> void:
     trigger = battle_trigger
 
+    await get_tree().create_timer(0.5).timeout
+
     animator.play("fade_in_battle")
+
     await get_tree().create_timer(1.0).timeout
+
     if trigger.hide_encounter_on_trigger:
         trigger.encounter.visible = false
 

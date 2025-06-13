@@ -114,7 +114,6 @@ const DRAG_DEADZONE: float = 10
 func handle_card_dragged(card: BattleCard) -> void:
     var card_index: int = card_positions[card]
     var offset: Vector2 = card.global_position - get_centered_position(card, _target_controls[card_index])
-    print_debug(offset)
 
     if offset.x > DRAG_DEADZONE:
         if reverse_card_positions.has(card_index + 1):
