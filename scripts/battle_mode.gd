@@ -65,6 +65,8 @@ func after_deal() -> void:
     exit_battle()
 
 func exit_battle() -> void:
+    battle_hand.hide_hand()
+
     animator.play("fade_out_battle")
     await get_tree().create_timer(0.5).timeout
     trigger.complete()

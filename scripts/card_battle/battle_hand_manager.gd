@@ -27,6 +27,8 @@ func draw_hand(cards: Array[BattleCard]) -> void:
         _connected_cards.append(card)
         if card.on_drag_card.connect(handle_card_dragged) != OK:
             push_error("Failed to connect on drag card signal for %s" % card)
+        if card.on_drag_end.connect(handle_card_drag_end) != OK:
+            push_error("Failed to connect on drag end card signal for %s" % card)
 
     var n_cards: int = cards.size()
     var n_controls: int = _target_controls.size()
@@ -45,6 +47,11 @@ func draw_hand(cards: Array[BattleCard]) -> void:
     var last_card_idx: int = card_idx + n_cards - 1
 
     _draw_hand.call_deferred(cards, card_idx, n_controls, last_card_idx)
+
+func hide_hand() -> void:
+    for card: BattleCard in _hand:
+        card.visible = false
+    _hand.clear()
 
 func _draw_hand(cards: Array[BattleCard], card_idx: int, n_controls: int, last_card_idx: int) -> void:
     for card: BattleCard in cards:
@@ -75,6 +82,7 @@ func _draw_hand(cards: Array[BattleCard], card_idx: int, n_controls: int, last_c
 
 var _card_tweens: Dictionary[BattleCard, Tween] = {}
 var card_positions: Dictionary[BattleCard, int] = {}
+var reverse_card_positions: Dictionary[int, BattleCard] = {}
 
 func tween_card_to_position(card: BattleCard, target_index: int, duration: float) -> Tween:
     var tween: Tween = get_tree().create_tween()
@@ -94,11 +102,34 @@ func tween_card_to_position(card: BattleCard, target_index: int, duration: float
 
     _card_tweens[card] = tween
     card_positions[card] = target_index
+    reverse_card_positions[target_index] = card
 
     return tween
 
 static func get_centered_position(subject: Control, target: Control) ->  Vector2:
     return  target.get_global_rect().get_center() - subject.get_global_rect().size * 0.5
 
+const DRAG_DEADZONE: float = 10
+
 func handle_card_dragged(card: BattleCard) -> void:
-    pass
+    var card_index: int = card_positions[card]
+    var offset: Vector2 = card.global_position - get_centered_position(card, _target_controls[card_index])
+    print_debug(offset)
+
+    if offset.x > DRAG_DEADZONE:
+        if reverse_card_positions.has(card_index + 1):
+            var other: BattleCard = reverse_card_positions[card_index + 1]
+            if other.global_position.x < card.global_position.x:
+                card_positions[card] = card_index + 1
+                reverse_card_positions[card_index + 1] = card
+                tween_card_to_position(other, card_index, 0.1).play()
+    elif offset.x < -DRAG_DEADZONE:
+        if reverse_card_positions.has(card_index - 1):
+            var other: BattleCard = reverse_card_positions[card_index - 1]
+            if other.global_position.x > card.global_position.x:
+                card_positions[card] = card_index - 1
+                reverse_card_positions[card_index - 1] = card
+                tween_card_to_position(other, card_index, 0.1).play()
+
+func handle_card_drag_end(card: BattleCard) -> void:
+    tween_card_to_position(card, card_positions[card], 0.05).play()

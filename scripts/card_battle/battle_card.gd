@@ -2,6 +2,7 @@ extends NinePatchRect
 class_name BattleCard
 
 signal on_drag_card(card: BattleCard)
+signal on_drag_end(card: BattleCard)
 
 @export
 var suite_icon: TextureRect
@@ -111,6 +112,7 @@ func _input(event: InputEvent) -> void:
                 move_to_front()
             elif _dragging && !btn_event.pressed && _dragger_device == btn_event.device:
                 _dragging = false
+                on_drag_end.emit(self)
 
     elif event is InputEventMouseMotion:
         var motion_event: InputEventMouseMotion = event
