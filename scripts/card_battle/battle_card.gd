@@ -1,6 +1,8 @@
 extends NinePatchRect
 class_name BattleCard
 
+signal on_drag_card(card: BattleCard)
+
 @export
 var suite_icon: TextureRect
 
@@ -95,3 +97,34 @@ func _get_primary_effect_text(effect: BattleCardPrimaryEffect, crit_multiplyer: 
         "% - %" % effect_range if effect_range[0] != effect_range[1] else str(effect_range[0]),
         "*" if can_crit else "",
     ]
+
+var _dragging: bool
+var _dragger_device: int
+
+func _input(event: InputEvent) -> void:
+    if event is InputEventMouseButton:
+        var btn_event: InputEventMouseButton = event
+        if btn_event.button_index == 1:
+            if !_dragging && _hovered && btn_event.pressed:
+                _dragging = true
+                _dragger_device = btn_event.device
+                move_to_front()
+            elif _dragging && !btn_event.pressed && _dragger_device == btn_event.device:
+                _dragging = false
+
+    elif event is InputEventMouseMotion:
+        var motion_event: InputEventMouseMotion = event
+        if _dragging && motion_event.device == _dragger_device:
+            var relative: Vector2 = motion_event.screen_relative
+            relative.y = 0
+            global_position += relative
+
+            on_drag_card.emit(self)
+
+var _hovered: bool
+
+func _on_mouse_exited() -> void:
+    _hovered = false
+
+func _on_mouse_entered() -> void:
+    _hovered = true

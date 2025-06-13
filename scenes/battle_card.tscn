@@ -8,6 +8,8 @@
 custom_minimum_size = Vector2(130, 200)
 offset_right = 130.0
 offset_bottom = 200.0
+mouse_filter = 0
+mouse_default_cursor_shape = 2
 texture = ExtResource("1_bh02m")
 patch_margin_left = 11
 patch_margin_top = 12
@@ -32,6 +34,7 @@ anchor_right = 0.95
 anchor_bottom = 0.45
 grow_horizontal = 2
 grow_vertical = 2
+mouse_default_cursor_shape = 2
 expand_mode = 5
 stretch_mode = 5
 
@@ -43,6 +46,8 @@ anchor_right = 1.0
 offset_left = -40.0
 offset_bottom = 23.0
 grow_horizontal = 0
+mouse_filter = 1
+mouse_default_cursor_shape = 2
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
 text = "999"
 horizontal_alignment = 1
@@ -52,6 +57,7 @@ vertical_alignment = 1
 layout_mode = 0
 offset_right = 32.0
 offset_bottom = 25.0
+mouse_default_cursor_shape = 2
 texture = ExtResource("3_nay0s")
 expand_mode = 3
 stretch_mode = 5
@@ -65,10 +71,13 @@ anchor_right = 0.95
 anchor_bottom = 0.95
 grow_horizontal = 2
 grow_vertical = 2
+mouse_default_cursor_shape = 2
 
 [node name="PrimaryEffect" type="RichTextLabel" parent="Info"]
 layout_mode = 2
 size_flags_vertical = 3
+mouse_filter = 1
+mouse_default_cursor_shape = 2
 theme_override_font_sizes/normal_font_size = 10
 text = "**CARD NAME**
 2-8 DMG to 1 target"
@@ -76,11 +85,18 @@ text = "**CARD NAME**
 [node name="Divider" type="ColorRect" parent="Info"]
 custom_minimum_size = Vector2(0, 1)
 layout_mode = 2
+mouse_filter = 1
+mouse_default_cursor_shape = 2
 color = Color(0.01, 0.01, 0.01, 0.768627)
 
 [node name="SecondaryEffect" type="RichTextLabel" parent="Info"]
 layout_mode = 2
 size_flags_vertical = 3
+mouse_filter = 1
+mouse_default_cursor_shape = 2
 theme_override_font_sizes/normal_font_size = 10
 text = "Next suit bonus x2
 Next suit penalty x4"
+
+[connection signal="mouse_entered" from="." to="." method="_on_mouse_entered"]
+[connection signal="mouse_exited" from="." to="." method="_on_mouse_exited"]

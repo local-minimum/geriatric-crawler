@@ -51,7 +51,8 @@ canvas_cull_mask = 4293918751
 size = Vector2i(944, 648)
 render_target_update_mode = 4
 
-[node name="TestLevel" parent="SubViewportContainer/SubViewport" instance=ExtResource("1_ig7tw")]
+[node name="TestLevel" parent="SubViewportContainer/SubViewport" node_paths=PackedStringArray("battle_mode") instance=ExtResource("1_ig7tw")]
+battle_mode = NodePath("../../../Battle Mode")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="SubViewportContainer/SubViewport"]
 transform = Transform3D(0.804687, 0.403004, -0.435967, 0, 0.734323, 0.678801, 0.5937, -0.546222, 0.5909, 0.865872, 2.80495, 0)
