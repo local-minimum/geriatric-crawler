@@ -1,4 +1,4 @@
-extends Node
+extends Control
 class_name BattleHandManager
 
 signal on_hand_drawn
@@ -15,10 +15,43 @@ var _draw_delta: float = 0.2
 @export
 var _draw_origin: Control
 
+@export
+var slots: BattleCardSlots
+
+@export
+var min_slots: int = 5
+
 var _hand: Array[BattleCard] = []
 var _connected_cards: Array[BattleCard] = []
 
-func draw_hand(cards: Array[BattleCard]) -> void:
+var _card_tweens: Dictionary[BattleCard, Tween] = {}
+var _card_positions: Dictionary[BattleCard, int] = {}
+var _reverse_card_positions: Dictionary[int, BattleCard] = {}
+
+func _ready() -> void:
+    if slots.on_return_card_to_hand.connect(return_card_to_hand) != OK:
+        push_error("Hand could not connect to return card to hand event")
+    if slots.on_slots_shown.connect(_hand_ready) != OK:
+        push_error("Hand could not connect to return card to hand event")
+    hide_hand()
+
+
+func _hand_ready() -> void:
+    for card: BattleCard in _hand:
+        card.interactable = true
+
+func draw_hand(
+    cards: Array[BattleCard],
+    emit_event: bool = true,
+    draw_from_origin: bool = true
+) -> void:
+    visible = true
+    for tween: Tween in _card_tweens.values():
+        tween.kill()
+
+    _card_tweens.clear()
+    _reverse_card_positions.clear()
+    _card_positions.clear()
     _hand.clear()
 
     for card: BattleCard in cards:
@@ -27,7 +60,9 @@ func draw_hand(cards: Array[BattleCard]) -> void:
         _connected_cards.append(card)
         if card.on_drag_card.connect(handle_card_dragged) != OK:
             push_error("Failed to connect on drag card signal for %s" % card)
-        if card.on_drag_end.connect(handle_card_drag_end) != OK:
+        if card.on_drag_end.connect(_handle_card_drag_end) != OK:
+            push_error("Failed to connect on drag end card signal for %s" % card)
+        if card.on_click.connect(_handle_card_click) != OK:
             push_error("Failed to connect on drag end card signal for %s" % card)
 
     var n_cards: int = cards.size()
@@ -37,34 +72,47 @@ func draw_hand(cards: Array[BattleCard]) -> void:
         push_error("Hand only supports %s cards, we got %s" % [n_controls, n_cards])
 
     # Center layouts
-    if n_cards % 2 != n_controls % 2:
-        _target_controls[n_controls - 1].visible = false
-        n_controls -= 1
+    var matching_min_count: bool = (min_slots % 2) == (n_cards % 2)
+    n_controls = clampi(n_cards, min_slots if matching_min_count else min_slots + 1, n_controls)
+    for slot_idx: int in range(_target_controls.size()):
+        _target_controls[slot_idx].visible = slot_idx < n_controls
 
     @warning_ignore_start("integer_division")
     var card_idx: int = (n_controls - n_cards) / 2
     @warning_ignore_restore("integer_division")
     var last_card_idx: int = card_idx + n_cards - 1
 
-    _draw_hand.call_deferred(cards, card_idx, n_controls, last_card_idx)
+    print_debug("Drawing %s cards (%s - %s) of %s controls" % [n_cards, card_idx, last_card_idx, n_controls])
+
+    _draw_hand.call_deferred(cards, card_idx, n_controls, last_card_idx, emit_event, draw_from_origin)
 
 func hide_hand() -> void:
     for card: BattleCard in _hand:
         card.visible = false
     _hand.clear()
+    visible = false
+    slots.visible = false
 
-func _draw_hand(cards: Array[BattleCard], card_idx: int, n_controls: int, last_card_idx: int) -> void:
+func _draw_hand(
+    cards: Array[BattleCard],
+    card_idx: int,
+    n_controls: int,
+    last_card_idx: int,
+    emit_event: bool,
+    draw_from_origin: bool,
+) -> void:
     for card: BattleCard in cards:
         if card_idx >= n_controls:
             break
 
-        card.global_position = get_centered_position(card, _draw_origin)
+        if draw_from_origin:
+            card.global_position = get_centered_position(card, _draw_origin)
         card.visible = true
         var tween: Tween = tween_card_to_position(card, card_idx, _draw_time)
 
-        print_debug("Draw card idx %s (last %s)" % [card_idx, last_card_idx])
+        # print_debug("Draw card idx %s (last %s)" % [card_idx, last_card_idx])
 
-        if card_idx == last_card_idx:
+        if card_idx == last_card_idx && emit_event:
             @warning_ignore_start("return_value_discarded")
             tween.connect(
                 "finished",
@@ -77,12 +125,12 @@ func _draw_hand(cards: Array[BattleCard], card_idx: int, n_controls: int, last_c
 
         _hand.append(card)
 
-        await get_tree().create_timer(_draw_delta).timeout
+        if draw_from_origin:
+            await get_tree().create_timer(_draw_delta).timeout
         card_idx += 1
 
-var _card_tweens: Dictionary[BattleCard, Tween] = {}
-var card_positions: Dictionary[BattleCard, int] = {}
-var reverse_card_positions: Dictionary[int, BattleCard] = {}
+func _last_card_position() -> int:
+    return _card_positions.values().max()
 
 func tween_card_to_position(card: BattleCard, target_index: int, duration: float) -> Tween:
     var tween: Tween = get_tree().create_tween()
@@ -101,9 +149,10 @@ func tween_card_to_position(card: BattleCard, target_index: int, duration: float
     @warning_ignore_restore("return_value_discarded")
 
     _card_tweens[card] = tween
-    card_positions[card] = target_index
-    reverse_card_positions[target_index] = card
+    _card_positions[card] = target_index
+    _reverse_card_positions[target_index] = card
 
+    # print_debug("%s now  #%s %s %s" % [card, target_index, _card_positions, _reverse_card_positions])
     return tween
 
 static func get_centered_position(subject: Control, target: Control) ->  Vector2:
@@ -111,24 +160,122 @@ static func get_centered_position(subject: Control, target: Control) ->  Vector2
 
 const DRAG_DEADZONE: float = 10
 
+func _get_card_position_index(card: BattleCard) -> int:
+    if _card_positions.has(card):
+        return _card_positions[card]
+
+    var best: int = -1
+    var best_delta: int = _target_controls.size()
+    var mid: float = float(_target_controls.size()) / 2
+    for idx: int in range(_target_controls.size()):
+        if _reverse_card_positions.has(idx) && _reverse_card_positions[idx] != null:
+            continue
+
+        var delta: int = absi(roundi(idx - mid))
+        if delta < best_delta:
+            best_delta = delta
+            best = idx
+
+    if best < 0:
+        best = _target_controls.size() - 1
+
+    _target_controls[best].visible = true
+
+    return best
+
+
 func handle_card_dragged(card: BattleCard) -> void:
-    var card_index: int = card_positions[card]
-    var offset: Vector2 = card.global_position - get_centered_position(card, _target_controls[card_index])
+    # Moved card goes last, not great
+    var card_index: int = _get_card_position_index(card)
+    _handle_card_dragged.call_deferred(card, card_index)
+
+func _handle_card_dragged(card: BattleCard, card_index: int) -> void:
+    if slots.is_over_slots(card):
+        return
+
+    var origin: Vector2 = get_centered_position(card, _target_controls[card_index])
+    var offset: Vector2 = card.global_position - origin
 
     if offset.x > DRAG_DEADZONE:
-        if reverse_card_positions.has(card_index + 1):
-            var other: BattleCard = reverse_card_positions[card_index + 1]
+        if _reverse_card_positions.has(card_index + 1):
+            var other: BattleCard = _reverse_card_positions[card_index + 1]
             if other.global_position.x < card.global_position.x:
-                card_positions[card] = card_index + 1
-                reverse_card_positions[card_index + 1] = card
+                _card_positions[card] = card_index + 1
+                _reverse_card_positions[card_index + 1] = card
                 tween_card_to_position(other, card_index, 0.1).play()
     elif offset.x < -DRAG_DEADZONE:
-        if reverse_card_positions.has(card_index - 1):
-            var other: BattleCard = reverse_card_positions[card_index - 1]
+        if _reverse_card_positions.has(card_index - 1):
+            var other: BattleCard = _reverse_card_positions[card_index - 1]
             if other.global_position.x > card.global_position.x:
-                card_positions[card] = card_index - 1
-                reverse_card_positions[card_index - 1] = card
+                _card_positions[card] = card_index - 1
+                _reverse_card_positions[card_index - 1] = card
                 tween_card_to_position(other, card_index, 0.1).play()
 
-func handle_card_drag_end(card: BattleCard) -> void:
-    tween_card_to_position(card, card_positions[card], 0.05).play()
+func _handle_card_drag_end(card: BattleCard) -> void:
+    if slots.take(card):
+        if _card_positions.has(card):
+            _remove_card(card)
+    else:
+        var card_idx: int = _get_card_position_index(card)
+
+        if slots.has_card(card):
+            @warning_ignore_start("return_value_discarded")
+            slots.unslot_card(card)
+            @warning_ignore_restore("return_value_discarded")
+
+            _reverse_card_positions[card_idx] = card
+            _organize_hand()
+            return
+
+        var action: Callable = func () -> void:
+            tween_card_to_position(card, card_idx, 0.05).play()
+
+        action.call_deferred()
+
+func _handle_card_click(card: BattleCard) -> void:
+    if slots.has_card(card):
+        @warning_ignore_start("return_value_discarded")
+        slots.unslot_card(card)
+        @warning_ignore_restore("return_value_discarded")
+        return_card_to_hand(card, null)
+        return
+
+    if slots.take(card, true):
+        if _card_positions.has(card):
+            _remove_card(card)
+
+func return_card_to_hand(card: BattleCard, position_holder: BattleCard) -> void:
+    var idx: int = _get_card_position_index(position_holder)
+
+    # We neeed to set this here so that it gets returned correctly when redrawing cards
+    # as a result of taking another
+    _card_positions[card] = idx
+    _reverse_card_positions[idx] = card
+
+    _organize_hand()
+
+func _remove_card(removed_card: BattleCard) -> void:
+    if !_card_positions.has(removed_card):
+        push_error("%s not known card in %s" % [removed_card, _card_positions])
+        return
+
+    if !_reverse_card_positions.erase(_card_positions[removed_card]):
+        push_error("%s not known reverse card position %s in reverse card positions %s" % [removed_card, _card_positions[removed_card], _card_positions])
+        return
+
+    if !_card_positions.erase(removed_card):
+        push_error("%s not known card position %s in reverse card positions %s" % [removed_card, _card_positions[removed_card], _card_positions])
+
+    _organize_hand()
+
+func _organize_hand() -> void:
+    var positions: Array[int] =_reverse_card_positions.keys()
+    positions.sort()
+
+    var cards: Array[BattleCard] = []
+    for pos: int in positions:
+        if _reverse_card_positions[pos] != null:
+            cards.append(_reverse_card_positions[pos])
+
+    print_debug("Organizing cards %s (%s)" % [cards, _reverse_card_positions])
+    draw_hand(cards, false, false)

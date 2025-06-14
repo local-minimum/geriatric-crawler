@@ -51,6 +51,7 @@ func deal_hand() -> void:
     while idx < hand_size:
         var new_card: BattleCard = _battle_card_resource.instantiate()
         new_card.visible = false
+        new_card.name = "Card %s" % idx
 
         _active_cards.add_child(new_card)
         new_card.owner = _active_cards.get_tree().root
@@ -62,11 +63,7 @@ func deal_hand() -> void:
     battle_hand.draw_hand(hand)
 
 func after_deal() -> void:
-    # Let player battle
-    # For now return to explore
-    await get_tree().create_timer(10).timeout
-    # Return to explore
-    exit_battle()
+    battle_hand.slots.show_slots(3)
 
 func exit_battle() -> void:
     battle_hand.hide_hand()

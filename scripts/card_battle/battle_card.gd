@@ -2,7 +2,11 @@ extends NinePatchRect
 class_name BattleCard
 
 signal on_drag_card(card: BattleCard)
+signal on_drag_start(card: BattleCard)
 signal on_drag_end(card: BattleCard)
+signal on_click(card: BattleCard)
+
+const CLICK_DURATION: float = 0.075
 
 @export
 var suite_icon: TextureRect
@@ -42,6 +46,8 @@ var divider: Control
 
 @export
 var secondary_effect: RichTextLabel
+
+var interactable: bool
 
 var data: BattleCardData:
     set(value):
@@ -100,28 +106,54 @@ func _get_primary_effect_text(effect: BattleCardPrimaryEffect, crit_multiplyer: 
     ]
 
 var _dragging: bool
-var _dragger_device: int
+var _may_drag: bool
+var _active_device: int = -1
 
 func _input(event: InputEvent) -> void:
+    if !interactable:
+        return
+
     if event is InputEventMouseButton:
         var btn_event: InputEventMouseButton = event
         if btn_event.button_index == 1:
-            if !_dragging && _hovered && btn_event.pressed:
-                _dragging = true
-                _dragger_device = btn_event.device
-                move_to_front()
-            elif _dragging && !btn_event.pressed && _dragger_device == btn_event.device:
-                _dragging = false
-                on_drag_end.emit(self)
+            if !_dragging && _hovered && btn_event.pressed && !btn_event.is_echo():
+                _active_device = btn_event.device
+                print_debug("Press start of %s" % _active_device)
+                var timer: SceneTreeTimer = get_tree().create_timer(CLICK_DURATION)
+                if timer.connect("timeout", self._check_start_drag) != OK:
+                    push_error("Couldn't set callback of timer")
+
+            elif !btn_event.pressed && _active_device == btn_event.device:
+                print_debug("Press end of %s, dragging %s" % [_active_device, _dragging])
+                _active_device = -1
+                if _dragging:
+                    _dragging = false
+                    on_drag_end.emit(self)
+                else:
+                    on_click.emit(self)
 
     elif event is InputEventMouseMotion:
         var motion_event: InputEventMouseMotion = event
-        if _dragging && motion_event.device == _dragger_device:
+        if (_may_drag || _dragging) && motion_event.device == _active_device:
             var relative: Vector2 = motion_event.screen_relative
-            relative.y = 0
-            global_position += relative
 
-            on_drag_card.emit(self)
+            if _may_drag:
+                # A bit of deadzoneing
+                _dragging = relative.length_squared() > 5
+                if _dragging:
+                    _may_drag = false
+                    move_to_front()
+                    on_drag_start.emit(self)
+
+            if _dragging:
+                global_position += relative
+
+                on_drag_card.emit(self)
+
+func _check_start_drag() -> void:
+    if _active_device < 0:
+        return
+    _may_drag = true
 
 var _hovered: bool
 

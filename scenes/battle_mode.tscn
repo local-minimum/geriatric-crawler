@@ -1,8 +1,10 @@
-[gd_scene load_steps=8 format=3 uid="uid://sx8om7lfql6j"]
+[gd_scene load_steps=10 format=3 uid="uid://sx8om7lfql6j"]
 
 [ext_resource type="Script" uid="uid://cvchbk03g5wag" path="res://scripts/battle_mode.gd" id="1_7wt64"]
 [ext_resource type="Texture2D" uid="uid://cpot0wvcwpcqh" path="res://sprites/battle-bg-test.png" id="2_wpnne"]
 [ext_resource type="Script" uid="uid://deofnypsgkauo" path="res://scripts/card_battle/battle_hand_manager.gd" id="3_wpnne"]
+[ext_resource type="Script" uid="uid://5kqr4lmwivmv" path="res://scripts/card_battle/battle_card_slots.gd" id="4_1e1d0"]
+[ext_resource type="Texture2D" uid="uid://d14rk0grbqxnd" path="res://sprites/card-background.png" id="4_4kft8"]
 
 [sub_resource type="Animation" id="Animation_272bh"]
 length = 0.001
@@ -437,12 +439,12 @@ theme_override_colors/font_color = Color(0.47, 0.094, 0.094, 0)
 theme_override_font_sizes/font_size = 260
 text = "T"
 
-[node name="BattleHand" type="HBoxContainer" parent="CanvasLayer" node_paths=PackedStringArray("_target_controls", "_draw_origin")]
+[node name="BattleHand" type="HBoxContainer" parent="CanvasLayer" node_paths=PackedStringArray("_target_controls", "_draw_origin", "slots")]
 anchors_preset = -1
 anchor_left = 0.05
-anchor_top = 0.723
+anchor_top = 0.768
 anchor_right = 0.95
-anchor_bottom = 0.723
+anchor_bottom = 0.768
 offset_top = -0.684998
 offset_bottom = -0.684998
 grow_horizontal = 2
@@ -452,6 +454,7 @@ theme_override_constants/separation = -100
 script = ExtResource("3_wpnne")
 _target_controls = [NodePath("CardTarget1"), NodePath("CardTarget2"), NodePath("CardTarget3"), NodePath("CardTarget4"), NodePath("CardTarget5"), NodePath("CardTarget6"), NodePath("CardTarget7")]
 _draw_origin = NodePath("../Hand Draw Origin")
+slots = NodePath("../Slots")
 
 [node name="CardTarget1" type="Control" parent="CanvasLayer/BattleHand"]
 layout_mode = 2
@@ -480,6 +483,96 @@ size_flags_horizontal = 7
 [node name="CardTarget7" type="Control" parent="CanvasLayer/BattleHand"]
 layout_mode = 2
 size_flags_horizontal = 7
+
+[node name="Slots" type="HBoxContainer" parent="CanvasLayer" node_paths=PackedStringArray("_slot_rects")]
+anchors_preset = -1
+anchor_left = 0.035
+anchor_top = 0.222
+anchor_right = 0.747
+anchor_bottom = 0.578
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_constants/separation = 24
+script = ExtResource("4_1e1d0")
+_slot_rects = [NodePath("Slot1"), NodePath("Slot2"), NodePath("Slot3"), NodePath("Slot4"), NodePath("Slot5")]
+_max_y_delta = 140.0
+
+[node name="Slot1" type="NinePatchRect" parent="CanvasLayer/Slots"]
+custom_minimum_size = Vector2(140, 210)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+texture = ExtResource("4_4kft8")
+draw_center = false
+region_rect = Rect2(0.0526123, 0.0146389, 130.571, 200.293)
+patch_margin_left = 12
+patch_margin_top = 13
+patch_margin_right = 12
+patch_margin_bottom = 13
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
+
+[node name="Slot2" type="NinePatchRect" parent="CanvasLayer/Slots"]
+custom_minimum_size = Vector2(140, 210)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+texture = ExtResource("4_4kft8")
+draw_center = false
+region_rect = Rect2(0.0526123, 0.0146389, 130.571, 200.293)
+patch_margin_left = 12
+patch_margin_top = 13
+patch_margin_right = 12
+patch_margin_bottom = 13
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
+
+[node name="Slot3" type="NinePatchRect" parent="CanvasLayer/Slots"]
+custom_minimum_size = Vector2(140, 210)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+texture = ExtResource("4_4kft8")
+draw_center = false
+region_rect = Rect2(0.0526123, 0.0146389, 130.571, 200.293)
+patch_margin_left = 12
+patch_margin_top = 13
+patch_margin_right = 12
+patch_margin_bottom = 13
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
+
+[node name="Slot4" type="NinePatchRect" parent="CanvasLayer/Slots"]
+custom_minimum_size = Vector2(140, 210)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+texture = ExtResource("4_4kft8")
+draw_center = false
+region_rect = Rect2(0.0526123, 0.0146389, 130.571, 200.293)
+patch_margin_left = 12
+patch_margin_top = 13
+patch_margin_right = 12
+patch_margin_bottom = 13
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
+
+[node name="Slot5" type="NinePatchRect" parent="CanvasLayer/Slots"]
+custom_minimum_size = Vector2(140, 210)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+texture = ExtResource("4_4kft8")
+draw_center = false
+region_rect = Rect2(0.0526123, 0.0146389, 130.571, 200.293)
+patch_margin_left = 12
+patch_margin_top = 13
+patch_margin_right = 12
+patch_margin_bottom = 13
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
 
 [node name="ActiveCards" type="Control" parent="CanvasLayer"]
 layout_mode = 3
