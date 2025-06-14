@@ -118,13 +118,11 @@ func _input(event: InputEvent) -> void:
         if btn_event.button_index == 1:
             if !_dragging && _hovered && btn_event.pressed && !btn_event.is_echo():
                 _active_device = btn_event.device
-                print_debug("Press start of %s" % _active_device)
                 var timer: SceneTreeTimer = get_tree().create_timer(CLICK_DURATION)
                 if timer.connect("timeout", self._check_start_drag) != OK:
                     push_error("Couldn't set callback of timer")
 
             elif !btn_event.pressed && _active_device == btn_event.device:
-                print_debug("Press end of %s, dragging %s" % [_active_device, _dragging])
                 _active_device = -1
                 if _dragging:
                     _dragging = false

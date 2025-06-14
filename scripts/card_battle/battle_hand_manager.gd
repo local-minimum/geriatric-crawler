@@ -82,8 +82,6 @@ func draw_hand(
     @warning_ignore_restore("integer_division")
     var last_card_idx: int = card_idx + n_cards - 1
 
-    print_debug("Drawing %s cards (%s - %s) of %s controls" % [n_cards, card_idx, last_card_idx, n_controls])
-
     _draw_hand.call_deferred(cards, card_idx, n_controls, last_card_idx, emit_event, draw_from_origin)
 
 func hide_hand() -> void:
@@ -277,5 +275,4 @@ func _organize_hand() -> void:
         if _reverse_card_positions[pos] != null:
             cards.append(_reverse_card_positions[pos])
 
-    print_debug("Organizing cards %s (%s)" % [cards, _reverse_card_positions])
     draw_hand(cards, false, false)
