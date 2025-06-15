@@ -8,9 +8,9 @@ var mode: EffectMode
 
 func mode_name() -> String:
     match mode:
-        EffectMode.Damage: return "DMG"
-        EffectMode.Defence: return "DEF"
-        EffectMode.Heal: return "HEAL"
+        EffectMode.Damage: return "⚔" # "DMG"
+        EffectMode.Defence: return "🛡" # "DEF"
+        EffectMode.Heal: return "♥" # HEAL"
         _:
             push_error("%s not known mode" % mode)
             print_stack()
@@ -27,7 +27,7 @@ const TARGET_RANDOM: int = 64
 
 const TARGET_RANGE_ALL_VALUE: int = 999
 
-@export
+@export_flags("Enemies", "Allies", "One", "Two", "Three", "All", "Random")
 var target: int
 
 func targets_random() -> bool:
@@ -60,6 +60,14 @@ func get_target_range() -> Array[int]:
 
     return target_range
 
+func get_single_target() -> bool:
+    return (
+        (target & TARGET_ONE) == TARGET_ONE &&
+        (target & TARGET_TWO) == TARGET_NOTHING &&
+        (target & TARGET_THREE) == TARGET_NOTHING &&
+        (target & TARGET_ALL) == TARGET_NOTHING
+)
+
 static func target_range_text(target_range: Array[int]) -> String:
     if target_range[0] == target_range[1]:
         if target_range[0] == TARGET_RANGE_ALL_VALUE:
@@ -75,22 +83,23 @@ static func target_range_text(target_range: Array[int]) -> String:
 func target_type_text() -> String:
     var allies: bool = targets_allies()
     var enemies: bool = targets_enemies()
+    # var single: bool = get_single_target()
 
     if targets_random():
         if allies && enemies:
-            return "anyone, random"
+            return "🎲🧍👾" # "anyone, random"
         elif allies:
-            return "allies, random"
+            return "🎲🧍" # "allies, random" if !single else "ally, random"
         elif enemies:
-            return "enemies, random"
+            return "🎲👾" # "enemies, random" if !single else "enemy, random"
         return "no-one"
     else:
         if allies && enemies:
-            return "anyone"
+            return "🧍👾" # "anyone"
         elif allies:
-            return "allies"
+            return "🧍" # "allies" if !single else "ally"
         elif enemies:
-            return "enemies"
+            return "👾" # "enemies" if !single else "enemy"
         return "no-one"
 
 

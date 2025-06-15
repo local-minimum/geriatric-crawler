@@ -55,6 +55,7 @@ var data: BattleCardData:
         sync_display(0)
 
 func sync_display(crit_multiplyer: int) -> void:
+        name = "Card %s" % data.id
         suite_icon.visible = data.suit != BattleCardData.SUIT_NONE
         suite_icon.texture = _get_suite_icon_texture(data.suit)
 
@@ -64,7 +65,7 @@ func sync_display(crit_multiplyer: int) -> void:
         var primary_effect_parts: Array[String] = [data.name]
         for effect: BattleCardPrimaryEffect in data.primary_effects:
             primary_effect_parts.append(_get_primary_effect_text(effect, crit_multiplyer))
-        primary_effect.text = "%s\n%s" % primary_effect_parts
+        primary_effect.text = "\n".join(primary_effect_parts)
 
         if data.secondary_effects.is_empty():
             divider.visible = false
@@ -96,13 +97,16 @@ func _get_primary_effect_text(effect: BattleCardPrimaryEffect, crit_multiplyer: 
     var effect_range: Array[int] = effect.get_effect_range(crit_multiplyer)
 
     var can_crit: bool = effect.can_crit()
+    var mode: String = effect.mode_name()
+    var target_type: String = effect.target_type_text()
+    var effect_range_text: String ="%s - %s" % effect_range if effect_range[0] != effect_range[1] else str(effect_range[0])
 
     return "%s %s %s for %s%s" % [
-        effect.mode_name(),
+        mode,
         target_range,
-        effect.target_type_text(),
-        "% - %" % effect_range if effect_range[0] != effect_range[1] else str(effect_range[0]),
-        "*" if can_crit else "",
+        target_type,
+        effect_range_text,
+        "★" if can_crit else "",
     ]
 
 var _dragging: bool

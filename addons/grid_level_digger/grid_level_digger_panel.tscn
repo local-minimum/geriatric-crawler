@@ -66,7 +66,7 @@ vertical_alignment = 1
 [node name="TabContainer" type="TabContainer" parent="VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
-current_tab = 1
+current_tab = 4
 
 [node name="About" type="MarginContainer" parent="VBoxContainer/TabContainer"]
 visible = false
@@ -97,6 +97,7 @@ text = "1. Create scenes for an empty node, a scene for a north wall (tick infer
 autowrap_mode = 2
 
 [node name="Level" type="MarginContainer" parent="VBoxContainer/TabContainer"]
+visible = false
 layout_mode = 2
 size_flags_vertical = 3
 tooltip_text = "Actions on a level"
@@ -459,7 +460,6 @@ disabled = true
 text = "Add Floor"
 
 [node name="Style" type="MarginContainer" parent="VBoxContainer/TabContainer"]
-visible = false
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_constants/margin_left = 4

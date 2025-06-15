@@ -3,6 +3,7 @@ class_name BattleCardSlots
 
 signal on_return_card_to_hand(card: BattleCard, position_holder: BattleCard)
 signal on_slots_shown
+signal on_update_slotted(cards: Array[BattleCard])
 
 @export
 var _slot_rects: Array[Control] = []
@@ -106,6 +107,8 @@ func tween_card_to_slot(card: BattleCard, target: Control, duration: float) -> T
     var slot_idx: int = _slot_rects.find(target)
     var old_slot: int = unslot_card(card)
     if slotted_cards[slot_idx] != null:
+        slotted_cards[slot_idx].sync_display(0)
+
         # Swap slotted cards
         if old_slot >= 0:
             tween_card_to_slot(
@@ -118,6 +121,7 @@ func tween_card_to_slot(card: BattleCard, target: Control, duration: float) -> T
 
     slotted_cards[slot_idx] = card
     _card_tweens[card] = tween
+    on_update_slotted.emit(slotted_cards)
 
     return tween
 
@@ -128,4 +132,6 @@ func unslot_card(card: BattleCard) -> int:
     var slot_idx: int = slotted_cards.find(card)
     if slot_idx >= 0:
         slotted_cards[slot_idx] = null
+        on_update_slotted.emit(slotted_cards)
+        card.sync_display(0)
     return slot_idx

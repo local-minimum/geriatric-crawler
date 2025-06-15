@@ -38,10 +38,10 @@ func has_suit(flag: int) -> bool:
     return (suit & flag) == flag
 
 func has_suit_intersection(other: BattleCardData) -> bool:
-    return (suit & other.suit) != SUIT_NONE
+    return other != null && (suit & other.suit) != SUIT_NONE
 
 func has_identical_suit(other: BattleCardData) -> bool:
-    return (suit & other.suit) == suit
+    return other != null && (suit & other.suit) == suit
 
 func suit_names() -> Array[String]:
     var flags: Array[String] = []

@@ -1,10 +1,22 @@
-[gd_scene load_steps=10 format=3 uid="uid://sx8om7lfql6j"]
+[gd_scene load_steps=22 format=3 uid="uid://sx8om7lfql6j"]
 
 [ext_resource type="Script" uid="uid://cvchbk03g5wag" path="res://scripts/battle_mode.gd" id="1_7wt64"]
 [ext_resource type="Texture2D" uid="uid://cpot0wvcwpcqh" path="res://sprites/battle-bg-test.png" id="2_wpnne"]
 [ext_resource type="Script" uid="uid://deofnypsgkauo" path="res://scripts/card_battle/battle_hand_manager.gd" id="3_wpnne"]
 [ext_resource type="Script" uid="uid://5kqr4lmwivmv" path="res://scripts/card_battle/battle_card_slots.gd" id="4_1e1d0"]
-[ext_resource type="Texture2D" uid="uid://d14rk0grbqxnd" path="res://sprites/card-background.png" id="4_4kft8"]
+[ext_resource type="Texture2D" uid="uid://d14rk0grbqxnd" path="res://sprites/cards/suits/card-background.png" id="4_4kft8"]
+[ext_resource type="Script" uid="uid://c2lco7et0w3ia" path="res://scripts/card_battle/player_deck.gd" id="6_plnl4"]
+[ext_resource type="Script" uid="uid://cqlxwfe858g4h" path="res://scripts/card_battle/battle_card_data.gd" id="7_bno2u"]
+[ext_resource type="Resource" uid="uid://cuqk7tuums5ds" path="res://resources/cards/card_slam-810.tres" id="8_2igk8"]
+[ext_resource type="Resource" uid="uid://dxetlv5x2uqs5" path="res://resources/cards/card_slam-95.tres" id="8_w875v"]
+[ext_resource type="Resource" uid="uid://bc3f2625tdj67" path="res://resources/cards/card_defrag_70.tres" id="9_7lk54"]
+[ext_resource type="Resource" uid="uid://dcob2h4luvnbl" path="res://resources/cards/card_defrag_5.tres" id="9_u0eru"]
+[ext_resource type="Resource" uid="uid://dwadtd6nwvwd5" path="res://resources/cards/card_slam-150.tres" id="9_vq05v"]
+[ext_resource type="Resource" uid="uid://b8yrhm4ltj06q" path="res://resources/cards/card_fortify-55.tres" id="10_u0eru"]
+[ext_resource type="Resource" uid="uid://duylk5tm5e1wb" path="res://resources/cards/card_defrag_120.tres" id="11_w875v"]
+[ext_resource type="Resource" uid="uid://dyw8d4pex4rg1" path="res://resources/cards/card_recharge-735.tres" id="11_wyqpo"]
+[ext_resource type="Resource" uid="uid://ehfht5qywnnf" path="res://resources/cards/card_defrag_370.tres" id="12_vq05v"]
+[ext_resource type="Resource" uid="uid://xg54tmjf202g" path="res://resources/cards/card_fortify-200.tres" id="16_vq05v"]
 
 [sub_resource type="Animation" id="Animation_272bh"]
 length = 0.001
@@ -360,10 +372,11 @@ _data = {
 &"fade_out_battle": SubResource("Animation_5vw27")
 }
 
-[node name="Battle Mode" type="Node" node_paths=PackedStringArray("animator", "battle_hand", "_active_cards")]
+[node name="Battle Mode" type="Node" node_paths=PackedStringArray("animator", "battle_hand", "player_deck", "_active_cards")]
 script = ExtResource("1_7wt64")
 animator = NodePath("AnimationPlayer")
 battle_hand = NodePath("CanvasLayer/BattleHand")
+player_deck = NodePath("PlayerDeck")
 _active_cards = NodePath("CanvasLayer/ActiveCards")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
@@ -598,3 +611,7 @@ grow_vertical = 0
 libraries = {
 &"": SubResource("AnimationLibrary_5vw27")
 }
+
+[node name="PlayerDeck" type="Node" parent="."]
+script = ExtResource("6_plnl4")
+_start_deck = Array[ExtResource("7_bno2u")]([ExtResource("8_w875v"), ExtResource("9_vq05v"), ExtResource("8_2igk8"), ExtResource("9_u0eru"), ExtResource("9_7lk54"), ExtResource("11_w875v"), ExtResource("12_vq05v"), ExtResource("10_u0eru"), ExtResource("16_vq05v"), ExtResource("11_wyqpo")])

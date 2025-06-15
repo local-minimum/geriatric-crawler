@@ -1,0 +1,37 @@
+[gd_resource type="Resource" script_class="BattleCardData" load_steps=5 format=3 uid="uid://dxetlv5x2uqs5"]
+
+[ext_resource type="Script" uid="uid://b1hgbfym62rba" path="res://scripts/card_battle/battle_card_primary_effect.gd" id="1_px7ct"]
+[ext_resource type="Script" uid="uid://cqlxwfe858g4h" path="res://scripts/card_battle/battle_card_data.gd" id="2_s5l0b"]
+
+[sub_resource type="Resource" id="Resource_dylt0"]
+script = ExtResource("1_px7ct")
+mode = 0
+target = 5
+min_effect = 1
+max_effect = 10
+effect_crit_base = 2
+crits_on_allies = false
+crits_on_enemies = true
+metadata/_custom_type_script = "uid://b1hgbfym62rba"
+
+[sub_resource type="Resource" id="Resource_jw1iu"]
+script = ExtResource("1_px7ct")
+mode = 0
+target = 34
+min_effect = 1
+max_effect = 2
+effect_crit_base = 1
+crits_on_allies = false
+crits_on_enemies = true
+metadata/_custom_type_script = "uid://b1hgbfym62rba"
+
+[resource]
+script = ExtResource("2_s5l0b")
+id = "slam-95"
+name = "Slam"
+card_owner = 0
+rank = 95
+suit = 2
+primary_effects = Array[ExtResource("1_px7ct")]([SubResource("Resource_dylt0"), SubResource("Resource_jw1iu")])
+secondary_effects = Array[int]([])
+metadata/_custom_type_script = "uid://cqlxwfe858g4h"
