@@ -19,10 +19,10 @@ func _ready() -> void:
 
 func shuffle(include_hand: bool = false) -> void:
     if include_hand:
-        _draw_pile.append(_active_hand)
+        _draw_pile.append_array(_active_hand)
         _active_hand.clear()
 
-    _draw_pile.append(_discard_pile)
+    _draw_pile.append_array(_discard_pile)
     _discard_pile.clear()
 
     _draw_pile.shuffle()
