@@ -17,21 +17,25 @@ func mode_name() -> String:
             return ""
 
 const TARGET_NOTHING: int = 0
+
 const TARGET_ENEMIES: int = 1
-const TARGET_ALLIES: int = 2
-const TARGET_ONE: int = 4
-const TARGET_TWO: int = 8
-const TARGET_THREE: int = 16
-const TARGET_ALL: int = 32
-const TARGET_RANDOM: int = 64
+const TARGET_SELF: int = 2
+const TARGET_ALLIES: int = 4
+
+const TARGET_ONE: int = 8
+const TARGET_TWO: int = 16
+const TARGET_THREE: int = 32
+const TARGET_ALL: int = 64
+
+const TARGET_RANDOM: int = 128
 
 const TARGET_RANGE_ALL_VALUE: int = 999
 
-@export_flags("Enemies", "Allies", "One", "Two", "Three", "All", "Random")
+@export_flags("Enemies", "Self", "Allies", "One", "Two", "Three", "All", "Random")
 var target: int
 
 func targets_random() -> bool:
-    return (target & TARGET_RANDOM) == TARGET_RANDOM
+    return (target & TARGET_RANDOM) == TARGET_RANDOM && !targets_self()
 
 func targets_enemies() -> bool:
     return (target & TARGET_ENEMIES) == TARGET_ENEMIES
@@ -40,8 +44,10 @@ func targets_allies() -> bool:
     return (target & TARGET_ALLIES) == TARGET_ALLIES
 
 func get_target_range() -> Array[int]:
-    var target_range: Array[int] = [0, 0]
+    if (target & TARGET_SELF) == TARGET_SELF:
+        return [1, 1]
 
+    var target_range: Array[int] = [0, 0]
     if (target & TARGET_ONE) == TARGET_ONE:
         target_range[0] = 1
         target_range[1] = 1
@@ -60,8 +66,13 @@ func get_target_range() -> Array[int]:
 
     return target_range
 
+func targets_self() -> bool:
+    return (target & TARGET_SELF) == TARGET_SELF
+
 func get_single_target() -> bool:
     return (
+        (target & TARGET_SELF) == TARGET_SELF ||
+
         (target & TARGET_ONE) == TARGET_ONE &&
         (target & TARGET_TWO) == TARGET_NOTHING &&
         (target & TARGET_THREE) == TARGET_NOTHING &&
@@ -87,15 +98,17 @@ func target_type_text() -> String:
 
     if targets_random():
         if allies && enemies:
-            return "🎲🧍👾" # "anyone, random"
+            return "🎲🧍/👾" # "anyone, random"
         elif allies:
             return "🎲🧍" # "allies, random" if !single else "ally, random"
         elif enemies:
             return "🎲👾" # "enemies, random" if !single else "enemy, random"
         return "no-one"
     else:
+        if targets_self():
+            return "🤳"
         if allies && enemies:
-            return "🧍👾" # "anyone"
+            return "🧍/👾" # "anyone"
         elif allies:
             return "🧍" # "allies" if !single else "ally"
         elif enemies:

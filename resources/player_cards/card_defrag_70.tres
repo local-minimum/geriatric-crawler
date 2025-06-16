@@ -1,13 +1,13 @@
 [gd_resource type="Resource" script_class="BattleCardData" load_steps=5 format=3 uid="uid://bc3f2625tdj67"]
 
-[ext_resource type="Texture2D" uid="uid://kormwgrr17px" path="res://sprites/cards/suits/card-suits-data.png" id="1_q84th"]
-[ext_resource type="Script" uid="uid://b1hgbfym62rba" path="res://scripts/card_battle/battle_card_primary_effect.gd" id="2_rsjht"]
-[ext_resource type="Script" uid="uid://cqlxwfe858g4h" path="res://scripts/card_battle/battle_card_data.gd" id="3_qjatl"]
+[ext_resource type="Texture2D" uid="uid://kormwgrr17px" path="res://sprites/cards/suits/card-suits-data.png" id="1_un1wt"]
+[ext_resource type="Script" uid="uid://b1hgbfym62rba" path="res://scripts/card_battle/battle_card_primary_effect.gd" id="2_qfkyr"]
+[ext_resource type="Script" uid="uid://cqlxwfe858g4h" path="res://scripts/card_battle/battle_card_data.gd" id="3_fhmid"]
 
 [sub_resource type="Resource" id="Resource_h6b7i"]
-script = ExtResource("2_rsjht")
+script = ExtResource("2_qfkyr")
 mode = 0
-target = 5
+target = 9
 min_effect = 2
 max_effect = 4
 effect_crit_base = 1
@@ -16,13 +16,13 @@ crits_on_enemies = true
 metadata/_custom_type_script = "uid://b1hgbfym62rba"
 
 [resource]
-script = ExtResource("3_qjatl")
+script = ExtResource("3_fhmid")
 id = "defrag-70"
 name = "Defrag"
 card_owner = 0
 rank = 70
 suit = 4
-icon = ExtResource("1_q84th")
-primary_effects = Array[ExtResource("2_rsjht")]([SubResource("Resource_h6b7i")])
+icon = ExtResource("1_un1wt")
+primary_effects = Array[ExtResource("2_qfkyr")]([SubResource("Resource_h6b7i")])
 secondary_effects = Array[int]([])
 metadata/_custom_type_script = "uid://cqlxwfe858g4h"

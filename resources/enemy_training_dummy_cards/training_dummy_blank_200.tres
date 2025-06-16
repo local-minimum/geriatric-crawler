@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="BattleCardData" load_steps=3 format=3 uid="uid://cbhpqqpyr05fu"]
+
+[ext_resource type="Script" uid="uid://b1hgbfym62rba" path="res://scripts/card_battle/battle_card_primary_effect.gd" id="1_7gx3j"]
+[ext_resource type="Script" uid="uid://cqlxwfe858g4h" path="res://scripts/card_battle/battle_card_data.gd" id="2_c2hvb"]
+
+[resource]
+script = ExtResource("2_c2hvb")
+id = "dummy-blank-200"
+name = "Shield Up"
+card_owner = 0
+rank = 200
+suit = 0
+primary_effects = Array[ExtResource("1_7gx3j")]([])
+secondary_effects = Array[int]([])
+metadata/_custom_type_script = "uid://cqlxwfe858g4h"

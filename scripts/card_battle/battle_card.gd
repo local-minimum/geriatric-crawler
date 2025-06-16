@@ -65,6 +65,8 @@ func sync_display(crit_multiplyer: int) -> void:
         var primary_effect_parts: Array[String] = [data.name]
         for effect: BattleCardPrimaryEffect in data.primary_effects:
             primary_effect_parts.append(_get_primary_effect_text(effect, crit_multiplyer))
+        if data.primary_effects.size() == 0:
+            primary_effect_parts.append("Does nothing")
         primary_effect.text = "\n".join(primary_effect_parts)
 
         if data.secondary_effects.is_empty():

@@ -14,7 +14,7 @@ var id: String
 @export
 var name: String
 
-enum Owner { Self, Ally }
+enum Owner { Self, Ally, Enemy }
 
 @export
 var card_owner: Owner
