@@ -5,7 +5,7 @@
 [ext_resource type="Script" uid="uid://deofnypsgkauo" path="res://scripts/card_battle/battle_hand_manager.gd" id="3_wpnne"]
 [ext_resource type="Script" uid="uid://5kqr4lmwivmv" path="res://scripts/card_battle/battle_card_slots.gd" id="4_1e1d0"]
 [ext_resource type="Texture2D" uid="uid://d14rk0grbqxnd" path="res://sprites/cards/suits/card-background.png" id="4_4kft8"]
-[ext_resource type="Script" uid="uid://c2lco7et0w3ia" path="res://scripts/card_battle/player_deck.gd" id="6_plnl4"]
+[ext_resource type="Script" uid="uid://c2lco7et0w3ia" path="res://scripts/card_battle/battle_deck.gd" id="6_plnl4"]
 [ext_resource type="Script" uid="uid://cqlxwfe858g4h" path="res://scripts/card_battle/battle_card_data.gd" id="7_bno2u"]
 [ext_resource type="Resource" uid="uid://cuqk7tuums5ds" path="res://resources/player_cards/card_slam-810.tres" id="8_2igk8"]
 [ext_resource type="Resource" uid="uid://dxetlv5x2uqs5" path="res://resources/player_cards/card_slam-95.tres" id="8_w875v"]

@@ -8,7 +8,7 @@ var animator: AnimationPlayer
 var battle_hand: BattleHandManager
 
 @export
-var player_deck: PlayerDeck
+var player_deck: BattleDeck
 
 @export
 var _active_cards: Control

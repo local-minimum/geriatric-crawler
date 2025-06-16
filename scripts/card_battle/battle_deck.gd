@@ -1,5 +1,5 @@
 extends Node
-class_name PlayerDeck
+class_name BattleDeck
 
 signal on_shuffle(draw: Array[BattleCardData])
 signal on_updated_piles(draw: Array[BattleCardData], hand: Array[BattleCardData], discard: Array[BattleCardData])
