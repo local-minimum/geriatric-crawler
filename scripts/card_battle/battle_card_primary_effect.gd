@@ -124,7 +124,7 @@ func can_crit() -> bool:
 
 func get_effect_range(crit_multiplyer: int) -> Array[int]:
     var crit: int = effect_crit_base * crit_multiplyer
-    return [max(0, min_effect + min_effect * crit), max(0, max_effect + max_effect * crit)]
+    return [max(0, min_effect + crit), max(0, max_effect + crit)]
 
 func calculate_effect(crit_multiplyer: int, ally: bool) -> int:
     var allow_crit: bool = ally && crits_on_allies || !ally && crits_on_enemies
