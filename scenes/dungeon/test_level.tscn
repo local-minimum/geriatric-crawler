@@ -1,4 +1,4 @@
-[gd_scene load_steps=28 format=3 uid="uid://dwqcwbgj8p6q0"]
+[gd_scene load_steps=29 format=3 uid="uid://dwqcwbgj8p6q0"]
 
 [ext_resource type="Script" uid="uid://dqe42q7uub84r" path="res://scripts/gridded_level/level_features/grid_level.gd" id="1_dd1ob"]
 [ext_resource type="PackedScene" uid="uid://bfoog3fb4v5ij" path="res://scenes/dungeon/player.tscn" id="3_m6mav"]
@@ -11,6 +11,7 @@
 [ext_resource type="Script" uid="uid://dexigkhejxn1h" path="res://scripts/gridded_level/level_features/player_facer.gd" id="9_myev5"]
 [ext_resource type="Script" uid="uid://dmpqfljj24gh6" path="res://scripts/gridded_level/entities/encounter_effects/battle_mode_trigger.gd" id="10_rvj20"]
 [ext_resource type="Script" uid="uid://ccsqys7ldqoh" path="res://scripts/gridded_level/entities/encounter_effects/battle_enemy.gd" id="11_fxt0s"]
+[ext_resource type="Texture2D" uid="uid://d4i1sxn0646on" path="res://sprites/enemies/training-dummy.png" id="12_26eu7"]
 [ext_resource type="Script" uid="uid://c2lco7et0w3ia" path="res://scripts/card_battle/battle_deck.gd" id="12_rcxcv"]
 [ext_resource type="Script" uid="uid://cqlxwfe858g4h" path="res://scripts/card_battle/battle_card_data.gd" id="13_26eu7"]
 [ext_resource type="Resource" uid="uid://q0csyt611j40" path="res://resources/enemy_training_dummy_cards/training_dummy_bandage_20.tres" id="14_s5loo"]
@@ -24,7 +25,7 @@
 [ext_resource type="Script" uid="uid://dtq2v31avcen2" path="res://scripts/card_battle/battle_brain.gd" id="22_rcxcv"]
 [ext_resource type="Script" uid="uid://qbk2psf0rmnw" path="res://scripts/card_battle/battle_strategy.gd" id="22_sy7nh"]
 
-[sub_resource type="Resource" id="Resource_rvj20"]
+[sub_resource type="Resource" id="Resource_rcxcv"]
 resource_local_to_scene = true
 script = ExtResource("4_840jk")
 mode = 61
@@ -41,7 +42,7 @@ albedo_color = Color(0.77, 0.1848, 0.1848, 1)
 
 [sub_resource type="QuadMesh" id="QuadMesh_kmgg5"]
 material = SubResource("StandardMaterial3D_rvj20")
-size = Vector2(0.75, 1.25)
+size = Vector2(0.8, 1.2)
 
 [node name="TestLevel" type="Node3D" node_paths=PackedStringArray("player", "level_geometry")]
 script = ExtResource("1_dd1ob")
@@ -53,7 +54,7 @@ level_geometry = NodePath("LevelGeometry")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0145968, -0.00857759, 0.00070858)
 spawn_node = NodePath("../LevelGeometry/Elevation 0/Node (0, 0, 1)")
 look_direction = 1
-transportation_abilities = SubResource("Resource_rvj20")
+transportation_abilities = SubResource("Resource_rcxcv")
 transportation_mode = SubResource("Resource_pgxau")
 
 [node name="LevelGeometry" type="Node3D" parent="."]
@@ -240,39 +241,45 @@ direction = 3
 
 [node name="Side DOWN" parent="LevelGeometry/Elevation 0/Node (-3, 0, 1)" instance=ExtResource("9_4mxkc")]
 
-[node name="Demo Encounter" type="Node3D" parent="LevelGeometry/Elevation 0/Node (-3, 0, 1)" node_paths=PackedStringArray("effect") groups=["Encounter"]]
+[node name="Target Dummy Blob" type="Node3D" parent="LevelGeometry/Elevation 0/Node (-3, 0, 1)" node_paths=PackedStringArray("effect", "graphics") groups=["Encounter"]]
 script = ExtResource("8_kmgg5")
 encounter_id = "demo-enemy"
 repeatable = false
 effect = NodePath("Battle Trigger")
+graphics = NodePath("Avatar/Encounter Avatar")
 metadata/_custom_type_script = "uid://bqahhkn6dpex"
 
-[node name="Avatar" type="Node3D" parent="LevelGeometry/Elevation 0/Node (-3, 0, 1)/Demo Encounter"]
+[node name="Avatar" type="Node3D" parent="LevelGeometry/Elevation 0/Node (-3, 0, 1)/Target Dummy Blob"]
 script = ExtResource("9_myev5")
 
-[node name="Encounter Avatar" type="MeshInstance3D" parent="LevelGeometry/Elevation 0/Node (-3, 0, 1)/Demo Encounter/Avatar"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.23567, 0)
+[node name="Encounter Avatar" type="MeshInstance3D" parent="LevelGeometry/Elevation 0/Node (-3, 0, 1)/Target Dummy Blob/Avatar"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.7, 0)
 mesh = SubResource("QuadMesh_kmgg5")
 
-[node name="Battle Trigger" type="Node" parent="LevelGeometry/Elevation 0/Node (-3, 0, 1)/Demo Encounter"]
+[node name="Battle Trigger" type="Node" parent="LevelGeometry/Elevation 0/Node (-3, 0, 1)/Target Dummy Blob" node_paths=PackedStringArray("enemies")]
 script = ExtResource("10_rvj20")
+enemies = [NodePath("Target Dummy AI")]
 hide_encounter_on_trigger = true
 metadata/_custom_type_script = "uid://b3kob7bivk342"
 
-[node name="Target Dummy AI" type="Node" parent="LevelGeometry/Elevation 0/Node (-3, 0, 1)/Demo Encounter/Battle Trigger" node_paths=PackedStringArray("deck")]
+[node name="Target Dummy AI" type="Node" parent="LevelGeometry/Elevation 0/Node (-3, 0, 1)/Target Dummy Blob/Battle Trigger" node_paths=PackedStringArray("deck")]
 script = ExtResource("11_fxt0s")
+variant_id = "target-dummy"
+variant_name = "Target Dummy"
+level = 1
 deck = NodePath("BattleDeck")
+sprite = ExtResource("12_26eu7")
 
-[node name="BattleDeck" type="Node" parent="LevelGeometry/Elevation 0/Node (-3, 0, 1)/Demo Encounter/Battle Trigger/Target Dummy AI"]
+[node name="BattleDeck" type="Node" parent="LevelGeometry/Elevation 0/Node (-3, 0, 1)/Target Dummy Blob/Battle Trigger/Target Dummy AI"]
 script = ExtResource("12_rcxcv")
 _start_deck = Array[ExtResource("13_26eu7")]([ExtResource("14_s5loo"), ExtResource("15_632b7"), ExtResource("16_n55gf"), ExtResource("17_idbts"), ExtResource("18_j1mj1"), ExtResource("19_7gan6"), ExtResource("20_sn1co"), ExtResource("21_wymjw")])
 metadata/_custom_type_script = "uid://c2lco7et0w3ia"
 
-[node name="BattleStrategies" type="Node" parent="LevelGeometry/Elevation 0/Node (-3, 0, 1)/Demo Encounter/Battle Trigger/Target Dummy AI" node_paths=PackedStringArray("strategies")]
+[node name="BattleStrategies" type="Node" parent="LevelGeometry/Elevation 0/Node (-3, 0, 1)/Target Dummy Blob/Battle Trigger/Target Dummy AI" node_paths=PackedStringArray("strategies")]
 script = ExtResource("22_rcxcv")
 strategies = [NodePath("Default Strategy")]
 
-[node name="Default Strategy" type="Node" parent="LevelGeometry/Elevation 0/Node (-3, 0, 1)/Demo Encounter/Battle Trigger/Target Dummy AI/BattleStrategies"]
+[node name="Default Strategy" type="Node" parent="LevelGeometry/Elevation 0/Node (-3, 0, 1)/Target Dummy Blob/Battle Trigger/Target Dummy AI/BattleStrategies"]
 script = ExtResource("22_sy7nh")
 
 [node name="Node (-3, 0, 0)" parent="LevelGeometry/Elevation 0" instance=ExtResource("4_myev5")]

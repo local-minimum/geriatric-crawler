@@ -19,6 +19,9 @@ var repeatable: bool = true
 @export
 var effect: GridEncounterEffect
 
+@export
+var graphics: MeshInstance3D
+
 var _triggered: bool
 var _was_on_node: bool
 
@@ -33,6 +36,8 @@ func _ready() -> void:
             push_error("%s failed to connect to player node change signal" % name)
     else:
         push_error("%s is not part of a level" % name)
+
+    effect.prepare(self)
 
 func _check_colliding_anchor(feature: GridNodeFeature) -> void:
     if encounter_mode != EncounterMode.ANCHOR:
