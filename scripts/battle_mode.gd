@@ -1,6 +1,9 @@
 extends Node
 class_name BattleMode
 
+signal on_enemy_join_battle(enemy: BattleEnemy)
+signal on_enemy_leave_battle(enemy: BattleEnemy)
+
 @export
 var animator: AnimationPlayer
 
@@ -66,8 +69,18 @@ func handle_update_slotted(cards: Array[BattleCard]) -> void:
 
         prev_card = card.data
 
-func enter_battle(battle_trigger: GridEncounterEffect) -> void:
+var _enemies: Array[BattleEnemy]
+
+func enter_battle(battle_trigger: BattleModeTrigger) -> void:
+    # TODO: Gather proximate battle triggers too and pull them into the fight!
+    # TODO: Consider need to wait for enemy to animate death before lettning new enter...
+
     trigger = battle_trigger
+
+    # Show all enemies and their stats
+    _enemies.append_array(battle_trigger.enemies)
+    for enemy: BattleEnemy in _enemies:
+        on_enemy_join_battle.emit(enemy)
 
     await get_tree().create_timer(0.5).timeout
 
@@ -81,9 +94,18 @@ func enter_battle(battle_trigger: GridEncounterEffect) -> void:
     # Show F I G H T
     await get_tree().create_timer(1.0).timeout
 
-    deal_hand()
+    round_start_prepare_hands()
 
-func deal_hand() -> void:
+func round_start_prepare_hands() -> void:
+    for enemy: BattleEnemy in _enemies:
+        if !enemy.is_alive():
+            continue
+
+        enemy.prepare_hand()
+
+    deal_player_hand()
+
+func deal_player_hand() -> void:
     # TODO: Ask someone what the cards should actually be
     var hand_size: int = 6
     var hand: Array[BattleCard] = []
@@ -117,6 +139,10 @@ func after_deal() -> void:
 
 func exit_battle() -> void:
     battle_hand.hide_hand()
+
+    for enemy: BattleEnemy in _enemies:
+        on_enemy_leave_battle.emit(enemy)
+    _enemies.clear()
 
     animator.play("fade_out_battle")
     await get_tree().create_timer(0.5).timeout

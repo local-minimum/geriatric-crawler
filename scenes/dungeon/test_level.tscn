@@ -262,13 +262,14 @@ enemies = [NodePath("Target Dummy AI")]
 hide_encounter_on_trigger = true
 metadata/_custom_type_script = "uid://b3kob7bivk342"
 
-[node name="Target Dummy AI" type="Node" parent="LevelGeometry/Elevation 0/Node (-3, 0, 1)/Target Dummy Blob/Battle Trigger" node_paths=PackedStringArray("deck")]
+[node name="Target Dummy AI" type="Node" parent="LevelGeometry/Elevation 0/Node (-3, 0, 1)/Target Dummy Blob/Battle Trigger" node_paths=PackedStringArray("deck", "brain")]
 script = ExtResource("11_fxt0s")
 variant_id = "target-dummy"
 variant_name = "Target Dummy"
 level = 1
-deck = NodePath("BattleDeck")
 sprite = ExtResource("12_26eu7")
+deck = NodePath("BattleDeck")
+brain = NodePath("BattleStrategies")
 
 [node name="BattleDeck" type="Node" parent="LevelGeometry/Elevation 0/Node (-3, 0, 1)/Target Dummy Blob/Battle Trigger/Target Dummy AI"]
 script = ExtResource("12_rcxcv")

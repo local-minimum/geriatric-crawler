@@ -1,4 +1,5 @@
 extends GridEncounterEffect
+class_name BattleModeTrigger
 
 var level: GridLevel
 

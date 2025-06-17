@@ -1,7 +1,9 @@
-[gd_scene load_steps=22 format=3 uid="uid://sx8om7lfql6j"]
+[gd_scene load_steps=24 format=3 uid="uid://sx8om7lfql6j"]
 
 [ext_resource type="Script" uid="uid://cvchbk03g5wag" path="res://scripts/battle_mode.gd" id="1_7wt64"]
 [ext_resource type="Texture2D" uid="uid://cpot0wvcwpcqh" path="res://sprites/battle-bg-test.png" id="2_wpnne"]
+[ext_resource type="Script" uid="uid://cfpvhmlfcm2cg" path="res://scripts/card_battle/battle_enemies_ui.gd" id="3_31k21"]
+[ext_resource type="Script" uid="uid://n703i4pjhesr" path="res://scripts/card_battle/battle_enemy_ui.gd" id="3_lfs5n"]
 [ext_resource type="Script" uid="uid://deofnypsgkauo" path="res://scripts/card_battle/battle_hand_manager.gd" id="3_wpnne"]
 [ext_resource type="Script" uid="uid://5kqr4lmwivmv" path="res://scripts/card_battle/battle_card_slots.gd" id="4_1e1d0"]
 [ext_resource type="Texture2D" uid="uid://d14rk0grbqxnd" path="res://sprites/cards/suits/card-background.png" id="4_4kft8"]
@@ -375,9 +377,9 @@ _data = {
 [node name="Battle Mode" type="Node" node_paths=PackedStringArray("animator", "battle_hand", "player_deck", "_active_cards")]
 script = ExtResource("1_7wt64")
 animator = NodePath("AnimationPlayer")
-battle_hand = NodePath("CanvasLayer/BattleHand")
+battle_hand = NodePath("CanvasLayer/Player BattleHand")
 player_deck = NodePath("PlayerDeck")
-_active_cards = NodePath("CanvasLayer/ActiveCards")
+_active_cards = NodePath("CanvasLayer/PlayerActiveCards")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
@@ -402,6 +404,59 @@ theme_override_constants/margin_left = 50
 theme_override_constants/margin_top = 50
 theme_override_constants/margin_right = 50
 theme_override_constants/margin_bottom = 50
+
+[node name="Enemies" type="Control" parent="CanvasLayer" node_paths=PackedStringArray("_enemyUIs", "_battle")]
+layout_mode = 3
+anchor_left = 0.459
+anchor_top = 0.02
+anchor_right = 0.95
+anchor_bottom = 0.645
+grow_horizontal = 0
+script = ExtResource("3_31k21")
+_enemyUIs = [NodePath("EnemyUI")]
+_battle = NodePath("../..")
+
+[node name="EnemyUI" type="VBoxContainer" parent="CanvasLayer/Enemies" node_paths=PackedStringArray("healthUI", "defenceUI", "icon", "nameUI")]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 1
+anchors_preset = 13
+anchor_left = 0.5
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -100.0
+offset_right = 100.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("3_lfs5n")
+healthUI = NodePath("Health")
+defenceUI = NodePath("Defence")
+icon = NodePath("Avatar")
+nameUI = NodePath("Name")
+
+[node name="Health" type="Label" parent="CanvasLayer/Enemies/EnemyUI"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_shadow_color = Color(0.321074, 0.109373, 0.262374, 1)
+text = "HP:"
+
+[node name="Defence" type="Label" parent="CanvasLayer/Enemies/EnemyUI"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_shadow_color = Color(0.321074, 0.109373, 0.262374, 1)
+text = "DEF:"
+
+[node name="Avatar" type="TextureRect" parent="CanvasLayer/Enemies/EnemyUI"]
+custom_minimum_size = Vector2(200, 300)
+layout_mode = 2
+expand_mode = 3
+stretch_mode = 5
+
+[node name="Name" type="Label" parent="CanvasLayer/Enemies/EnemyUI"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_shadow_color = Color(0.321074, 0.109373, 0.262374, 1)
+text = "TARGET DUMMY"
+horizontal_alignment = 1
 
 [node name="Fight Letters" type="HBoxContainer" parent="CanvasLayer"]
 visible = false
@@ -452,12 +507,12 @@ theme_override_colors/font_color = Color(0.47, 0.094, 0.094, 0)
 theme_override_font_sizes/font_size = 260
 text = "T"
 
-[node name="BattleHand" type="HBoxContainer" parent="CanvasLayer" node_paths=PackedStringArray("_target_controls", "_draw_origin", "slots")]
+[node name="Player BattleHand" type="HBoxContainer" parent="CanvasLayer" node_paths=PackedStringArray("_target_controls", "_draw_origin", "slots")]
 anchors_preset = -1
 anchor_left = 0.05
-anchor_top = 0.768
+anchor_top = 0.82
 anchor_right = 0.95
-anchor_bottom = 0.768
+anchor_bottom = 0.82
 offset_top = -0.684998
 offset_bottom = -0.684998
 grow_horizontal = 2
@@ -466,38 +521,38 @@ size_flags_horizontal = 3
 theme_override_constants/separation = -100
 script = ExtResource("3_wpnne")
 _target_controls = [NodePath("CardTarget1"), NodePath("CardTarget2"), NodePath("CardTarget3"), NodePath("CardTarget4"), NodePath("CardTarget5"), NodePath("CardTarget6"), NodePath("CardTarget7")]
-_draw_origin = NodePath("../Hand Draw Origin")
-slots = NodePath("../Slots")
+_draw_origin = NodePath("../Player Hand Draw Origin")
+slots = NodePath("../PlayerCardSlots")
 
-[node name="CardTarget1" type="Control" parent="CanvasLayer/BattleHand"]
+[node name="CardTarget1" type="Control" parent="CanvasLayer/Player BattleHand"]
 layout_mode = 2
 size_flags_horizontal = 7
 
-[node name="CardTarget2" type="Control" parent="CanvasLayer/BattleHand"]
+[node name="CardTarget2" type="Control" parent="CanvasLayer/Player BattleHand"]
 layout_mode = 2
 size_flags_horizontal = 7
 
-[node name="CardTarget3" type="Control" parent="CanvasLayer/BattleHand"]
+[node name="CardTarget3" type="Control" parent="CanvasLayer/Player BattleHand"]
 layout_mode = 2
 size_flags_horizontal = 7
 
-[node name="CardTarget4" type="Control" parent="CanvasLayer/BattleHand"]
+[node name="CardTarget4" type="Control" parent="CanvasLayer/Player BattleHand"]
 layout_mode = 2
 size_flags_horizontal = 7
 
-[node name="CardTarget5" type="Control" parent="CanvasLayer/BattleHand"]
+[node name="CardTarget5" type="Control" parent="CanvasLayer/Player BattleHand"]
 layout_mode = 2
 size_flags_horizontal = 7
 
-[node name="CardTarget6" type="Control" parent="CanvasLayer/BattleHand"]
+[node name="CardTarget6" type="Control" parent="CanvasLayer/Player BattleHand"]
 layout_mode = 2
 size_flags_horizontal = 7
 
-[node name="CardTarget7" type="Control" parent="CanvasLayer/BattleHand"]
+[node name="CardTarget7" type="Control" parent="CanvasLayer/Player BattleHand"]
 layout_mode = 2
 size_flags_horizontal = 7
 
-[node name="Slots" type="HBoxContainer" parent="CanvasLayer" node_paths=PackedStringArray("_slot_rects")]
+[node name="PlayerCardSlots" type="HBoxContainer" parent="CanvasLayer" node_paths=PackedStringArray("_slot_rects")]
 anchors_preset = -1
 anchor_left = 0.035
 anchor_top = 0.222
@@ -512,7 +567,7 @@ script = ExtResource("4_1e1d0")
 _slot_rects = [NodePath("Slot1"), NodePath("Slot2"), NodePath("Slot3"), NodePath("Slot4"), NodePath("Slot5")]
 _max_y_delta = 140.0
 
-[node name="Slot1" type="NinePatchRect" parent="CanvasLayer/Slots"]
+[node name="Slot1" type="NinePatchRect" parent="CanvasLayer/PlayerCardSlots"]
 custom_minimum_size = Vector2(140, 210)
 layout_mode = 2
 size_flags_horizontal = 4
@@ -527,7 +582,7 @@ patch_margin_bottom = 13
 axis_stretch_horizontal = 1
 axis_stretch_vertical = 1
 
-[node name="Slot2" type="NinePatchRect" parent="CanvasLayer/Slots"]
+[node name="Slot2" type="NinePatchRect" parent="CanvasLayer/PlayerCardSlots"]
 custom_minimum_size = Vector2(140, 210)
 layout_mode = 2
 size_flags_horizontal = 4
@@ -542,7 +597,7 @@ patch_margin_bottom = 13
 axis_stretch_horizontal = 1
 axis_stretch_vertical = 1
 
-[node name="Slot3" type="NinePatchRect" parent="CanvasLayer/Slots"]
+[node name="Slot3" type="NinePatchRect" parent="CanvasLayer/PlayerCardSlots"]
 custom_minimum_size = Vector2(140, 210)
 layout_mode = 2
 size_flags_horizontal = 4
@@ -557,7 +612,7 @@ patch_margin_bottom = 13
 axis_stretch_horizontal = 1
 axis_stretch_vertical = 1
 
-[node name="Slot4" type="NinePatchRect" parent="CanvasLayer/Slots"]
+[node name="Slot4" type="NinePatchRect" parent="CanvasLayer/PlayerCardSlots"]
 custom_minimum_size = Vector2(140, 210)
 layout_mode = 2
 size_flags_horizontal = 4
@@ -572,7 +627,7 @@ patch_margin_bottom = 13
 axis_stretch_horizontal = 1
 axis_stretch_vertical = 1
 
-[node name="Slot5" type="NinePatchRect" parent="CanvasLayer/Slots"]
+[node name="Slot5" type="NinePatchRect" parent="CanvasLayer/PlayerCardSlots"]
 custom_minimum_size = Vector2(140, 210)
 layout_mode = 2
 size_flags_horizontal = 4
@@ -587,7 +642,7 @@ patch_margin_bottom = 13
 axis_stretch_horizontal = 1
 axis_stretch_vertical = 1
 
-[node name="ActiveCards" type="Control" parent="CanvasLayer"]
+[node name="PlayerActiveCards" type="Control" parent="CanvasLayer"]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -595,7 +650,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Hand Draw Origin" type="Control" parent="CanvasLayer"]
+[node name="Player Hand Draw Origin" type="Control" parent="CanvasLayer"]
 layout_mode = 3
 anchor_left = 0.5
 anchor_top = 1.4

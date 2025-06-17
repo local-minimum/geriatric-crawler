@@ -1,25 +1,26 @@
 extends Node
 class_name BattleEnemy
 
-signal on_gain_shield(battle_enemy: BattleEnemy, shields: Array[int])
+signal on_gain_shield(battle_enemy: BattleEnemy, shields: Array[int], new_shield: int)
 signal on_break_shield(battle_enemy: BattleEnemy, shields: Array[int], broken_shield: int)
-signal on_hurt(battle_enemy: BattleEnemy, amount: int, new_health: int)
+
 signal on_heal(battle_enemy: BattleEnemy, amount: int, new_health: int, overheal: bool)
+signal on_hurt(battle_enemy: BattleEnemy, amount: int, new_health: int)
 signal on_death(battle_enemy: BattleEnemy)
+
+signal on_prepare_hand(battle_enemy: BattleEnemy, slotted_cards: Array[BattleCard])
 
 
 ## This is the variant ID of the enemy character in the blob, e.g. "space-slug". It shouldn't be unique. But if there are variants like "space-slug-lvl2" it should be named as such
 @export
 var variant_id: String
 
+## Human readable / display name
 @export
 var variant_name: String
 
 @export
 var level: int
-
-@export
-var deck: BattleDeck
 
 var _health: int
 
@@ -32,6 +33,18 @@ var difficulty: int = 0
 @export
 var sprite: Texture
 
+@export
+var hand_size: int = 3
+
+@export
+var play_slots: int = 1
+
+@export
+var deck: BattleDeck
+
+@export
+var brain: BattleBrain
+
 var _shields: Array[int] = []
 
 func _ready() -> void:
@@ -42,6 +55,9 @@ func get_shields() -> Array[int]:
 
 func get_health() -> int:
     return _health
+
+func is_alive() -> bool:
+    return _health > 0
 
 func add_shield(shield: int) -> void:
     _shields.append(shield)
@@ -73,3 +89,26 @@ func heal(amount: int) -> void:
     _health = min(raw_new, max_health)
 
     on_heal.emit(self, amount - (raw_new - _health), _health, overshoot)
+
+var _hand: Array[BattleCard]
+var _slotted: Array[BattleCard]
+
+func initiative() -> int:
+    if _slotted.is_empty():
+        return 0
+
+    return _slotted[0].data.rank
+
+func passing() -> bool:
+    return _slotted.is_empty()
+
+## Draws cards and asks a strategy to slot them
+func prepare_hand() -> void:
+    var draw_cards: int = hand_size - _hand.size()
+    _hand.append_array(deck.draw(draw_cards))
+    _slotted = brain.select_cards(_hand, play_slots)
+
+    for card: BattleCard in _slotted:
+        _hand.erase(card)
+
+    on_prepare_hand.emit(self, _slotted)
