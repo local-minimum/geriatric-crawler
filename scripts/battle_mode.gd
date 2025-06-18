@@ -106,7 +106,7 @@ func round_start_prepare_hands() -> void:
     deal_player_hand()
 
 func deal_player_hand() -> void:
-    # TODO: Ask someone what the cards should actually be
+    # TODO: Something should manage hand size
     var hand_size: int = 6
     var hand: Array[BattleCard] = []
 

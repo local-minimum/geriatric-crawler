@@ -33,8 +33,32 @@ func _ready() -> void:
         push_error("Hand could not connect to return card to hand event")
     if slots.on_slots_shown.connect(_hand_ready) != OK:
         push_error("Hand could not connect to return card to hand event")
+    if slots.on_end_slotting.connect(_handle_end_slotting) != OK:
+        push_error("Hand could not connect to slotting ended event")
     hide_hand()
 
+func _handle_end_slotting() -> void:
+    for card: BattleCard in _hand:
+        card.interactable = false
+        var tween: Tween = get_tree().create_tween()
+
+        if _card_tweens.has(card):
+            _card_tweens[card].kill()
+
+        @warning_ignore_start("return_value_discarded")
+        tween.tween_property(
+            card,
+            "global_position",
+            get_centered_position(card, _draw_origin),
+            _draw_time,
+        ).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+        @warning_ignore_restore("return_value_discarded")
+
+        tween.play()
+
+        await get_tree().create_timer(_draw_delta).timeout
+
+    slots.lower_slots()
 
 func _hand_ready() -> void:
     for card: BattleCard in _hand:
@@ -89,7 +113,7 @@ func hide_hand() -> void:
         card.visible = false
     _hand.clear()
     visible = false
-    slots.visible = false
+    slots.hide_ui()
 
 func _draw_hand(
     cards: Array[BattleCard],

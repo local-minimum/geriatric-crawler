@@ -4,6 +4,7 @@ class_name BattleCardSlots
 signal on_return_card_to_hand(card: BattleCard, position_holder: BattleCard)
 signal on_slots_shown
 signal on_update_slotted(cards: Array[BattleCard])
+signal on_end_slotting
 
 @export
 var _slot_rects: Array[Control] = []
@@ -11,7 +12,19 @@ var _slot_rects: Array[Control] = []
 @export
 var _max_y_delta: float = 80
 
+@export
+var _lower_position_offset: float = 300
+
+@export
+var _done_slotting_cards_button: Button
+
+var _origin: Vector2
+
+func _ready() -> void:
+    _origin = global_position
+
 func show_slots(visible_slots: int) -> void:
+    global_position = _origin
     slotted_cards.clear()
 
     if slotted_cards.resize(visible_slots) != OK:
@@ -36,6 +49,7 @@ func show_slots(visible_slots: int) -> void:
     if idx < visible_slots:
         push_warning("Requested %s slots, but only has %s configured" % [visible_slots, idx])
 
+    _done_slotting_cards_button.visible = true
     on_slots_shown.emit()
 
 func is_over_slots(card: BattleCard) -> bool:
@@ -135,3 +149,61 @@ func unslot_card(card: BattleCard) -> int:
         on_update_slotted.emit(slotted_cards)
         card.sync_display(0)
     return slot_idx
+
+func hide_ui() -> void:
+    _done_slotting_cards_button.visible = false
+    visible = false
+
+
+func _on_player_cards_slotted_button_pressed() -> void:
+    _done_slotting_cards_button.visible = false
+    for card: BattleCard in slotted_cards:
+        if card == null:
+            continue
+
+        card.interactable = false
+
+    on_end_slotting.emit()
+
+func lower_slots() -> void:
+    visible = false
+    var lower_offset: Vector2 = Vector2.DOWN * _lower_position_offset
+    var duration: float = 0.2
+
+    var base_tween: Tween = get_tree().create_tween()
+
+    @warning_ignore_start("return_value_discarded")
+    base_tween.tween_property(
+        self,
+        "global_position",
+        global_position + lower_offset,
+        duration,
+    ).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+    @warning_ignore_restore("return_value_discarded")
+
+    base_tween.play()
+    print_debug(slotted_cards)
+    ArrayUtils.shift_nulls_to_end(slotted_cards)
+    print_debug(slotted_cards)
+
+    for idx: int in range(slotted_cards.size()):
+        var card: BattleCard = slotted_cards[idx]
+        if card == null:
+            continue
+
+        var tween: Tween = base_tween.parallel()
+
+        if _card_tweens.has(card):
+            _card_tweens[card].kill()
+
+        # TODO: Fix so it collapses array
+        @warning_ignore_start("return_value_discarded")
+        tween.tween_property(
+            card,
+            "global_position",
+            BattleHandManager.get_centered_position(card, _slot_rects[idx]) + lower_offset,
+            duration,
+        ).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+        @warning_ignore_restore("return_value_discarded")
+
+        tween.play()
