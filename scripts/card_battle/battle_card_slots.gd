@@ -165,7 +165,7 @@ func _on_player_cards_slotted_button_pressed() -> void:
 
     on_end_slotting.emit()
 
-func lower_slots() -> void:
+func lower_slots(on_complete: Callable) -> void:
     visible = false
     var lower_offset: Vector2 = Vector2.DOWN * _lower_position_offset
     var duration: float = 0.2
@@ -181,10 +181,7 @@ func lower_slots() -> void:
     ).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
     @warning_ignore_restore("return_value_discarded")
 
-    base_tween.play()
-    print_debug(slotted_cards)
     ArrayUtils.shift_nulls_to_end(slotted_cards)
-    print_debug(slotted_cards)
 
     for idx: int in range(slotted_cards.size()):
         var card: BattleCard = slotted_cards[idx]
@@ -206,4 +203,7 @@ func lower_slots() -> void:
         ).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
         @warning_ignore_restore("return_value_discarded")
 
-        tween.play()
+    if base_tween.connect("finished", on_complete) != OK:
+        push_error("Failed to conntect complete event to callback")
+
+    base_tween.play()

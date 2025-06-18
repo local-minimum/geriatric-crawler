@@ -25,12 +25,67 @@ const _battle_card_resource: PackedScene = preload("res://scenes/battle_card.tsc
 var _cards: Array[BattleCard] = []
 
 func _ready() -> void:
-    if battle_hand.on_hand_drawn.connect(after_deal) != OK:
+    if battle_hand.on_hand_drawn.connect(_after_deal) != OK:
         push_error("Failed to connect callback to hand dealt")
-    if battle_hand.slots.on_update_slotted.connect(handle_update_slotted):
+    if battle_hand.slots.on_update_slotted.connect(_handle_update_slotted):
         push_error("Failed to connect callback to slotted cards updated")
+    if battle_hand.on_hand_actions_complete.connect(_start_playing_cards):
+        push_error("Failed to connect callback to hand actions completed")
 
-func handle_update_slotted(cards: Array[BattleCard]) -> void:
+var _next_active_enemy: int
+var _player_initiative: int
+
+func _start_playing_cards() -> void:
+    print_debug("Card actions phase")
+
+    _next_active_enemy = 0
+
+    _enemies.sort_custom(
+        func (a: BattleEnemy, b: BattleEnemy) -> bool:
+            if a != null && b == null:
+                return true
+
+            if a != null || b != null:
+                return false
+
+            return a.initiative() > b.initiative())
+
+    var leading_player_card: BattleCard = battle_hand.slots.slotted_cards[0]
+    if leading_player_card ==  null:
+        _player_initiative = -1
+    else:
+        _player_initiative = leading_player_card.data.rank
+
+    # TODO: Actually do stuff
+    while _pass_action_turn():
+        pass
+
+func _next_enemy_initiative() -> int:
+    if _next_active_enemy >= _enemies.size() || _enemies[_next_active_enemy] == null:
+        return -1
+    var enemy: BattleEnemy = _enemies[_next_active_enemy]
+    if !enemy.is_alive():
+        return -1
+
+    return enemy.initiative()
+
+func _pass_action_turn() -> bool:
+    var enemy_initiative: int = _next_enemy_initiative()
+    if enemy_initiative == -1 && _player_initiative == -1:
+        print_debug("Next turn!")
+        return false
+
+    if _player_initiative >= enemy_initiative:
+        print_debug("Player does their thing %s vs %s" % [_player_initiative, enemy_initiative])
+        _player_initiative = -1
+        return true
+
+    print_debug("Enemy %s with initiative %s (player %s) does their thing" % [_enemies[_next_active_enemy], enemy_initiative, _player_initiative])
+    _next_active_enemy += 1
+    return true
+
+
+func _handle_update_slotted(cards: Array[BattleCard]) -> void:
     var acc_suit_bonus: int
     var prev_card: BattleCardData = null
 
@@ -134,7 +189,7 @@ func deal_player_hand() -> void:
 
     battle_hand.draw_hand(hand)
 
-func after_deal() -> void:
+func _after_deal() -> void:
     battle_hand.slots.show_slots(3)
 
 func exit_battle() -> void:

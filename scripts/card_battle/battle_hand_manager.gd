@@ -2,6 +2,7 @@ extends Control
 class_name BattleHandManager
 
 signal on_hand_drawn
+signal on_hand_actions_complete
 
 @export
 var _target_controls: Array[Control]
@@ -58,7 +59,7 @@ func _handle_end_slotting() -> void:
 
         await get_tree().create_timer(_draw_delta).timeout
 
-    slots.lower_slots()
+    slots.lower_slots(func () -> void: on_hand_actions_complete.emit())
 
 func _hand_ready() -> void:
     for card: BattleCard in _hand:

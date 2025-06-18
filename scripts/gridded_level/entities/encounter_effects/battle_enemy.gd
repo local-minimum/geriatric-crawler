@@ -95,7 +95,7 @@ var _slotted: Array[BattleCardData]
 
 func initiative() -> int:
     if _slotted.is_empty():
-        return 0
+        return -1
 
     return _slotted[0].rank
 
