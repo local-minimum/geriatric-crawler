@@ -4,7 +4,7 @@ class_name BattleBrain
 @export
 var strategies: Array[BattleStrategy]
 
-func select_cards(hand: Array[BattleCard], max_cards: int) -> Array[BattleCard]:
+func select_cards(hand: Array[BattleCardData], max_cards: int) -> Array[BattleCardData]:
     var available: Dictionary[BattleStrategy, int] = {}
     var total_prio: int = 0
 
@@ -21,9 +21,9 @@ func select_cards(hand: Array[BattleCard], max_cards: int) -> Array[BattleCard]:
 
     for strategy: BattleStrategy in available.keys():
         var prio: int = available[strategy]
-        if prio <= target:
+        if target <= prio:
             return strategy.select_cards(hand, max_cards)
         target -= prio
 
-    push_error("Priority corruption, this code should not be reachable, %s vs %s" % [strategies, total_prio])
+    push_error("Priority corruption, this code should not be reachable, %s vs %s vs %s" % [strategies, total_prio, target])
     return []

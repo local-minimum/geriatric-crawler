@@ -90,14 +90,14 @@ func heal(amount: int) -> void:
 
     on_heal.emit(self, amount - (raw_new - _health), _health, overshoot)
 
-var _hand: Array[BattleCard]
-var _slotted: Array[BattleCard]
+var _hand: Array[BattleCardData]
+var _slotted: Array[BattleCardData]
 
 func initiative() -> int:
     if _slotted.is_empty():
         return 0
 
-    return _slotted[0].data.rank
+    return _slotted[0].rank
 
 func passing() -> bool:
     return _slotted.is_empty()
@@ -108,7 +108,7 @@ func prepare_hand() -> void:
     _hand.append_array(deck.draw(draw_cards))
     _slotted = brain.select_cards(_hand, play_slots)
 
-    for card: BattleCard in _slotted:
+    for card: BattleCardData in _slotted:
         _hand.erase(card)
 
     on_prepare_hand.emit(self, _slotted)

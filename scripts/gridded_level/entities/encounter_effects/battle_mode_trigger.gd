@@ -19,9 +19,12 @@ func prepare(_encounter: GridEncounter) -> void:
         mat.albedo_color = Color.WHITE
 
 func get_highest_scoring_live_enemy() -> BattleEnemy:
+    if enemies.size() == 0:
+        push_warning("%s doesn't have any enemy" % name)
+        return
+
     var scores: Dictionary[String, int] = {}
     for enemy: BattleEnemy in enemies:
-
         if scores.has(enemy.variant_id):
             scores[enemy.variant_id] += enemy.difficulty
         else:
