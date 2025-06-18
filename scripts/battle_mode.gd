@@ -3,6 +3,8 @@ class_name BattleMode
 
 signal on_enemy_join_battle(enemy: BattleEnemy)
 signal on_enemy_leave_battle(enemy: BattleEnemy)
+signal on_enemy_turn(enemy: BattleEnemy, initiative: int)
+signal on_player_turn(initiative: int)
 
 @export
 var animator: AnimationPlayer
@@ -56,9 +58,12 @@ func _start_playing_cards() -> void:
     else:
         _player_initiative = leading_player_card.data.rank
 
-    # TODO: Actually do stuff
-    while _pass_action_turn():
-        pass
+    next_agent_turn()
+
+func next_agent_turn() -> void:
+    if !_pass_action_turn():
+        print_debug("Next turn!")
+        # TODO: Cleanup and go to next turn
 
 func _next_enemy_initiative() -> int:
     if _next_active_enemy >= _enemies.size() || _enemies[_next_active_enemy] == null:
@@ -72,15 +77,14 @@ func _next_enemy_initiative() -> int:
 func _pass_action_turn() -> bool:
     var enemy_initiative: int = _next_enemy_initiative()
     if enemy_initiative == -1 && _player_initiative == -1:
-        print_debug("Next turn!")
         return false
 
     if _player_initiative >= enemy_initiative:
-        print_debug("Player does their thing %s vs %s" % [_player_initiative, enemy_initiative])
+        on_player_turn.emit(_player_initiative)
         _player_initiative = -1
         return true
 
-    print_debug("Enemy %s with initiative %s (player %s) does their thing" % [_enemies[_next_active_enemy], enemy_initiative, _player_initiative])
+    on_enemy_turn.emit(_enemies[_next_active_enemy], enemy_initiative)
     _next_active_enemy += 1
     return true
 
