@@ -1,0 +1,93 @@
+extends Node
+class_name BattleEntity
+
+signal on_gain_shield(battle_enemy: BattleEnemy, shields: Array[int], new_shield: int)
+signal on_break_shield(battle_enemy: BattleEnemy, shields: Array[int], broken_shield: int)
+
+signal on_heal(battle_enemy: BattleEnemy, amount: int, new_health: int, overheal: bool)
+signal on_hurt(battle_enemy: BattleEnemy, amount: int, new_health: int)
+signal on_death(battle_enemy: BattleEnemy)
+
+signal on_turn_done()
+
+var _health: int
+
+@export
+var max_health: int = 20
+
+func _ready() -> void:
+    _health = max_health
+
+func get_health() -> int:
+    return _health
+
+func is_alive() -> bool:
+    return _health > 0
+
+var _shields: Array[int] = []
+
+func get_shields() -> Array[int]:
+    return _shields
+
+func add_shield(shield: int) -> void:
+    _shields.append(shield)
+    on_gain_shield.emit(self, _shields, shield)
+
+func hurt(amount: int) -> void:
+    while  _shields.size():
+        var shield: int = _shields.pop_front()
+        amount = max(0, amount - shield)
+        if amount == 0:
+            break
+
+        on_break_shield.emit(self, _shields, shield)
+
+    _health = max(0, _health - amount)
+    on_hurt.emit(self, amount, _health)
+
+    if _health == 0:
+        on_death.emit(self)
+
+func heal(amount: int) -> void:
+    if amount < 0:
+        push_error("Negative heals not allowed (%s)" % amount)
+        print_stack()
+        return
+
+    var raw_new: int = _health + amount
+    var overshoot: bool = raw_new > max_health
+    _health = min(raw_new, max_health)
+
+    on_heal.emit(self, amount - (raw_new - _health), _health, overshoot)
+
+
+func get_suit_bonus(
+    card: BattleCardData,
+    suit_bonus: int,
+    prev_card: BattleCardData,
+    next_card: BattleCardData,
+    first_card: bool,
+) -> int:
+    var suited_rule: bool = false
+
+    if card.secondary_effects.has(BattleCardData.SecondaryEffect.Accelerated):
+        if card.has_identical_suit(prev_card):
+            suit_bonus = max(suit_bonus + 1, suit_bonus * 2)
+        else:
+            suit_bonus = -1
+        suited_rule = true
+
+    if card.secondary_effects.has(BattleCardData.SecondaryEffect.SuitedUp):
+        if card.has_suit_intersection(prev_card) && card.has_suit_intersection(next_card):
+            suit_bonus += 1
+        else:
+            suit_bonus = 0
+        suited_rule = true
+
+    if !suited_rule && first_card:
+        if card.has_suit_intersection(prev_card):
+            suit_bonus += 1
+        else:
+            suit_bonus = 0
+
+    return suit_bonus

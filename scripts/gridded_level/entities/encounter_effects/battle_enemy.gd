@@ -1,12 +1,5 @@
-extends Node
+extends BattleEntity
 class_name BattleEnemy
-
-signal on_gain_shield(battle_enemy: BattleEnemy, shields: Array[int], new_shield: int)
-signal on_break_shield(battle_enemy: BattleEnemy, shields: Array[int], broken_shield: int)
-
-signal on_heal(battle_enemy: BattleEnemy, amount: int, new_health: int, overheal: bool)
-signal on_hurt(battle_enemy: BattleEnemy, amount: int, new_health: int)
-signal on_death(battle_enemy: BattleEnemy)
 
 signal on_prepare_hand(battle_enemy: BattleEnemy, slotted_cards: Array[BattleCard])
 
@@ -21,11 +14,6 @@ var variant_name: String
 
 @export
 var level: int
-
-var _health: int
-
-@export
-var max_health: int = 20
 
 @export
 var difficulty: int = 0
@@ -44,51 +32,6 @@ var deck: BattleDeck
 
 @export
 var brain: BattleBrain
-
-var _shields: Array[int] = []
-
-func _ready() -> void:
-    _health = max_health
-
-func get_shields() -> Array[int]:
-    return _shields
-
-func get_health() -> int:
-    return _health
-
-func is_alive() -> bool:
-    return _health > 0
-
-func add_shield(shield: int) -> void:
-    _shields.append(shield)
-    on_gain_shield.emit(self, _shields, shield)
-
-func hurt(amount: int) -> void:
-    while  _shields.size():
-        var shield: int = _shields.pop_front()
-        amount = max(0, amount - shield)
-        if amount == 0:
-            break
-
-        on_break_shield.emit(self, _shields, shield)
-
-    _health = max(0, _health - amount)
-    on_hurt.emit(self, amount, _health)
-
-    if _health == 0:
-        on_death.emit(self)
-
-func heal(amount: int) -> void:
-    if amount < 0:
-        push_error("Negative heals not allowed (%s)" % amount)
-        print_stack()
-        return
-
-    var raw_new: int = _health + amount
-    var overshoot: bool = raw_new > max_health
-    _health = min(raw_new, max_health)
-
-    on_heal.emit(self, amount - (raw_new - _health), _health, overshoot)
 
 var _hand: Array[BattleCardData]
 var _slotted: Array[BattleCardData]
@@ -112,3 +55,64 @@ func prepare_hand() -> void:
         _hand.erase(card)
 
     on_prepare_hand.emit(self, _slotted)
+
+func play_actions(
+    allies: Array[BattleEntity],
+    enemies: Array[BattleEntity],
+) -> void:
+    var previous: BattleCardData = null
+    var idx: int = 0
+    var suit_bonus: int
+    ArrayUtils.shift_nulls_to_end(_slotted)
+
+    for card: BattleCardData in _slotted:
+        if card == null:
+            break
+
+        var next: BattleCardData = _slotted[idx + 1] if idx < _slotted.size() - 1 else null
+
+        suit_bonus = get_suit_bonus(card, suit_bonus, previous, next, idx == 0)
+
+        for effect: BattleCardPrimaryEffect in card.primary_effects:
+            var targets_range: Array[int] = effect.get_target_range()
+            var n_targets: int = randi_range(targets_range[0], targets_range[1])
+
+            if effect.targets_enemies():
+                _execute_effect(effect, suit_bonus, enemies, n_targets, false)
+
+            if effect.targets_allies():
+                _execute_effect(effect, suit_bonus, allies , n_targets, true)
+            elif effect.targets_self():
+                _execute_effect(effect, suit_bonus, [self], n_targets, true)
+
+        idx += 1
+        previous = card
+
+    on_turn_done.emit()
+
+func _execute_effect(
+    effect: BattleCardPrimaryEffect,
+    suit_bonus: int,
+    targets: Array[BattleEntity],
+    n_targets: int,
+    allies: bool,
+) -> void:
+    var value: int = effect.calculate_effect(suit_bonus, allies)
+
+    # TODO: Strategic targets
+    var rng_target: bool = effect.targets_random()
+    var target_order: Array[int] = range(targets.size())
+    target_order.shuffle()
+
+    for i: int in range(n_targets):
+        var target: BattleEntity = targets[target_order[i]]
+
+        match effect.mode:
+            BattleCardPrimaryEffect.EffectMode.Damage:
+                target.hurt(value)
+            BattleCardPrimaryEffect.EffectMode.Heal:
+                target.heal(value)
+            BattleCardPrimaryEffect.EffectMode.Defence:
+                target.add_shield(value)
+
+        await get_tree().create_timer(0.25).timeout

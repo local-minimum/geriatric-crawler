@@ -3,8 +3,6 @@ class_name BattleMode
 
 signal on_enemy_join_battle(enemy: BattleEnemy)
 signal on_enemy_leave_battle(enemy: BattleEnemy)
-signal on_enemy_turn(enemy: BattleEnemy, initiative: int)
-signal on_player_turn(initiative: int)
 
 @export
 var animator: AnimationPlayer
@@ -17,6 +15,9 @@ var player_deck: BattleDeck
 
 @export
 var _active_cards: Control
+
+@export
+var _battle_player: BattlePlayer
 
 var trigger: GridEncounterEffect
 
@@ -80,14 +81,14 @@ func _pass_action_turn() -> bool:
         return false
 
     if _player_initiative >= enemy_initiative:
-        on_player_turn.emit(_player_initiative)
+        _battle_player.play_actions(next_agent_turn)
         _player_initiative = -1
         return true
 
-    on_enemy_turn.emit(_enemies[_next_active_enemy], enemy_initiative)
+    var enemy: BattleEnemy = _enemies[_next_active_enemy]
+    enemy.play_actions(_enemies as Array[BattleEntity], [_battle_player])
     _next_active_enemy += 1
     return true
-
 
 func _handle_update_slotted(cards: Array[BattleCard]) -> void:
     var acc_suit_bonus: int
@@ -100,29 +101,10 @@ func _handle_update_slotted(cards: Array[BattleCard]) -> void:
     var idx: int = 0
 
     for card: BattleCard in slotted_cards:
+        var next_card: BattleCardData = slotted_cards[idx + 1].data if idx + 1 < slotted_cards.size() else null
+        acc_suit_bonus = _battle_player.get_suit_bonus(card.data, acc_suit_bonus, prev_card, next_card, idx == 0)
+
         idx += 1
-
-        var suited_rule: bool = false
-        if card.data.secondary_effects.has(BattleCardData.SecondaryEffect.Accelerated):
-            if card.data.has_identical_suit(prev_card):
-                acc_suit_bonus = max(acc_suit_bonus + 1, acc_suit_bonus * 2)
-            else:
-                acc_suit_bonus = -1
-            suited_rule = true
-
-        if card.data.secondary_effects.has(BattleCardData.SecondaryEffect.SuitedUp):
-            var next_card: BattleCard = slotted_cards[idx + 1] if idx + 1 < slotted_cards.size() else null
-            if card.data.has_suit_intersection(prev_card) && next_card != null && card.data.has_suit_intersection(next_card.data):
-                acc_suit_bonus += 1
-            else:
-                acc_suit_bonus = 0
-            suited_rule = true
-
-        if !suited_rule && idx > 0:
-            if card.data.has_suit_intersection(prev_card):
-                acc_suit_bonus += 1
-            else:
-                acc_suit_bonus = 0
 
         card.sync_display(acc_suit_bonus)
 
@@ -139,6 +121,9 @@ func enter_battle(battle_trigger: BattleModeTrigger) -> void:
     # Show all enemies and their stats
     _enemies.append_array(battle_trigger.enemies)
     for enemy: BattleEnemy in _enemies:
+        if enemy.on_turn_done.connect(next_agent_turn) != OK:
+            push_error("Failed to connect enemy %s turn done" % enemy)
+
         on_enemy_join_battle.emit(enemy)
 
     await get_tree().create_timer(0.5).timeout
@@ -201,6 +186,8 @@ func exit_battle() -> void:
 
     for enemy: BattleEnemy in _enemies:
         on_enemy_leave_battle.emit(enemy)
+        enemy.on_turn_done.disconnect(next_agent_turn)
+
     _enemies.clear()
 
     animator.play("fade_out_battle")
