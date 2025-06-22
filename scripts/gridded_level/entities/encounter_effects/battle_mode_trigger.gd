@@ -9,7 +9,10 @@ var enemies: Array[BattleEnemy]
 func prepare(_encounter: GridEncounter) -> void:
     var focus: BattleEnemy = get_highest_scoring_live_enemy()
     if focus == null:
-        push_error("Battle mode trigger doesn't have any focus enemy %s" % [enemies])
+        var mat: StandardMaterial3D = _encounter.graphics.get_active_material(0)
+        mat.albedo_texture = null
+        mat.albedo_color = Color.MAGENTA
+        push_error("Battle mode trigger %s doesn't have any focus enemy %s" % [name, enemies])
         return
 
     if focus.sprite != null:
@@ -20,7 +23,7 @@ func prepare(_encounter: GridEncounter) -> void:
 
 func get_highest_scoring_live_enemy() -> BattleEnemy:
     if enemies.size() == 0:
-        push_warning("%s doesn't have any enemy" % name)
+        # push_warning("%s doesn't have any enemy" % name)
         return
 
     var scores: Dictionary[String, int] = {}

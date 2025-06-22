@@ -18,3 +18,15 @@ static func shift_nulls_to_end(arr: Array) -> void:
                 if y == 0:
                     return
         x -= 1
+
+
+static func int_range(n: int) -> Array[int]:
+    var r: Array[int] = []
+
+    if r.resize(n) != OK:
+        pass
+
+    for idx: int in range(n):
+        r[idx] = idx
+
+    return r

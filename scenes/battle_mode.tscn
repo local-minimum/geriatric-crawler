@@ -1,12 +1,13 @@
-[gd_scene load_steps=26 format=3 uid="uid://sx8om7lfql6j"]
+[gd_scene load_steps=27 format=3 uid="uid://sx8om7lfql6j"]
 
 [ext_resource type="Script" uid="uid://cvchbk03g5wag" path="res://scripts/battle_mode.gd" id="1_7wt64"]
 [ext_resource type="Texture2D" uid="uid://cpot0wvcwpcqh" path="res://sprites/battle-bg-test.png" id="2_wpnne"]
-[ext_resource type="Script" uid="uid://cfpvhmlfcm2cg" path="res://scripts/card_battle/battle_enemies_ui.gd" id="3_31k21"]
-[ext_resource type="Script" uid="uid://n703i4pjhesr" path="res://scripts/card_battle/battle_enemy_ui.gd" id="3_lfs5n"]
+[ext_resource type="Script" uid="uid://cfpvhmlfcm2cg" path="res://scripts/card_battle/battle_entities_ui_group.gd" id="3_31k21"]
+[ext_resource type="Script" uid="uid://n703i4pjhesr" path="res://scripts/card_battle/battle_entity_ui.gd" id="3_lfs5n"]
 [ext_resource type="Script" uid="uid://deofnypsgkauo" path="res://scripts/card_battle/battle_hand_manager.gd" id="3_wpnne"]
 [ext_resource type="Script" uid="uid://5kqr4lmwivmv" path="res://scripts/card_battle/battle_card_slots.gd" id="4_1e1d0"]
 [ext_resource type="Texture2D" uid="uid://d14rk0grbqxnd" path="res://sprites/cards/suits/card-background.png" id="4_4kft8"]
+[ext_resource type="Texture2D" uid="uid://cev0382nhv46i" path="res://sprites/kenny game icons/arrowUp.png" id="4_sw08r"]
 [ext_resource type="Script" uid="uid://c2lco7et0w3ia" path="res://scripts/card_battle/battle_deck.gd" id="6_plnl4"]
 [ext_resource type="Script" uid="uid://cqlxwfe858g4h" path="res://scripts/card_battle/battle_card_data.gd" id="7_bno2u"]
 [ext_resource type="Resource" uid="uid://cuqk7tuums5ds" path="res://resources/player_cards/card_slam-810.tres" id="8_2igk8"]
@@ -409,7 +410,63 @@ theme_override_constants/margin_top = 50
 theme_override_constants/margin_right = 50
 theme_override_constants/margin_bottom = 50
 
-[node name="Enemies" type="Control" parent="CanvasLayer" node_paths=PackedStringArray("_enemyUIs", "_battle")]
+[node name="Player Entities" type="Control" parent="CanvasLayer"]
+layout_mode = 3
+anchor_left = 0.025
+anchor_top = 0.05
+anchor_right = 0.4
+anchor_bottom = 0.2
+
+[node name="Players" type="HBoxContainer" parent="CanvasLayer/Player Entities" node_paths=PackedStringArray("_entityUIs", "_battle")]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("3_31k21")
+_entityUIs = [NodePath("PlayerUI")]
+_battle = NodePath("../../..")
+
+[node name="PlayerUI" type="HBoxContainer" parent="CanvasLayer/Player Entities/Players" node_paths=PackedStringArray("healthUI", "defenceUI", "icon", "nameUI")]
+layout_mode = 2
+size_flags_horizontal = 3
+script = ExtResource("3_lfs5n")
+healthUI = NodePath("VBoxContainer/Health")
+defenceUI = NodePath("VBoxContainer/Defence")
+icon = NodePath("Avatar")
+nameUI = NodePath("VBoxContainer/Name")
+
+[node name="Avatar" type="TextureRect" parent="CanvasLayer/Player Entities/Players/PlayerUI"]
+layout_mode = 2
+texture = ExtResource("4_sw08r")
+expand_mode = 3
+stretch_mode = 5
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/Player Entities/Players/PlayerUI"]
+layout_mode = 2
+size_flags_horizontal = 2
+
+[node name="Name" type="Label" parent="CanvasLayer/Player Entities/Players/PlayerUI/VBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_shadow_color = Color(0.321074, 0.109373, 0.262374, 1)
+text = "TARGET DUMMY"
+horizontal_alignment = 1
+
+[node name="Health" type="Label" parent="CanvasLayer/Player Entities/Players/PlayerUI/VBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_shadow_color = Color(0.321074, 0.109373, 0.262374, 1)
+text = "HP:"
+
+[node name="Defence" type="Label" parent="CanvasLayer/Player Entities/Players/PlayerUI/VBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_shadow_color = Color(0.321074, 0.109373, 0.262374, 1)
+text = "DEF:"
+
+[node name="Enemies" type="Control" parent="CanvasLayer" node_paths=PackedStringArray("_entityUIs", "_battle")]
 layout_mode = 3
 anchor_left = 0.459
 anchor_top = 0.02
@@ -417,8 +474,9 @@ anchor_right = 0.95
 anchor_bottom = 0.645
 grow_horizontal = 0
 script = ExtResource("3_31k21")
-_enemyUIs = [NodePath("EnemyUI")]
+_entityUIs = [NodePath("EnemyUI")]
 _battle = NodePath("../..")
+_enemy_group = true
 
 [node name="EnemyUI" type="VBoxContainer" parent="CanvasLayer/Enemies" node_paths=PackedStringArray("healthUI", "defenceUI", "icon", "nameUI")]
 custom_minimum_size = Vector2(200, 0)
@@ -692,6 +750,7 @@ _start_deck = Array[ExtResource("7_bno2u")]([ExtResource("8_w875v"), ExtResource
 [node name="BattlePlayer" type="Node" parent="." node_paths=PackedStringArray("_slots")]
 script = ExtResource("21_wu7la")
 _slots = NodePath("../CanvasLayer/PlayerCardSlots")
+sprite = ExtResource("8_2up48")
 metadata/_custom_type_script = "uid://c4w2xnbmt2m0c"
 
 [connection signal="pressed" from="CanvasLayer/Player Cards Slotted Button" to="CanvasLayer/PlayerCardSlots" method="_on_player_cards_slotted_button_pressed"]

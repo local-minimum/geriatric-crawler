@@ -253,8 +253,6 @@ func show_slotted_cards() -> void:
     var duration: float = 0.2
     var intermission: float = 0.05
 
-    var lower_offset: Vector2 = Vector2.DOWN * _lower_position_offset
-
     for idx: int in range(slotted_cards.size()):
         var card: BattleCard = slotted_cards[idx]
         if card == null:
@@ -271,7 +269,7 @@ func show_slotted_cards() -> void:
         tween.tween_property(
             card,
             "global_position",
-            BattleHandManager.get_centered_position(card, _slot_rects[idx]) + lower_offset,
+            BattleHandManager.get_centered_position(card, _slot_rects[idx]),
             duration,
         ).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
         @warning_ignore_restore("return_value_discarded")

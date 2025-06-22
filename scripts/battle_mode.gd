@@ -1,8 +1,8 @@
 extends Node
 class_name BattleMode
 
-signal on_enemy_join_battle(enemy: BattleEnemy)
-signal on_enemy_leave_battle(enemy: BattleEnemy)
+signal on_entity_join_battle(entity: BattleEntity)
+signal on_entity_leave_battle(entity: BattleEntity)
 
 
 @export
@@ -70,7 +70,7 @@ func _start_playing_cards() -> void:
 
 func next_agent_turn() -> void:
     if !_pass_action_turn():
-        print_debug("Next turn!")
+        print_debug("Next round!")
         # TODO: Cleanup and go to next turn
 
 func _next_enemy_initiative() -> int:
@@ -128,13 +128,17 @@ func enter_battle(battle_trigger: BattleModeTrigger) -> void:
 
     trigger = battle_trigger
 
+    on_entity_join_battle.emit(_battle_player)
+    if _battle_player.on_turn_done.connect(next_agent_turn) != OK:
+        push_error("Failed to connect player %s turn done" % _battle_player)
+
     # Show all enemies and their stats
     _enemies.append_array(battle_trigger.enemies)
     for enemy: BattleEnemy in _enemies:
         if enemy.on_turn_done.connect(next_agent_turn) != OK:
             push_error("Failed to connect enemy %s turn done" % enemy)
 
-        on_enemy_join_battle.emit(enemy)
+        on_entity_join_battle.emit(enemy)
 
     await get_tree().create_timer(0.5).timeout
 
@@ -195,8 +199,11 @@ func exit_battle() -> void:
     battle_hand.hide_hand()
 
     for enemy: BattleEnemy in _enemies:
-        on_enemy_leave_battle.emit(enemy)
+        on_entity_leave_battle.emit(enemy)
         enemy.on_turn_done.disconnect(next_agent_turn)
+
+    on_entity_leave_battle.emit(_battle_player)
+    _battle_player.on_turn_done.disconnect(next_agent_turn)
 
     _enemies.clear()
 

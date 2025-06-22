@@ -1,22 +1,32 @@
 extends Node
 class_name BattleEntity
 
-signal on_gain_shield(battle_enemy: BattleEnemy, shields: Array[int], new_shield: int)
-signal on_break_shield(battle_enemy: BattleEnemy, shields: Array[int], broken_shield: int)
+signal on_gain_shield(battle_entitiy: BattleEntity, shields: Array[int], new_shield: int)
+signal on_break_shield(battle_entity: BattleEntity, shields: Array[int], broken_shield: int)
 
-signal on_heal(battle_enemy: BattleEnemy, amount: int, new_health: int, overheal: bool)
-signal on_hurt(battle_enemy: BattleEnemy, amount: int, new_health: int)
-signal on_death(battle_enemy: BattleEnemy)
+signal on_heal(battle_entity: BattleEntity, amount: int, new_health: int, overheal: bool)
+signal on_hurt(battle_entity: BattleEntity, amount: int, new_health: int)
+signal on_death(battle_entity: BattleEntity)
 
+# Used by subclasses
+@warning_ignore_start("unused_signal")
 signal on_turn_done()
+@warning_ignore_restore("unused_signal")
 
 var _health: int
 
 @export
 var max_health: int = 20
 
+@export
+var sprite: Texture
+
 func _ready() -> void:
     _health = max_health
+
+func get_entity_name() -> String:
+    push_error("%s doesn't have a name" % name)
+    return name
 
 func get_health() -> int:
     return _health
