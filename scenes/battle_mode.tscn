@@ -376,12 +376,13 @@ _data = {
 &"fade_out_battle": SubResource("Animation_5vw27")
 }
 
-[node name="Battle Mode" type="Node" node_paths=PackedStringArray("animator", "battle_hand", "player_deck", "_active_cards", "_battle_player")]
+[node name="Battle Mode" type="Node" node_paths=PackedStringArray("animator", "battle_hand", "player_deck", "_active_cards", "_ui", "_battle_player")]
 script = ExtResource("1_7wt64")
 animator = NodePath("AnimationPlayer")
 battle_hand = NodePath("CanvasLayer/Player BattleHand")
 player_deck = NodePath("PlayerDeck")
 _active_cards = NodePath("CanvasLayer/PlayerActiveCards")
+_ui = NodePath("CanvasLayer")
 _battle_player = NodePath("BattlePlayer")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]

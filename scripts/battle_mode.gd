@@ -4,6 +4,7 @@ class_name BattleMode
 signal on_enemy_join_battle(enemy: BattleEnemy)
 signal on_enemy_leave_battle(enemy: BattleEnemy)
 
+
 @export
 var animator: AnimationPlayer
 
@@ -15,6 +16,9 @@ var player_deck: BattleDeck
 
 @export
 var _active_cards: Control
+
+@export
+var _ui: CanvasLayer
 
 @export
 var _battle_player: BattlePlayer
@@ -34,6 +38,8 @@ func _ready() -> void:
         push_error("Failed to connect callback to slotted cards updated")
     if battle_hand.on_hand_actions_complete.connect(_start_playing_cards):
         push_error("Failed to connect callback to hand actions completed")
+
+    _ui.visible = false
 
 var _next_active_enemy: int
 var _player_initiative: int
@@ -59,6 +65,7 @@ func _start_playing_cards() -> void:
     else:
         _player_initiative = leading_player_card.data.rank
 
+    await get_tree().create_timer(1).timeout
     next_agent_turn()
 
 func next_agent_turn() -> void:
@@ -86,7 +93,8 @@ func _pass_action_turn() -> bool:
         return true
 
     var enemy: BattleEnemy = _enemies[_next_active_enemy]
-    enemy.play_actions(_enemies as Array[BattleEntity], [_battle_player])
+    enemy.play_actions([enemy], [_battle_player])
+    battle_hand.slots.hide_slotted_cards()
     _next_active_enemy += 1
     return true
 
@@ -113,6 +121,8 @@ func _handle_update_slotted(cards: Array[BattleCard]) -> void:
 var _enemies: Array[BattleEnemy]
 
 func enter_battle(battle_trigger: BattleModeTrigger) -> void:
+    _ui.visible = true
+
     # TODO: Gather proximate battle triggers too and pull them into the fight!
     # TODO: Consider need to wait for enemy to animate death before lettning new enter...
 

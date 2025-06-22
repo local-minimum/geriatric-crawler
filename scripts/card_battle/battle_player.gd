@@ -7,4 +7,4 @@ var _slots: BattleCardSlots
 func play_actions(
     on_complete: Callable,
 ) -> void:
-    pass
+    _slots.show_slotted_cards()

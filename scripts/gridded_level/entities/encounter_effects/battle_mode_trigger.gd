@@ -25,6 +25,9 @@ func get_highest_scoring_live_enemy() -> BattleEnemy:
 
     var scores: Dictionary[String, int] = {}
     for enemy: BattleEnemy in enemies:
+        if enemy == null:
+            push_error("%s has a null enemy slotted" % name)
+            continue
         if scores.has(enemy.variant_id):
             scores[enemy.variant_id] += enemy.difficulty
         else:
@@ -44,6 +47,9 @@ func get_highest_scoring_live_enemy() -> BattleEnemy:
         return null
 
     for enemy: BattleEnemy in enemies:
+        if enemy == null:
+            continue
+
         if enemy.variant_id == focus_variant:
             return enemy
 

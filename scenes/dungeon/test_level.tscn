@@ -10,7 +10,7 @@
 [ext_resource type="PackedScene" uid="uid://ds0fqw6fso67w" path="res://scenes/dungeon/basic_floor.tscn" id="9_4mxkc"]
 [ext_resource type="Script" uid="uid://dexigkhejxn1h" path="res://scripts/gridded_level/level_features/player_facer.gd" id="9_myev5"]
 [ext_resource type="Script" uid="uid://dmpqfljj24gh6" path="res://scripts/gridded_level/entities/encounter_effects/battle_mode_trigger.gd" id="10_rvj20"]
-[ext_resource type="Script" uid="uid://ccsqys7ldqoh" path="res://scripts/gridded_level/entities/encounter_effects/battle_enemy.gd" id="11_fxt0s"]
+[ext_resource type="Script" uid="uid://ccsqys7ldqoh" path="res://scripts/card_battle/battle_enemy.gd" id="11_fxt0s"]
 [ext_resource type="Texture2D" uid="uid://d4i1sxn0646on" path="res://sprites/enemies/training-dummy.png" id="12_26eu7"]
 [ext_resource type="Script" uid="uid://c2lco7et0w3ia" path="res://scripts/card_battle/battle_deck.gd" id="12_rcxcv"]
 [ext_resource type="Script" uid="uid://cqlxwfe858g4h" path="res://scripts/card_battle/battle_card_data.gd" id="13_26eu7"]
@@ -445,10 +445,11 @@ direction = 4
 
 [node name="Side DOWN" parent="LevelGeometry/Elevation 1/Node (2, 1, -2)" instance=ExtResource("9_4mxkc")]
 
-[node name="Demo Encounter" type="Node3D" parent="LevelGeometry/Elevation 1/Node (2, 1, -2)" node_paths=PackedStringArray("effect") groups=["Encounter"]]
+[node name="Demo Encounter" type="Node3D" parent="LevelGeometry/Elevation 1/Node (2, 1, -2)" node_paths=PackedStringArray("effect", "graphics") groups=["Encounter"]]
 script = ExtResource("8_kmgg5")
 encounter_id = "demo-enemy"
 effect = NodePath("Battle Trigger")
+graphics = NodePath("Avatar/Encounter Avatar")
 metadata/_custom_type_script = "uid://bqahhkn6dpex"
 
 [node name="Avatar" type="Node3D" parent="LevelGeometry/Elevation 1/Node (2, 1, -2)/Demo Encounter"]

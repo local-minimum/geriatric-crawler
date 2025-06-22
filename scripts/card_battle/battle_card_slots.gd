@@ -23,6 +23,8 @@ var _origin: Vector2
 func _ready() -> void:
     _origin = global_position
 
+var _slotted_cards_visible: bool
+
 func show_slots(visible_slots: int) -> void:
     global_position = _origin
     slotted_cards.clear()
@@ -39,6 +41,7 @@ func show_slots(visible_slots: int) -> void:
         slot.visible = false
 
     visible = true
+    _slotted_cards_visible = true
 
     var idx: int = 0
     for slot: Control in _slot_rects:
@@ -193,7 +196,8 @@ func lower_slots(on_complete: Callable) -> void:
         if _card_tweens.has(card):
             _card_tweens[card].kill()
 
-        # TODO: Fix so it collapses array
+        _card_tweens[card] = tween
+
         @warning_ignore_start("return_value_discarded")
         tween.tween_property(
             card,
@@ -207,3 +211,69 @@ func lower_slots(on_complete: Callable) -> void:
         push_error("Failed to conntect complete event to callback")
 
     base_tween.play()
+
+func hide_slotted_cards() -> void:
+    if !_slotted_cards_visible:
+        return
+    _slotted_cards_visible = false
+    var duration: float = 0.2
+    var intermission: float = 0.05
+
+    var target_position: Vector2 = _slot_rects[0].global_position
+    target_position += Vector2.LEFT * 250
+
+    for idx: int in range(slotted_cards.size()):
+        var card: BattleCard = slotted_cards[idx]
+        if card == null:
+            continue
+
+        var tween: Tween = get_tree().create_tween()
+
+        if _card_tweens.has(card):
+            _card_tweens[card].kill()
+
+        _card_tweens[card] = tween
+
+        @warning_ignore_start("return_value_discarded")
+        tween.tween_property(
+            card,
+            "global_position",
+            target_position,
+            duration,
+        ).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+        @warning_ignore_restore("return_value_discarded")
+
+        await get_tree().create_timer(intermission).timeout
+
+func show_slotted_cards() -> void:
+    if _slotted_cards_visible:
+        return
+
+    _slotted_cards_visible = true
+    var duration: float = 0.2
+    var intermission: float = 0.05
+
+    var lower_offset: Vector2 = Vector2.DOWN * _lower_position_offset
+
+    for idx: int in range(slotted_cards.size()):
+        var card: BattleCard = slotted_cards[idx]
+        if card == null:
+            continue
+
+        var tween: Tween = get_tree().create_tween()
+
+        if _card_tweens.has(card):
+            _card_tweens[card].kill()
+
+        _card_tweens[card] = tween
+
+        @warning_ignore_start("return_value_discarded")
+        tween.tween_property(
+            card,
+            "global_position",
+            BattleHandManager.get_centered_position(card, _slot_rects[idx]) + lower_offset,
+            duration,
+        ).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+        @warning_ignore_restore("return_value_discarded")
+
+        await get_tree().create_timer(intermission).timeout
