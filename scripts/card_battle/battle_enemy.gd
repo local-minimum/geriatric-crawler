@@ -2,7 +2,6 @@ extends BattleEntity
 class_name BattleEnemy
 
 signal on_prepare_hand(battle_enemy: BattleEnemy, slotted_cards: Array[BattleCard])
-signal on_start_turn(battle_enemy: BattleEnemy)
 signal on_play_card(card: BattleCardData, suit_bonus: int, pause: float)
 
 
@@ -113,7 +112,7 @@ func play_actions(
 
     print_debug("%s ends its turn" % name)
 
-    on_turn_done.emit()
+    on_end_turn.emit(self)
 
 func _execute_effect(
     effect: BattleCardPrimaryEffect,

@@ -33,6 +33,11 @@ func connect_entity(entity: BattleEntity) -> void:
     if entity.on_break_shield.connect(_handle_break_shield) != OK:
         push_error("Failed to connect %s on_break_shield to UI" % entity)
 
+    if entity.on_start_turn.connect(_handle_start_turn) != OK:
+        push_error("Failed to connect %s on_start_turn to UI" % entity)
+    if entity.on_end_turn.connect(_handle_end_turn) != OK:
+        push_error("Failed to connect %s on_turn_done to UI" % entity)
+
     _set_health(entity.get_health())
     _set_shield(entity.get_shields())
 
@@ -49,6 +54,14 @@ func disconnect_entity(entity: BattleEntity) -> void:
     entity.on_hurt.disconnect(_handle_hurt)
     entity.on_death.disconnect(_handle_death)
     visible = false
+
+func _handle_start_turn(entity: BattleEntity) -> void:
+    if nameUI != null:
+        nameUI.text = "-> %s <-" % entity.get_entity_name()
+
+func _handle_end_turn(entity: BattleEntity) -> void:
+    if nameUI != null:
+        nameUI.text = entity.get_entity_name()
 
 func _handle_death(_battle_entity: BattleEntity) -> void:
     healthUI.text = "XXX DEAD XXX"

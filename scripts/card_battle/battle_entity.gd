@@ -10,7 +10,8 @@ signal on_death(battle_entity: BattleEntity)
 
 # Used by subclasses
 @warning_ignore_start("unused_signal")
-signal on_turn_done()
+signal on_start_turn(entity: BattleEntity)
+signal on_end_turn(entity: BattleEntity)
 @warning_ignore_restore("unused_signal")
 
 var _health: int

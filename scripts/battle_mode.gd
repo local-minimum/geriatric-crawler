@@ -66,9 +66,9 @@ func _start_playing_cards() -> void:
         _player_initiative = leading_player_card.data.rank
 
     await get_tree().create_timer(1).timeout
-    next_agent_turn()
+    _next_agent_turn(null)
 
-func next_agent_turn() -> void:
+func _next_agent_turn(_entity: BattleEntity) -> void:
     if !_pass_action_turn():
         print_debug("Next round!")
         # TODO: Cleanup and go to next turn
@@ -88,7 +88,7 @@ func _pass_action_turn() -> bool:
         return false
 
     if _player_initiative >= enemy_initiative:
-        _battle_player.play_actions(next_agent_turn)
+        _battle_player.play_actions(_next_agent_turn)
         _player_initiative = -1
         return true
 
@@ -129,13 +129,13 @@ func enter_battle(battle_trigger: BattleModeTrigger) -> void:
     trigger = battle_trigger
 
     on_entity_join_battle.emit(_battle_player)
-    if _battle_player.on_turn_done.connect(next_agent_turn) != OK:
+    if _battle_player.on_end_turn.connect(_next_agent_turn) != OK:
         push_error("Failed to connect player %s turn done" % _battle_player)
 
     # Show all enemies and their stats
     _enemies.append_array(battle_trigger.enemies)
     for enemy: BattleEnemy in _enemies:
-        if enemy.on_turn_done.connect(next_agent_turn) != OK:
+        if enemy.on_end_turn.connect(_next_agent_turn) != OK:
             push_error("Failed to connect enemy %s turn done" % enemy)
 
         on_entity_join_battle.emit(enemy)
@@ -202,10 +202,10 @@ func exit_battle() -> void:
 
     for enemy: BattleEnemy in _enemies:
         on_entity_leave_battle.emit(enemy)
-        enemy.on_turn_done.disconnect(next_agent_turn)
+        enemy.on_end_turn.disconnect(_next_agent_turn)
 
     on_entity_leave_battle.emit(_battle_player)
-    _battle_player.on_turn_done.disconnect(next_agent_turn)
+    _battle_player.on_end_turn.disconnect(_next_agent_turn)
 
     _enemies.clear()
 
