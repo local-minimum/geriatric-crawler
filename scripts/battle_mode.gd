@@ -171,6 +171,7 @@ func deal_player_hand() -> void:
     var card_data: Array[BattleCardData] = player_deck.draw(hand_size)
 
     var idx: int = 0
+    # Resuse cards already instanced
     for card: BattleCard in _cards:
         if idx >= _cards.size():
             break
@@ -178,6 +179,7 @@ func deal_player_hand() -> void:
         _cards[idx].data = card_data[idx]
         hand.append(_cards[idx])
 
+    # Instance new cards
     while idx < hand_size:
         var new_card: BattleCard = _battle_card_resource.instantiate()
         new_card.visible = false

@@ -41,6 +41,10 @@ func _ready() -> void:
 func _handle_end_slotting() -> void:
     for card: BattleCard in _hand:
         card.interactable = false
+
+    slots.lock_cards()
+
+    for card: BattleCard in _hand:
         var tween: Tween = get_tree().create_tween()
 
         if _card_tweens.has(card):

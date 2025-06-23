@@ -168,6 +168,14 @@ func _on_player_cards_slotted_button_pressed() -> void:
 
     on_end_slotting.emit()
 
+func lock_cards() -> void:
+    for card: BattleCard in slotted_cards:
+        if card == null:
+            continue
+
+        card.interactable = false
+
+
 func lower_slots(on_complete: Callable) -> void:
     visible = false
     var lower_offset: Vector2 = Vector2.DOWN * _lower_position_offset

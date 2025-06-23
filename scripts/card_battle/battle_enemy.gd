@@ -3,6 +3,7 @@ class_name BattleEnemy
 
 signal on_prepare_hand(battle_enemy: BattleEnemy, slotted_cards: Array[BattleCard])
 signal on_start_turn(battle_enemy: BattleEnemy)
+signal on_play_card(card: BattleCardData, suit_bonus: int, pause: float)
 
 
 ## This is the variant ID of the enemy character in the blob, e.g. "space-slug". It shouldn't be unique. But if there are variants like "space-slug-lvl2" it should be named as such
@@ -64,13 +65,15 @@ func play_actions(
     var previous: BattleCardData = null
     var idx: int = 0
     var suit_bonus: int
+    var card_pause: float = 3
+
     ArrayUtils.shift_nulls_to_end(_slotted)
 
     print_debug("%s starts its turn with %s cards" % [name, _slotted.size() - _slotted.count(null)])
 
     on_start_turn.emit(self)
 
-    await get_tree().create_timer(2).timeout
+    await get_tree().create_timer(1).timeout
 
     for card: BattleCardData in _slotted:
         if card == null:
@@ -81,6 +84,10 @@ func play_actions(
         var next: BattleCardData = _slotted[idx + 1] if idx < _slotted.size() - 1 else null
 
         suit_bonus = get_suit_bonus(card, suit_bonus, previous, next, idx == 0)
+
+        on_play_card.emit(card, suit_bonus, card_pause)
+
+        await get_tree().create_timer(card_pause).timeout
 
         for effect: BattleCardPrimaryEffect in card.primary_effects:
             var targets_range: Array[int] = effect.get_target_range()

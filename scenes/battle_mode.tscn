@@ -1,4 +1,4 @@
-[gd_scene load_steps=27 format=3 uid="uid://sx8om7lfql6j"]
+[gd_scene load_steps=28 format=3 uid="uid://sx8om7lfql6j"]
 
 [ext_resource type="Script" uid="uid://cvchbk03g5wag" path="res://scripts/battle_mode.gd" id="1_7wt64"]
 [ext_resource type="Texture2D" uid="uid://cpot0wvcwpcqh" path="res://sprites/battle-bg-test.png" id="2_wpnne"]
@@ -16,6 +16,7 @@
 [ext_resource type="Resource" uid="uid://bc3f2625tdj67" path="res://resources/player_cards/card_defrag_70.tres" id="9_7lk54"]
 [ext_resource type="Resource" uid="uid://dcob2h4luvnbl" path="res://resources/player_cards/card_defrag_5.tres" id="9_u0eru"]
 [ext_resource type="Resource" uid="uid://dwadtd6nwvwd5" path="res://resources/player_cards/card_slam-150.tres" id="9_vq05v"]
+[ext_resource type="Script" uid="uid://1ski2p8tmb8h" path="res://scripts/card_battle/enemy_played_card_ui.gd" id="10_50o5a"]
 [ext_resource type="Resource" uid="uid://b8yrhm4ltj06q" path="res://resources/player_cards/card_fortify-55.tres" id="10_u0eru"]
 [ext_resource type="Resource" uid="uid://duylk5tm5e1wb" path="res://resources/player_cards/card_defrag_120.tres" id="11_w875v"]
 [ext_resource type="Resource" uid="uid://dyw8d4pex4rg1" path="res://resources/player_cards/card_recharge-735.tres" id="11_wyqpo"]
@@ -737,6 +738,19 @@ offset_top = -8.0
 grow_horizontal = 0
 grow_vertical = 0
 icon = ExtResource("8_2up48")
+
+[node name="EnemyPlayedCardUI" type="Control" parent="CanvasLayer" node_paths=PackedStringArray("battle")]
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+script = ExtResource("10_50o5a")
+battle = NodePath("../..")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {

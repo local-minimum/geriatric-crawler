@@ -14,6 +14,7 @@
 custom_minimum_size = Vector2(130, 200)
 offset_right = 130.0
 offset_bottom = 200.0
+pivot_offset = Vector2(65, 100)
 mouse_filter = 0
 mouse_default_cursor_shape = 2
 texture = ExtResource("1_bh02m")

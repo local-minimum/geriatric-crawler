@@ -47,7 +47,18 @@ var divider: Control
 @export
 var secondary_effect: RichTextLabel
 
-var interactable: bool
+var interactable: bool :
+    set (value):
+        interactable = value
+        mouse_default_cursor_shape = CursorShape.CURSOR_POINTING_HAND if value else CursorShape.CURSOR_ARROW
+        suite_icon.mouse_default_cursor_shape = mouse_default_cursor_shape
+        rank_label.mouse_default_cursor_shape = mouse_default_cursor_shape
+        card_icon.mouse_default_cursor_shape = mouse_default_cursor_shape
+        primary_effect.mouse_default_cursor_shape = mouse_default_cursor_shape
+        secondary_effect.mouse_default_cursor_shape = mouse_default_cursor_shape
+        divider.mouse_default_cursor_shape = mouse_default_cursor_shape
+        (divider.get_parent() as Control).mouse_default_cursor_shape = mouse_default_cursor_shape
+
 
 var data: BattleCardData:
     set(value):
@@ -88,6 +99,8 @@ func _get_suite_icon_texture(suite: int) -> Texture:
         BattleCardData.SUIT_DATA | BattleCardData.SUIT_METAL: return suite_metal_data
 
         BattleCardData.SUIT_DATA | BattleCardData.SUIT_METAL | BattleCardData.SUIT_ELECTRICITY: return suite_data_electricity_metal
+
+        BattleCardData.SUIT_NONE: return null
 
         _:
             push_error("Suite %s (%s) doesn't have an icon" % [BattleCardData.suit_name(suite), suite])
