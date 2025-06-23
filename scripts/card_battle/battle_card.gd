@@ -47,6 +47,8 @@ var divider: Control
 @export
 var secondary_effect: RichTextLabel
 
+var card_played: bool
+
 var interactable: bool :
     set (value):
         interactable = value

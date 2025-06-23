@@ -36,7 +36,10 @@ func _ready() -> void:
         push_error("Hand could not connect to return card to hand event")
     if slots.on_end_slotting.connect(_handle_end_slotting) != OK:
         push_error("Hand could not connect to slotting ended event")
-    hide_hand()
+    clear_hand()
+
+func cards_in_hand() -> int:
+    return _hand.size()
 
 func _handle_end_slotting() -> void:
     for card: BattleCard in _hand:
@@ -70,7 +73,7 @@ func _hand_ready() -> void:
         card.interactable = true
 
 func draw_hand(
-    cards: Array[BattleCard],
+    new_cards: Array[BattleCard],
     emit_event: bool = true,
     draw_from_origin: bool = true
 ) -> void:
@@ -83,7 +86,7 @@ func draw_hand(
     _card_positions.clear()
     _hand.clear()
 
-    for card: BattleCard in cards:
+    for card: BattleCard in new_cards:
         if _connected_cards.has(card):
             continue
         _connected_cards.append(card)
@@ -94,7 +97,7 @@ func draw_hand(
         if card.on_click.connect(_handle_card_click) != OK:
             push_error("Failed to connect on drag end card signal for %s" % card)
 
-    var n_cards: int = cards.size()
+    var n_cards: int = new_cards.size()
     var n_controls: int = _target_controls.size()
 
     if n_cards > n_controls:
@@ -111,9 +114,10 @@ func draw_hand(
     @warning_ignore_restore("integer_division")
     var last_card_idx: int = card_idx + n_cards - 1
 
-    _draw_hand.call_deferred(cards, card_idx, n_controls, last_card_idx, emit_event, draw_from_origin)
+    _draw_hand.call_deferred(new_cards, card_idx, n_controls, last_card_idx, emit_event, draw_from_origin)
 
-func hide_hand() -> void:
+func clear_hand() -> void:
+    round_end_cleanup()
     for card: BattleCard in _hand:
         card.visible = false
     _hand.clear()
@@ -128,12 +132,15 @@ func _draw_hand(
     emit_event: bool,
     draw_from_origin: bool,
 ) -> void:
-    for card: BattleCard in cards:
+    for card: BattleCard in _hand + cards:
         if card_idx >= n_controls:
             break
 
         if draw_from_origin:
             card.global_position = get_centered_position(card, _draw_origin)
+
+        card.card_played = false
+
         card.visible = true
         var tween: Tween = tween_card_to_position(card, card_idx, _draw_time)
 
@@ -150,7 +157,8 @@ func _draw_hand(
 
         tween.play()
 
-        _hand.append(card)
+        if !_hand.has(card):
+            _hand.append(card)
 
         if draw_from_origin:
             await get_tree().create_timer(_draw_delta).timeout
@@ -305,3 +313,13 @@ func _organize_hand() -> void:
             cards.append(_reverse_card_positions[pos])
 
     draw_hand(cards, false, false)
+
+func round_end_cleanup() -> void:
+    for card: BattleCard in slots.slotted_cards:
+        if card == null:
+            continue
+
+        @warning_ignore_start("return_value_discarded")
+        slots.unslot_card(card)
+        @warning_ignore_restore("return_value_discarded")
+        card.visible = false

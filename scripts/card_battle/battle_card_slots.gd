@@ -145,6 +145,7 @@ func tween_card_to_slot(card: BattleCard, target: Control, duration: float) -> T
 func has_card(card: BattleCard) -> bool:
     return slotted_cards.has(card)
 
+## Removes card and returns the index of said card
 func unslot_card(card: BattleCard) -> int:
     var slot_idx: int = slotted_cards.find(card)
     if slot_idx >= 0:

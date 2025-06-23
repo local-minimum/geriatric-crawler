@@ -37,6 +37,8 @@ func _execute_next_card() -> void:
         on_end_turn.emit(self)
         return
 
+    card.card_played = true
+
     var tween: Tween = get_tree().create_tween()
     @warning_ignore_start("return_value_discarded")
     tween.tween_property(
