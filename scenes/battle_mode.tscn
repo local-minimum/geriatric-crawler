@@ -741,14 +741,14 @@ icon = ExtResource("8_2up48")
 
 [node name="EnemyPlayedCardUI" type="Control" parent="CanvasLayer" node_paths=PackedStringArray("battle")]
 layout_mode = 3
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
+anchor_left = 0.324
+anchor_top = 0.441
+anchor_right = 0.327
+anchor_bottom = 0.441
 grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 4
+localize_numeral_system = false
 script = ExtResource("10_50o5a")
 battle = NodePath("../..")
 

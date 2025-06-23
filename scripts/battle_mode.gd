@@ -87,13 +87,18 @@ func _pass_action_turn() -> bool:
     if enemy_initiative == -1 && _player_initiative == -1:
         return false
 
+    var enemies: Array[BattleEntity] = []
+    enemies.append_array(_enemies)
+    # TODO: Here's a HACK we are always only one player
+    var player_party: Array[BattleEntity] = [_battle_player]
+
     if _player_initiative >= enemy_initiative:
-        _battle_player.play_actions(_next_agent_turn)
+        _battle_player.play_actions(player_party, enemies)
         _player_initiative = -1
         return true
 
     var enemy: BattleEnemy = _enemies[_next_active_enemy]
-    enemy.play_actions([enemy], [_battle_player])
+    enemy.play_actions(enemies, player_party)
     battle_hand.slots.hide_slotted_cards()
     _next_active_enemy += 1
     return true
