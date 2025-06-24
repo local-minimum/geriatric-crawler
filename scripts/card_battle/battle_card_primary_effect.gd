@@ -6,15 +6,17 @@ enum EffectMode {Damage, Defence, Heal}
 @export
 var mode: EffectMode
 
-func mode_name() -> String:
-    match mode:
+static func humanize(effect_mode: EffectMode) -> String:
+    match effect_mode:
         EffectMode.Damage: return "⚔" # "DMG"
         EffectMode.Defence: return "🛡" # "DEF"
         EffectMode.Heal: return "♥" # HEAL"
         _:
-            push_error("%s not known mode" % mode)
+            push_error("%s not known mode" % effect_mode)
             print_stack()
             return ""
+
+func mode_name() -> String: return humanize(mode)
 
 const TARGET_NOTHING: int = 0
 

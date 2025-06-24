@@ -16,10 +16,31 @@ var nameUI: Label
 func _ready() -> void:
     visible = false
 
+var interactable: bool:
+    set(value):
+        interactable = value
+        mouse_default_cursor_shape = CursorShape.CURSOR_POINTING_HAND if value else CursorShape.CURSOR_ARROW
+        icon.mouse_default_cursor_shape = mouse_default_cursor_shape
+        nameUI.mouse_default_cursor_shape = mouse_default_cursor_shape
+        healthUI.mouse_default_cursor_shape = mouse_default_cursor_shape
+        defenceUI.mouse_default_cursor_shape = mouse_default_cursor_shape
+
+var selected: bool:
+    set(value):
+        selected = value
+
 const SHOW_CHANGE_TIME: float = 0.5
+
+var _is_monster: bool
+var _is_player_ally: bool
+var _entity: BattleEntity
 
 func connect_entity(entity: BattleEntity) -> void:
     visible = false
+
+    _entity = entity
+    _is_monster = entity is BattleEnemy
+    _is_player_ally = entity is BattlePlayer
 
     if entity.on_heal.connect(_handle_heal) != OK:
         push_error("Failed to connect %s on_heal to UI" % entity)
@@ -54,6 +75,32 @@ func disconnect_entity(entity: BattleEntity) -> void:
     entity.on_hurt.disconnect(_handle_hurt)
     entity.on_death.disconnect(_handle_death)
     visible = false
+    _entity = null
+    selected = false
+    interactable = false
+
+func connect_player_selection(player: BattlePlayer) -> void:
+    if player.on_player_select_targets.connect(_handle_entity_selection_start) != OK:
+        push_error("Failed to connect %s's on_player_select_targets" % player)
+    if player.on_player_select_targets_complete.connect(_handle_entity_selection_end) != OK:
+        push_error("Failed to connect %s's on_player_select_targets" % player)
+
+func disconnect_player_selection(player: BattlePlayer) -> void:
+    player.on_player_select_targets.disconnect(_handle_entity_selection_start)
+    player.on_player_select_targets_complete.disconnect(_handle_entity_selection_end)
+
+var _selection_player: BattlePlayer = null
+
+func _handle_entity_selection_start(player: BattlePlayer, _count: int, player_allies: bool, monsters: bool) -> void:
+    _selection_player = player
+    if _is_monster:
+        interactable = monsters
+    elif _is_player_ally:
+        interactable = player_allies
+
+func _handle_entity_selection_end() -> void:
+    interactable = false
+    selected = false
 
 func _handle_start_turn(entity: BattleEntity) -> void:
     if nameUI != null:
@@ -113,3 +160,23 @@ func _set_shield(shields: Array[int]) -> void:
         func (shield: int) -> String:
             return "%s⛨" % shield)
     defenceUI.text = "DEF: %s" % " | ".join(shields_text)
+
+func _input(event: InputEvent) -> void:
+    if !interactable:
+        return
+
+    if event is InputEventMouseButton:
+        var btn_event: InputEventMouseButton = event
+        if btn_event.button_index == 1:
+            if _hovered && btn_event.pressed && !btn_event.is_echo():
+                if _selection_player != null:
+                    if !selected:
+                        selected = _selection_player.add_target(_entity)
+
+var _hovered: bool
+
+func _on_mouse_exited() -> void:
+    _hovered = false
+
+func _on_mouse_entered() -> void:
+    _hovered = true

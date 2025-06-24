@@ -43,6 +43,8 @@ func _handle_join_entity(entity: BattleEntity) -> void:
         return
 
     ui.connect_entity(entity)
+    ui.connect_player_selection(_battle.battle_player)
+
     _connected_entities[entity] = ui
     _inverse_connected_entities[ui] = entity
 
@@ -51,6 +53,7 @@ func _handle_entity_leave(entity: BattleEntity) -> void:
     if _connected_entities.has(entity):
         var ui: BattleEntityUI = _connected_entities[entity]
         ui.disconnect_entity(entity)
+        ui.disconnect_player_selection(_battle.battle_player)
 
         @warning_ignore_start("return_value_discarded")
         _connected_entities.erase(entity)

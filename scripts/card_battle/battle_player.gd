@@ -1,6 +1,9 @@
 extends BattleEntity
 class_name BattlePlayer
 
+signal on_player_select_targets(player: BattlePlayer, count: int, player_allies: bool, monsters: bool)
+signal on_player_select_targets_complete()
+
 @export
 var _slots: BattleCardSlots
 
@@ -89,54 +92,79 @@ func _execute_next_effect() -> void:
 
     var targets_range: Array[int] = effect.get_target_range()
     var n_targets: int = randi_range(targets_range[0], targets_range[1])
-    var had_effect: bool = false
 
-    if effect.targets_enemies():
+    if effect.targets_allies() && effect.targets_enemies():
+        _execute_effect(effect, _suit_bonus, _enemies + _allies, n_targets, false)
+    elif effect.targets_enemies():
         _execute_effect(effect, _suit_bonus, _enemies, n_targets, false)
-        had_effect = true
-
-    if effect.targets_allies():
+    elif effect.targets_allies():
         _execute_effect(effect, _suit_bonus, _allies , n_targets, true)
-        had_effect = true
     elif effect.targets_self():
         _execute_effect(effect, _suit_bonus, [self], n_targets, true)
-        had_effect = true
-
-    if !had_effect:
+    else:
         push_warning("Card %s's effect %s has no effect" % [card.name, effect])
 
 func _execute_effect(
     effect: BattleCardPrimaryEffect,
     suit_bonus: int,
-    targets: Array[BattleEntity],
+    possible_targets: Array[BattleEntity],
     n_targets: int,
     allies: bool,
 ) -> void:
-    var value: int = effect.calculate_effect(suit_bonus, allies)
+    _effect_magnitue = effect.calculate_effect(suit_bonus, allies)
 
-    # TODO: Allow player to select targets
     var rng_target: bool = effect.targets_random()
-    var target_order: Array[int] = ArrayUtils.int_range(targets.size())
+    var target_order: Array[int] = ArrayUtils.int_range(possible_targets.size())
     target_order.shuffle()
-    n_targets = mini(n_targets, targets.size())
+    _effect_targets_count = mini(n_targets, possible_targets.size())
 
-    await get_tree().create_timer(0.5).timeout
+    _effect_mode = effect.mode
+    _effect_targets.clear()
 
-    if n_targets >= targets.size() || rng_target:
-        for i: int in range(n_targets):
-            var target: BattleEntity = targets[target_order[i]]
+    var automatic: bool = _effect_targets_count >= possible_targets.size() || rng_target
+    if automatic:
+        for i: int in range(_effect_targets_count):
+            var target: BattleEntity = possible_targets[target_order[i]]
+            _effect_targets.append(target)
 
-            print_debug("Doing %s %s to %s" % [value, effect.mode_name(), target.name])
+        await get_tree().create_timer(0.5).timeout
 
-            match effect.mode:
-                BattleCardPrimaryEffect.EffectMode.Damage:
-                    target.hurt(value)
-                BattleCardPrimaryEffect.EffectMode.Heal:
-                    target.heal(value)
-                BattleCardPrimaryEffect.EffectMode.Defence:
-                    target.add_shield(value)
+        _execute_effect_on_targets()
+        return
 
-            await get_tree().create_timer(0.25).timeout
+    # Someone else does the selection handling and calls add_target
+    on_player_select_targets.emit(self, n_targets, effect.targets_allies(), effect.targets_enemies())
+
+var _effect_targets_count: int
+var _effect_magnitue: int
+var _effect_targets: Array[BattleEntity]
+var _effect_mode: BattleCardPrimaryEffect.EffectMode
+
+func add_target(target: BattleEntity) -> bool:
+    if _effect_targets.size() >= _effect_targets_count || _effect_targets.has(target):
+        return false
+
+    _effect_targets.append(target)
+    if _effect_targets.size() >= _effect_targets_count:
+        on_player_select_targets_complete.emit()
+        _execute_effect_on_targets.call_deferred()
+
+    return true
+
+func _execute_effect_on_targets() -> void:
+    for target: BattleEntity in _effect_targets:
+
+        print_debug("Doing %s %s to %s" % [_effect_magnitue, BattleCardPrimaryEffect.humanize(_effect_mode), target.name])
+
+        match _effect_mode:
+            BattleCardPrimaryEffect.EffectMode.Damage:
+                target.hurt(_effect_magnitue)
+            BattleCardPrimaryEffect.EffectMode.Heal:
+                target.heal(_effect_magnitue)
+            BattleCardPrimaryEffect.EffectMode.Defence:
+                target.add_shield(_effect_magnitue)
+
+        await get_tree().create_timer(0.25).timeout
 
     _active_card_effect_index += 1
     _execute_next_effect()

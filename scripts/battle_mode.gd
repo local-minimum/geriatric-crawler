@@ -21,7 +21,7 @@ var _active_cards: Control
 var _ui: CanvasLayer
 
 @export
-var _battle_player: BattlePlayer
+var battle_player: BattlePlayer
 
 var trigger: GridEncounterEffect
 
@@ -86,7 +86,7 @@ func _clean_up_round() -> void:
         exit_battle()
         return
 
-    if !_battle_player.is_alive():
+    if !battle_player.is_alive():
         print_debug("WE DIES")
         return
 
@@ -110,10 +110,10 @@ func _pass_action_turn() -> bool:
     var enemies: Array[BattleEntity] = []
     enemies.append_array(_enemies)
     # TODO: Here's a HACK we are always only one player
-    var player_party: Array[BattleEntity] = [_battle_player]
+    var player_party: Array[BattleEntity] = [battle_player]
 
     if _player_initiative >= enemy_initiative:
-        _battle_player.play_actions(player_party, enemies)
+        battle_player.play_actions(player_party, enemies)
         _player_initiative = -1
         return true
 
@@ -135,7 +135,7 @@ func _handle_update_slotted(cards: Array[BattleCard]) -> void:
 
     for card: BattleCard in slotted_cards:
         var next_card: BattleCardData = slotted_cards[idx + 1].data if idx + 1 < slotted_cards.size() else null
-        acc_suit_bonus = _battle_player.get_suit_bonus(card.data, acc_suit_bonus, prev_card, next_card, idx == 0)
+        acc_suit_bonus = battle_player.get_suit_bonus(card.data, acc_suit_bonus, prev_card, next_card, idx == 0)
 
         idx += 1
 
@@ -153,9 +153,9 @@ func enter_battle(battle_trigger: BattleModeTrigger) -> void:
 
     trigger = battle_trigger
 
-    on_entity_join_battle.emit(_battle_player)
-    if _battle_player.on_end_turn.connect(_next_agent_turn) != OK:
-        push_error("Failed to connect player %s turn done" % _battle_player)
+    on_entity_join_battle.emit(battle_player)
+    if battle_player.on_end_turn.connect(_next_agent_turn) != OK:
+        push_error("Failed to connect player %s turn done" % battle_player)
 
     # Show all enemies and their stats
     _enemies.append_array(battle_trigger.enemies)
@@ -233,8 +233,8 @@ func exit_battle() -> void:
         on_entity_leave_battle.emit(enemy)
         enemy.on_end_turn.disconnect(_next_agent_turn)
 
-    on_entity_leave_battle.emit(_battle_player)
-    _battle_player.on_end_turn.disconnect(_next_agent_turn)
+    on_entity_leave_battle.emit(battle_player)
+    battle_player.on_end_turn.disconnect(_next_agent_turn)
 
     _enemies.clear()
 
