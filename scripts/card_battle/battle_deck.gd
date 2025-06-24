@@ -53,6 +53,9 @@ func draw(n_cards: int) -> Array[BattleCardData]:
 
 func discard_from_hand(cards: Array[BattleCardData]) -> void:
     for card: BattleCardData in cards:
+        if card == null:
+            continue
+
         if _active_hand.has(card):
             _active_hand.erase(card)
             _discard_pile.append(card)

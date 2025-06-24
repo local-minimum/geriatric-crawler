@@ -154,6 +154,23 @@ func unslot_card(card: BattleCard) -> int:
         card.sync_display(0)
     return slot_idx
 
+func discard_cards() -> Array[BattleCardData]:
+    var discards: Array[BattleCardData] = []
+    var idx: int = 0
+
+    for card: BattleCard in slotted_cards:
+        if card == null:
+            continue
+
+        card.sync_display(0)
+        discards.append(card.data)
+
+        slotted_cards[idx] = null
+
+        idx += 1
+
+    return discards
+
 func hide_ui() -> void:
     _done_slotting_cards_button.visible = false
     visible = false

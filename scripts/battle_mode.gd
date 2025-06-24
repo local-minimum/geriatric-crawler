@@ -90,7 +90,7 @@ func _clean_up_round() -> void:
         print_debug("WE DIES")
         return
 
-    battle_hand.round_end_cleanup()
+    player_deck.discard_from_hand(battle_hand.round_end_cleanup())
     round_start_prepare_hands()
 
 func _next_enemy_initiative() -> int:
@@ -190,44 +190,50 @@ func round_start_prepare_hands() -> void:
 
 func deal_player_hand() -> void:
     # TODO: Something should manage hand size
-    var hand_size: int = 6 - battle_hand.cards_in_hand()
-    var new_cards: Array[BattleCard] = []
+    var cards: Array[BattleCard] = []
+    cards.append_array(battle_hand.hand)
+    var hand_size: int = 6
+    var new_cards: int = hand_size - cards.size()
 
-    var card_data: Array[BattleCardData] = player_deck.draw(hand_size)
+    var card_data: Array[BattleCardData] = player_deck.draw(new_cards)
+    new_cards = mini(new_cards, card_data.size())
 
-    var idx: int = 0
+    var card_data_idx: int = 0
     # Resuse cards already instanced
     for card: BattleCard in _cards:
-        if !card.card_played:
+        if !card.card_played || cards.has(card):
             continue
 
-        if idx == hand_size:
+        if card_data_idx >= new_cards:
             break
 
-        card.data = card_data[idx]
-        new_cards.append(card)
-        idx += 1
+        card.data = card_data[card_data_idx]
+        cards.append(card)
+
+        card.visible = false
+        card_data_idx += 1
 
     # Instance new cards
-    while idx < hand_size:
+    while card_data_idx < new_cards:
         var new_card: BattleCard = _battle_card_resource.instantiate()
         new_card.visible = false
-        new_card.data = card_data[idx]
+        new_card.data = card_data[card_data_idx]
 
         _active_cards.add_child(new_card)
         new_card.owner = _active_cards.get_tree().root
+        new_card.visible = false
 
         _cards.append(new_card)
-        new_cards.append(new_card)
-        idx += 1
+        cards.append(new_card)
+        card_data_idx += 1
 
-    battle_hand.draw_hand(new_cards)
+    battle_hand.draw_hand(cards)
 
 func _after_deal() -> void:
     battle_hand.slots.show_slots(3)
 
 func exit_battle() -> void:
-    battle_hand.clear_hand()
+    player_deck.discard_from_hand(battle_hand.clear_hand())
 
     for enemy: BattleEnemy in _enemies:
         on_entity_leave_battle.emit(enemy)

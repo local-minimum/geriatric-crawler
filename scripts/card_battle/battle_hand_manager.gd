@@ -22,7 +22,7 @@ var slots: BattleCardSlots
 @export
 var min_slots: int = 5
 
-var _hand: Array[BattleCard] = []
+var hand: Array[BattleCard] = []
 var _connected_cards: Array[BattleCard] = []
 
 var _card_tweens: Dictionary[BattleCard, Tween] = {}
@@ -39,15 +39,15 @@ func _ready() -> void:
     clear_hand()
 
 func cards_in_hand() -> int:
-    return _hand.size()
+    return hand.size()
 
 func _handle_end_slotting() -> void:
-    for card: BattleCard in _hand:
+    for card: BattleCard in hand:
         card.interactable = false
 
     slots.lock_cards()
 
-    for card: BattleCard in _hand:
+    for card: BattleCard in hand:
         var tween: Tween = get_tree().create_tween()
 
         if _card_tweens.has(card):
@@ -69,24 +69,25 @@ func _handle_end_slotting() -> void:
     slots.lower_slots(func () -> void: on_hand_actions_complete.emit())
 
 func _hand_ready() -> void:
-    for card: BattleCard in _hand:
+    for card: BattleCard in hand:
         card.interactable = true
 
 func draw_hand(
-    new_cards: Array[BattleCard],
+    cards: Array[BattleCard],
     emit_event: bool = true,
     draw_from_origin: bool = true
 ) -> void:
     visible = true
+
     for tween: Tween in _card_tweens.values():
         tween.kill()
 
     _card_tweens.clear()
     _reverse_card_positions.clear()
     _card_positions.clear()
-    _hand.clear()
+    hand.clear()
 
-    for card: BattleCard in new_cards:
+    for card: BattleCard in cards:
         if _connected_cards.has(card):
             continue
         _connected_cards.append(card)
@@ -97,7 +98,7 @@ func draw_hand(
         if card.on_click.connect(_handle_card_click) != OK:
             push_error("Failed to connect on drag end card signal for %s" % card)
 
-    var n_cards: int = new_cards.size()
+    var n_cards: int = cards.size()
     var n_controls: int = _target_controls.size()
 
     if n_cards > n_controls:
@@ -114,25 +115,31 @@ func draw_hand(
     @warning_ignore_restore("integer_division")
     var last_card_idx: int = card_idx + n_cards - 1
 
-    _draw_hand.call_deferred(new_cards, card_idx, n_controls, last_card_idx, emit_event, draw_from_origin)
+    _draw_hand.call_deferred(cards, card_idx, n_controls, last_card_idx, emit_event, draw_from_origin)
 
-func clear_hand() -> void:
-    round_end_cleanup()
-    for card: BattleCard in _hand:
+func clear_hand() -> Array[BattleCardData]:
+    var discards: Array[BattleCardData] = []
+    for card: BattleCard in hand:
         card.visible = false
-    _hand.clear()
+        discards.append(card.data)
+
+    hand.clear()
     visible = false
     slots.hide_ui()
 
+    discards.append_array(round_end_cleanup())
+
+    return discards
+
 func _draw_hand(
-    cards: Array[BattleCard],
+    new_cards: Array[BattleCard],
     card_idx: int,
     n_controls: int,
     last_card_idx: int,
     emit_event: bool,
     draw_from_origin: bool,
 ) -> void:
-    for card: BattleCard in _hand + cards:
+    for card: BattleCard in hand + new_cards:
         if card_idx >= n_controls:
             break
 
@@ -157,8 +164,8 @@ func _draw_hand(
 
         tween.play()
 
-        if !_hand.has(card):
-            _hand.append(card)
+        if !hand.has(card):
+            hand.append(card)
 
         if draw_from_origin:
             await get_tree().create_timer(_draw_delta).timeout
@@ -314,12 +321,5 @@ func _organize_hand() -> void:
 
     draw_hand(cards, false, false)
 
-func round_end_cleanup() -> void:
-    for card: BattleCard in slots.slotted_cards:
-        if card == null:
-            continue
-
-        @warning_ignore_start("return_value_discarded")
-        slots.unslot_card(card)
-        @warning_ignore_restore("return_value_discarded")
-        card.visible = false
+func round_end_cleanup() -> Array[BattleCardData]:
+    return slots.discard_cards()

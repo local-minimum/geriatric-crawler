@@ -6,7 +6,7 @@
 [resource]
 script = ExtResource("2_votpt")
 id = "dummy-blank-700"
-name = "Shield Up"
+name = "Confusion"
 card_owner = 0
 rank = 700
 suit = 0
