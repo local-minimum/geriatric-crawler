@@ -20,11 +20,10 @@ func _init_feature() -> void:
     _inited = true
 
 func get_level() -> GridLevel:
-    _init_feature()
-
     if _node != null:
         return _node.get_level()
-    return null
+
+    return GridLevel.find_level_parent(self, false)
 
 func get_grid_node() -> GridNode:
     _init_feature()

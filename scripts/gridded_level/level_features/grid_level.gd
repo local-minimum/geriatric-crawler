@@ -1,6 +1,8 @@
 extends Node3D
 class_name GridLevel
 
+signal on_change_player
+
 const LEVEL_GROUP: String = "grid-level"
 
 @export
@@ -10,7 +12,10 @@ var node_size: Vector3 = Vector3(3, 3, 3)
 var node_spacing: Vector3 = Vector3.ZERO
 
 @export
-var player: GridPlayer
+var player: GridPlayer:
+    set(value):
+        player = value
+        on_change_player.emit()
 
 @export
 var level_geometry: Node3D

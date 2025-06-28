@@ -246,49 +246,6 @@ direction = 3
 
 [node name="Side DOWN" parent="LevelGeometry/Elevation 0/Node (-3, 0, 1)" instance=ExtResource("9_4mxkc")]
 
-[node name="Target Dummy Blob" type="Node3D" parent="LevelGeometry/Elevation 0/Node (-3, 0, 1)" node_paths=PackedStringArray("effect", "graphics") groups=["Encounter"]]
-script = ExtResource("8_kmgg5")
-encounter_id = "demo-enemy"
-repeatable = false
-effect = NodePath("Battle Trigger")
-graphics = NodePath("Avatar/Encounter Avatar")
-look_direction = 1
-metadata/_custom_type_script = "uid://bqahhkn6dpex"
-
-[node name="Avatar" type="Node3D" parent="LevelGeometry/Elevation 0/Node (-3, 0, 1)/Target Dummy Blob"]
-script = ExtResource("9_myev5")
-
-[node name="Encounter Avatar" type="MeshInstance3D" parent="LevelGeometry/Elevation 0/Node (-3, 0, 1)/Target Dummy Blob/Avatar"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.7, 0)
-mesh = SubResource("QuadMesh_s5loo")
-
-[node name="Battle Trigger" type="Node" parent="LevelGeometry/Elevation 0/Node (-3, 0, 1)/Target Dummy Blob" node_paths=PackedStringArray("enemies")]
-script = ExtResource("10_rvj20")
-enemies = [NodePath("Target Dummy AI")]
-hide_encounter_on_trigger = true
-metadata/_custom_type_script = "uid://b3kob7bivk342"
-
-[node name="Target Dummy AI" type="Node" parent="LevelGeometry/Elevation 0/Node (-3, 0, 1)/Target Dummy Blob/Battle Trigger" node_paths=PackedStringArray("deck", "brain")]
-script = ExtResource("11_fxt0s")
-variant_id = "target-dummy"
-variant_name = "Target Dummy"
-level = 1
-deck = NodePath("BattleDeck")
-brain = NodePath("BattleStrategies")
-sprite = ExtResource("12_26eu7")
-
-[node name="BattleDeck" type="Node" parent="LevelGeometry/Elevation 0/Node (-3, 0, 1)/Target Dummy Blob/Battle Trigger/Target Dummy AI"]
-script = ExtResource("12_rcxcv")
-_start_deck = Array[ExtResource("13_26eu7")]([ExtResource("14_s5loo"), ExtResource("15_632b7"), ExtResource("16_n55gf"), ExtResource("17_idbts"), ExtResource("18_j1mj1"), ExtResource("19_7gan6"), ExtResource("20_sn1co"), ExtResource("21_wymjw")])
-metadata/_custom_type_script = "uid://c2lco7et0w3ia"
-
-[node name="BattleStrategies" type="Node" parent="LevelGeometry/Elevation 0/Node (-3, 0, 1)/Target Dummy Blob/Battle Trigger/Target Dummy AI" node_paths=PackedStringArray("strategies")]
-script = ExtResource("22_rcxcv")
-strategies = [NodePath("Default Strategy")]
-
-[node name="Default Strategy" type="Node" parent="LevelGeometry/Elevation 0/Node (-3, 0, 1)/Target Dummy Blob/Battle Trigger/Target Dummy AI/BattleStrategies"]
-script = ExtResource("22_sy7nh")
-
 [node name="Node (-3, 0, 0)" parent="LevelGeometry/Elevation 0" instance=ExtResource("4_myev5")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.5, 0, 0)
 coordinates = Vector3i(-3, 0, 0)
@@ -451,25 +408,6 @@ direction = 4
 
 [node name="Side DOWN" parent="LevelGeometry/Elevation 1/Node (2, 1, -2)" instance=ExtResource("9_4mxkc")]
 
-[node name="Demo Encounter" type="Node3D" parent="LevelGeometry/Elevation 1/Node (2, 1, -2)" node_paths=PackedStringArray("effect", "graphics") groups=["Encounter"]]
-script = ExtResource("8_kmgg5")
-encounter_id = "demo-enemy-repeat"
-effect = NodePath("Repeat Battle Trigger")
-graphics = NodePath("Avatar/Encounter Avatar")
-look_direction = 1
-metadata/_custom_type_script = "uid://bqahhkn6dpex"
-
-[node name="Avatar" type="Node3D" parent="LevelGeometry/Elevation 1/Node (2, 1, -2)/Demo Encounter"]
-script = ExtResource("9_myev5")
-
-[node name="Encounter Avatar" type="MeshInstance3D" parent="LevelGeometry/Elevation 1/Node (2, 1, -2)/Demo Encounter/Avatar"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.23567, 0)
-mesh = SubResource("QuadMesh_kmgg5")
-
-[node name="Repeat Battle Trigger" type="Node" parent="LevelGeometry/Elevation 1/Node (2, 1, -2)/Demo Encounter"]
-script = ExtResource("10_rvj20")
-metadata/_custom_type_script = "uid://b3kob7bivk342"
-
 [node name="Node (2, 1, -1)" parent="LevelGeometry/Elevation 1" instance=ExtResource("4_myev5")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 2.5, -2.5)
 coordinates = Vector3i(2, 1, -1)
@@ -535,3 +473,71 @@ direction = 3
 [node name="Side UP" parent="LevelGeometry/Elevation 1/Node (1, 1, -2)" instance=ExtResource("8_72dvb")]
 
 [node name="Side DOWN" parent="LevelGeometry/Elevation 1/Node (1, 1, -2)" instance=ExtResource("9_4mxkc")]
+
+[node name="Encounters" type="Node" parent="."]
+
+[node name="Target Dummy Blob" type="Node3D" parent="Encounters" node_paths=PackedStringArray("effect", "graphics", "_spawn_node") groups=["Encounter"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.5, 0, 2.5)
+script = ExtResource("8_kmgg5")
+encounter_id = "demo-enemy"
+repeatable = false
+effect = NodePath("Battle Trigger")
+graphics = NodePath("Avatar/Encounter Avatar")
+_spawn_node = NodePath("../../LevelGeometry/Elevation 0/Node (-3, 0, 1)")
+look_direction = 1
+metadata/_custom_type_script = "uid://bqahhkn6dpex"
+
+[node name="Avatar" type="Node3D" parent="Encounters/Target Dummy Blob"]
+script = ExtResource("9_myev5")
+
+[node name="Encounter Avatar" type="MeshInstance3D" parent="Encounters/Target Dummy Blob/Avatar"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.7, 0)
+mesh = SubResource("QuadMesh_s5loo")
+
+[node name="Battle Trigger" type="Node" parent="Encounters/Target Dummy Blob" node_paths=PackedStringArray("enemies")]
+script = ExtResource("10_rvj20")
+enemies = [NodePath("Target Dummy AI")]
+hide_encounter_on_trigger = true
+metadata/_custom_type_script = "uid://b3kob7bivk342"
+
+[node name="Target Dummy AI" type="Node" parent="Encounters/Target Dummy Blob/Battle Trigger" node_paths=PackedStringArray("deck", "brain")]
+script = ExtResource("11_fxt0s")
+variant_id = "target-dummy"
+variant_name = "Target Dummy"
+level = 1
+deck = NodePath("BattleDeck")
+brain = NodePath("BattleStrategies")
+sprite = ExtResource("12_26eu7")
+
+[node name="BattleDeck" type="Node" parent="Encounters/Target Dummy Blob/Battle Trigger/Target Dummy AI"]
+script = ExtResource("12_rcxcv")
+_start_deck = Array[ExtResource("13_26eu7")]([ExtResource("14_s5loo"), ExtResource("15_632b7"), ExtResource("16_n55gf"), ExtResource("17_idbts"), ExtResource("18_j1mj1"), ExtResource("19_7gan6"), ExtResource("20_sn1co"), ExtResource("21_wymjw")])
+metadata/_custom_type_script = "uid://c2lco7et0w3ia"
+
+[node name="BattleStrategies" type="Node" parent="Encounters/Target Dummy Blob/Battle Trigger/Target Dummy AI" node_paths=PackedStringArray("strategies")]
+script = ExtResource("22_rcxcv")
+strategies = [NodePath("Default Strategy")]
+
+[node name="Default Strategy" type="Node" parent="Encounters/Target Dummy Blob/Battle Trigger/Target Dummy AI/BattleStrategies"]
+script = ExtResource("22_sy7nh")
+
+[node name="Demo Encounter" type="Node3D" parent="Encounters" node_paths=PackedStringArray("effect", "graphics", "_spawn_node") groups=["Encounter"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 2.5, -5)
+script = ExtResource("8_kmgg5")
+encounter_id = "demo-enemy-repeat"
+effect = NodePath("Repeat Battle Trigger")
+graphics = NodePath("Avatar/Encounter Avatar")
+_spawn_node = NodePath("../../LevelGeometry/Elevation 1/Node (2, 1, -2)")
+look_direction = 1
+metadata/_custom_type_script = "uid://bqahhkn6dpex"
+
+[node name="Avatar" type="Node3D" parent="Encounters/Demo Encounter"]
+script = ExtResource("9_myev5")
+
+[node name="Encounter Avatar" type="MeshInstance3D" parent="Encounters/Demo Encounter/Avatar"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.23567, 0)
+mesh = SubResource("QuadMesh_kmgg5")
+
+[node name="Repeat Battle Trigger" type="Node" parent="Encounters/Demo Encounter"]
+script = ExtResource("10_rvj20")
+metadata/_custom_type_script = "uid://b3kob7bivk342"

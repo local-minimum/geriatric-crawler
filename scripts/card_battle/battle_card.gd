@@ -154,20 +154,26 @@ func _input(event: InputEvent) -> void:
     elif event is InputEventMouseMotion:
         var motion_event: InputEventMouseMotion = event
         if (_may_drag || _dragging) && motion_event.device == _active_device:
-            var relative: Vector2 = motion_event.screen_relative
+            _handle_drag_(motion_event.screen_relative)
 
-            if _may_drag:
-                # A bit of deadzoneing
-                _dragging = relative.length_squared() > 5
-                if _dragging:
-                    _may_drag = false
-                    move_to_front()
-                    on_drag_start.emit(self)
+    elif event is InputEventScreenDrag:
+        var motion_event: InputEventScreenDrag = event
+        if (_may_drag || _dragging):
+            _handle_drag_(motion_event.screen_relative)
 
-            if _dragging:
-                global_position += relative
+func _handle_drag_(relative: Vector2) -> void:
+    if _may_drag:
+        # A bit of deadzoneing
+        _dragging = relative.length_squared() > 5
+        if _dragging:
+            _may_drag = false
+            move_to_front()
+            on_drag_start.emit(self)
 
-                on_drag_card.emit(self)
+    if _dragging:
+        global_position += relative
+
+        on_drag_card.emit(self)
 
 func _check_start_drag() -> void:
     if _active_device < 0:

@@ -22,10 +22,26 @@ var effect: GridEncounterEffect
 @export
 var graphics: MeshInstance3D
 
+@export
+var _spawn_node: GridNode
+
+@export
+var _start_anchor_direction: CardinalDirections.CardinalDirection = CardinalDirections.CardinalDirection.DOWN
+
 var _triggered: bool
 var _was_on_node: bool
 
 func _ready() -> void:
+    if _spawn_node != null:
+        var anchor: GridAnchor = _spawn_node.get_grid_anchor(_start_anchor_direction)
+        if anchor == null:
+            push_error("%s doesn't have anchor in %s direction" % [
+                _spawn_node.name,
+                CardinalDirections.name(_start_anchor_direction),
+            ])
+        update_entity_anchorage(_spawn_node, anchor, true)
+        sync_position()
+
     super()
 
     var level: GridLevel = get_level()

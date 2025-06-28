@@ -42,6 +42,9 @@ signal load_fail(slot: int)
 signal save_fail(slot: int)
 
 func _init() -> void:
+    if !OS.request_permissions():
+        print_debug("We don't have permissions enough to load and save game probably")
+
     if _session_start == 0:
         _session_start = Time.get_ticks_msec()
 

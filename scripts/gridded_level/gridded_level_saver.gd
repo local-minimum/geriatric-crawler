@@ -74,6 +74,7 @@ func load_from_save(save_data: Dictionary) -> void:
         var player_node: GridPlayer = preload(_PLAYER_SCENE).instantiate()
         level.add_child(player_node)
         player_node.load_from_save(level, player_save)
+        level.player = player_node
 
     if save_data.has(_ENCOUNTERS_KEY):
         var encounters_save: Dictionary[String, Dictionary] = save_data[_ENCOUNTERS_KEY]

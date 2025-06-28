@@ -2,8 +2,18 @@ extends GridNodeFeature
 class_name PlayerFacer
 
 func _ready() -> void:
-    super()
+    super._ready()
 
+    var level: GridLevel = get_level()
+    if level != null:
+        if level.on_change_player.connect(_connect_player_tracking) != OK:
+            push_error("Could not connect level player updating")
+    else:
+        push_error("Player facer must be part of a level")
+
+    _connect_player_tracking()
+
+func _connect_player_tracking() -> void:
     var level: GridLevel = get_level()
     if level == null:
         push_error("%s is not part of a level" % name)

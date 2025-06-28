@@ -208,15 +208,17 @@ func _handle_new_tween(tween: Tween, primary_tween: bool) -> void:
 func update_entity_anchorage(node: GridNode, anchor: GridAnchor, deferred: bool = false) -> void:
     if anchor != null:
         set_grid_anchor(anchor, deferred)
-        transportation_mode.mode = transportation_abilities.intersection(anchor.required_transportation_mode)
+        if transportation_abilities != null:
+            transportation_mode.mode = transportation_abilities.intersection(anchor.required_transportation_mode)
     else:
         set_grid_node(node, deferred)
-        if transportation_abilities.has_flag(TransportationMode.FLYING):
-            transportation_mode.mode = TransportationMode.FLYING
-        else:
-            transportation_mode.mode = TransportationMode.NONE
+        if transportation_abilities != null:
+            if transportation_abilities.has_flag(TransportationMode.FLYING):
+                transportation_mode.mode = TransportationMode.FLYING
+            else:
+                transportation_mode.mode = TransportationMode.NONE
 
-    print_debug("%s is now %s @ %s %s" % [name, transportation_mode.humanize(), node.name, CardinalDirections.name(anchor.direction) if anchor else "airbourne"])
+    print_debug("%s is now %s @ %s %s" % [name, transportation_mode.humanize() if transportation_mode != null else "static", node.name, CardinalDirections.name(anchor.direction) if anchor else "airbourne"])
     # print_stack()
 
 func sync_position() -> void:
