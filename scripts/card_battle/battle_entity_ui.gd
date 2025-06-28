@@ -36,6 +36,11 @@ var _is_player_ally: bool
 var _entity: BattleEntity
 
 func connect_entity(entity: BattleEntity) -> void:
+    if _entity == entity:
+        return
+    elif _entity != null:
+        disconnect_entity(_entity)
+
     visible = false
 
     _entity = entity
@@ -71,6 +76,8 @@ func connect_entity(entity: BattleEntity) -> void:
     visible = true
 
 func disconnect_entity(entity: BattleEntity) -> void:
+    if entity != _entity:
+        return
     entity.on_heal.disconnect(_handle_heal)
     entity.on_hurt.disconnect(_handle_hurt)
     entity.on_death.disconnect(_handle_death)

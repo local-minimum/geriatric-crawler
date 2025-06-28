@@ -134,34 +134,42 @@ func _input(event: InputEvent) -> void:
     if !interactable:
         return
 
+    if event is InputEventScreenTouch:
+        var touch: InputEventScreenTouch = event
+        _hovered = get_global_rect().has_point(touch.position)
+        _handle_click(touch.pressed, touch.is_echo(), touch.device)
+
     if event is InputEventMouseButton:
         var btn_event: InputEventMouseButton = event
         if btn_event.button_index == 1:
-            if !_dragging && _hovered && btn_event.pressed && !btn_event.is_echo():
-                _active_device = btn_event.device
-                var timer: SceneTreeTimer = get_tree().create_timer(CLICK_DURATION)
-                if timer.connect("timeout", self._check_start_drag) != OK:
-                    push_error("Couldn't set callback of timer")
-
-            elif !btn_event.pressed && _active_device == btn_event.device:
-                _active_device = -1
-                if _dragging:
-                    _dragging = false
-                    on_drag_end.emit(self)
-                else:
-                    on_click.emit(self)
+            _handle_click(btn_event.pressed, btn_event.is_echo(), btn_event.device)
 
     elif event is InputEventMouseMotion:
         var motion_event: InputEventMouseMotion = event
         if (_may_drag || _dragging) && motion_event.device == _active_device:
-            _handle_drag_(motion_event.screen_relative)
+            _handle_drag(motion_event.screen_relative)
 
     elif event is InputEventScreenDrag:
         var motion_event: InputEventScreenDrag = event
-        if (_may_drag || _dragging):
-            _handle_drag_(motion_event.screen_relative)
+        if (_may_drag || _dragging) && motion_event.device == _active_device:
+            _handle_drag(motion_event.screen_relative)
 
-func _handle_drag_(relative: Vector2) -> void:
+func _handle_click(pressed: bool, is_echo: bool, device: int) -> void:
+    if !_dragging && _hovered && pressed && !is_echo:
+        _active_device = device
+        var timer: SceneTreeTimer = get_tree().create_timer(CLICK_DURATION)
+        if timer.connect("timeout", self._check_start_drag) != OK:
+            push_error("Couldn't set callback of timer")
+
+    elif !pressed && _active_device == device:
+        _active_device = -1
+        if _dragging:
+            _dragging = false
+            on_drag_end.emit(self)
+        else:
+            on_click.emit(self)
+
+func _handle_drag(relative: Vector2) -> void:
     if _may_drag:
         # A bit of deadzoneing
         _dragging = relative.length_squared() > 5
