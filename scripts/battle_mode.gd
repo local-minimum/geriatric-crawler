@@ -69,7 +69,7 @@ func _start_playing_cards() -> void:
     _next_agent_turn(null)
 
 func _next_agent_turn(_entity: BattleEntity) -> void:
-    if !_pass_action_turn():
+    if !(await  _pass_action_turn()):
         _clean_up_round()
 
 func _clean_up_round() -> void:
@@ -90,7 +90,9 @@ func _clean_up_round() -> void:
         print_debug("WE DIES")
         return
 
+    battle_player.clean_up_round()
     player_deck.discard_from_hand(battle_hand.round_end_cleanup())
+
     round_start_prepare_hands()
 
 func _next_enemy_initiative() -> int:
@@ -103,6 +105,8 @@ func _next_enemy_initiative() -> int:
     return enemy.initiative()
 
 func _pass_action_turn() -> bool:
+    var next_entity_timeout: float = 0.25
+
     var enemy_initiative: int = _next_enemy_initiative()
     if enemy_initiative == -1 && _player_initiative == -1:
         return false
@@ -113,10 +117,12 @@ func _pass_action_turn() -> bool:
     var player_party: Array[BattleEntity] = [battle_player]
 
     if _player_initiative >= enemy_initiative:
+        await get_tree().create_timer(next_entity_timeout).timeout
         battle_player.play_actions(player_party, enemies)
         _player_initiative = -1
         return true
 
+    await get_tree().create_timer(next_entity_timeout).timeout
     var enemy: BattleEnemy = _enemies[_next_active_enemy]
     enemy.play_actions(enemies, player_party)
     battle_hand.slots.hide_slotted_cards()
@@ -196,6 +202,12 @@ func deal_player_hand() -> void:
     var new_cards: int = hand_size - cards.size()
 
     var card_data: Array[BattleCardData] = player_deck.draw(new_cards)
+    print_debug("Hand should be %s, have %s remaining -> %s to draw, drew %s" % [
+        hand_size,
+        cards.size(),
+        new_cards,
+        card_data.size(),
+    ])
     new_cards = mini(new_cards, card_data.size())
 
     var card_data_idx: int = 0

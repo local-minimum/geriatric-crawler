@@ -171,3 +171,10 @@ func _execute_effect_on_targets() -> void:
 
 func get_entity_name() -> String:
     return "Simon Cyberdeck"
+
+func clean_up_round() -> void:
+    _allies = []
+    _enemies = []
+    _active_card_index = 0
+    _active_card_effect_index = 0
+    _previous_card = null
