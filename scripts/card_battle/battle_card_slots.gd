@@ -238,7 +238,7 @@ func lower_slots(on_complete: Callable) -> void:
 
     base_tween.play()
 
-func hide_slotted_cards() -> void:
+func hide_slotted_cards(instant: bool = false) -> void:
     if !_slotted_cards_visible:
         return
     _slotted_cards_visible = false
@@ -269,7 +269,8 @@ func hide_slotted_cards() -> void:
         ).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
         @warning_ignore_restore("return_value_discarded")
 
-        await get_tree().create_timer(intermission).timeout
+        if !instant:
+            await get_tree().create_timer(intermission).timeout
 
 func show_slotted_cards() -> void:
     if _slotted_cards_visible:

@@ -12,6 +12,7 @@ func play_actions(
     allies: Array[BattleEntity],
     enemies: Array[BattleEntity],
 ) -> void:
+    _halted = false
     on_start_turn.emit(self)
     print_debug("Start player turn")
 
@@ -31,6 +32,9 @@ var _previous_card: BattleCard = null
 var _suit_bonus: int
 
 func _execute_next_card() -> void:
+    if _halted:
+        return
+
     if _active_card_index >= _slots.slotted_cards.size():
         on_end_turn.emit(self)
         return
@@ -68,22 +72,40 @@ func _execute_next_card() -> void:
 
     _previous_card = card
 
-func _execute_next_effect() -> void:
+func _restore_card_size() -> void:
+    if _active_card_index >= _slots.slotted_cards.size():
+        return
+
     var card: BattleCard = _slots.slotted_cards[_active_card_index]
 
-    if _active_card_effect_index >= card.data.primary_effects.size():
+    if card == null:
+        return
+
+    var tween: Tween = get_tree().create_tween()
+    @warning_ignore_start("return_value_discarded")
+    tween.tween_property(
+        card,
+        "scale",
+        Vector2.ONE,
+        0.2).set_trans(Tween.TRANS_SINE)
+    @warning_ignore_restore("return_value_discarded")
+
+    tween.play()
+
+func _execute_next_effect() -> void:
+    if _halted:
+        return
+
+    var card: BattleCard = _slots.slotted_cards[_active_card_index]
+    if card == null:
+        push_warning("We should probably be halted %s, slot idx %s doesn't have a card" % [_halted, _active_card_index])
         _active_card_index += 1
+        _execute_next_card()
+        return
 
-        var tween: Tween = get_tree().create_tween()
-        @warning_ignore_start("return_value_discarded")
-        tween.tween_property(
-            card,
-            "scale",
-            Vector2.ONE,
-            0.2).set_trans(Tween.TRANS_SINE)
-        @warning_ignore_restore("return_value_discarded")
-
-        tween.play()
+    if _active_card_effect_index >= card.data.primary_effects.size():
+        _restore_card_size()
+        _active_card_index += 1
 
         _execute_next_card()
         return
@@ -166,6 +188,11 @@ func _execute_effect_on_targets() -> void:
 
         await get_tree().create_timer(0.25).timeout
 
+        if _halted:
+            return
+
+    if _halted:
+        return
     _active_card_effect_index += 1
     _execute_next_effect()
 
@@ -173,8 +200,11 @@ func get_entity_name() -> String:
     return "Simon Cyberdeck"
 
 func clean_up_round() -> void:
+    _restore_card_size()
+    _halted = true
     _allies = []
     _enemies = []
     _active_card_index = 0
     _active_card_effect_index = 0
     _previous_card = null
+    print_debug("Player end round cleaned")

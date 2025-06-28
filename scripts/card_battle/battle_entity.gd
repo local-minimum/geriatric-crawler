@@ -48,10 +48,13 @@ func hurt(amount: int) -> void:
     while  _shields.size():
         var shield: int = _shields.pop_front()
         amount = max(0, amount - shield)
-        if amount == 0:
-            break
 
         on_break_shield.emit(self, _shields, shield)
+        print_debug("Broke shield %s, %s damage remaining" % [shield, amount])
+        await get_tree().create_timer(0.2).timeout
+
+        if amount == 0:
+            break
 
     _health = max(0, _health - amount)
     on_hurt.emit(self, amount, _health)
@@ -102,3 +105,17 @@ func get_suit_bonus(
             suit_bonus = 0
 
     return suit_bonus
+
+func play_actions(
+    _allies: Array[BattleEntity],
+    _enemies: Array[BattleEntity],
+) -> void:
+    pass
+
+var _halted: bool = false
+
+func halt_actions() -> void:
+    _halted = true
+
+func clean_up_round() -> void:
+    _halted = false

@@ -36,7 +36,10 @@ func _ready() -> void:
         push_error("Hand could not connect to return card to hand event")
     if slots.on_end_slotting.connect(_handle_end_slotting) != OK:
         push_error("Hand could not connect to slotting ended event")
+
+    @warning_ignore_start("return_value_discarded")
     clear_hand()
+    @warning_ignore_restore("return_value_discarded")
 
 func cards_in_hand() -> int:
     return hand.size()
@@ -88,6 +91,8 @@ func draw_hand(
     hand.clear()
 
     for card: BattleCard in cards:
+        card.scale = Vector2.ONE
+
         if _connected_cards.has(card):
             continue
         _connected_cards.append(card)

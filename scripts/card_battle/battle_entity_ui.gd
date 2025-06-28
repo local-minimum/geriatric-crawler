@@ -139,7 +139,7 @@ func _set_health(health: int) -> void:
 
 func _handle_break_shield(_battle_entity: BattleEntity, shields: Array[int], broken_shield: int) -> void:
     if broken_shield > 0:
-        defenceUI.text = "BROKEN %s⛨" % broken_shield
+        defenceUI.text = "BROKE %s⛨" % broken_shield
         await get_tree().create_timer(SHOW_CHANGE_TIME).timeout
 
     _set_shield(shields)

@@ -72,7 +72,7 @@ func _next_agent_turn(_entity: BattleEntity) -> void:
     if !(await  _pass_action_turn()):
         _clean_up_round()
 
-func _clean_up_round() -> void:
+func _clean_up_round(exit_battle_cleanup: bool = false) -> void:
     _enemies = _enemies.filter(
         func (enemy: BattleEnemy) -> bool:
             if enemy.is_alive():
@@ -82,7 +82,7 @@ func _clean_up_round() -> void:
             return false
     )
 
-    if _enemies.is_empty():
+    if !exit_battle_cleanup && _enemies.is_empty():
         exit_battle()
         return
 
@@ -90,10 +90,12 @@ func _clean_up_round() -> void:
         print_debug("WE DIES")
         return
 
+    battle_hand.slots.hide_slotted_cards(exit_battle_cleanup)
     battle_player.clean_up_round()
     player_deck.discard_from_hand(battle_hand.round_end_cleanup())
 
-    round_start_prepare_hands()
+    if !exit_battle_cleanup:
+        round_start_prepare_hands()
 
 func _next_enemy_initiative() -> int:
     if _next_active_enemy >= _enemies.size() || _enemies[_next_active_enemy] == null:
@@ -163,11 +165,16 @@ func enter_battle(battle_trigger: BattleModeTrigger) -> void:
     if battle_player.on_end_turn.connect(_next_agent_turn) != OK:
         push_error("Failed to connect player %s turn done" % battle_player)
 
+    if battle_player.on_death.connect(_handle_player_death) != OK:
+        push_error("Failed to connect player %s death" % battle_player)
+
     # Show all enemies and their stats
     _enemies.append_array(battle_trigger.enemies)
     for enemy: BattleEnemy in _enemies:
         if enemy.on_end_turn.connect(_next_agent_turn) != OK:
             push_error("Failed to connect enemy %s turn done" % enemy)
+        if enemy.on_death.connect(_handle_enemy_death) != OK:
+            push_error("Failed to connect enemy %s death" % enemy)
 
         on_entity_join_battle.emit(enemy)
 
@@ -184,6 +191,27 @@ func enter_battle(battle_trigger: BattleModeTrigger) -> void:
     await get_tree().create_timer(1.0).timeout
 
     round_start_prepare_hands()
+
+func _handle_player_death(entity: BattleEntity) -> void:
+    if entity == battle_player:
+        for enemy: BattleEnemy in _enemies:
+            enemy.halt_actions()
+
+    # TODO Handle party wipe better
+    exit_battle()
+
+
+func _handle_enemy_death(entity: BattleEntity) -> void:
+    var remaining_enemies: bool = _enemies.any(
+        func (e: BattleEnemy) -> bool:
+            return e.is_alive()
+    )
+
+    print_debug("%s died, any remaining %s" % [entity.name, remaining_enemies])
+
+    if !remaining_enemies:
+        battle_player.halt_actions()
+        exit_battle()
 
 func round_start_prepare_hands() -> void:
     for enemy: BattleEnemy in _enemies:
@@ -202,12 +230,12 @@ func deal_player_hand() -> void:
     var new_cards: int = hand_size - cards.size()
 
     var card_data: Array[BattleCardData] = player_deck.draw(new_cards)
-    print_debug("Hand should be %s, have %s remaining -> %s to draw, drew %s" % [
-        hand_size,
-        cards.size(),
-        new_cards,
-        card_data.size(),
-    ])
+    # print_debug("Hand should be %s, have %s remaining -> %s to draw, drew %s" % [
+    #    hand_size,
+    #    cards.size(),
+    #    new_cards,
+    #    card_data.size(),
+    #])
     new_cards = mini(new_cards, card_data.size())
 
     var card_data_idx: int = 0
@@ -245,7 +273,7 @@ func _after_deal() -> void:
     battle_hand.slots.show_slots(3)
 
 func exit_battle() -> void:
-    player_deck.discard_from_hand(battle_hand.clear_hand())
+    _clean_up_round(true)
 
     for enemy: BattleEnemy in _enemies:
         on_entity_leave_battle.emit(enemy)

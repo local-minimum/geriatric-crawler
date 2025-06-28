@@ -61,6 +61,7 @@ func play_actions(
     allies: Array[BattleEntity],
     enemies: Array[BattleEntity],
 ) -> void:
+    _halted = false
     var previous: BattleCardData = null
     var idx: int = 0
     var suit_bonus: int
@@ -142,3 +143,6 @@ func _execute_effect(
                 target.add_shield(value)
 
         await get_tree().create_timer(0.25).timeout
+
+        if _halted:
+            return
