@@ -8,6 +8,36 @@ signal on_click(card: BattleCard)
 
 const CLICK_DURATION: float = 0.075
 
+static var _next_drag: float
+static var _dragged: BattleCard = null:
+    set(value):
+        if _dragged != value && _dragged != null:
+            var t: float = Time.get_unix_time_from_system()
+            if t < _next_drag:
+                return
+
+            _next_drag = t + 0.1
+            if _dragged != null:
+                _dragged.on_drag_end.emit(_dragged)
+
+        _dragged = value
+        if value != null:
+            value.on_drag_start.emit(value)
+
+static var _next_hover: float
+static var _hovered: BattleCard:
+    set(value):
+        if value == null || _hovered == null:
+            _hovered = value
+            return
+
+        var t: float = Time.get_unix_time_from_system()
+        if t > _next_hover:
+            _next_hover = t + 0.1
+            _hovered = value
+
+
+
 @export
 var suite_icon: TextureRect
 
@@ -126,7 +156,6 @@ func _get_primary_effect_text(effect: BattleCardPrimaryEffect, crit_multiplyer: 
         "★" if can_crit else "",
     ]
 
-var _dragging: bool
 var _may_drag: bool
 var _active_device: int = -1
 
@@ -136,8 +165,14 @@ func _input(event: InputEvent) -> void:
 
     if event is InputEventScreenTouch:
         var touch: InputEventScreenTouch = event
-        _hovered = get_global_rect().has_point(touch.position)
+        if get_global_rect().has_point(touch.position):
+            if touch.pressed && !touch.is_echo():
+                _hovered = self
+
         _handle_click(touch.pressed, touch.is_echo(), touch.device)
+
+        if !touch.pressed:
+            _hovered = null
 
     if event is InputEventMouseButton:
         var btn_event: InputEventMouseButton = event
@@ -146,16 +181,16 @@ func _input(event: InputEvent) -> void:
 
     elif event is InputEventMouseMotion:
         var motion_event: InputEventMouseMotion = event
-        if (_may_drag || _dragging) && motion_event.device == _active_device:
-            _handle_drag(motion_event.screen_relative)
+        if (_may_drag || _dragged == self) && motion_event.device == _active_device:
+            _handle_drag(motion_event.relative)
 
     elif event is InputEventScreenDrag:
         var motion_event: InputEventScreenDrag = event
-        if (_may_drag || _dragging) && motion_event.device == _active_device:
-            _handle_drag(motion_event.screen_relative)
+        if (_may_drag || _dragged == self) && motion_event.device == _active_device:
+            _handle_drag(motion_event.relative)
 
 func _handle_click(pressed: bool, is_echo: bool, device: int) -> void:
-    if !_dragging && _hovered && pressed && !is_echo:
+    if _dragged != self && _hovered == self && pressed && !is_echo:
         _active_device = device
         var timer: SceneTreeTimer = get_tree().create_timer(CLICK_DURATION)
         if timer.connect("timeout", self._check_start_drag) != OK:
@@ -163,35 +198,39 @@ func _handle_click(pressed: bool, is_echo: bool, device: int) -> void:
 
     elif !pressed && _active_device == device:
         _active_device = -1
-        if _dragging:
-            _dragging = false
-            on_drag_end.emit(self)
-        else:
+        if _dragged == self:
+            _dragged = null
+        elif _hovered:
             on_click.emit(self)
 
 func _handle_drag(relative: Vector2) -> void:
     if _may_drag:
         # A bit of deadzoneing
-        _dragging = relative.length_squared() > 5
-        if _dragging:
+        if relative.length_squared() > 5:
+            _dragged = self
             _may_drag = false
-            move_to_front()
-            on_drag_start.emit(self)
+            if _dragged == self:
+                move_to_front()
 
-    if _dragging:
+    if _dragged == self:
         global_position += relative
 
         on_drag_card.emit(self)
 
 func _check_start_drag() -> void:
-    if _active_device < 0:
+    if _active_device < 0 || _hovered != self || _dragged != null:
         return
     _may_drag = true
 
-var _hovered: bool
-
 func _on_mouse_exited() -> void:
-    _hovered = false
+    if OS.get_name() == "Android":
+        return
+
+    if _hovered == self:
+        _hovered = null
 
 func _on_mouse_entered() -> void:
-    _hovered = true
+    if OS.get_name() == "Android":
+        return
+
+    _hovered = self
