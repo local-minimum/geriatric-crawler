@@ -5,6 +5,8 @@ signal on_drag_card(card: BattleCard)
 signal on_drag_start(card: BattleCard)
 signal on_drag_end(card: BattleCard)
 signal on_click(card: BattleCard)
+signal on_hover_start(card: BattleCard)
+signal on_hover_end(card: BattleCard)
 
 const CLICK_DURATION: float = 0.075
 
@@ -27,13 +29,26 @@ static var _dragged: BattleCard = null:
 static var _next_hover: float
 static var _hovered: BattleCard:
     set(value):
+        if value == _hovered:
+            return
+
         if value == null || _hovered == null:
+            if _hovered != null:
+                _hovered.on_hover_end.emit(_hovered)
+            if value != null:
+                value.on_hover_start.emit(value)
             _hovered = value
             return
 
         var t: float = Time.get_unix_time_from_system()
         if t > _next_hover:
             _next_hover = t + 0.1
+
+            if _hovered != null:
+                _hovered.on_hover_end.emit(_hovered)
+            if value != null:
+                value.on_hover_start.emit(value)
+
             _hovered = value
 
 
@@ -166,7 +181,7 @@ func _input(event: InputEvent) -> void:
     if event is InputEventScreenTouch:
         var touch: InputEventScreenTouch = event
         if get_global_rect().has_point(touch.position):
-            if touch.pressed && !touch.is_echo():
+            if touch.pressed && !touch.is_echo() && _dragged == null:
                 _hovered = self
 
         _handle_click(touch.pressed, touch.is_echo(), touch.device)
@@ -226,11 +241,17 @@ func _on_mouse_exited() -> void:
     if OS.get_name() == "Android":
         return
 
+    if _dragged != null:
+        return
+
     if _hovered == self:
         _hovered = null
 
 func _on_mouse_entered() -> void:
     if OS.get_name() == "Android":
+        return
+
+    if _dragged != null:
         return
 
     _hovered = self

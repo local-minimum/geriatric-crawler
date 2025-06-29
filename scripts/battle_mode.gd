@@ -3,6 +3,7 @@ class_name BattleMode
 
 signal on_entity_join_battle(entity: BattleEntity)
 signal on_entity_leave_battle(entity: BattleEntity)
+signal on_new_card(card: BattleCard)
 
 
 @export
@@ -265,7 +266,10 @@ func deal_player_hand() -> void:
 
         _cards.append(new_card)
         cards.append(new_card)
+
         card_data_idx += 1
+
+        on_new_card.emit(new_card)
 
     battle_hand.draw_hand(cards)
 
