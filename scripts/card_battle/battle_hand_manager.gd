@@ -84,8 +84,8 @@ func draw_hand(
     emit_event: bool = true,
     draw_from_origin: bool = true
 ) -> void:
-    print_debug("\nNew hand")
-    print_stack()
+    # print_debug("\nNew hand")
+    # print_stack()
     visible = true
 
     for tween: Tween in _card_tweens.values():

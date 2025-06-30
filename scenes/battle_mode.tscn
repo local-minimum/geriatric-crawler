@@ -755,6 +755,7 @@ script = ExtResource("10_50o5a")
 battle = NodePath("../..")
 
 [node name="DebugStatus" type="Label" parent="CanvasLayer" node_paths=PackedStringArray("battle_mode")]
+visible = false
 anchors_preset = -1
 anchor_left = 0.021
 anchor_top = 1.0
@@ -768,6 +769,7 @@ script = ExtResource("11_uf5em")
 battle_mode = NodePath("../..")
 
 [node name="Hand Debug Messages" type="ColorRect" parent="CanvasLayer"]
+visible = false
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
