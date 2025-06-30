@@ -44,115 +44,9 @@ func _ready() -> void:
 var _next_active_enemy: int
 var _player_initiative: int
 
-func _start_playing_cards() -> void:
-    print_debug("Card actions phase")
-
-    _next_active_enemy = 0
-
-    _enemies.sort_custom(
-        func (a: BattleEnemy, b: BattleEnemy) -> bool:
-            if a != null && b == null:
-                return true
-
-            if a != null || b != null:
-                return false
-
-            return a.initiative() > b.initiative())
-
-    var leading_player_card: BattleCard = battle_hand.slots.slotted_cards[0]
-    if leading_player_card ==  null:
-        _player_initiative = -1
-    else:
-        _player_initiative = leading_player_card.data.rank
-
-    await get_tree().create_timer(1).timeout
-    _next_agent_turn(null)
-
-func _next_agent_turn(_entity: BattleEntity) -> void:
-    if !(await  _pass_action_turn()):
-        _clean_up_round()
-
-func _clean_up_round(exit_battle_cleanup: bool = false) -> void:
-    _enemies = _enemies.filter(
-        func (enemy: BattleEnemy) -> bool:
-            if enemy.is_alive():
-                return true
-
-            on_entity_leave_battle.emit(enemy)
-            return false
-    )
-
-    if !exit_battle_cleanup && _enemies.is_empty():
-        exit_battle()
-        return
-
-    if !battle_player.is_alive():
-        print_debug("WE DIES")
-        return
-
-    battle_hand.slots.hide_slotted_cards(exit_battle_cleanup)
-    battle_player.clean_up_round()
-    player_deck.discard_from_hand(battle_hand.round_end_cleanup())
-
-    if !exit_battle_cleanup:
-        round_start_prepare_hands()
-
-func _next_enemy_initiative() -> int:
-    if _next_active_enemy >= _enemies.size() || _enemies[_next_active_enemy] == null:
-        return -1
-    var enemy: BattleEnemy = _enemies[_next_active_enemy]
-    if !enemy.is_alive():
-        return -1
-
-    return enemy.initiative()
-
-func _pass_action_turn() -> bool:
-    var next_entity_timeout: float = 0.25
-
-    var enemy_initiative: int = _next_enemy_initiative()
-    if enemy_initiative == -1 && _player_initiative == -1:
-        return false
-
-    var enemies: Array[BattleEntity] = []
-    enemies.append_array(_enemies)
-    # TODO: Here's a HACK we are always only one player
-    var player_party: Array[BattleEntity] = [battle_player]
-
-    if _player_initiative >= enemy_initiative:
-        await get_tree().create_timer(next_entity_timeout).timeout
-        battle_player.play_actions(player_party, enemies)
-        _player_initiative = -1
-        return true
-
-    await get_tree().create_timer(next_entity_timeout).timeout
-    var enemy: BattleEnemy = _enemies[_next_active_enemy]
-    enemy.play_actions(enemies, player_party)
-    battle_hand.slots.hide_slotted_cards()
-    _next_active_enemy += 1
-    return true
-
-func _handle_update_slotted(cards: Array[BattleCard]) -> void:
-    var acc_suit_bonus: int
-    var prev_card: BattleCardData = null
-
-    var slotted_cards: Array[BattleCard]
-    slotted_cards.append_array(cards)
-    ArrayUtils.erase_all_occurances(slotted_cards, null)
-
-    var idx: int = 0
-
-    for card: BattleCard in slotted_cards:
-        var next_card: BattleCardData = slotted_cards[idx + 1].data if idx + 1 < slotted_cards.size() else null
-        acc_suit_bonus = battle_player.get_suit_bonus(card.data, acc_suit_bonus, prev_card, next_card, idx == 0)
-
-        idx += 1
-
-        card.sync_display(acc_suit_bonus)
-
-        prev_card = card.data
-
 var _enemies: Array[BattleEnemy]
 
+#region ENTER BATTLE
 func enter_battle(battle_trigger: BattleModeTrigger) -> void:
     _ui.visible = true
 
@@ -192,27 +86,9 @@ func enter_battle(battle_trigger: BattleModeTrigger) -> void:
 
     round_start_prepare_hands()
 
-func _handle_player_death(entity: BattleEntity) -> void:
-    if entity == battle_player:
-        for enemy: BattleEnemy in _enemies:
-            enemy.halt_actions()
+#endregion ENTER BATTLE
 
-    # TODO Handle party wipe better
-    exit_battle()
-
-
-func _handle_enemy_death(entity: BattleEntity) -> void:
-    var remaining_enemies: bool = _enemies.any(
-        func (e: BattleEnemy) -> bool:
-            return e.is_alive()
-    )
-
-    print_debug("%s died, any remaining %s" % [entity.name, remaining_enemies])
-
-    if !remaining_enemies:
-        battle_player.halt_actions()
-        exit_battle()
-
+#region PHASE DRAW AND SLOT CARDS
 func round_start_prepare_hands() -> void:
     for enemy: BattleEnemy in _enemies:
         if !enemy.is_alive():
@@ -272,9 +148,143 @@ func deal_player_hand() -> void:
 
     battle_hand.draw_hand(cards)
 
+func _handle_update_slotted(cards: Array[BattleCard]) -> void:
+    var acc_suit_bonus: int
+    var prev_card: BattleCardData = null
+
+    var slotted_cards: Array[BattleCard]
+    slotted_cards.append_array(cards)
+    ArrayUtils.erase_all_occurances(slotted_cards, null)
+
+    var idx: int = 0
+
+    for card: BattleCard in slotted_cards:
+        var next_card: BattleCardData = slotted_cards[idx + 1].data if idx + 1 < slotted_cards.size() else null
+        acc_suit_bonus = battle_player.get_suit_bonus(card.data, acc_suit_bonus, prev_card, next_card, idx == 0)
+
+        idx += 1
+
+        card.sync_display(acc_suit_bonus)
+
+        prev_card = card.data
+
 func _after_deal() -> void:
     battle_hand.slots.show_slots(3)
+#endregion PHASE DRAW AND SLOT CARDS
 
+#region PHASE PLAY CARD
+func _start_playing_cards() -> void:
+    print_debug("Card actions phase")
+
+    _next_active_enemy = 0
+
+    _enemies.sort_custom(
+        func (a: BattleEnemy, b: BattleEnemy) -> bool:
+            if a != null && b == null:
+                return true
+
+            if a != null || b != null:
+                return false
+
+            return a.initiative() > b.initiative())
+
+    var leading_player_card: BattleCard = battle_hand.slots.slotted_cards[0]
+    if leading_player_card ==  null:
+        _player_initiative = -1
+    else:
+        _player_initiative = leading_player_card.data.rank
+
+    await get_tree().create_timer(1).timeout
+    _next_agent_turn(null)
+
+func _next_agent_turn(_entity: BattleEntity) -> void:
+    if !(await  _pass_action_turn()):
+        _clean_up_round()
+
+func _pass_action_turn() -> bool:
+    var next_entity_timeout: float = 0.25
+
+    var enemy_initiative: int = _next_enemy_initiative()
+    if enemy_initiative == -1 && _player_initiative == -1:
+        return false
+
+    var enemies: Array[BattleEntity] = []
+    enemies.append_array(_enemies)
+    # TODO: Here's a HACK we are always only one player
+    var player_party: Array[BattleEntity] = [battle_player]
+
+    if _player_initiative >= enemy_initiative:
+        await get_tree().create_timer(next_entity_timeout).timeout
+        battle_player.play_actions(player_party, enemies)
+        _player_initiative = -1
+        return true
+
+    await get_tree().create_timer(next_entity_timeout).timeout
+    var enemy: BattleEnemy = _enemies[_next_active_enemy]
+    enemy.play_actions(enemies, player_party)
+    battle_hand.slots.hide_slotted_cards()
+    _next_active_enemy += 1
+    return true
+
+func _next_enemy_initiative() -> int:
+    if _next_active_enemy >= _enemies.size() || _enemies[_next_active_enemy] == null:
+        return -1
+    var enemy: BattleEnemy = _enemies[_next_active_enemy]
+    if !enemy.is_alive():
+        return -1
+
+    return enemy.initiative()
+
+func _handle_player_death(entity: BattleEntity) -> void:
+    if entity == battle_player:
+        for enemy: BattleEnemy in _enemies:
+            enemy.halt_actions()
+
+    # TODO Handle party wipe better
+    exit_battle()
+
+
+func _handle_enemy_death(entity: BattleEntity) -> void:
+    var remaining_enemies: bool = _enemies.any(
+        func (e: BattleEnemy) -> bool:
+            return e.is_alive()
+    )
+
+    print_debug("%s died, any remaining %s" % [entity.name, remaining_enemies])
+
+    if !remaining_enemies:
+        battle_player.halt_actions()
+        exit_battle()
+#endregion PHASE PLAY CARD
+
+#region PHASE CLEANUP
+func _clean_up_round(exit_battle_cleanup: bool = false) -> void:
+    _enemies = _enemies.filter(
+        func (enemy: BattleEnemy) -> bool:
+            if enemy.is_alive():
+                return true
+
+            on_entity_leave_battle.emit(enemy)
+            return false
+    )
+
+    if !exit_battle_cleanup && _enemies.is_empty():
+        exit_battle()
+        return
+
+    if !battle_player.is_alive():
+        print_debug("WE DIES")
+        return
+
+    battle_hand.slots.hide_slotted_cards(exit_battle_cleanup)
+    battle_player.clean_up_round()
+    player_deck.discard_from_hand(battle_hand.round_end_cleanup())
+
+    if !exit_battle_cleanup:
+        round_start_prepare_hands()
+#endregion PHASE CLEANUP
+
+#region END BATTLE
 func exit_battle() -> void:
     _clean_up_round(true)
 
@@ -292,3 +302,4 @@ func exit_battle() -> void:
     trigger.complete()
 
     _ui.visible = false
+#endregion END BATTLE
