@@ -45,6 +45,7 @@ func _ready() -> void:
 func cards_in_hand() -> int:
     return hand.size()
 
+#region INTERACTIVITY
 func _handle_end_slotting() -> void:
     on_hand_debug.emit("End slotting")
     for card: BattleCard in hand:
@@ -78,7 +79,9 @@ func _handle_end_slotting() -> void:
 func _hand_ready() -> void:
     for card: BattleCard in hand:
         card.interactable = true
+#endregion INTERACTIVITY
 
+#region DRAW HAND
 func draw_hand(
     cards: Array[BattleCard],
     emit_event: bool = true,
@@ -148,22 +151,6 @@ func _calculate_slots_range(n_cards: int) -> int:
 
     return n_controls
 
-func clear_hand() -> Array[BattleCardData]:
-    var discards: Array[BattleCardData] = []
-    for card: BattleCard in hand:
-        card.visible = false
-        discards.append(card.data)
-
-    hand.clear()
-    visible = false
-    slots.hide_ui()
-
-    discards.append_array(round_end_cleanup())
-
-    on_hand_debug.emit("Discarding cards %s" % [discards])
-
-    return discards
-
 func _draw_hand(
     new_cards: Array[BattleCard],
     n_controls: int,
@@ -207,10 +194,9 @@ func _draw_hand(
         if draw_from_origin:
             await get_tree().create_timer(_draw_delta).timeout
         card_idx += 1
+#endregion DRAW HAND
 
-func _last_card_position() -> int:
-    return _card_positions.values().max()
-
+#region MOVE CARD
 func tween_card_to_position(card: BattleCard, target_index: int, duration: float) -> Tween:
     var tween: Tween = get_tree().create_tween()
     var target: Control = _target_controls[target_index]
@@ -436,6 +422,26 @@ func _organize_hand() -> void:
             cards.append(card)
 
     draw_hand(cards, false, false)
+#endregion MOVE CARD
 
+#region CLEANUP
 func round_end_cleanup() -> Array[BattleCardData]:
     return slots.discard_cards()
+
+func clear_hand() -> Array[BattleCardData]:
+    var discards: Array[BattleCardData] = []
+    for card: BattleCard in hand:
+        card.visible = false
+        discards.append(card.data)
+
+    hand.clear()
+    visible = false
+    slots.hide_ui()
+
+    discards.append_array(round_end_cleanup())
+
+    on_hand_debug.emit("Discarding cards %s" % [discards])
+
+    return discards
+
+#endregion
