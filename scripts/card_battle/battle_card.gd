@@ -177,7 +177,7 @@ func _get_primary_effect_text(effect: BattleCardPrimaryEffect, crit_multiplyer: 
 var _may_drag: bool
 var _active_device: int = -1
 
-func _input(event: InputEvent) -> void:
+func _gui_input(event: InputEvent) -> void:
     if !interactable:
         return
 
@@ -196,7 +196,7 @@ func _input(event: InputEvent) -> void:
 
     if event is InputEventMouseButton:
         var btn_event: InputEventMouseButton = event
-        if btn_event.button_index == 1:
+        if btn_event.button_index == MOUSE_BUTTON_LEFT:
             _handle_click(btn_event.pressed, btn_event.is_echo(), btn_event.device)
 
     elif event is InputEventMouseMotion:

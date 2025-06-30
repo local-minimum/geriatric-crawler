@@ -1,4 +1,4 @@
-[gd_scene load_steps=30 format=3 uid="uid://sx8om7lfql6j"]
+[gd_scene load_steps=31 format=3 uid="uid://sx8om7lfql6j"]
 
 [ext_resource type="Script" uid="uid://cvchbk03g5wag" path="res://scripts/battle_mode.gd" id="1_7wt64"]
 [ext_resource type="Texture2D" uid="uid://cpot0wvcwpcqh" path="res://sprites/battle-bg-test.png" id="2_wpnne"]
@@ -8,6 +8,7 @@
 [ext_resource type="Script" uid="uid://5kqr4lmwivmv" path="res://scripts/card_battle/battle_card_slots.gd" id="4_1e1d0"]
 [ext_resource type="Texture2D" uid="uid://d14rk0grbqxnd" path="res://sprites/cards/suits/card-background.png" id="4_4kft8"]
 [ext_resource type="Texture2D" uid="uid://cev0382nhv46i" path="res://sprites/kenny game icons/arrowUp.png" id="4_sw08r"]
+[ext_resource type="PackedScene" uid="uid://dgaxg8fe12ckw" path="res://scenes/ui/enemy_ui.tscn" id="6_4nxwp"]
 [ext_resource type="Script" uid="uid://c2lco7et0w3ia" path="res://scripts/card_battle/battle_deck.gd" id="6_plnl4"]
 [ext_resource type="Script" uid="uid://cqlxwfe858g4h" path="res://scripts/card_battle/battle_card_data.gd" id="7_bno2u"]
 [ext_resource type="Resource" uid="uid://cuqk7tuums5ds" path="res://resources/player_cards/card_slam-810.tres" id="8_2igk8"]
@@ -483,107 +484,14 @@ _entityUIs = [NodePath("EnemyUI 1"), NodePath("EnemyUI 2"), NodePath("EnemyUI 3"
 _battle = NodePath("../..")
 _enemy_group = true
 
-[node name="EnemyUI 1" type="VBoxContainer" parent="CanvasLayer/Enemies" node_paths=PackedStringArray("healthUI", "defenceUI", "icon", "nameUI")]
-custom_minimum_size = Vector2(200, 0)
+[node name="EnemyUI 1" parent="CanvasLayer/Enemies" instance=ExtResource("6_4nxwp")]
 layout_mode = 2
-script = ExtResource("3_lfs5n")
-healthUI = NodePath("Health")
-defenceUI = NodePath("Defence")
-icon = NodePath("Avatar")
-nameUI = NodePath("Name")
 
-[node name="Health" type="Label" parent="CanvasLayer/Enemies/EnemyUI 1"]
+[node name="EnemyUI 2" parent="CanvasLayer/Enemies" instance=ExtResource("6_4nxwp")]
 layout_mode = 2
-theme_override_colors/font_color = Color(0, 0, 0, 1)
-theme_override_colors/font_shadow_color = Color(0.321074, 0.109373, 0.262374, 1)
-text = "HP:"
 
-[node name="Defence" type="Label" parent="CanvasLayer/Enemies/EnemyUI 1"]
+[node name="EnemyUI 3" parent="CanvasLayer/Enemies" instance=ExtResource("6_4nxwp")]
 layout_mode = 2
-theme_override_colors/font_color = Color(0, 0, 0, 1)
-theme_override_colors/font_shadow_color = Color(0.321074, 0.109373, 0.262374, 1)
-text = "DEF:"
-
-[node name="Avatar" type="TextureRect" parent="CanvasLayer/Enemies/EnemyUI 1"]
-custom_minimum_size = Vector2(200, 300)
-layout_mode = 2
-expand_mode = 3
-stretch_mode = 5
-
-[node name="Name" type="Label" parent="CanvasLayer/Enemies/EnemyUI 1"]
-layout_mode = 2
-theme_override_colors/font_color = Color(0, 0, 0, 1)
-theme_override_colors/font_shadow_color = Color(0.321074, 0.109373, 0.262374, 1)
-text = "TARGET DUMMY"
-horizontal_alignment = 1
-
-[node name="EnemyUI 2" type="VBoxContainer" parent="CanvasLayer/Enemies" node_paths=PackedStringArray("healthUI", "defenceUI", "icon", "nameUI")]
-custom_minimum_size = Vector2(200, 0)
-layout_mode = 2
-script = ExtResource("3_lfs5n")
-healthUI = NodePath("Health")
-defenceUI = NodePath("Defence")
-icon = NodePath("Avatar")
-nameUI = NodePath("Name")
-
-[node name="Health" type="Label" parent="CanvasLayer/Enemies/EnemyUI 2"]
-layout_mode = 2
-theme_override_colors/font_color = Color(0, 0, 0, 1)
-theme_override_colors/font_shadow_color = Color(0.321074, 0.109373, 0.262374, 1)
-text = "HP:"
-
-[node name="Defence" type="Label" parent="CanvasLayer/Enemies/EnemyUI 2"]
-layout_mode = 2
-theme_override_colors/font_color = Color(0, 0, 0, 1)
-theme_override_colors/font_shadow_color = Color(0.321074, 0.109373, 0.262374, 1)
-text = "DEF:"
-
-[node name="Avatar" type="TextureRect" parent="CanvasLayer/Enemies/EnemyUI 2"]
-custom_minimum_size = Vector2(200, 300)
-layout_mode = 2
-expand_mode = 3
-stretch_mode = 5
-
-[node name="Name" type="Label" parent="CanvasLayer/Enemies/EnemyUI 2"]
-layout_mode = 2
-theme_override_colors/font_color = Color(0, 0, 0, 1)
-theme_override_colors/font_shadow_color = Color(0.321074, 0.109373, 0.262374, 1)
-text = "TARGET DUMMY"
-horizontal_alignment = 1
-
-[node name="EnemyUI 3" type="VBoxContainer" parent="CanvasLayer/Enemies" node_paths=PackedStringArray("healthUI", "defenceUI", "icon", "nameUI")]
-custom_minimum_size = Vector2(200, 0)
-layout_mode = 2
-script = ExtResource("3_lfs5n")
-healthUI = NodePath("Health")
-defenceUI = NodePath("Defence")
-icon = NodePath("Avatar")
-nameUI = NodePath("Name")
-
-[node name="Health" type="Label" parent="CanvasLayer/Enemies/EnemyUI 3"]
-layout_mode = 2
-theme_override_colors/font_color = Color(0, 0, 0, 1)
-theme_override_colors/font_shadow_color = Color(0.321074, 0.109373, 0.262374, 1)
-text = "HP:"
-
-[node name="Defence" type="Label" parent="CanvasLayer/Enemies/EnemyUI 3"]
-layout_mode = 2
-theme_override_colors/font_color = Color(0, 0, 0, 1)
-theme_override_colors/font_shadow_color = Color(0.321074, 0.109373, 0.262374, 1)
-text = "DEF:"
-
-[node name="Avatar" type="TextureRect" parent="CanvasLayer/Enemies/EnemyUI 3"]
-custom_minimum_size = Vector2(200, 300)
-layout_mode = 2
-expand_mode = 3
-stretch_mode = 5
-
-[node name="Name" type="Label" parent="CanvasLayer/Enemies/EnemyUI 3"]
-layout_mode = 2
-theme_override_colors/font_color = Color(0, 0, 0, 1)
-theme_override_colors/font_shadow_color = Color(0.321074, 0.109373, 0.262374, 1)
-text = "TARGET DUMMY"
-horizontal_alignment = 1
 
 [node name="Fight Letters" type="HBoxContainer" parent="CanvasLayer"]
 visible = false
@@ -778,6 +686,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 
 [node name="Player Hand Draw Origin" type="Control" parent="CanvasLayer"]
 layout_mode = 3

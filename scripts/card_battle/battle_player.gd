@@ -1,8 +1,15 @@
 extends BattleEntity
 class_name BattlePlayer
 
-signal on_player_select_targets(player: BattlePlayer, count: int, player_allies: bool, monsters: bool)
+signal on_player_select_targets(
+    player: BattlePlayer,
+    count: int,
+    options: Array[BattleEntity],
+    target_type: BattleCardPrimaryEffect.EffectTarget,
+)
 signal on_player_select_targets_complete()
+signal on_before_execute_effect_on_target(target: BattleEntity)
+signal on_after_execute_effect_on_target(target: BattleEntity)
 
 @export
 var _slots: BattleCardSlots
@@ -155,7 +162,7 @@ func _execute_effect(
         return
 
     # Someone else does the selection handling and calls add_target
-    on_player_select_targets.emit(self, n_targets, effect.targets_allies(), effect.targets_enemies())
+    on_player_select_targets.emit(self, n_targets, possible_targets, effect.target_type())
 
 var _effect_targets_count: int
 var _effect_magnitue: int
@@ -175,6 +182,7 @@ func add_target(target: BattleEntity) -> bool:
 
 func _execute_effect_on_targets() -> void:
     for target: BattleEntity in _effect_targets:
+        on_before_execute_effect_on_target.emit(target)
 
         print_debug("Doing %s %s to %s" % [_effect_magnitue, BattleCardPrimaryEffect.humanize(_effect_mode), target.name])
 
@@ -188,6 +196,7 @@ func _execute_effect_on_targets() -> void:
 
         await get_tree().create_timer(0.25).timeout
 
+        on_after_execute_effect_on_target.emit(target)
         if _halted:
             return
 

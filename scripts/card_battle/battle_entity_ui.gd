@@ -28,6 +28,10 @@ var interactable: bool:
 var selected: bool:
     set(value):
         selected = value
+        if value:
+            _handle_focus(_entity)
+        else:
+            _handle_defocus(_entity)
 
 const SHOW_CHANGE_TIME: float = 0.5
 
@@ -59,9 +63,9 @@ func connect_entity(entity: BattleEntity) -> void:
     if entity.on_break_shield.connect(_handle_break_shield) != OK:
         push_error("Failed to connect %s on_break_shield to UI" % entity)
 
-    if entity.on_start_turn.connect(_handle_start_turn) != OK:
+    if entity.on_start_turn.connect(_handle_focus) != OK:
         push_error("Failed to connect %s on_start_turn to UI" % entity)
-    if entity.on_end_turn.connect(_handle_end_turn) != OK:
+    if entity.on_end_turn.connect(_handle_defocus) != OK:
         push_error("Failed to connect %s on_turn_done to UI" % entity)
 
     _set_health(entity.get_health())
@@ -91,6 +95,10 @@ func connect_player_selection(player: BattlePlayer) -> void:
         push_error("Failed to connect %s's on_player_select_targets" % player)
     if player.on_player_select_targets_complete.connect(_handle_entity_selection_end) != OK:
         push_error("Failed to connect %s's on_player_select_targets" % player)
+    if player.on_before_execute_effect_on_target.connect(_handle_set_targeted) != OK:
+        push_error("Failed to connect %s's after effect on target" % player)
+    if player.on_after_execute_effect_on_target.connect(_handle_reset_targeted) != OK:
+        push_error("Failed to connect %s's after effect on target" % player)
 
 func disconnect_player_selection(player: BattlePlayer) -> void:
     player.on_player_select_targets.disconnect(_handle_entity_selection_start)
@@ -98,22 +106,48 @@ func disconnect_player_selection(player: BattlePlayer) -> void:
 
 var _selection_player: BattlePlayer = null
 
-func _handle_entity_selection_start(player: BattlePlayer, _count: int, player_allies: bool, monsters: bool) -> void:
+func _handle_entity_selection_start(
+    player: BattlePlayer,
+    count: int,
+    targets: Array[BattleEntity],
+    _target_type: BattleCardPrimaryEffect.EffectTarget,
+) -> void:
     _selection_player = player
-    if _is_monster:
-        interactable = monsters
-    elif _is_player_ally:
-        interactable = player_allies
+    interactable = count > 0 && targets.has(_entity)
+    print_debug("%s has %s and it's an option %s (%s)" % [name, _entity, targets, interactable])
+
+func _handle_set_targeted(target: BattleEntity) -> void:
+    if target != _entity:
+        return
+
+    set_target()
+
+func _handle_reset_targeted(target: BattleEntity) -> void:
+    if target != _entity:
+        return
+
+    if selected:
+        selected = false
+
+    unset_target()
 
 func _handle_entity_selection_end() -> void:
     interactable = false
     selected = false
 
-func _handle_start_turn(entity: BattleEntity) -> void:
+func _handle_turn_start(entity: BattleEntity) -> void:
+    _handle_focus(entity)
+    set_target()
+
+func _handle_turn_end(entity: BattleEntity) -> void:
+    _handle_defocus(entity)
+    unset_target()
+
+func _handle_focus(entity: BattleEntity) -> void:
     if nameUI != null:
         nameUI.text = "-> %s <-" % entity.get_entity_name()
 
-func _handle_end_turn(entity: BattleEntity) -> void:
+func _handle_defocus(entity: BattleEntity) -> void:
     if nameUI != null:
         nameUI.text = entity.get_entity_name()
 
@@ -136,6 +170,28 @@ func _handle_hurt(_battle_entity: BattleEntity, amount: int, new_health: int) ->
         await get_tree().create_timer(SHOW_CHANGE_TIME).timeout
 
     _set_health(new_health)
+
+var _scale_tween: Tween
+
+func set_target() -> void:
+    if _scale_tween != null:
+        _scale_tween.kill()
+
+    _scale_tween = get_tree().create_tween()
+    @warning_ignore_start("return_value_discarded")
+    _scale_tween.tween_property(icon, "scale", Vector2.ONE * 1.25, 0.1)
+    @warning_ignore_restore("return_value_discarded")
+    _scale_tween.play()
+
+func unset_target() -> void:
+    if _scale_tween != null:
+        _scale_tween.kill()
+
+    _scale_tween = get_tree().create_tween()
+    @warning_ignore_start("return_value_discarded")
+    _scale_tween.tween_property(icon, "scale", Vector2.ONE, 0.1)
+    @warning_ignore_restore("return_value_discarded")
+    _scale_tween.play()
 
 func _set_health(health: int) -> void:
     @warning_ignore_start("integer_division")
@@ -168,13 +224,15 @@ func _set_shield(shields: Array[int]) -> void:
             return "%s⛨" % shield)
     defenceUI.text = "DEF: %s" % " | ".join(shields_text)
 
-func _input(event: InputEvent) -> void:
+func _gui_input(event: InputEvent) -> void:
     if !interactable:
+        print_debug("%s not interactable" % name)
         return
 
     if event is InputEventMouseButton:
         var btn_event: InputEventMouseButton = event
-        if btn_event.button_index == 1:
+        if btn_event.button_index == MOUSE_BUTTON_LEFT:
+            print_debug("%s is hovered %s pressed %s and echo %s" % [name, _hovered, btn_event.pressed, btn_event.is_echo()])
             if _hovered && btn_event.pressed && !btn_event.is_echo():
                 if _selection_player != null:
                     if !selected:
