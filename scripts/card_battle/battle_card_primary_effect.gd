@@ -47,19 +47,20 @@ func targets_allies() -> bool:
     return (target & TARGET_ALLIES) == TARGET_ALLIES
 
 func target_type() -> EffectTarget:
-    if target == TARGET_SELF:
-        return EffectTarget.Self
-    if target == TARGET_ALLIES:
-        return EffectTarget.Allies
-    if target == TARGET_ENEMIES:
-        return EffectTarget.Enemies
     if (target & TARGET_SELF) == TARGET_SELF && (target & TARGET_ENEMIES) == TARGET_ENEMIES:
         return EffectTarget.SelfAndEnemies
     if (target & TARGET_ALLIES) == TARGET_ALLIES && (target & TARGET_ENEMIES) == TARGET_ENEMIES:
         return EffectTarget.SelfAndEnemies
     if (target & TARGET_ALLIES) == TARGET_ALLIES:
         return EffectTarget.Allies
+    if (target & TARGET_SELF) == TARGET_SELF:
+        return EffectTarget.Self
+    if (target & TARGET_ALLIES) == TARGET_ALLIES:
+        return EffectTarget.Allies
+    if (target & TARGET_ENEMIES) == TARGET_ENEMIES:
+        return EffectTarget.Enemies
 
+    push_error("%s doesn't have a target type" % target)
     return EffectTarget.None
 
 func get_target_range() -> Array[int]:

@@ -10,6 +10,7 @@ healthUI = NodePath("Health")
 defenceUI = NodePath("Defence")
 icon = NodePath("Avatar")
 nameUI = NodePath("Name")
+_target_scale = 1.15
 
 [node name="Health" type="Label" parent="."]
 layout_mode = 2

@@ -1,4 +1,4 @@
-[gd_scene load_steps=31 format=3 uid="uid://sx8om7lfql6j"]
+[gd_scene load_steps=32 format=3 uid="uid://sx8om7lfql6j"]
 
 [ext_resource type="Script" uid="uid://cvchbk03g5wag" path="res://scripts/battle_mode.gd" id="1_7wt64"]
 [ext_resource type="Texture2D" uid="uid://cpot0wvcwpcqh" path="res://sprites/battle-bg-test.png" id="2_wpnne"]
@@ -23,6 +23,7 @@
 [ext_resource type="Resource" uid="uid://duylk5tm5e1wb" path="res://resources/player_cards/card_defrag_120.tres" id="11_w875v"]
 [ext_resource type="Resource" uid="uid://dyw8d4pex4rg1" path="res://resources/player_cards/card_recharge-735.tres" id="11_wyqpo"]
 [ext_resource type="Script" uid="uid://r83okmi0nsfv" path="res://scripts/card_battle/debug_battle_log.gd" id="12_360r3"]
+[ext_resource type="Script" uid="uid://dtm7xhjxl8r71" path="res://scripts/card_battle/battle_prompt.gd" id="12_g3sjl"]
 [ext_resource type="Resource" uid="uid://ehfht5qywnnf" path="res://resources/player_cards/card_defrag_370.tres" id="12_vq05v"]
 [ext_resource type="Resource" uid="uid://xg54tmjf202g" path="res://resources/player_cards/card_fortify-200.tres" id="16_vq05v"]
 [ext_resource type="Script" uid="uid://c4w2xnbmt2m0c" path="res://scripts/card_battle/battle_player.gd" id="21_wu7la"]
@@ -486,12 +487,15 @@ _enemy_group = true
 
 [node name="EnemyUI 1" parent="CanvasLayer/Enemies" instance=ExtResource("6_4nxwp")]
 layout_mode = 2
+_target_scale = 1.15
 
 [node name="EnemyUI 2" parent="CanvasLayer/Enemies" instance=ExtResource("6_4nxwp")]
 layout_mode = 2
+_target_scale = 1.15
 
 [node name="EnemyUI 3" parent="CanvasLayer/Enemies" instance=ExtResource("6_4nxwp")]
 layout_mode = 2
+_target_scale = 1.15
 
 [node name="Fight Letters" type="HBoxContainer" parent="CanvasLayer"]
 visible = false
@@ -723,6 +727,28 @@ grow_vertical = 2
 size_flags_horizontal = 4
 localize_numeral_system = false
 script = ExtResource("10_50o5a")
+battle = NodePath("../..")
+
+[node name="Prompt" type="Label" parent="CanvasLayer" node_paths=PackedStringArray("battle")]
+anchors_preset = -1
+anchor_left = 0.368
+anchor_top = 0.5
+anchor_right = 0.368
+anchor_bottom = 0.5
+offset_left = -319.1
+offset_top = -20.0
+offset_right = 319.1
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_shadow_color = Color(0.574328, 0.574328, 0.574328, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_constants/outline_size = 0
+theme_override_font_sizes/font_size = 29
+text = "This is my text very important about what to do"
+script = ExtResource("12_g3sjl")
 battle = NodePath("../..")
 
 [node name="DebugStatus" type="Label" parent="CanvasLayer" node_paths=PackedStringArray("battle_mode")]

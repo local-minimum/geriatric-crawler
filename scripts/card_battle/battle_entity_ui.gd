@@ -13,6 +13,12 @@ var icon: TextureRect
 @export
 var nameUI: Label
 
+@export_range(1, 2)
+var _target_scale: float
+
+@export_range(0, 1)
+var _target_ease_duration: float = 0.1
+
 func _ready() -> void:
     visible = false
 
@@ -29,9 +35,9 @@ var selected: bool:
     set(value):
         selected = value
         if value:
-            _handle_focus(_entity)
+            _handle_focus()
         else:
-            _handle_defocus(_entity)
+            _handle_defocus()
 
 const SHOW_CHANGE_TIME: float = 0.5
 
@@ -63,9 +69,9 @@ func connect_entity(entity: BattleEntity) -> void:
     if entity.on_break_shield.connect(_handle_break_shield) != OK:
         push_error("Failed to connect %s on_break_shield to UI" % entity)
 
-    if entity.on_start_turn.connect(_handle_focus) != OK:
+    if entity.on_start_turn.connect(_handle_turn_start) != OK:
         push_error("Failed to connect %s on_start_turn to UI" % entity)
-    if entity.on_end_turn.connect(_handle_defocus) != OK:
+    if entity.on_end_turn.connect(_handle_turn_end) != OK:
         push_error("Failed to connect %s on_turn_done to UI" % entity)
 
     _set_health(entity.get_health())
@@ -85,10 +91,17 @@ func disconnect_entity(entity: BattleEntity) -> void:
     entity.on_heal.disconnect(_handle_heal)
     entity.on_hurt.disconnect(_handle_hurt)
     entity.on_death.disconnect(_handle_death)
+
+    entity.on_gain_shield.disconnect(_handle_gain_shield)
+    entity.on_break_shield.disconnect(_handle_break_shield)
+    entity.on_start_turn.disconnect(_handle_turn_start)
+    entity.on_end_turn.disconnect(_handle_turn_end)
+
     visible = false
-    _entity = null
     selected = false
     interactable = false
+
+    _entity = null
 
 func connect_player_selection(player: BattlePlayer) -> void:
     if player.on_player_select_targets.connect(_handle_entity_selection_start) != OK:
@@ -103,6 +116,8 @@ func connect_player_selection(player: BattlePlayer) -> void:
 func disconnect_player_selection(player: BattlePlayer) -> void:
     player.on_player_select_targets.disconnect(_handle_entity_selection_start)
     player.on_player_select_targets_complete.disconnect(_handle_entity_selection_end)
+    player.on_before_execute_effect_on_target.disconnect(_handle_set_targeted)
+    player.on_after_execute_effect_on_target.disconnect(_handle_reset_targeted)
 
 var _selection_player: BattlePlayer = null
 
@@ -110,6 +125,7 @@ func _handle_entity_selection_start(
     player: BattlePlayer,
     count: int,
     targets: Array[BattleEntity],
+    _effect: BattleCardPrimaryEffect.EffectMode,
     _target_type: BattleCardPrimaryEffect.EffectTarget,
 ) -> void:
     _selection_player = player
@@ -136,20 +152,32 @@ func _handle_entity_selection_end() -> void:
     selected = false
 
 func _handle_turn_start(entity: BattleEntity) -> void:
-    _handle_focus(entity)
+    if entity != _entity:
+        return
+
+    _handle_focus()
     set_target()
 
 func _handle_turn_end(entity: BattleEntity) -> void:
-    _handle_defocus(entity)
+    if entity != _entity:
+        return
+
+    _handle_defocus()
     unset_target()
 
-func _handle_focus(entity: BattleEntity) -> void:
-    if nameUI != null:
-        nameUI.text = "-> %s <-" % entity.get_entity_name()
+func _handle_focus() -> void:
+    if _entity == null:
+        return
 
-func _handle_defocus(entity: BattleEntity) -> void:
     if nameUI != null:
-        nameUI.text = entity.get_entity_name()
+        nameUI.text = "-> %s <-" % _entity.get_entity_name()
+
+func _handle_defocus() -> void:
+    if _entity == null:
+        return
+
+    if nameUI != null:
+        nameUI.text = _entity.get_entity_name()
 
 func _handle_death(_battle_entity: BattleEntity) -> void:
     healthUI.text = "XXX DEAD XXX"
@@ -179,7 +207,8 @@ func set_target() -> void:
 
     _scale_tween = get_tree().create_tween()
     @warning_ignore_start("return_value_discarded")
-    _scale_tween.tween_property(icon, "scale", Vector2.ONE * 1.25, 0.1)
+    icon.pivot_offset = icon.size / 2
+    _scale_tween.tween_property(icon, "scale", Vector2.ONE * _target_scale, _target_ease_duration)
     @warning_ignore_restore("return_value_discarded")
     _scale_tween.play()
 
@@ -189,7 +218,7 @@ func unset_target() -> void:
 
     _scale_tween = get_tree().create_tween()
     @warning_ignore_start("return_value_discarded")
-    _scale_tween.tween_property(icon, "scale", Vector2.ONE, 0.1)
+    _scale_tween.tween_property(icon, "scale", Vector2.ONE, _target_ease_duration)
     @warning_ignore_restore("return_value_discarded")
     _scale_tween.play()
 
@@ -226,13 +255,11 @@ func _set_shield(shields: Array[int]) -> void:
 
 func _gui_input(event: InputEvent) -> void:
     if !interactable:
-        print_debug("%s not interactable" % name)
         return
 
     if event is InputEventMouseButton:
         var btn_event: InputEventMouseButton = event
         if btn_event.button_index == MOUSE_BUTTON_LEFT:
-            print_debug("%s is hovered %s pressed %s and echo %s" % [name, _hovered, btn_event.pressed, btn_event.is_echo()])
             if _hovered && btn_event.pressed && !btn_event.is_echo():
                 if _selection_player != null:
                     if !selected:
