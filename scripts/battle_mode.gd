@@ -5,7 +5,6 @@ signal on_entity_join_battle(entity: BattleEntity)
 signal on_entity_leave_battle(entity: BattleEntity)
 signal on_new_card(card: BattleCard)
 
-
 @export
 var animator: AnimationPlayer
 
@@ -291,3 +290,5 @@ func exit_battle() -> void:
     animator.play("fade_out_battle")
     await get_tree().create_timer(0.5).timeout
     trigger.complete()
+
+    _ui.visible = false

@@ -31,7 +31,7 @@ var _card_positions: Dictionary[BattleCard, int] = {}
 var _reverse_card_positions: Dictionary[int, BattleCard] = {}
 
 func _ready() -> void:
-    if slots.on_return_card_to_hand.connect(return_card_to_hand) != OK:
+    if slots.on_return_card_to_hand.connect(_return_card_to_hand) != OK:
         push_error("Hand could not connect to return card to hand event")
     if slots.on_slots_shown.connect(_hand_ready) != OK:
         push_error("Hand could not connect to return card to hand event")
@@ -84,6 +84,8 @@ func draw_hand(
     emit_event: bool = true,
     draw_from_origin: bool = true
 ) -> void:
+    print_debug("\nNew hand")
+    print_stack()
     visible = true
 
     for tween: Tween in _card_tweens.values():
@@ -93,6 +95,7 @@ func draw_hand(
     _reverse_card_positions.clear()
     _card_positions.clear()
     hand.clear()
+    hand.append_array(cards)
 
     for card: BattleCard in cards:
         card.scale = Vector2.ONE
@@ -111,8 +114,22 @@ func draw_hand(
             push_error("Failed to connect on drag end card signal for %s" % card)
         if card.on_click.connect(_handle_card_click) != OK:
             push_error("Failed to connect on drag end card signal for %s" % card)
+        if card.on_debug_card.connect(_handle_card_debug) != OK:
+            push_error("Failed to connect on card debug for %s" % card)
 
-    var n_cards: int = cards.size()
+
+    on_hand_debug.emit("\nNew hand is %s" % [cards.map(func (c: BattleCard) -> String: return c.data.id)])
+    var n_controls: int = _calculate_slots_range(cards.size())
+
+    _draw_hand.call_deferred(cards, n_controls, emit_event, draw_from_origin)
+
+var _first_card_idx: int
+var _last_card_idx: int
+
+func _handle_card_debug(card: BattleCard, msg: String) -> void:
+    on_hand_debug.emit("%s: %s" % [card.data.id, msg])
+
+func _calculate_slots_range(n_cards: int) -> int:
     var n_controls: int = _target_controls.size()
 
     if n_cards > n_controls:
@@ -120,16 +137,16 @@ func draw_hand(
 
     # Center layouts
     var matching_min_count: bool = (min_slots % 2) == (n_cards % 2)
-    n_controls = clampi(n_cards, min_slots if matching_min_count else min_slots + 1, n_controls)
+    n_controls = clampi(n_cards + _hand_size_offset, min_slots if matching_min_count else min_slots + 1, n_controls)
     for slot_idx: int in range(_target_controls.size()):
         _target_controls[slot_idx].visible = slot_idx < n_controls
 
     @warning_ignore_start("integer_division")
-    var card_idx: int = (n_controls - n_cards) / 2
+    _first_card_idx = (n_controls - n_cards) / 2
     @warning_ignore_restore("integer_division")
-    var last_card_idx: int = card_idx + n_cards - 1
+    _last_card_idx = _first_card_idx + n_cards - 1
 
-    _draw_hand.call_deferred(cards, card_idx, n_controls, last_card_idx, emit_event, draw_from_origin)
+    return n_controls
 
 func clear_hand() -> Array[BattleCardData]:
     var discards: Array[BattleCardData] = []
@@ -149,23 +166,22 @@ func clear_hand() -> Array[BattleCardData]:
 
 func _draw_hand(
     new_cards: Array[BattleCard],
-    card_idx: int,
     n_controls: int,
-    last_card_idx: int,
     emit_event: bool,
     draw_from_origin: bool,
 ) -> void:
+    var card_idx: int = _first_card_idx
     _card_positions.clear()
     _reverse_card_positions.clear()
 
     for card: BattleCard in new_cards:
         if card_idx >= n_controls:
-            var msg: String = "Card %s (idx %s) doesn't fit in hand with %s controls last idx %s" % [card.data.id, card_idx, n_controls, last_card_idx]
+            var msg: String = "Card %s (idx %s) doesn't fit in hand with %s controls last idx %s" % [card.data.id, card_idx, n_controls, _last_card_idx]
             push_error(msg)
             on_hand_debug.emit(msg)
             break
 
-        on_hand_debug.emit("Adding %s to hand index %s (max %s)" % [card.data.id, card_idx, last_card_idx])
+        # on_hand_debug.emit("Adding %s to hand index %s (max %s)" % [card.data.id, card_idx, _last_card_idx])
 
         if draw_from_origin:
             card.global_position = get_centered_position(card, _draw_origin)
@@ -177,7 +193,7 @@ func _draw_hand(
 
         # print_debug("Draw card idx %s (last %s)" % [card_idx, last_card_idx])
 
-        if card_idx == last_card_idx && emit_event:
+        if card_idx == _last_card_idx && emit_event:
             @warning_ignore_start("return_value_discarded")
             tween.connect(
                 "finished",
@@ -187,9 +203,6 @@ func _draw_hand(
             @warning_ignore_restore("return_value_discarded")
 
         tween.play()
-
-        if !hand.has(card):
-            hand.append(card)
 
         if draw_from_origin:
             await get_tree().create_timer(_draw_delta).timeout
@@ -225,12 +238,14 @@ func tween_card_to_position(card: BattleCard, target_index: int, duration: float
 
     _card_positions[card] = target_index
 
-    if  _reverse_card_positions.has(target_index):
+    if  _reverse_card_positions.has(target_index) && _reverse_card_positions[target_index] != card:
         var msg: String = "Card order collision %s (%s replaces %s)" % [target_index, card.data.id, _reverse_card_positions[target_index].data.id]
         push_error(msg)
         on_hand_debug.emit(msg)
-
-    _reverse_card_positions[target_index] = card
+        _reverse_card_positions[target_index] = card
+        _resque_collision(_reverse_card_positions[target_index])
+    else:
+        _reverse_card_positions[target_index] = card
 
     # print_debug("%s now  #%s %s %s" % [card, target_index, _card_positions, _reverse_card_positions])
     return tween
@@ -240,32 +255,42 @@ static func get_centered_position(subject: Control, target: Control) ->  Vector2
 
 const DRAG_DEADZONE: float = 10
 
-func _get_card_position_index(card: BattleCard) -> int:
+func _get_card_position_index(card: BattleCard = null) -> int:
     if _card_positions.has(card):
         return _card_positions[card]
 
-    var best: int = -1
-    var best_delta: int = _target_controls.size()
-    var mid: float = float(_target_controls.size()) / 2
-    for idx: int in range(_target_controls.size()):
-        if _reverse_card_positions.has(idx) && _reverse_card_positions[idx] != null:
-            continue
+    if card == null:
+        for idx: int in range(_first_card_idx, _last_card_idx + 1):
+            if !_reverse_card_positions.has(idx):
+                return idx
+        return _last_card_idx + 1
 
-        var delta: int = absi(roundi(idx - mid))
-        if delta < best_delta:
-            best_delta = delta
+    var self_x: float = card.get_global_rect().get_center().x
+    var best: int = -1
+    var best_delta: float = 0
+
+    for idx: int in range(_first_card_idx, _last_card_idx + 1):
+        var control: Control = _target_controls[idx]
+        var control_x: float = control.get_global_rect().get_center().x
+        var delta: float = abs(self_x - control_x)
+
+        if best < 0 || best_delta > delta:
             best = idx
+            best_delta = delta
 
     if best < 0:
         best = _target_controls.size() - 1
 
-    return best
+    return clampi(best, _first_card_idx, _last_card_idx)
+
+var _dragged_card_idx: int
 
 func _handle_card_drag_start(card: BattleCard) -> void:
+    _dragged_card_idx = _card_positions[card] if _card_positions.has(card) else -1
     _remove_from_lookups(card)
 
 func handle_card_dragged(card: BattleCard) -> void:
-    # Moved card goes last, not great
+    # _reshape_hand(card)
     var card_index: int = _get_card_position_index(card)
     _handle_card_dragged.call_deferred(card, card_index)
 
@@ -282,6 +307,24 @@ func _remove_from_lookups(card: BattleCard) -> void:
             _reverse_card_positions.erase(idx)
             @warning_ignore_restore("return_value_discarded")
 
+var _hand_size_offset: int = 0
+
+func _reshape_hand(dragged_card: BattleCard) -> void:
+    # TODO: Working bad... not sure why
+    var _old_size: int = _hand_size_offset
+
+    if slots.is_over_slots(dragged_card):
+        _hand_size_offset = 0 # -1 if hand.has(dragged_card) else 0
+    else:
+        _hand_size_offset = 1 if slots.has_card(dragged_card) else 0
+
+    if _old_size == _hand_size_offset:
+        return
+
+    var cards: Array[BattleCard]
+    cards.append_array(hand)
+    draw_hand(cards, false, false)
+
 func _handle_card_dragged(card: BattleCard, card_index: int) -> void:
     if slots.is_over_slots(card):
         return
@@ -289,58 +332,76 @@ func _handle_card_dragged(card: BattleCard, card_index: int) -> void:
     var origin: Vector2 = get_centered_position(card, _target_controls[card_index])
     var offset: Vector2 = card.global_position - origin
 
+    on_hand_debug.emit("Shifting card %s with x offset %s from %s" % [card.data.id, offset.x, card_index])
     if offset.x > DRAG_DEADZONE:
-        if _reverse_card_positions.has(card_index + 1):
-            var other: BattleCard = _reverse_card_positions[card_index + 1]
+        if _reverse_card_positions.has(card_index):
+            var other: BattleCard = _reverse_card_positions[card_index]
             if other.global_position.x < card.global_position.x:
+                on_hand_debug.emit("Shifting card right %s (%s) with %s (%s)" % [card.data.id, card.global_position.x, other.data.id, other.global_position.x])
                 _remove_from_lookups(other)
-                # _card_positions[card] = card_index + 1
-                # @warning_ignore_start("return_value_discarded")
-                # _reverse_card_positions.erase(card_index)
-                # @warning_ignore_restore("return_value_discarded")
-                # _reverse_card_positions[card_index + 1] = card
                 # This will set positions of other to be our old index
-                tween_card_to_position(other, card_index, 0.1).play()
+                tween_card_to_position(other, card_index + 1, 0.1).play()
     elif offset.x < -DRAG_DEADZONE:
-        if _reverse_card_positions.has(card_index - 1):
-            var other: BattleCard = _reverse_card_positions[card_index - 1]
+        if _reverse_card_positions.has(card_index):
+            var other: BattleCard = _reverse_card_positions[card_index]
             if other.global_position.x > card.global_position.x:
+                on_hand_debug.emit("Shifting card left %s (%s) with %s (%s)" % [card.data.id, card.global_position.x, other.data.id, other.global_position.x])
                 _remove_from_lookups(other)
-                # _card_positions[card] = card_index - 1
-                # @warning_ignore_start("return_value_discarded")
-                # _reverse_card_positions.erase(card_index)
-                # @warning_ignore_restore("return_value_discarded")
-                # _reverse_card_positions[card_index - 1] = card
                 # This will set positions of other to be our old index
-                tween_card_to_position(other, card_index, 0.1).play()
+                tween_card_to_position(other, card_index - 1, 0.1).play()
+
+func _resque_collision(card: BattleCard) -> void:
+    on_hand_debug.emit("Resque collision for %s" % card.data.id)
+    _remove_from_lookups(card)
+    for idx: int in range(_first_card_idx, _last_card_idx + 1):
+        if !_reverse_card_positions.has(idx):
+            _card_positions[card] = idx
+            _reverse_card_positions[idx] = card
+            return
 
 func _handle_card_drag_end(card: BattleCard) -> void:
-    if slots.take(card):
+    if slots.is_over_slots(card):
         hand.erase(card)
+        _remove_from_lookups(card)
+        if !slots.take(card):
+            _return_card_to_hand(card, null)
+
+        # If there was a card in the slot it will organize hand twice in a row
         _organize_hand()
+
     else:
-        var card_idx: int = _get_card_position_index(card)
+        var card_idx: int = _get_card_position_index(card) if _dragged_card_idx == -1 else _dragged_card_idx
 
         if slots.has_card(card):
             @warning_ignore_start("return_value_discarded")
             slots.unslot_card(card)
             @warning_ignore_restore("return_value_discarded")
 
-            _reverse_card_positions[card_idx] = card
+            hand.append(card)
+            _card_positions[card] = card_idx
+            if _reverse_card_positions.has(card_idx) && _reverse_card_positions[card_idx] != card:
+                _reverse_card_positions[card_idx] = card
+                _resque_collision(_reverse_card_positions[card_idx])
+            else:
+                _reverse_card_positions[card_idx] = card
+
             _organize_hand()
             return
 
+        on_hand_debug.emit("Releasing card %s onto index %s" % [card.data.id, card_idx])
         var action: Callable = func () -> void:
             tween_card_to_position(card, card_idx, 0.05).play()
 
         action.call_deferred()
+
+    _dragged_card_idx = -1
 
 func _handle_card_click(card: BattleCard) -> void:
     if slots.has_card(card):
         @warning_ignore_start("return_value_discarded")
         slots.unslot_card(card)
         @warning_ignore_restore("return_value_discarded")
-        return_card_to_hand(card, null)
+        _return_card_to_hand(card, null)
         return
 
     if slots.take(card, true):
@@ -348,14 +409,17 @@ func _handle_card_click(card: BattleCard) -> void:
         hand.erase(card)
         _organize_hand()
 
-func return_card_to_hand(card: BattleCard, position_holder: BattleCard) -> void:
-    var idx: int = _get_card_position_index(position_holder)
+func _return_card_to_hand(card: BattleCard, _position_holder: BattleCard) -> void:
+    var idx: int = _get_card_position_index() if _dragged_card_idx == -1 else _dragged_card_idx
+
+    hand.append(card)
 
     # We neeed to set this here so that it gets returned correctly when redrawing cards
     # as a result of taking another
     _card_positions[card] = idx
     _reverse_card_positions[idx] = card
 
+    on_hand_debug.emit("Returning %s to hand at %s" % [card.data.id, idx])
     _organize_hand()
 
 func _organize_hand() -> void:
@@ -366,6 +430,10 @@ func _organize_hand() -> void:
     for pos: int in positions:
         if _reverse_card_positions[pos] != null:
             cards.append(_reverse_card_positions[pos])
+
+    for card: BattleCard in hand:
+        if !cards.has(card):
+            cards.append(card)
 
     draw_hand(cards, false, false)
 

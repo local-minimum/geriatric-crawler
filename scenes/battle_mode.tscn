@@ -1,4 +1,4 @@
-[gd_scene load_steps=29 format=3 uid="uid://sx8om7lfql6j"]
+[gd_scene load_steps=30 format=3 uid="uid://sx8om7lfql6j"]
 
 [ext_resource type="Script" uid="uid://cvchbk03g5wag" path="res://scripts/battle_mode.gd" id="1_7wt64"]
 [ext_resource type="Texture2D" uid="uid://cpot0wvcwpcqh" path="res://sprites/battle-bg-test.png" id="2_wpnne"]
@@ -21,6 +21,7 @@
 [ext_resource type="Script" uid="uid://bpr7yqsr1h3r3" path="res://scripts/card_battle/debug_dragged_cards.gd" id="11_uf5em"]
 [ext_resource type="Resource" uid="uid://duylk5tm5e1wb" path="res://resources/player_cards/card_defrag_120.tres" id="11_w875v"]
 [ext_resource type="Resource" uid="uid://dyw8d4pex4rg1" path="res://resources/player_cards/card_recharge-735.tres" id="11_wyqpo"]
+[ext_resource type="Script" uid="uid://r83okmi0nsfv" path="res://scripts/card_battle/debug_battle_log.gd" id="12_360r3"]
 [ext_resource type="Resource" uid="uid://ehfht5qywnnf" path="res://resources/player_cards/card_defrag_370.tres" id="12_vq05v"]
 [ext_resource type="Resource" uid="uid://xg54tmjf202g" path="res://resources/player_cards/card_fortify-200.tres" id="16_vq05v"]
 [ext_resource type="Script" uid="uid://c4w2xnbmt2m0c" path="res://scripts/card_battle/battle_player.gd" id="21_wu7la"]
@@ -765,6 +766,37 @@ grow_vertical = 0
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 script = ExtResource("11_uf5em")
 battle_mode = NodePath("../..")
+
+[node name="Hand Debug Messages" type="ColorRect" parent="CanvasLayer"]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -500.0
+offset_bottom = 450.0
+grow_horizontal = 0
+color = Color(0.35, 0.35, 0.35, 0.960784)
+
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/Hand Debug Messages"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 4
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 4
+theme_override_constants/margin_bottom = 4
+
+[node name="DebugMessagesLabel" type="Label" parent="CanvasLayer/Hand Debug Messages/MarginContainer" node_paths=PackedStringArray("_hand")]
+custom_minimum_size = Vector2(400, 400)
+layout_mode = 2
+size_flags_vertical = 1
+text = "Test test test"
+autowrap_mode = 2
+script = ExtResource("12_360r3")
+_hand = NodePath("../../../Player BattleHand")
+_show_messages = 15
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {

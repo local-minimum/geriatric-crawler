@@ -124,17 +124,20 @@ func tween_card_to_slot(card: BattleCard, target: Control, duration: float) -> T
     var slot_idx: int = _slot_rects.find(target)
     var old_slot: int = unslot_card(card)
     if slotted_cards[slot_idx] != null:
-        slotted_cards[slot_idx].sync_display(0)
+        var prev_slotted: BattleCard = slotted_cards[slot_idx]
+
+        prev_slotted.sync_display(0)
 
         # Swap slotted cards
         if old_slot >= 0:
             tween_card_to_slot(
-                slotted_cards[slot_idx],
+                prev_slotted,
                 _slot_rects[old_slot],
                 duration,
             ).play()
         else:
-            on_return_card_to_hand.emit(slotted_cards[slot_idx], card)
+            prev_slotted.on_debug_card.emit(prev_slotted, "Returning to hand")
+            on_return_card_to_hand.emit(prev_slotted, card)
 
     slotted_cards[slot_idx] = card
     _card_tweens[card] = tween
