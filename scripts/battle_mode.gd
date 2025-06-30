@@ -4,6 +4,8 @@ class_name BattleMode
 signal on_entity_join_battle(entity: BattleEntity)
 signal on_entity_leave_battle(entity: BattleEntity)
 signal on_new_card(card: BattleCard)
+signal on_battle_start()
+signal on_battle_end()
 
 @export
 var animator: AnimationPlayer
@@ -48,6 +50,8 @@ var _enemies: Array[BattleEnemy]
 
 #region ENTER BATTLE
 func enter_battle(battle_trigger: BattleModeTrigger) -> void:
+    on_battle_start.emit()
+
     _ui.visible = true
 
     # TODO: Gather proximate battle triggers too and pull them into the fight!
@@ -301,5 +305,6 @@ func exit_battle() -> void:
     await get_tree().create_timer(0.5).timeout
     trigger.complete()
 
+    on_battle_end.emit()
     _ui.visible = false
 #endregion END BATTLE

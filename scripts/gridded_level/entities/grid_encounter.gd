@@ -42,7 +42,7 @@ func _ready() -> void:
         update_entity_anchorage(_spawn_node, anchor, true)
         sync_position()
 
-    super()
+    super._ready()
 
     var level: GridLevel = get_level()
     if level != null:

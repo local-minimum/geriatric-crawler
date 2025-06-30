@@ -10,6 +10,12 @@ var _battle: BattleMode
 @export
 var _enemy_group: bool
 
+@export
+var _delay_show_enemy: float = 3
+
+@export
+var _delay_hide_enemy: float = 1
+
 var _connected_entities: Dictionary[BattleEntity, BattleEntityUI] = {}
 var _inverse_connected_entities: Dictionary[BattleEntityUI, BattleEntity] = {}
 
@@ -19,6 +25,14 @@ func _ready() -> void:
         push_error("Failed to connect enemy joins battle event")
     if _battle.on_entity_leave_battle.connect(_handle_entity_leave) != OK:
         push_error("Failed to connect enemy leaves battle event")
+    if _battle.on_battle_start.connect(_handle_battle_start) != OK:
+        push_error("Failed to conntect battle start")
+    if _battle.on_battle_end.connect(_handle_battle_end) != OK:
+        push_error("Failed to conntect battle end")
+
+func _handle_battle_start() -> void:
+    for ui: BattleEntityUI in _entityUIs:
+        ui.visible = false
 
 func _get_unused_ui() -> BattleEntityUI:
     for ui: BattleEntityUI in _entityUIs:
@@ -48,10 +62,16 @@ func _handle_join_entity(entity: BattleEntity) -> void:
     _connected_entities[entity] = ui
     _inverse_connected_entities[ui] = entity
 
-func _handle_entity_leave(entity: BattleEntity) -> void:
+    await get_tree().create_timer(_delay_show_enemy).timeout
+    ui.visible = true
+
+func _handle_entity_leave(entity: BattleEntity, with_timer: bool = true) -> void:
     # TODO: Fancy exit from battle??
     if _connected_entities.has(entity):
         var ui: BattleEntityUI = _connected_entities[entity]
+        if with_timer:
+            await get_tree().create_timer(_delay_hide_enemy).timeout
+
         ui.disconnect_entity(entity)
         ui.disconnect_player_selection(_battle.battle_player)
 
@@ -59,3 +79,9 @@ func _handle_entity_leave(entity: BattleEntity) -> void:
         _connected_entities.erase(entity)
         _inverse_connected_entities.erase(ui)
         @warning_ignore_restore("return_value_discarded")
+
+        ui.visible = false
+
+func _handle_battle_end() -> void:
+    for entity: BattleEntity in _connected_entities.keys():
+        _handle_entity_leave(entity, false)

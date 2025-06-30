@@ -44,6 +44,7 @@ material = SubResource("StandardMaterial3D_26eu7")
 size = Vector2(0.8, 1.2)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_632b7"]
+transparency = 1
 
 [sub_resource type="QuadMesh" id="QuadMesh_kmgg5"]
 material = SubResource("StandardMaterial3D_632b7")
@@ -521,7 +522,7 @@ strategies = [NodePath("Default Strategy")]
 [node name="Default Strategy" type="Node" parent="Encounters/Target Dummy Blob/Battle Trigger/Target Dummy AI/BattleStrategies"]
 script = ExtResource("22_sy7nh")
 
-[node name="Demo Encounter" type="Node3D" parent="Encounters" node_paths=PackedStringArray("effect", "graphics", "_spawn_node") groups=["Encounter"]]
+[node name="Multi Encounter Repeat" type="Node3D" parent="Encounters" node_paths=PackedStringArray("effect", "graphics", "_spawn_node") groups=["Encounter"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 2.5, -5)
 script = ExtResource("8_kmgg5")
 encounter_id = "demo-enemy-repeat"
@@ -531,13 +532,56 @@ _spawn_node = NodePath("../../LevelGeometry/Elevation 1/Node (2, 1, -2)")
 look_direction = 1
 metadata/_custom_type_script = "uid://bqahhkn6dpex"
 
-[node name="Avatar" type="Node3D" parent="Encounters/Demo Encounter"]
+[node name="Avatar" type="Node3D" parent="Encounters/Multi Encounter Repeat"]
 script = ExtResource("9_myev5")
 
-[node name="Encounter Avatar" type="MeshInstance3D" parent="Encounters/Demo Encounter/Avatar"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.23567, 0)
+[node name="Encounter Avatar" type="MeshInstance3D" parent="Encounters/Multi Encounter Repeat/Avatar"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.7, 0)
 mesh = SubResource("QuadMesh_kmgg5")
 
-[node name="Repeat Battle Trigger" type="Node" parent="Encounters/Demo Encounter"]
+[node name="Repeat Battle Trigger" type="Node" parent="Encounters/Multi Encounter Repeat" node_paths=PackedStringArray("enemies")]
 script = ExtResource("10_rvj20")
+enemies = [NodePath("Target Dummy AI"), NodePath("Target Dummy AI (2)")]
 metadata/_custom_type_script = "uid://b3kob7bivk342"
+
+[node name="Target Dummy AI" type="Node" parent="Encounters/Multi Encounter Repeat/Repeat Battle Trigger" node_paths=PackedStringArray("deck", "brain")]
+script = ExtResource("11_fxt0s")
+variant_id = "target-dummy"
+variant_name = "Target Dummy"
+level = 1
+deck = NodePath("BattleDeck")
+brain = NodePath("BattleStrategies")
+sprite = ExtResource("12_26eu7")
+
+[node name="BattleDeck" type="Node" parent="Encounters/Multi Encounter Repeat/Repeat Battle Trigger/Target Dummy AI"]
+script = ExtResource("12_rcxcv")
+_start_deck = Array[ExtResource("13_26eu7")]([ExtResource("14_s5loo"), ExtResource("15_632b7"), ExtResource("16_n55gf"), ExtResource("17_idbts"), ExtResource("18_j1mj1"), ExtResource("19_7gan6"), ExtResource("20_sn1co"), ExtResource("21_wymjw")])
+metadata/_custom_type_script = "uid://c2lco7et0w3ia"
+
+[node name="BattleStrategies" type="Node" parent="Encounters/Multi Encounter Repeat/Repeat Battle Trigger/Target Dummy AI" node_paths=PackedStringArray("strategies")]
+script = ExtResource("22_rcxcv")
+strategies = [NodePath("Default Strategy")]
+
+[node name="Default Strategy" type="Node" parent="Encounters/Multi Encounter Repeat/Repeat Battle Trigger/Target Dummy AI/BattleStrategies"]
+script = ExtResource("22_sy7nh")
+
+[node name="Target Dummy AI (2)" type="Node" parent="Encounters/Multi Encounter Repeat/Repeat Battle Trigger" node_paths=PackedStringArray("deck", "brain")]
+script = ExtResource("11_fxt0s")
+variant_id = "target-dummy"
+variant_name = "Target Dummy"
+level = 1
+deck = NodePath("BattleDeck")
+brain = NodePath("BattleStrategies")
+sprite = ExtResource("12_26eu7")
+
+[node name="BattleDeck" type="Node" parent="Encounters/Multi Encounter Repeat/Repeat Battle Trigger/Target Dummy AI (2)"]
+script = ExtResource("12_rcxcv")
+_start_deck = Array[ExtResource("13_26eu7")]([ExtResource("14_s5loo"), ExtResource("15_632b7"), ExtResource("16_n55gf"), ExtResource("17_idbts"), ExtResource("18_j1mj1"), ExtResource("19_7gan6"), ExtResource("20_sn1co"), ExtResource("21_wymjw")])
+metadata/_custom_type_script = "uid://c2lco7et0w3ia"
+
+[node name="BattleStrategies" type="Node" parent="Encounters/Multi Encounter Repeat/Repeat Battle Trigger/Target Dummy AI (2)" node_paths=PackedStringArray("strategies")]
+script = ExtResource("22_rcxcv")
+strategies = [NodePath("Default Strategy")]
+
+[node name="Default Strategy" type="Node" parent="Encounters/Multi Encounter Repeat/Repeat Battle Trigger/Target Dummy AI (2)/BattleStrategies"]
+script = ExtResource("22_sy7nh")
