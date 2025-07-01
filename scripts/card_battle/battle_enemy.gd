@@ -94,15 +94,17 @@ func play_actions(
             var n_targets: int = randi_range(targets_range[0], targets_range[1])
             var had_effect: bool = false
 
-            if effect.targets_enemies():
-                _execute_effect(effect, suit_bonus, enemies, n_targets, false)
+            if effect.targets_enemies() && effect.targets_allies():
+                _execute_effect(effect, suit_bonus, enemies + allies, n_targets, allies)
                 had_effect = true
-
-            if effect.targets_allies():
-                _execute_effect(effect, suit_bonus, allies , n_targets, true)
+            elif effect.targets_enemies():
+                _execute_effect(effect, suit_bonus, enemies, n_targets, allies)
+                had_effect = true
+            elif effect.targets_allies():
+                _execute_effect(effect, suit_bonus, allies , n_targets, allies)
                 had_effect = true
             elif effect.targets_self():
-                _execute_effect(effect, suit_bonus, [self], n_targets, true)
+                _execute_effect(effect, suit_bonus, [self], n_targets, allies)
                 had_effect = true
 
             if !had_effect:
@@ -120,9 +122,8 @@ func _execute_effect(
     suit_bonus: int,
     targets: Array[BattleEntity],
     n_targets: int,
-    allies: bool,
+    allies: Array[BattleEntity],
 ) -> void:
-    var value: int = effect.calculate_effect(suit_bonus, allies)
 
     # TODO: Strategic targets
     var _rng_target: bool = effect.targets_random()
@@ -131,6 +132,8 @@ func _execute_effect(
 
     for i: int in range(n_targets):
         var target: BattleEntity = targets[target_order[i]]
+
+        var value: int = effect.calculate_effect(suit_bonus, allies.has(target))
 
         print_debug("Doing %s %s to %s" % [value, effect.mode_name(), target.name])
 

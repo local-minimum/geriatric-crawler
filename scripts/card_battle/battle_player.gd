@@ -123,37 +123,33 @@ func _execute_next_effect() -> void:
     var targets_range: Array[int] = effect.get_target_range()
     var n_targets: int = randi_range(targets_range[0], targets_range[1])
 
+    _active_effect = effect
     if effect.targets_allies() && effect.targets_enemies():
         _possible_effect_targets = _enemies + _allies
-        _execute_effect(effect, _suit_bonus, n_targets, false)
     elif effect.targets_enemies():
         _possible_effect_targets = _enemies
-        _execute_effect(effect, _suit_bonus, n_targets, false)
     elif effect.targets_allies():
         _possible_effect_targets = _allies
-        _execute_effect(effect, _suit_bonus, n_targets, true)
     elif effect.targets_self():
         _possible_effect_targets = [self]
-        _execute_effect(effect, _suit_bonus, n_targets, true)
     else:
         push_warning("Card %s's effect %s has no effect" % [card.name, effect])
+        _active_card_effect_index += 1
+        _execute_next_effect()
+        return
 
-func _execute_effect(
-    effect: BattleCardPrimaryEffect,
-    suit_bonus: int,
-    n_targets: int,
-    allies: bool,
-) -> void:
-    _effect_magnitue = effect.calculate_effect(suit_bonus, allies)
-    _effect_target_type = effect.target_type()
+    _execute_effect(n_targets)
+
+func _execute_effect(n_targets: int) -> void:
+    _effect_target_type = _active_effect.target_type()
     print_debug("Target type is %s" % _effect_target_type)
 
-    var rng_target: bool = effect.targets_random()
+    var rng_target: bool = _active_effect.targets_random()
     var target_order: Array[int] = ArrayUtils.int_range(_possible_effect_targets.size())
     target_order.shuffle()
     _effect_targets_count = mini(n_targets, _possible_effect_targets.size())
 
-    _effect_mode = effect.mode
+    _effect_mode = _active_effect.mode
     _effect_targets.clear()
 
     var automatic: bool = _effect_targets_count >= _possible_effect_targets.size() || rng_target
@@ -171,7 +167,7 @@ func _execute_effect(
     on_player_select_targets.emit(self, n_targets, _possible_effect_targets, _effect_mode, _effect_target_type)
 
 var _effect_targets_count: int
-var _effect_magnitue: int
+var _active_effect: BattleCardPrimaryEffect
 var _effect_targets: Array[BattleEntity]
 var _possible_effect_targets: Array[BattleEntity]
 var _effect_mode: BattleCardPrimaryEffect.EffectMode
@@ -200,15 +196,16 @@ func _execute_effect_on_targets() -> void:
     for target: BattleEntity in _effect_targets:
         on_before_execute_effect_on_target.emit(target)
 
-        print_debug("Doing %s %s to %s" % [_effect_magnitue, BattleCardPrimaryEffect.humanize(_effect_mode), target.name])
+        var effect_magnitude: int = _active_effect.calculate_effect(_suit_bonus, _allies.has(target))
+        print_debug("Doing %s %s to %s" % [effect_magnitude, BattleCardPrimaryEffect.humanize(_effect_mode), target.name])
 
         match _effect_mode:
             BattleCardPrimaryEffect.EffectMode.Damage:
-                target.hurt(_effect_magnitue)
+                target.hurt(effect_magnitude)
             BattleCardPrimaryEffect.EffectMode.Heal:
-                target.heal(_effect_magnitue)
+                target.heal(effect_magnitude)
             BattleCardPrimaryEffect.EffectMode.Defence:
-                target.add_shield(_effect_magnitue)
+                target.add_shield(effect_magnitude)
 
         await get_tree().create_timer(0.25).timeout
 

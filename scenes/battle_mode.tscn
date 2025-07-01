@@ -487,15 +487,12 @@ _enemy_group = true
 
 [node name="EnemyUI 1" parent="CanvasLayer/Enemies" instance=ExtResource("6_4nxwp")]
 layout_mode = 2
-_target_scale = 1.15
 
 [node name="EnemyUI 2" parent="CanvasLayer/Enemies" instance=ExtResource("6_4nxwp")]
 layout_mode = 2
-_target_scale = 1.15
 
 [node name="EnemyUI 3" parent="CanvasLayer/Enemies" instance=ExtResource("6_4nxwp")]
 layout_mode = 2
-_target_scale = 1.15
 
 [node name="Fight Letters" type="HBoxContainer" parent="CanvasLayer"]
 visible = false
