@@ -202,6 +202,12 @@ func _execute_effect_on_targets() -> void:
         match _effect_mode:
             BattleCardPrimaryEffect.EffectMode.Damage:
                 target.hurt(effect_magnitude)
+                if !target.is_alive():
+                    if _allies.has(target):
+                        _allies.erase(target)
+                    if _enemies.has(target):
+                        _enemies.erase(target)
+
             BattleCardPrimaryEffect.EffectMode.Heal:
                 target.heal(effect_magnitude)
             BattleCardPrimaryEffect.EffectMode.Defence:

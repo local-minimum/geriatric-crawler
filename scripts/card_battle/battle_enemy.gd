@@ -110,6 +110,9 @@ func play_actions(
             if !had_effect:
                 push_warning("Card %s's effect %s has no effect" % [card.name, effect])
 
+            enemies = enemies.filter(func (e: BattleEntity) -> bool: return e.is_alive())
+            allies = allies.filter(func (e: BattleEntity) -> bool: return e.is_alive())
+
         idx += 1
         previous = card
 
@@ -124,7 +127,6 @@ func _execute_effect(
     n_targets: int,
     allies: Array[BattleEntity],
 ) -> void:
-
     # TODO: Strategic targets
     var _rng_target: bool = effect.targets_random()
     var target_order: Array[int] = ArrayUtils.int_range(targets.size())

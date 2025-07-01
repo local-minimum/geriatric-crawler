@@ -103,7 +103,13 @@ func disconnect_entity(entity: BattleEntity) -> void:
 
     _entity = null
 
+
+var _connected_players: Array[BattlePlayer]
+
 func connect_player_selection(player: BattlePlayer) -> void:
+    if _connected_players.has(player):
+        return
+
     if player.on_player_select_targets.connect(_handle_entity_selection_start) != OK:
         push_error("Failed to connect %s's on_player_select_targets" % player)
     if player.on_player_select_targets_complete.connect(_handle_entity_selection_end) != OK:
@@ -113,11 +119,17 @@ func connect_player_selection(player: BattlePlayer) -> void:
     if player.on_after_execute_effect_on_target.connect(_handle_reset_targeted) != OK:
         push_error("Failed to connect %s's after effect on target" % player)
 
+    _connected_players.append(player)
+
 func disconnect_player_selection(player: BattlePlayer) -> void:
+    if !_connected_players.has(player):
+        return
+
     player.on_player_select_targets.disconnect(_handle_entity_selection_start)
     player.on_player_select_targets_complete.disconnect(_handle_entity_selection_end)
     player.on_before_execute_effect_on_target.disconnect(_handle_set_targeted)
     player.on_after_execute_effect_on_target.disconnect(_handle_reset_targeted)
+    _connected_players.erase(player)
 
 var _selection_player: BattlePlayer = null
 
