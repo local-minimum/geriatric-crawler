@@ -95,16 +95,16 @@ func play_actions(
             var had_effect: bool = false
 
             if effect.targets_enemies() && effect.targets_allies():
-                _execute_effect(effect, suit_bonus, enemies + allies, n_targets, allies)
+                await _execute_effect(effect, suit_bonus, enemies + allies, n_targets, allies)
                 had_effect = true
             elif effect.targets_enemies():
-                _execute_effect(effect, suit_bonus, enemies, n_targets, allies)
+                await _execute_effect(effect, suit_bonus, enemies, n_targets, allies)
                 had_effect = true
             elif effect.targets_allies():
-                _execute_effect(effect, suit_bonus, allies , n_targets, allies)
+                await _execute_effect(effect, suit_bonus, allies , n_targets, allies)
                 had_effect = true
             elif effect.targets_self():
-                _execute_effect(effect, suit_bonus, [self], n_targets, allies)
+                await _execute_effect(effect, suit_bonus, [self], n_targets, allies)
                 had_effect = true
 
             if !had_effect:
