@@ -183,34 +183,34 @@ func _gui_input(event: InputEvent) -> void:
 
     if event is InputEventScreenTouch:
         var touch: InputEventScreenTouch = event
-        if get_global_rect().has_point(touch.position) && !touch.is_echo():
-            on_debug_card.emit(self, "Touched")
 
-            if touch.pressed && _dragged == null:
-                _hovered = self
+        on_debug_card.emit(self, "Touched")
 
-            _handle_click(touch.pressed, touch.is_echo(), touch.device)
+        if touch.pressed && _dragged == null:
+            _hovered = self
+
+        _handle_click(touch.pressed, touch.device)
 
         if !touch.pressed && _hovered == self:
             _hovered = null
 
     if event is InputEventMouseButton:
-        var btn_event: InputEventMouseButton = event
-        if btn_event.button_index == MOUSE_BUTTON_LEFT:
-            _handle_click(btn_event.pressed, btn_event.is_echo(), btn_event.device)
+        var button: InputEventMouseButton = event
+        if button.button_index == MOUSE_BUTTON_LEFT:
+            _handle_click(button.pressed, button.device)
 
     elif event is InputEventMouseMotion:
-        var motion_event: InputEventMouseMotion = event
-        if (_may_drag || _dragged == self) && motion_event.device == _active_device:
-            _handle_drag(motion_event.relative)
+        var mouse_drag: InputEventMouseMotion = event
+        if (_may_drag || _dragged == self) && mouse_drag.device == _active_device:
+            _handle_drag(mouse_drag.relative)
 
     elif event is InputEventScreenDrag:
-        var motion_event: InputEventScreenDrag = event
-        if (_may_drag || _dragged == self) && motion_event.device == _active_device:
-            _handle_drag(motion_event.relative)
+        var touch_drag: InputEventScreenDrag = event
+        if (_may_drag || _dragged == self) && touch_drag.device == _active_device:
+            _handle_drag(touch_drag.relative)
 
-func _handle_click(pressed: bool, is_echo: bool, device: int) -> void:
-    if _dragged != self && _hovered == self && pressed && !is_echo:
+func _handle_click(pressed: bool, device: int) -> void:
+    if _dragged != self && _hovered == self && pressed:
         on_debug_card.emit(self, "Pressed")
         _active_device = device
         var timer: SceneTreeTimer = get_tree().create_timer(CLICK_DURATION)

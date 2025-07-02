@@ -272,10 +272,15 @@ func _gui_input(event: InputEvent) -> void:
     if event is InputEventMouseButton:
         var btn_event: InputEventMouseButton = event
         if btn_event.button_index == MOUSE_BUTTON_LEFT:
-            if _hovered && btn_event.pressed && !btn_event.is_echo():
+            if _hovered && btn_event.pressed:
                 if _selection_player != null:
                     if !selected:
                         selected = _selection_player.add_target(_entity)
+
+    if event is InputEventScreenTouch:
+        if _selection_player != null:
+            if !selected:
+                selected = _selection_player.add_target(_entity)
 
 var _hovered: bool
 

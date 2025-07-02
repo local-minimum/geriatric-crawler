@@ -770,6 +770,7 @@ anchor_right = 1.0
 offset_left = -500.0
 offset_bottom = 450.0
 grow_horizontal = 0
+mouse_filter = 2
 color = Color(0.35, 0.35, 0.35, 0.960784)
 
 [node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/Hand Debug Messages"]
@@ -779,6 +780,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 theme_override_constants/margin_left = 4
 theme_override_constants/margin_top = 4
 theme_override_constants/margin_right = 4
