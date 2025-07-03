@@ -31,6 +31,9 @@ var deck: BattleDeck
 @export
 var brain: BattleBrain
 
+@export
+var _target_system: BattleEnemyTargetSystem
+
 var _hand: Array[BattleCardData]
 var _slotted: Array[BattleCardData]
 
@@ -127,10 +130,12 @@ func _execute_effect(
     n_targets: int,
     allies: Array[BattleEntity],
 ) -> void:
-    # TODO: Strategic targets
-    var _rng_target: bool = effect.targets_random()
-    var target_order: Array[int] = ArrayUtils.int_range(targets.size())
-    target_order.shuffle()
+    var target_order: Array[int] = []
+    if effect.targets_random():
+        target_order = ArrayUtils.int_range(targets.size())
+        target_order.shuffle()
+    else:
+        target_order = _target_system.get_target_order(effect, suit_bonus, targets, n_targets, allies)
 
     for i: int in range(n_targets):
         var target: BattleEntity = targets[target_order[i]]

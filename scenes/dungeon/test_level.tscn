@@ -1,4 +1,4 @@
-[gd_scene load_steps=31 format=3 uid="uid://dwqcwbgj8p6q0"]
+[gd_scene load_steps=32 format=3 uid="uid://dwqcwbgj8p6q0"]
 
 [ext_resource type="Script" uid="uid://dqe42q7uub84r" path="res://scripts/gridded_level/level_features/grid_level.gd" id="1_dd1ob"]
 [ext_resource type="PackedScene" uid="uid://bfoog3fb4v5ij" path="res://scenes/dungeon/player.tscn" id="3_m6mav"]
@@ -24,8 +24,9 @@
 [ext_resource type="Resource" uid="uid://c0fagwlpy72ds" path="res://resources/enemy_training_dummy_cards/training_dummy_shield_up_950.tres" id="21_wymjw"]
 [ext_resource type="Script" uid="uid://dtq2v31avcen2" path="res://scripts/card_battle/battle_brain.gd" id="22_rcxcv"]
 [ext_resource type="Script" uid="uid://qbk2psf0rmnw" path="res://scripts/card_battle/battle_strategy.gd" id="22_sy7nh"]
+[ext_resource type="Script" uid="uid://6vnrccj8frlq" path="res://scripts/card_battle/battle_enemy_target_system.gd" id="25_s5loo"]
 
-[sub_resource type="Resource" id="Resource_26eu7"]
+[sub_resource type="Resource" id="Resource_632b7"]
 resource_local_to_scene = true
 script = ExtResource("4_840jk")
 mode = 61
@@ -60,7 +61,7 @@ level_geometry = NodePath("LevelGeometry")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0145968, -0.00857759, 0.00070858)
 spawn_node = NodePath("../LevelGeometry/Elevation 0/Node (0, 0, 1)")
 look_direction = 1
-transportation_abilities = SubResource("Resource_26eu7")
+transportation_abilities = SubResource("Resource_632b7")
 transportation_mode = SubResource("Resource_pgxau")
 
 [node name="LevelGeometry" type="Node3D" parent="."]
@@ -501,13 +502,14 @@ enemies = [NodePath("Target Dummy AI")]
 hide_encounter_on_trigger = true
 metadata/_custom_type_script = "uid://b3kob7bivk342"
 
-[node name="Target Dummy AI" type="Node" parent="Encounters/Target Dummy Blob/Battle Trigger" node_paths=PackedStringArray("deck", "brain")]
+[node name="Target Dummy AI" type="Node" parent="Encounters/Target Dummy Blob/Battle Trigger" node_paths=PackedStringArray("deck", "brain", "_target_system")]
 script = ExtResource("11_fxt0s")
 variant_id = "target-dummy"
 variant_name = "Target Dummy"
 level = 1
 deck = NodePath("BattleDeck")
 brain = NodePath("BattleStrategies")
+_target_system = NodePath("BattleEnemyTargetSystem")
 sprite = ExtResource("12_26eu7")
 
 [node name="BattleDeck" type="Node" parent="Encounters/Target Dummy Blob/Battle Trigger/Target Dummy AI"]
@@ -521,6 +523,11 @@ strategies = [NodePath("Default Strategy")]
 
 [node name="Default Strategy" type="Node" parent="Encounters/Target Dummy Blob/Battle Trigger/Target Dummy AI/BattleStrategies"]
 script = ExtResource("22_sy7nh")
+
+[node name="BattleEnemyTargetSystem" type="Node" parent="Encounters/Target Dummy Blob/Battle Trigger/Target Dummy AI" node_paths=PackedStringArray("_self")]
+script = ExtResource("25_s5loo")
+_self = NodePath("..")
+metadata/_custom_type_script = "uid://6vnrccj8frlq"
 
 [node name="Multi Encounter Repeat" type="Node3D" parent="Encounters" node_paths=PackedStringArray("effect", "graphics", "_spawn_node") groups=["Encounter"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 2.5, -5)
@@ -544,13 +551,14 @@ script = ExtResource("10_rvj20")
 enemies = [NodePath("Target Dummy AI"), NodePath("Target Dummy AI (2)")]
 metadata/_custom_type_script = "uid://b3kob7bivk342"
 
-[node name="Target Dummy AI" type="Node" parent="Encounters/Multi Encounter Repeat/Repeat Battle Trigger" node_paths=PackedStringArray("deck", "brain")]
+[node name="Target Dummy AI" type="Node" parent="Encounters/Multi Encounter Repeat/Repeat Battle Trigger" node_paths=PackedStringArray("deck", "brain", "_target_system")]
 script = ExtResource("11_fxt0s")
 variant_id = "target-dummy"
 variant_name = "Target Dummy"
 level = 1
 deck = NodePath("BattleDeck")
 brain = NodePath("BattleStrategies")
+_target_system = NodePath("BattleEnemyTargetSystem")
 sprite = ExtResource("12_26eu7")
 
 [node name="BattleDeck" type="Node" parent="Encounters/Multi Encounter Repeat/Repeat Battle Trigger/Target Dummy AI"]
@@ -565,13 +573,19 @@ strategies = [NodePath("Default Strategy")]
 [node name="Default Strategy" type="Node" parent="Encounters/Multi Encounter Repeat/Repeat Battle Trigger/Target Dummy AI/BattleStrategies"]
 script = ExtResource("22_sy7nh")
 
-[node name="Target Dummy AI (2)" type="Node" parent="Encounters/Multi Encounter Repeat/Repeat Battle Trigger" node_paths=PackedStringArray("deck", "brain")]
+[node name="BattleEnemyTargetSystem" type="Node" parent="Encounters/Multi Encounter Repeat/Repeat Battle Trigger/Target Dummy AI" node_paths=PackedStringArray("_self")]
+script = ExtResource("25_s5loo")
+_self = NodePath("..")
+metadata/_custom_type_script = "uid://6vnrccj8frlq"
+
+[node name="Target Dummy AI (2)" type="Node" parent="Encounters/Multi Encounter Repeat/Repeat Battle Trigger" node_paths=PackedStringArray("deck", "brain", "_target_system")]
 script = ExtResource("11_fxt0s")
 variant_id = "target-dummy"
 variant_name = "Target Dummy"
 level = 1
 deck = NodePath("BattleDeck")
 brain = NodePath("BattleStrategies")
+_target_system = NodePath("BattleEnemyTargetSystem")
 sprite = ExtResource("12_26eu7")
 
 [node name="BattleDeck" type="Node" parent="Encounters/Multi Encounter Repeat/Repeat Battle Trigger/Target Dummy AI (2)"]
@@ -585,3 +599,8 @@ strategies = [NodePath("Default Strategy")]
 
 [node name="Default Strategy" type="Node" parent="Encounters/Multi Encounter Repeat/Repeat Battle Trigger/Target Dummy AI (2)/BattleStrategies"]
 script = ExtResource("22_sy7nh")
+
+[node name="BattleEnemyTargetSystem" type="Node" parent="Encounters/Multi Encounter Repeat/Repeat Battle Trigger/Target Dummy AI (2)" node_paths=PackedStringArray("_self")]
+script = ExtResource("25_s5loo")
+_self = NodePath("..")
+metadata/_custom_type_script = "uid://6vnrccj8frlq"

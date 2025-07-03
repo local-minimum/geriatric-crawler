@@ -32,6 +32,9 @@ func get_entity_name() -> String:
 func get_health() -> int:
     return _health
 
+func get_healthiness() -> float:
+    return _health as float / max_health
+
 func is_alive() -> bool:
     return _health > 0
 

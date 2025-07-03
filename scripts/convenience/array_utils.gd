@@ -30,3 +30,10 @@ static func int_range(n: int) -> Array[int]:
         r[idx] = idx
 
     return r
+
+static func sumi(arr: Array[int], start_value: int = 0) -> int:
+    return arr.reduce(
+        func summer(acc: Variant, value: Variant) -> Variant:
+            return acc + value,
+        start_value,
+    )
