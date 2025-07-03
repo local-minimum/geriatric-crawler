@@ -130,4 +130,4 @@ func _get_targets(
             return weights[targets[a]] > weights[targets[b]]
     )
 
-    return target_order.slice(n_targets)
+    return target_order.slice(0, n_targets)
