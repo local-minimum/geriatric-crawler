@@ -242,11 +242,13 @@ func _next_enemy_initiative() -> int:
 func _handle_player_death(entity: BattleEntity) -> void:
     if entity == battle_player:
         for enemy: BattleEnemy in _enemies:
-            enemy.halt_actions()
+            enemy.end_turn_early()
 
     # TODO Handle party wipe better
     exit_battle()
 
+
+var _ending_player_turn_early: bool
 
 func _handle_enemy_death(entity: BattleEntity) -> void:
     var remaining_enemies: bool = _enemies.any(
@@ -257,8 +259,12 @@ func _handle_enemy_death(entity: BattleEntity) -> void:
     print_debug("%s died, any remaining %s" % [entity.name, remaining_enemies])
 
     if !remaining_enemies:
-        battle_player.halt_actions()
-        exit_battle()
+        battle_player.end_turn_early()
+        if battle_player.on_after_execute_card.connect(exit_battle) == OK:
+            _ending_player_turn_early = true
+        else:
+            push_error("Failed to connect after execute card on player %s" % battle_player)
+            exit_battle()
 #endregion PHASE PLAY CARD
 
 #region PHASE CLEANUP
@@ -290,6 +296,10 @@ func _clean_up_round(exit_battle_cleanup: bool = false) -> void:
 
 #region END BATTLE
 func exit_battle() -> void:
+    if _ending_player_turn_early:
+        battle_player.on_after_execute_card.disconnect(exit_battle)
+        _ending_player_turn_early = false
+
     _clean_up_round(true)
 
     for enemy: BattleEnemy in _enemies:

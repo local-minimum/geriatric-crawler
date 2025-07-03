@@ -117,7 +117,7 @@ func play_actions(
 
 var _halted: bool = false
 
-func halt_actions() -> void:
+func end_turn_early() -> void:
     _halted = true
 
 func clean_up_round() -> void:
