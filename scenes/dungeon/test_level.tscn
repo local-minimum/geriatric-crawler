@@ -26,7 +26,7 @@
 [ext_resource type="Script" uid="uid://qbk2psf0rmnw" path="res://scripts/card_battle/battle_strategy.gd" id="22_sy7nh"]
 [ext_resource type="Script" uid="uid://6vnrccj8frlq" path="res://scripts/card_battle/battle_enemy_target_system.gd" id="25_s5loo"]
 
-[sub_resource type="Resource" id="Resource_632b7"]
+[sub_resource type="Resource" id="Resource_s5loo"]
 resource_local_to_scene = true
 script = ExtResource("4_840jk")
 mode = 61
@@ -61,7 +61,7 @@ level_geometry = NodePath("LevelGeometry")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0145968, -0.00857759, 0.00070858)
 spawn_node = NodePath("../LevelGeometry/Elevation 0/Node (0, 0, 1)")
 look_direction = 1
-transportation_abilities = SubResource("Resource_632b7")
+transportation_abilities = SubResource("Resource_s5loo")
 transportation_mode = SubResource("Resource_pgxau")
 
 [node name="LevelGeometry" type="Node3D" parent="."]

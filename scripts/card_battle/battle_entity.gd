@@ -14,6 +14,8 @@ signal on_start_turn(entity: BattleEntity)
 signal on_end_turn(entity: BattleEntity)
 @warning_ignore_restore("unused_signal")
 
+static var _HEALTH_KEY: String = "health"
+
 var _health: int
 
 @export
@@ -122,3 +124,11 @@ func end_turn_early() -> void:
 
 func clean_up_round() -> void:
     _halted = false
+
+func clean_up_battle() -> void:
+    _shields.clear()
+
+func collect_save_data() -> Dictionary:
+    return {
+        _HEALTH_KEY: _health,
+    }

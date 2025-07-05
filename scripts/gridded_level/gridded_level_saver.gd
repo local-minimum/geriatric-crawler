@@ -21,10 +21,10 @@ var level_name: String = "demo"
 func _ready() -> void:
     if level == null:
         var node: Node = get_tree().get_first_node_in_group(GridLevel.LEVEL_GROUP)
-        if node != null:
+        if node != null && node is GridLevel:
             level = node
         else:
-            push_error("Could not find a level in '%s', won't be able to load saves" % GridLevel.LEVEL_GROUP)
+            push_warning("Could not find a level in '%s', won't be able to load level saves" % GridLevel.LEVEL_GROUP)
 
 func get_level_name() -> String:
     return level_name

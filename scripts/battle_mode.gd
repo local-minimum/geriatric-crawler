@@ -7,6 +7,8 @@ signal on_new_card(card: BattleCard)
 signal on_battle_start()
 signal on_battle_end()
 
+const LEVEL_GROUP: String = "battle-mode"
+
 @export
 var animator: AnimationPlayer
 
@@ -27,11 +29,11 @@ var battle_player: BattlePlayer
 
 var trigger: GridEncounterEffect
 
-var suit_crit_bonus: int = 0
-var rank_crit_bonus: int = 0
-
 const _battle_card_resource: PackedScene = preload("res://scenes/battle_card.tscn")
 var _cards: Array[BattleCard] = []
+
+func _init() -> void:
+    add_to_group(LEVEL_GROUP)
 
 func _ready() -> void:
     if battle_hand.on_hand_drawn.connect(_after_deal) != OK:
@@ -46,7 +48,15 @@ func _ready() -> void:
 var _next_active_enemy: int
 var _player_initiative: int
 
+func get_battling() -> bool:
+    return _ui.visible
+
 var _enemies: Array[BattleEnemy]
+func get_enemies() -> Array[BattleEnemy]:
+    return _enemies.duplicate()
+
+func get_party() -> Array[BattlePlayer]:
+    return [battle_player]
 
 #region ENTER BATTLE
 func enter_battle(battle_trigger: BattleModeTrigger) -> void:
@@ -89,7 +99,6 @@ func enter_battle(battle_trigger: BattleModeTrigger) -> void:
     await get_tree().create_timer(1.0).timeout
 
     round_start_prepare_hands()
-
 #endregion ENTER BATTLE
 
 #region PHASE DRAW AND SLOT CARDS
@@ -275,6 +284,9 @@ func _clean_up_round(exit_battle_cleanup: bool = false) -> void:
                 return true
 
             on_entity_leave_battle.emit(enemy)
+            enemy.on_end_turn.disconnect(_next_agent_turn)
+            enemy.on_death.disconnect(_handle_enemy_death)
+            enemy.clean_up_battle()
             return false
     )
 
@@ -304,10 +316,14 @@ func exit_battle() -> void:
 
     for enemy: BattleEnemy in _enemies:
         on_entity_leave_battle.emit(enemy)
+        enemy.clean_up_battle()
         enemy.on_end_turn.disconnect(_next_agent_turn)
+        enemy.on_death.disconnect(_handle_enemy_death)
 
     on_entity_leave_battle.emit(battle_player)
+    battle_player.clean_up_battle()
     battle_player.on_end_turn.disconnect(_next_agent_turn)
+    battle_player.on_death.disconnect(_handle_player_death)
 
     _enemies.clear()
 

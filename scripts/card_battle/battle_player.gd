@@ -13,9 +13,14 @@ signal on_before_execute_effect_on_target(target: BattleEntity)
 signal on_after_execute_effect_on_target(target: BattleEntity)
 signal on_after_execute_card()
 
+static var _SUIT_BONUS_KEY: String = "suit-bonus"
+static var _ID_KEY: String = "id"
+
+@export
+var character_id: String = "main"
+
 @export
 var _slots: BattleCardSlots
-
 
 func play_actions(
     allies: Array[BattleEntity],
@@ -234,3 +239,35 @@ func clean_up_round() -> void:
     _active_card_effect_index = 0
     _previous_card = null
     print_debug("Player end round cleaned")
+
+func clean_up_battle() -> void:
+    super.clean_up_battle()
+    _previous_card = null
+
+func collect_save_data() -> Dictionary:
+    var data: Dictionary = super.collect_save_data()
+    data.merge({
+        _ID_KEY: character_id,
+        _SUIT_BONUS_KEY: _suit_bonus,
+    }, true)
+    return data
+
+func load_from_save(data: Dictionary) -> void:
+    if data.has(_ID_KEY) && data[_ID_KEY] != character_id:
+        push_error("Attmpted to load %s onto %s" % [data[_ID_KEY], character_id])
+        return
+
+    var bonus: Variant = data[_SUIT_BONUS_KEY]
+    if bonus is int:
+        _suit_bonus = bonus
+    else:
+        _suit_bonus = 0
+        push_error("There was no suit bonus %s in save %s" % [character_id, data])
+
+    var health: Variant = data[_HEALTH_KEY]
+    if health is int:
+        _health = health
+        _health = clampi(_health, 0, max_health)
+    else:
+        push_error("There was no health for %s in save %s" % [character_id, data])
+        _health = max_health

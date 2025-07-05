@@ -1,13 +1,15 @@
-[gd_scene load_steps=4 format=3 uid="uid://xqedv5aeal6n"]
+[gd_scene load_steps=5 format=3 uid="uid://xqedv5aeal6n"]
 
 [ext_resource type="Script" uid="uid://bkjlt23hansuv" path="res://scripts/savesystem/save_system.gd" id="1_iwv0b"]
 [ext_resource type="Script" uid="uid://bemcpr6cqtnb3" path="res://scripts/savesystem/disk_json_storage_provider.gd" id="2_7c2yx"]
 [ext_resource type="Script" uid="uid://b5qjiwnmmx7i3" path="res://scripts/gridded_level/gridded_level_saver.gd" id="3_a0ogi"]
+[ext_resource type="Script" uid="uid://c2ktk27vk655o" path="res://scripts/card_battle/battle_mode_saver.gd" id="4_fhslq"]
 
-[node name="SaveSystem" type="Node" node_paths=PackedStringArray("storage_provider", "level_saver")]
+[node name="SaveSystem" type="Node" node_paths=PackedStringArray("storage_provider", "level_saver", "extensions")]
 script = ExtResource("1_iwv0b")
 storage_provider = NodePath("StorageProvider")
 level_saver = NodePath("LevelSaver")
+extensions = [NodePath("BattleModeSaver")]
 metadata/_custom_type_script = "uid://bkjlt23hansuv"
 
 [node name="StorageProvider" type="Node" parent="."]
@@ -15,3 +17,7 @@ script = ExtResource("2_7c2yx")
 
 [node name="LevelSaver" type="Node" parent="."]
 script = ExtResource("3_a0ogi")
+
+[node name="BattleModeSaver" type="Node" parent="."]
+script = ExtResource("4_fhslq")
+metadata/_custom_type_script = "uid://c2ktk27vk655o"

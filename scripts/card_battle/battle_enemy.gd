@@ -4,6 +4,8 @@ class_name BattleEnemy
 signal on_prepare_hand(battle_enemy: BattleEnemy, slotted_cards: Array[BattleCard])
 signal on_play_card(card: BattleCardData, suit_bonus: int, pause: float)
 
+static var _VARIANT_KEY: String = "variant"
+static var _LEVEL_KEY: String = "level"
 
 ## This is the variant ID of the enemy character in the blob, e.g. "space-slug". It shouldn't be unique. But if there are variants like "space-slug-lvl2" it should be named as such
 @export
@@ -156,3 +158,15 @@ func _execute_effect(
 
         if _halted:
             return
+
+func clean_up_battle() -> void:
+    super.clean_up_battle()
+    _health = max_health
+
+func collect_save_data() -> Dictionary:
+    var data: Dictionary = super.collect_save_data()
+    data.merge({
+        _VARIANT_KEY: variant_id,
+        _LEVEL_KEY: level,
+    }, true)
+    return data
