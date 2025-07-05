@@ -113,6 +113,7 @@ func load_from_save(level: GridLevel, save_data: Dictionary) -> void:
 
     if save_data[_ID_KEY] != encounter_id:
         push_error("Attempting load of '%s' but I'm '%s" % [save_data[_ID_KEY], encounter_id])
+        return
 
     var coords: Vector3i = save_data[_COORDINATES_KEY]
     var node: GridNode = level.get_grid_node(coords)
@@ -127,6 +128,7 @@ func load_from_save(level: GridLevel, save_data: Dictionary) -> void:
 
     look_direction = look
     down = down_direction
+    _triggered = save_data[_TRIGGERED_KEY] if save_data.has(_TRIGGERED_KEY) else false
 
     if anchor_direction == CardinalDirections.CardinalDirection.NONE:
         set_grid_node(node)
@@ -141,4 +143,4 @@ func load_from_save(level: GridLevel, save_data: Dictionary) -> void:
     sync_position()
     orient()
 
-    _triggered = save_data[_TRIGGERED_KEY] if save_data.has(_TRIGGERED_KEY) else false
+    print_debug("Loaded %s from %s" % [encounter_id, save_data])
