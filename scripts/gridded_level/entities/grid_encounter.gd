@@ -44,16 +44,35 @@ func _ready() -> void:
 
     super._ready()
 
-    var level: GridLevel = get_level()
+    _connect_player_callbacks(get_level())
+
+    effect.prepare(self)
+
+var _connected_player: GridPlayer
+
+func _connect_player_callbacks(level: GridLevel) -> void:
+    if _connected_player == level.player:
+        return
+    elif _connected_player != null:
+        _disconnect_player_callbacks()
+
     if level != null:
         if level.player.on_change_anchor.connect(_check_colliding_anchor) != OK:
             push_error("%s failed to connect to player anchor change signal" % name)
         if level.player.on_change_node.connect(_check_colliding_node) != OK:
             push_error("%s failed to connect to player node change signal" % name)
+        _connected_player = level.player
     else:
         push_error("%s is not part of a level" % name)
 
-    effect.prepare(self)
+func _disconnect_player_callbacks() -> void:
+    if _connected_player == null:
+        return
+
+    _connected_player.on_change_anchor.disconnect(_check_colliding_anchor)
+    _connected_player.on_change_node.disconnect(_check_colliding_node)
+    _connected_player = null
+
 
 func _check_colliding_anchor(feature: GridNodeFeature) -> void:
     if encounter_mode != EncounterMode.ANCHOR:
@@ -136,11 +155,11 @@ func load_from_save(level: GridLevel, save_data: Dictionary) -> void:
         var anchor: GridAnchor = node.get_grid_anchor(anchor_direction)
         if anchor == null:
             push_error("Trying to load player onto coordinates %s and anchor %s but node lacks anchor in that direction" % [coords, anchor_direction])
-            set_grid_node(node)
-        else:
-            set_grid_anchor(anchor)
+        update_entity_anchorage(node, anchor, true)
 
     sync_position()
     orient()
+
+    _connect_player_callbacks(level)
 
     print_debug("Loaded %s from %s" % [encounter_id, save_data])

@@ -69,9 +69,12 @@ func load_from_save(save_data: Dictionary) -> void:
     for persistable: Node in get_tree().get_nodes_in_group(persistant_group):
         persistable.queue_free()
 
+    var player_node: GridPlayer = null
+
     if save_data.has(_PLAYER_KEY):
         var player_save: Dictionary = save_data[_PLAYER_KEY]
-        var player_node: GridPlayer = preload(_PLAYER_SCENE).instantiate()
+        player_node = preload(_PLAYER_SCENE).instantiate()
+        player_node.name = "Player Blob"
         level.add_child(player_node)
         player_node.load_from_save(level, player_save)
         level.player = player_node
@@ -83,6 +86,7 @@ func load_from_save(save_data: Dictionary) -> void:
             if encounter_node is GridEncounter:
                 var encounter: GridEncounter = encounter_node
                 if encounters_save.has(encounter.encounter_id):
+                    # This requires that the new player instance has been loaded and set on the level
                     encounter.load_from_save(level, encounters_save[encounter.encounter_id])
                 else:
                     push_warning("Encounter '%s' not present in save" % [encounter.encounter_id])
