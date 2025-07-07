@@ -204,6 +204,8 @@ func _start_playing_cards() -> void:
     var leading_player_card: BattleCard = battle_hand.slots.slotted_cards[0]
     if leading_player_card ==  null:
         _player_initiative = -1
+        player_deck.discard_hand()
+        battle_hand.hand.clear()
     else:
         _player_initiative = leading_player_card.data.rank
 

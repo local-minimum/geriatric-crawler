@@ -63,3 +63,6 @@ func discard_from_hand(cards: Array[BattleCardData]) -> void:
             push_error("%s is not in hand %s" % [card, _active_hand])
 
     on_updated_piles.emit(_draw_pile, _active_hand, _discard_pile)
+
+func discard_hand() -> void:
+    discard_from_hand(_active_hand)
