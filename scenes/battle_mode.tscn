@@ -1,4 +1,4 @@
-[gd_scene load_steps=32 format=3 uid="uid://sx8om7lfql6j"]
+[gd_scene load_steps=35 format=3 uid="uid://sx8om7lfql6j"]
 
 [ext_resource type="Script" uid="uid://cvchbk03g5wag" path="res://scripts/battle_mode.gd" id="1_7wt64"]
 [ext_resource type="Texture2D" uid="uid://cpot0wvcwpcqh" path="res://sprites/battle-bg-test.png" id="2_wpnne"]
@@ -18,12 +18,15 @@
 [ext_resource type="Resource" uid="uid://dcob2h4luvnbl" path="res://resources/player_cards/card_defrag_5.tres" id="9_u0eru"]
 [ext_resource type="Resource" uid="uid://dwadtd6nwvwd5" path="res://resources/player_cards/card_slam-150.tres" id="9_vq05v"]
 [ext_resource type="Script" uid="uid://1ski2p8tmb8h" path="res://scripts/card_battle/enemy_played_card_ui.gd" id="10_50o5a"]
+[ext_resource type="Texture2D" uid="uid://dvvfwmvl6821b" path="res://sprites/buttons/done.png" id="10_bkkck"]
+[ext_resource type="Script" uid="uid://bbly8dyn85pxo" path="res://scripts/card_battle/next_phase_button.gd" id="10_ia7t4"]
 [ext_resource type="Resource" uid="uid://b8yrhm4ltj06q" path="res://resources/player_cards/card_fortify-55.tres" id="10_u0eru"]
 [ext_resource type="Script" uid="uid://bpr7yqsr1h3r3" path="res://scripts/card_battle/debug_dragged_cards.gd" id="11_uf5em"]
 [ext_resource type="Resource" uid="uid://duylk5tm5e1wb" path="res://resources/player_cards/card_defrag_120.tres" id="11_w875v"]
 [ext_resource type="Resource" uid="uid://dyw8d4pex4rg1" path="res://resources/player_cards/card_recharge-735.tres" id="11_wyqpo"]
 [ext_resource type="Script" uid="uid://r83okmi0nsfv" path="res://scripts/card_battle/debug_battle_log.gd" id="12_360r3"]
 [ext_resource type="Script" uid="uid://dtm7xhjxl8r71" path="res://scripts/card_battle/battle_prompt.gd" id="12_g3sjl"]
+[ext_resource type="Texture2D" uid="uid://bm1166yd488q5" path="res://sprites/buttons/swap-hand.png" id="12_jejug"]
 [ext_resource type="Resource" uid="uid://ehfht5qywnnf" path="res://resources/player_cards/card_defrag_370.tres" id="12_vq05v"]
 [ext_resource type="Resource" uid="uid://xg54tmjf202g" path="res://resources/player_cards/card_fortify-200.tres" id="16_vq05v"]
 [ext_resource type="Script" uid="uid://c4w2xnbmt2m0c" path="res://scripts/card_battle/battle_player.gd" id="21_wu7la"]
@@ -701,17 +704,38 @@ offset_right = 20.0
 grow_horizontal = 2
 grow_vertical = 0
 
-[node name="Player Cards Slotted Button" type="Button" parent="CanvasLayer"]
+[node name="Player Cards Slotted Button" type="Button" parent="CanvasLayer" node_paths=PackedStringArray("_slots", "_image")]
 anchors_preset = -1
-anchor_left = 0.955
-anchor_top = 0.965
+anchor_left = 0.896
+anchor_top = 0.82
 anchor_right = 0.98
 anchor_bottom = 0.969
-offset_left = -8.0
-offset_top = -8.0
-grow_horizontal = 0
-grow_vertical = 0
-icon = ExtResource("8_2up48")
+offset_left = -1.19202
+offset_top = -5.35999
+offset_right = 6.04004
+offset_bottom = 2.08801
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 6
+size_flags_vertical = 6
+icon_alignment = 1
+expand_icon = true
+script = ExtResource("10_ia7t4")
+_slots = NodePath("../PlayerCardSlots")
+_image = NodePath("NextPhaseButton")
+_any_slotted_image = ExtResource("10_bkkck")
+_nothing_slotted_image = ExtResource("12_jejug")
+
+[node name="NextPhaseButton" type="TextureRect" parent="CanvasLayer/Player Cards Slotted Button"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("10_bkkck")
+expand_mode = 3
+stretch_mode = 5
 
 [node name="EnemyPlayedCardUI" type="Control" parent="CanvasLayer" node_paths=PackedStringArray("battle")]
 layout_mode = 3
