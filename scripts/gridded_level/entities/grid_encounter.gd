@@ -157,6 +157,9 @@ func load_from_save(level: GridLevel, save_data: Dictionary) -> void:
             push_error("Trying to load player onto coordinates %s and anchor %s but node lacks anchor in that direction" % [coords, anchor_direction])
         update_entity_anchorage(node, anchor, true)
 
+    if effect != null:
+        if effect.hide_encounter_on_trigger && _triggered:
+            visible = false
     sync_position()
     orient()
 

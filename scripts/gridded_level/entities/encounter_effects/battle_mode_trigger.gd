@@ -74,7 +74,7 @@ func invoke(triggering_encounter: GridEncounter, player: GridEntity) -> bool:
     return true
 
 func complete() -> void:
-    super()
+    super.complete()
 
     level.paused = false
     print_debug("Battle ended, returned to exploring")
