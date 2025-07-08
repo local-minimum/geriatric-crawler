@@ -66,3 +66,19 @@ func discard_from_hand(cards: Array[BattleCardData]) -> void:
 
 func discard_hand() -> void:
     discard_from_hand(_active_hand)
+
+func get_card(id: String) -> BattleCardData:
+    for card: BattleCardData in _draw_pile:
+        if card.id == id:
+            return card
+
+    for card: BattleCardData in _active_hand:
+        if card.id == id:
+            return card
+
+    for card: BattleCardData in _discard_pile:
+        if card.id == id:
+            return card
+
+    push_error("No '%s' card in deck" % id)
+    return null
