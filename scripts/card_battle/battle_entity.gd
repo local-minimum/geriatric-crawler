@@ -103,7 +103,7 @@ func get_suit_bonus(
             suit_bonus = 0
         suited_rule = true
 
-    if !suited_rule && first_card:
+    if !suited_rule && (!first_card || prev_card != null):
         if card.has_suit_intersection(prev_card):
             suit_bonus += 1
         else:

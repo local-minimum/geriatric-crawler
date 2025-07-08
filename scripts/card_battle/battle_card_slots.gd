@@ -126,8 +126,6 @@ func tween_card_to_slot(card: BattleCard, target: Control, duration: float) -> T
     if slotted_cards[slot_idx] != null:
         var prev_slotted: BattleCard = slotted_cards[slot_idx]
 
-        prev_slotted.sync_display(0)
-
         # Swap slotted cards
         if old_slot >= 0:
             tween_card_to_slot(
@@ -136,6 +134,8 @@ func tween_card_to_slot(card: BattleCard, target: Control, duration: float) -> T
                 duration,
             ).play()
         else:
+            # Cards in hand shouldn't show their bonus
+            prev_slotted.sync_display(0)
             prev_slotted.on_debug_card.emit(prev_slotted, "Returning to hand")
             on_return_card_to_hand.emit(prev_slotted, card)
 
@@ -152,9 +152,12 @@ func has_card(card: BattleCard) -> bool:
 func unslot_card(card: BattleCard) -> int:
     var slot_idx: int = slotted_cards.find(card)
     if slot_idx >= 0:
-        slotted_cards[slot_idx] = null
-        on_update_slotted.emit(slotted_cards)
+        # Cards in hand shouldn't show their bonus
         card.sync_display(0)
+        slotted_cards[slot_idx] = null
+        on_return_card_to_hand.emit(card, null)
+        on_update_slotted.emit(slotted_cards)
+
     return slot_idx
 
 func discard_cards() -> Array[BattleCardData]:

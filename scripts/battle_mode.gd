@@ -32,6 +32,23 @@ var trigger: GridEncounterEffect
 const _battle_card_resource: PackedScene = preload("res://scenes/battle_card.tscn")
 var _cards: Array[BattleCard] = []
 
+var previous_card: BattleCardData
+var suit_bonus: int
+
+static func find_battle_parent(current: Node, inclusive: bool = true) ->  BattleMode:
+    if inclusive && current is BattleMode:
+        return current as BattleMode
+
+    var parent: Node = current.get_parent()
+
+    if parent == null:
+        return null
+
+    if parent is BattleMode:
+        return parent as BattleMode
+
+    return find_battle_parent(parent, false)
+
 func _init() -> void:
     add_to_group(LEVEL_GROUP)
 
@@ -162,8 +179,8 @@ func deal_player_hand() -> void:
     battle_hand.draw_hand(cards)
 
 func _handle_update_slotted(cards: Array[BattleCard]) -> void:
-    var acc_suit_bonus: int
-    var prev_card: BattleCardData = null
+    var acc_suit_bonus: int = suit_bonus
+    var prev_card: BattleCardData = previous_card
 
     var slotted_cards: Array[BattleCard]
     slotted_cards.append_array(cards)
@@ -174,6 +191,8 @@ func _handle_update_slotted(cards: Array[BattleCard]) -> void:
     for card: BattleCard in slotted_cards:
         var next_card: BattleCardData = slotted_cards[idx + 1].data if idx + 1 < slotted_cards.size() else null
         acc_suit_bonus = battle_player.get_suit_bonus(card.data, acc_suit_bonus, prev_card, next_card, idx == 0)
+        print_debug("%s with %s prev gets bonus %s (start bonus %s)" % [
+            card.data.id, prev_card.id if prev_card != null else "[NONE]", acc_suit_bonus, suit_bonus])
 
         idx += 1
 
@@ -304,6 +323,8 @@ func _clean_up_round(exit_battle_cleanup: bool = false) -> void:
     battle_player.clean_up_round()
     player_deck.discard_from_hand(battle_hand.round_end_cleanup())
 
+    previous_card = null
+
     if !exit_battle_cleanup:
         round_start_prepare_hands()
 #endregion PHASE CLEANUP
@@ -315,6 +336,7 @@ func exit_battle() -> void:
         _ending_player_turn_early = false
 
     _clean_up_round(true)
+    suit_bonus = 0
 
     for enemy: BattleEnemy in _enemies:
         on_entity_leave_battle.emit(enemy)

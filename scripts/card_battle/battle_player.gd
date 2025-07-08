@@ -13,8 +13,7 @@ signal on_before_execute_effect_on_target(target: BattleEntity)
 signal on_after_execute_effect_on_target(target: BattleEntity)
 signal on_after_execute_card()
 
-static var _SUIT_BONUS_KEY: String = "suit-bonus"
-static var _ID_KEY: String = "id"
+const _ID_KEY: String = "id"
 
 @export
 var character_id: String = "main"
@@ -42,8 +41,6 @@ var _allies: Array[BattleEntity]
 var _enemies: Array[BattleEntity]
 var _active_card_index: int
 var _active_card_effect_index: int
-var _previous_card: BattleCard = null
-var _suit_bonus: int
 
 func _execute_next_card() -> void:
     if _halted:
@@ -57,6 +54,9 @@ func _execute_next_card() -> void:
     if card == null:
         on_end_turn.emit(self)
         return
+
+    var battle: BattleMode = BattleMode.find_battle_parent(self)
+    var suit_bonus: int = 0 if battle == null else battle.suit_bonus
 
     card.card_played = true
 
@@ -72,19 +72,21 @@ func _execute_next_card() -> void:
     tween.play()
 
     var next: BattleCard = _slots.slotted_cards[_active_card_index + 1] if _active_card_index < _slots.slotted_cards.size() - 1 else null
-    _suit_bonus = get_suit_bonus(
+    suit_bonus = get_suit_bonus(
         card.data,
-        _suit_bonus,
-        _previous_card.data if _previous_card != null else null,
+        suit_bonus,
+        battle.previous_card if battle != null else null,
         next.data if next != null else null,
         _active_card_index == 0,
     )
+    if battle != null:
+        battle.suit_bonus = suit_bonus
+        battle.previous_card = card.data
 
     _active_card_effect_index = 0
 
     _execute_next_effect()
 
-    _previous_card = card
 
 func _restore_card_size() -> void:
     if _active_card_index >= _slots.slotted_cards.size():
@@ -201,10 +203,13 @@ func add_target(target: BattleEntity) -> bool:
     return true
 
 func _execute_effect_on_targets() -> void:
+    var battle: BattleMode = BattleMode.find_battle_parent(self)
+    var suit_bonus: int = 0 if battle == null else battle.suit_bonus
+
     for target: BattleEntity in _effect_targets:
         on_before_execute_effect_on_target.emit(target)
 
-        var effect_magnitude: int = _active_effect.calculate_effect(_suit_bonus, _allies.has(target))
+        var effect_magnitude: int = _active_effect.calculate_effect(suit_bonus, _allies.has(target))
         print_debug("Doing %s %s to %s" % [effect_magnitude, BattleCardPrimaryEffect.humanize(_effect_mode), target.name])
 
         match _effect_mode:
@@ -237,18 +242,15 @@ func clean_up_round() -> void:
     _enemies = []
     _active_card_index = 0
     _active_card_effect_index = 0
-    _previous_card = null
     print_debug("Player end round cleaned")
 
 func clean_up_battle() -> void:
     super.clean_up_battle()
-    _previous_card = null
 
 func collect_save_data() -> Dictionary:
     var data: Dictionary = super.collect_save_data()
     data.merge({
         _ID_KEY: character_id,
-        _SUIT_BONUS_KEY: _suit_bonus,
     }, true)
     return data
 
@@ -256,13 +258,6 @@ func load_from_save(data: Dictionary) -> void:
     if data.has(_ID_KEY) && data[_ID_KEY] != character_id:
         push_error("Attmpted to load %s onto %s" % [data[_ID_KEY], character_id])
         return
-
-    var bonus: Variant = data[_SUIT_BONUS_KEY]
-    if bonus is int:
-        _suit_bonus = bonus
-    else:
-        _suit_bonus = 0
-        push_error("There was no suit bonus %s in save %s" % [character_id, data])
 
     var health: Variant = data[_HEALTH_KEY]
     if health is int:

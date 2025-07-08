@@ -1,7 +1,8 @@
 extends SaveExtension
 class_name BattleModeSaver
 
-static var _PARTY_KEY: String = "party"
+const _PARTY_KEY: String = "party"
+const _SUIT_BONUS_KEY: String = "suit-bonus"
 
 @export
 var _battle: BattleMode
@@ -26,6 +27,7 @@ func retrieve_data(extentsion_save_data: Dictionary) -> Dictionary:
 
     return {
         _PARTY_KEY: party,
+        _SUIT_BONUS_KEY: _battle.suit_bonus
     }
 
 func initial_data(extentsion_save_data: Dictionary) -> Dictionary:
@@ -46,3 +48,10 @@ func load_from_data(extentsion_save_data: Dictionary) -> void:
                 continue
 
             party[player_idx].load_from_save(save)
+
+    var bonus: Variant = extentsion_save_data[_SUIT_BONUS_KEY]
+    if bonus is int:
+        _battle.suit_bonus = bonus
+    else:
+        _battle.suit_bonus = 0
+        push_error("There was no suit bonus in save %s" % extentsion_save_data)
