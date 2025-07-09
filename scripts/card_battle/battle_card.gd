@@ -90,7 +90,7 @@ var card_icon: TextureRect
 var title: Label
 
 @export
-var primary_effect: RichTextLabel
+var primary_effects: Array[BattleCardPrimaryEffectUI]
 
 @export
 var main_divider: Control
@@ -111,11 +111,16 @@ var interactable: bool :
         rank_label.mouse_default_cursor_shape = mouse_default_cursor_shape
         card_icon.mouse_default_cursor_shape = mouse_default_cursor_shape
         title.mouse_default_cursor_shape = mouse_default_cursor_shape
-        primary_effect.mouse_default_cursor_shape = mouse_default_cursor_shape
+
+        for effect: BattleCardPrimaryEffectUI in primary_effects:
+            effect.mouse_default_cursor_shape = mouse_default_cursor_shape
+
         for effect: Label in secondary_effects:
             effect.mouse_default_cursor_shape = mouse_default_cursor_shape
+
         for divider: Control in secondary_effects_dividers:
             divider.mouse_default_cursor_shape = mouse_default_cursor_shape
+
         main_divider.mouse_default_cursor_shape = mouse_default_cursor_shape
         (main_divider.get_parent() as Control).mouse_default_cursor_shape = mouse_default_cursor_shape
 
@@ -125,7 +130,7 @@ var data: BattleCardData:
         data = value
         sync_display(0)
 
-func sync_display(crit_multiplyer: int) -> void:
+func sync_display(bonus: int) -> void:
         name = "Card %s" % data.id
         suite_icon.visible = data.suit != BattleCardData.SUIT_NONE
         suite_icon.texture = _get_suite_icon_texture(data.suit)
@@ -135,13 +140,12 @@ func sync_display(crit_multiplyer: int) -> void:
 
         title.text = data.name
 
-        var primary_effect_parts: Array[String] = []
-
-        for effect: BattleCardPrimaryEffect in data.primary_effects:
-            primary_effect_parts.append(_get_primary_effect_text(effect, crit_multiplyer))
-        if data.primary_effects.size() == 0:
-            primary_effect_parts.append("Does nothing")
-        primary_effect.text = "\n".join(primary_effect_parts)
+        for idx: int in range(primary_effects.size()):
+            if idx == 0 || idx < data.primary_effects.size():
+                primary_effects[idx].sync(data.primary_effects[idx] if idx < data.primary_effects.size() else null, bonus)
+                primary_effects[idx].visible = true
+            else:
+                primary_effects[idx].visible = false
 
         var effects: Array[String] = data.secondary_effect_names()
         var tooltips: Array[String] = data.secondary_effect_tooltips()

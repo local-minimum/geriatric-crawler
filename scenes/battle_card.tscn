@@ -12,7 +12,7 @@
 [ext_resource type="Texture2D" uid="uid://bwji56lm10win" path="res://sprites/buttons/separator.png" id="10_8ngic"]
 [ext_resource type="PackedScene" uid="uid://djae4tchc2egh" path="res://scenes/battle_card_primary_effect.tscn" id="10_r8ph8"]
 
-[node name="BattleCard" type="NinePatchRect" node_paths=PackedStringArray("suite_icon", "rank_label", "card_icon", "title", "primary_effect", "main_divider", "secondary_effects", "secondary_effects_dividers")]
+[node name="BattleCard" type="NinePatchRect" node_paths=PackedStringArray("suite_icon", "rank_label", "card_icon", "title", "primary_effects", "main_divider", "secondary_effects", "secondary_effects_dividers")]
 custom_minimum_size = Vector2(130, 200)
 offset_right = 130.0
 offset_bottom = 200.0
@@ -38,10 +38,10 @@ suite_data_electricity_metal = ExtResource("9_gywsw")
 rank_label = NodePath("Rank")
 card_icon = NodePath("CardIcon")
 title = NodePath("Info/CardName")
-primary_effect = NodePath("")
+primary_effects = [NodePath("Info/PrimaryEffect 1"), NodePath("Info/PrimaryEffect 2"), NodePath("Info/PrimaryEffect 3")]
 main_divider = NodePath("Info/Divider")
 secondary_effects = [NodePath("Info/SecondaryEffects/SecondaryEffect 1"), NodePath("Info/SecondaryEffects/SecondaryEffect 2"), NodePath("Info/SecondaryEffects/SecondaryEffect 3"), NodePath("Info/SecondaryEffects/SecondaryEffect 4")]
-secondary_effects_dividers = [NodePath(""), NodePath(""), NodePath("")]
+secondary_effects_dividers = [NodePath("Info/SecondaryEffects/SE Divider 1"), NodePath("Info/SecondaryEffects/SE Divider 2"), NodePath("Info/SecondaryEffects/SE Divider 3")]
 
 [node name="CardIcon" type="TextureRect" parent="."]
 layout_mode = 1
@@ -103,9 +103,16 @@ text = "CARD NAME"
 [node name="PrimaryEffect 1" parent="Info" instance=ExtResource("10_r8ph8")]
 layout_mode = 2
 
+[node name="PrimaryEffect 2" parent="Info" instance=ExtResource("10_r8ph8")]
+layout_mode = 2
+
+[node name="PrimaryEffect 3" parent="Info" instance=ExtResource("10_r8ph8")]
+layout_mode = 2
+
 [node name="Spacer" type="Control" parent="Info"]
 layout_mode = 2
 size_flags_vertical = 3
+mouse_filter = 1
 
 [node name="Divider" type="ColorRect" parent="Info"]
 custom_minimum_size = Vector2(0, 1)
