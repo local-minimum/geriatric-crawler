@@ -85,10 +85,26 @@ func secondary_effect_names() -> Array[String]:
 
     return names
 
+func secondary_effect_tooltips() -> Array[String]:
+    var names: Array[String] = []
+    for effect: SecondaryEffect in secondary_effects:
+        names.append(secondary_effect_tooltip(effect))
+
+    return names
+
 static func secondary_effect_name(effect: SecondaryEffect) -> String:
     match effect:
         SecondaryEffect.SuitedUp: return "Suited Up"
         SecondaryEffect.Accelerated: return "Accelerated"
+        _:
+            push_error("%s doesn't have a name" % effect)
+            print_stack()
+            return ""
+
+static func secondary_effect_tooltip(effect: SecondaryEffect) -> String:
+    match effect:
+        SecondaryEffect.SuitedUp: return "Must be matching suits on both sides to not break bonus"
+        SecondaryEffect.Accelerated: return "Keeping crit duplicates bonus, breaking causes negative bonus"
         _:
             push_error("%s doesn't have a name" % effect)
             print_stack()

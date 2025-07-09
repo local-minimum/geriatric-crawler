@@ -87,13 +87,19 @@ var rank_label: Label
 var card_icon: TextureRect
 
 @export
+var title: Label
+
+@export
 var primary_effect: RichTextLabel
 
 @export
-var divider: Control
+var main_divider: Control
 
 @export
-var secondary_effect: RichTextLabel
+var secondary_effects: Array[Label]
+
+@export
+var secondary_effects_dividers: Array[Control]
 
 var card_played: bool
 
@@ -104,10 +110,14 @@ var interactable: bool :
         suite_icon.mouse_default_cursor_shape = mouse_default_cursor_shape
         rank_label.mouse_default_cursor_shape = mouse_default_cursor_shape
         card_icon.mouse_default_cursor_shape = mouse_default_cursor_shape
+        title.mouse_default_cursor_shape = mouse_default_cursor_shape
         primary_effect.mouse_default_cursor_shape = mouse_default_cursor_shape
-        secondary_effect.mouse_default_cursor_shape = mouse_default_cursor_shape
-        divider.mouse_default_cursor_shape = mouse_default_cursor_shape
-        (divider.get_parent() as Control).mouse_default_cursor_shape = mouse_default_cursor_shape
+        for effect: Label in secondary_effects:
+            effect.mouse_default_cursor_shape = mouse_default_cursor_shape
+        for divider: Control in secondary_effects_dividers:
+            divider.mouse_default_cursor_shape = mouse_default_cursor_shape
+        main_divider.mouse_default_cursor_shape = mouse_default_cursor_shape
+        (main_divider.get_parent() as Control).mouse_default_cursor_shape = mouse_default_cursor_shape
 
 
 var data: BattleCardData:
@@ -123,20 +133,30 @@ func sync_display(crit_multiplyer: int) -> void:
         rank_label.text = str(data.rank)
         card_icon.texture = data.icon
 
-        var primary_effect_parts: Array[String] = [data.name]
+        title.text = data.name
+
+        var primary_effect_parts: Array[String] = []
+
         for effect: BattleCardPrimaryEffect in data.primary_effects:
             primary_effect_parts.append(_get_primary_effect_text(effect, crit_multiplyer))
         if data.primary_effects.size() == 0:
             primary_effect_parts.append("Does nothing")
         primary_effect.text = "\n".join(primary_effect_parts)
 
-        if data.secondary_effects.is_empty():
-            divider.visible = false
-            secondary_effect.visible = false
-        else:
-            divider.visible = true
-            secondary_effect.visible = true
-            secondary_effect.text = "\n".join(data.secondary_effect_names())
+        var effects: Array[String] = data.secondary_effect_names()
+        var tooltips: Array[String] = data.secondary_effect_tooltips()
+
+        for idx: int in range(secondary_effects.size()):
+            if idx < effects.size():
+                secondary_effects[idx].visible = true
+                secondary_effects[idx].text = effects[idx]
+                secondary_effects[idx].tooltip_text = tooltips[idx]
+            else:
+                secondary_effects[idx].visible = false
+        for idx: int in range(secondary_effects_dividers.size()):
+            secondary_effects_dividers[idx].visible = idx < effects.size() - 1
+
+        main_divider.visible = !effects.is_empty()
 
 func _get_suite_icon_texture(suite: int) -> Texture:
     match suite:

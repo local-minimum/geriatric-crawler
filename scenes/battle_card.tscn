@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://s73lghpvdp2r"]
+[gd_scene load_steps=12 format=3 uid="uid://s73lghpvdp2r"]
 
 [ext_resource type="Texture2D" uid="uid://d14rk0grbqxnd" path="res://sprites/cards/suits/card-background.png" id="1_bh02m"]
 [ext_resource type="Script" uid="uid://cem1vylwvgpi5" path="res://scripts/card_battle/battle_card.gd" id="2_b5gog"]
@@ -9,8 +9,10 @@
 [ext_resource type="Texture2D" uid="uid://do8nomw8qxrjb" path="res://sprites/cards/suits/card-suits-data-metal.png" id="7_im7xq"]
 [ext_resource type="Texture2D" uid="uid://du4ml7k8yeqqf" path="res://sprites/cards/suits/card-suits-electric-data.png" id="8_5aynm"]
 [ext_resource type="Texture2D" uid="uid://pwc2au4ey88d" path="res://sprites/cards/suits/card-suits-electric-data-metal.png" id="9_gywsw"]
+[ext_resource type="Texture2D" uid="uid://bwji56lm10win" path="res://sprites/buttons/separator.png" id="10_8ngic"]
+[ext_resource type="PackedScene" uid="uid://djae4tchc2egh" path="res://scenes/battle_card_primary_effect.tscn" id="10_r8ph8"]
 
-[node name="BattleCard" type="NinePatchRect" node_paths=PackedStringArray("suite_icon", "rank_label", "card_icon", "primary_effect", "divider", "secondary_effect")]
+[node name="BattleCard" type="NinePatchRect" node_paths=PackedStringArray("suite_icon", "rank_label", "card_icon", "title", "primary_effect", "main_divider", "secondary_effects", "secondary_effects_dividers")]
 custom_minimum_size = Vector2(130, 200)
 offset_right = 130.0
 offset_bottom = 200.0
@@ -35,9 +37,11 @@ suite_data_electricity = ExtResource("8_5aynm")
 suite_data_electricity_metal = ExtResource("9_gywsw")
 rank_label = NodePath("Rank")
 card_icon = NodePath("CardIcon")
-primary_effect = NodePath("Info/PrimaryEffect")
-divider = NodePath("Info/Divider")
-secondary_effect = NodePath("Info/SecondaryEffect")
+title = NodePath("Info/CardName")
+primary_effect = NodePath("")
+main_divider = NodePath("Info/Divider")
+secondary_effects = [NodePath("Info/SecondaryEffects/SecondaryEffect 1"), NodePath("Info/SecondaryEffects/SecondaryEffect 2"), NodePath("Info/SecondaryEffects/SecondaryEffect 3"), NodePath("Info/SecondaryEffects/SecondaryEffect 4")]
+secondary_effects_dividers = [NodePath(""), NodePath(""), NodePath("")]
 
 [node name="CardIcon" type="TextureRect" parent="."]
 layout_mode = 1
@@ -86,15 +90,22 @@ anchor_bottom = 0.95
 grow_horizontal = 2
 grow_vertical = 2
 mouse_default_cursor_shape = 2
+theme_override_constants/separation = -1
 
-[node name="PrimaryEffect" type="RichTextLabel" parent="Info"]
+[node name="CardName" type="Label" parent="Info"]
 layout_mode = 2
-size_flags_vertical = 3
+size_flags_vertical = 1
 mouse_filter = 1
 mouse_default_cursor_shape = 2
-theme_override_font_sizes/normal_font_size = 12
-text = "**CARD NAME**
-2-8 DMG to 1 target"
+theme_override_font_sizes/font_size = 12
+text = "CARD NAME"
+
+[node name="PrimaryEffect 1" parent="Info" instance=ExtResource("10_r8ph8")]
+layout_mode = 2
+
+[node name="Spacer" type="Control" parent="Info"]
+layout_mode = 2
+size_flags_vertical = 3
 
 [node name="Divider" type="ColorRect" parent="Info"]
 custom_minimum_size = Vector2(0, 1)
@@ -103,14 +114,61 @@ mouse_filter = 1
 mouse_default_cursor_shape = 2
 color = Color(0.01, 0.01, 0.01, 0.768627)
 
-[node name="SecondaryEffect" type="RichTextLabel" parent="Info"]
+[node name="SecondaryEffects" type="HFlowContainer" parent="Info"]
 layout_mode = 2
-size_flags_vertical = 3
+theme_override_constants/h_separation = 2
+theme_override_constants/v_separation = 0
+
+[node name="SecondaryEffect 1" type="Label" parent="Info/SecondaryEffects"]
+layout_mode = 2
 mouse_filter = 1
+theme_override_font_sizes/font_size = 12
+text = "Test me"
+
+[node name="SE Divider 1" type="TextureRect" parent="Info/SecondaryEffects"]
+custom_minimum_size = Vector2(8, 8)
+layout_mode = 2
+size_flags_vertical = 4
 mouse_default_cursor_shape = 2
-theme_override_font_sizes/normal_font_size = 12
-text = "Next suit bonus x2
-Next suit penalty x4"
+texture = ExtResource("10_8ngic")
+expand_mode = 1
+stretch_mode = 4
+
+[node name="SecondaryEffect 2" type="Label" parent="Info/SecondaryEffects"]
+layout_mode = 2
+mouse_filter = 1
+theme_override_font_sizes/font_size = 12
+text = "Test me"
+
+[node name="SE Divider 2" type="TextureRect" parent="Info/SecondaryEffects"]
+custom_minimum_size = Vector2(8, 8)
+layout_mode = 2
+size_flags_vertical = 4
+mouse_default_cursor_shape = 2
+texture = ExtResource("10_8ngic")
+expand_mode = 1
+stretch_mode = 4
+
+[node name="SecondaryEffect 3" type="Label" parent="Info/SecondaryEffects"]
+layout_mode = 2
+mouse_filter = 1
+theme_override_font_sizes/font_size = 12
+text = "Test me"
+
+[node name="SE Divider 3" type="TextureRect" parent="Info/SecondaryEffects"]
+custom_minimum_size = Vector2(8, 8)
+layout_mode = 2
+size_flags_vertical = 4
+mouse_default_cursor_shape = 2
+texture = ExtResource("10_8ngic")
+expand_mode = 1
+stretch_mode = 4
+
+[node name="SecondaryEffect 4" type="Label" parent="Info/SecondaryEffects"]
+layout_mode = 2
+mouse_filter = 1
+theme_override_font_sizes/font_size = 12
+text = "Test me"
 
 [connection signal="mouse_entered" from="." to="." method="_on_mouse_entered"]
 [connection signal="mouse_exited" from="." to="." method="_on_mouse_exited"]
