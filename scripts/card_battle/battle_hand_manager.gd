@@ -270,12 +270,10 @@ func _get_card_position_index(card: BattleCard = null) -> int:
 
     return clampi(best, _first_card_idx, _last_card_idx)
 
-var _dragged_card_idx: int
 var _dragged_card: BattleCard
 
 func _handle_card_drag_start(card: BattleCard) -> void:
     _dragged_card = card
-    _dragged_card_idx = _card_positions[card] if _card_positions.has(card) else -1
     _remove_from_lookups(card)
 
 func handle_card_dragged(card: BattleCard) -> void:
@@ -383,7 +381,6 @@ func _handle_card_drag_end(card: BattleCard) -> void:
 
         action.call_deferred()
 
-    _dragged_card_idx = -1
     _dragged_card = null
 
 func _handle_card_click(card: BattleCard) -> void:
@@ -400,7 +397,7 @@ func _handle_card_click(card: BattleCard) -> void:
         _organize_hand()
 
 func _return_card_to_hand(card: BattleCard, _position_holder: BattleCard) -> void:
-    var idx: int = _get_card_position_index() if _dragged_card_idx == -1 else _dragged_card_idx
+    var idx: int = _get_card_position_index()
 
     hand.append(card)
 
