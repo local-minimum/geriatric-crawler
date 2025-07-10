@@ -53,7 +53,7 @@ func _look_at_player() -> void:
     if level == null:
         return
 
-    var player_pos: Vector3 = level.player.global_position
+    var player_pos: Vector3 = level.player.camera.global_position
     player_pos.y = global_position.y
 
     if player_pos != global_position:
