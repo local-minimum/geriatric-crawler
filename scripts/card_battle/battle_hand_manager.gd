@@ -225,7 +225,8 @@ func tween_card_to_position(card: BattleCard, target_index: int, duration: float
     _card_positions[card] = target_index
 
     if  _reverse_card_positions.has(target_index) && _reverse_card_positions[target_index] != card:
-        var msg: String = "Card order collision %s (%s replaces %s)" % [target_index, card.data.id, _reverse_card_positions[target_index].data.id]
+        var msg: String = "Card order collision %s (%s replaces %s, index from cache %s)" % [
+            target_index, card.data.id, _reverse_card_positions[target_index].data.id, _card_positions.has(card)]
         push_error(msg)
         on_hand_debug.emit(msg)
         _reverse_card_positions[target_index] = card
@@ -242,7 +243,7 @@ static func get_centered_position(subject: Control, target: Control) ->  Vector2
 const DRAG_DEADZONE: float = 10
 
 func _get_card_position_index(card: BattleCard = null) -> int:
-    if _card_positions.has(card):
+    if _card_positions.has(card) && card != _dragged_card:
         return _card_positions[card]
 
     if card == null:
@@ -270,8 +271,10 @@ func _get_card_position_index(card: BattleCard = null) -> int:
     return clampi(best, _first_card_idx, _last_card_idx)
 
 var _dragged_card_idx: int
+var _dragged_card: BattleCard
 
 func _handle_card_drag_start(card: BattleCard) -> void:
+    _dragged_card = card
     _dragged_card_idx = _card_positions[card] if _card_positions.has(card) else -1
     _remove_from_lookups(card)
 
@@ -356,7 +359,7 @@ func _handle_card_drag_end(card: BattleCard) -> void:
         _organize_hand()
 
     else:
-        var card_idx: int = _get_card_position_index(card) if _dragged_card_idx == -1 else _dragged_card_idx
+        var card_idx: int = _get_card_position_index(card)
 
         if slots.has_card(card):
             @warning_ignore_start("return_value_discarded")
@@ -381,6 +384,7 @@ func _handle_card_drag_end(card: BattleCard) -> void:
         action.call_deferred()
 
     _dragged_card_idx = -1
+    _dragged_card = null
 
 func _handle_card_click(card: BattleCard) -> void:
     if slots.has_card(card):
