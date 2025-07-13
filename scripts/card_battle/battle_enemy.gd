@@ -36,6 +36,9 @@ var brain: BattleBrain
 @export
 var _target_system: BattleEnemyTargetSystem
 
+@export
+var _bonus_step_size: int = 1
+
 var _hand: Array[BattleCardData]
 var _slotted: Array[BattleCardData]
 
@@ -88,7 +91,7 @@ func play_actions(
 
         var next: BattleCardData = _slotted[idx + 1] if idx < _slotted.size() - 1 else null
 
-        suit_bonus = get_suit_bonus(card, suit_bonus, previous, next, idx == 0)
+        suit_bonus = get_suit_bonus(card, suit_bonus, _bonus_step_size, previous, next, idx == 0)
 
         on_play_card.emit(card, suit_bonus, card_pause)
 

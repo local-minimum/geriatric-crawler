@@ -75,10 +75,12 @@ func _execute_next_card() -> void:
     suit_bonus = get_suit_bonus(
         card.data,
         suit_bonus,
+        battle.get_suit_bonus_step() if battle != null else 1,
         battle.previous_card if battle != null else null,
         next.data if next != null else null,
         _active_card_index == 0,
     )
+
     if battle != null:
         battle.suit_bonus = suit_bonus
         battle.previous_card = card.data

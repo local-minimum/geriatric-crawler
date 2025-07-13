@@ -83,6 +83,7 @@ func heal(amount: int) -> void:
 func get_suit_bonus(
     card: BattleCardData,
     suit_bonus: int,
+    step_size: int,
     prev_card: BattleCardData,
     next_card: BattleCardData,
     first_card: bool,
@@ -91,21 +92,21 @@ func get_suit_bonus(
 
     if card.secondary_effects.has(BattleCardData.SecondaryEffect.Accelerated):
         if card.has_identical_suit(prev_card):
-            suit_bonus = max(suit_bonus + 1, suit_bonus * 2)
+            suit_bonus = max(suit_bonus + 1, step_size * 2)
         else:
-            suit_bonus = -1
+            suit_bonus = -step_size
         suited_rule = true
 
     if card.secondary_effects.has(BattleCardData.SecondaryEffect.SuitedUp):
         if card.has_suit_intersection(prev_card) && card.has_suit_intersection(next_card):
-            suit_bonus += 1
+            suit_bonus += step_size
         else:
             suit_bonus = 0
         suited_rule = true
 
     if !suited_rule && (!first_card || prev_card != null):
         if card.has_suit_intersection(prev_card):
-            suit_bonus += 1
+            suit_bonus += step_size
         else:
             suit_bonus = 0
 

@@ -63,6 +63,7 @@ func load_from_data(extentsion_save_data: Dictionary) -> void:
         var prev_card: Variant = extentsion_save_data[_PREV_CARD_KEY]
         if prev_card is String:
             @warning_ignore_start("unsafe_cast")
+            # TODO: Can we really be sure that the player deck is loaded??
             _battle.previous_card = _battle.player_deck.get_card(prev_card as String)
             @warning_ignore_restore("unsafe_cast")
         else:

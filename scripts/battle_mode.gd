@@ -184,6 +184,16 @@ func deal_player_hand() -> void:
 
     battle_hand.draw_hand(cards)
 
+const _SUIT_SKILL: String = "suits"
+func get_suit_bonus_step() -> int:
+    match robot.get_skill_level(_SUIT_SKILL):
+        0: return 0
+        1: return 1
+        2: return 3
+        _:
+            push_warning("Not implemented level %s skill for suits (skill '%s')" % [robot.get_skill_level(_SUIT_SKILL), _SUIT_SKILL])
+            return 3
+
 func _handle_update_slotted(cards: Array[BattleCard]) -> void:
     var acc_suit_bonus: int = suit_bonus
     var prev_card: BattleCardData = previous_card
@@ -193,10 +203,11 @@ func _handle_update_slotted(cards: Array[BattleCard]) -> void:
     ArrayUtils.erase_all_occurances(slotted_cards, null)
 
     var idx: int = 0
+    var suit_skill_step: int = get_suit_bonus_step()
 
     for card: BattleCard in slotted_cards:
         var next_card: BattleCardData = slotted_cards[idx + 1].data if idx + 1 < slotted_cards.size() else null
-        acc_suit_bonus = battle_player.get_suit_bonus(card.data, acc_suit_bonus, prev_card, next_card, idx == 0)
+        acc_suit_bonus = battle_player.get_suit_bonus(card.data, acc_suit_bonus, suit_skill_step, prev_card, next_card, idx == 0)
         print_debug("%s with %s prev gets bonus %s (start bonus %s)" % [
             card.data.id, prev_card.id if prev_card != null else "[NONE]", acc_suit_bonus, suit_bonus])
 
@@ -309,6 +320,13 @@ func _handle_enemy_death(entity: BattleEntity) -> void:
 #endregion PHASE PLAY CARD
 
 #region PHASE CLEANUP
+const _MEMORY: String = "memory"
+func _remembers_bonus_end_of_round() -> bool: return robot.get_skill_level(_MEMORY) > 0
+
+func _remembers_previous_end_of_round() -> bool: return robot.get_skill_level(_MEMORY) > 1
+
+func _remembers_to_next_battle() -> bool: return robot.get_skill_level(_MEMORY) > 2
+
 func _clean_up_round(exit_battle_cleanup: bool = false) -> void:
     _enemies = _enemies.filter(
         func (enemy: BattleEnemy) -> bool:
@@ -334,7 +352,11 @@ func _clean_up_round(exit_battle_cleanup: bool = false) -> void:
     battle_player.clean_up_round()
     player_deck.discard_from_hand(battle_hand.round_end_cleanup())
 
-    previous_card = null
+    if !_remembers_bonus_end_of_round():
+        suit_bonus = 0
+
+    if !_remembers_previous_end_of_round():
+        previous_card = null
 
     if !exit_battle_cleanup:
         round_start_prepare_hands()
@@ -347,7 +369,10 @@ func exit_battle() -> void:
         _ending_player_turn_early = false
 
     _clean_up_round(true)
-    suit_bonus = 0
+
+    if !_remembers_to_next_battle():
+        suit_bonus = 0
+        previous_card = null
 
     for enemy: BattleEnemy in _enemies:
         on_entity_leave_battle.emit(enemy)
