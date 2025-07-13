@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="RobotAbility" load_steps=2 format=3 uid="uid://bt76olmcwvp6b"]
+
+[ext_resource type="Script" uid="uid://0qri7op4mfno" path="res://scripts/robot_ability.gd" id="1_xxafx"]
+
+[resource]
+script = ExtResource("1_xxafx")
+id = "hand"
+skill_level = 1
+ability_type = 1
+description = "Deals an extra card"
+metadata/_custom_type_script = "uid://0qri7op4mfno"

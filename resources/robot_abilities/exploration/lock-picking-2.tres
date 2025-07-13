@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="RobotAbility" load_steps=2 format=3 uid="uid://dpy5qucyu25fx"]
+
+[ext_resource type="Script" uid="uid://0qri7op4mfno" path="res://scripts/robot_ability.gd" id="1_c8m4v"]
+
+[resource]
+script = ExtResource("1_c8m4v")
+id = "lock-picking"
+skill_level = 2
+ability_type = 0
+description = "Open simple locks  and bathroom doors"
+metadata/_custom_type_script = "uid://0qri7op4mfno"

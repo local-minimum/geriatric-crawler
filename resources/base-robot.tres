@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="RobotModel" load_steps=12 format=3 uid="uid://1ifcryeo70to"]
+
+[ext_resource type="Script" uid="uid://0qri7op4mfno" path="res://scripts/robot_ability.gd" id="1_olfye"]
+[ext_resource type="Resource" uid="uid://bu0oc7qbq770" path="res://resources/robot_abilities/battle/slots-1.tres" id="2_i2741"]
+[ext_resource type="Script" uid="uid://cy6jm0o40d2qm" path="res://scripts/robot_model.gd" id="2_je4nw"]
+[ext_resource type="Resource" uid="uid://c20q4v4qvcf6i" path="res://resources/robot_abilities/exploration/storage-1.tres" id="3_lew8e"]
+[ext_resource type="Resource" uid="uid://brhvmnis6vtk1" path="res://resources/robot_abilities/battle/suits-1.tres" id="4_mno2y"]
+[ext_resource type="Resource" uid="uid://bpdab343fo7cq" path="res://resources/robot_abilities/exploration/mapping-1.tres" id="5_3en2o"]
+[ext_resource type="Resource" uid="uid://8aoyvdht0msx" path="res://resources/robot_abilities/exploration/sonar-1.tres" id="6_n57fe"]
+[ext_resource type="Resource" uid="uid://br0wnot24fw1b" path="res://resources/robot_abilities/battle/memory-1.tres" id="7_gfie8"]
+[ext_resource type="Resource" uid="uid://c2kaiyaateugc" path="res://resources/robot_abilities/battle/slots-2.tres" id="8_micf8"]
+[ext_resource type="Resource" uid="uid://bprdlp26xbu37" path="res://resources/robot_abilities/exploration/climbing-1.tres" id="9_2kcf8"]
+[ext_resource type="Resource" uid="uid://dpy5qucyu25fx" path="res://resources/robot_abilities/exploration/lock-picking-2.tres" id="10_hp843"]
+
+[resource]
+script = ExtResource("2_je4nw")
+innate_abilities = Array[ExtResource("1_olfye")]([ExtResource("2_i2741"), ExtResource("3_lew8e")])
+level_1_options = Array[ExtResource("1_olfye")]([ExtResource("4_mno2y")])
+level_2_options = Array[ExtResource("1_olfye")]([ExtResource("5_3en2o"), ExtResource("6_n57fe")])
+level_3_options = Array[ExtResource("1_olfye")]([ExtResource("7_gfie8"), ExtResource("8_micf8")])
+level_4_options = Array[ExtResource("1_olfye")]([ExtResource("9_2kcf8"), ExtResource("10_hp843")])
+level_1_steps = 3
+level_2_steps = 4
+level_3_steps = 5
+level_4_steps = 6
+metadata/_custom_type_script = "uid://cy6jm0o40d2qm"

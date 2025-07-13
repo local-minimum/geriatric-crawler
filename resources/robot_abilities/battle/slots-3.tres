@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="RobotAbility" load_steps=2 format=3 uid="uid://bcjpe8nxsp7yo"]
+
+[ext_resource type="Script" uid="uid://0qri7op4mfno" path="res://scripts/robot_ability.gd" id="1_wdbbb"]
+
+[resource]
+script = ExtResource("1_wdbbb")
+id = "slots"
+skill_level = 3
+ability_type = 1
+description = "Play 4 cards each round"
+metadata/_custom_type_script = "uid://0qri7op4mfno"

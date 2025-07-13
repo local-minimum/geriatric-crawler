@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="RobotAbility" load_steps=2 format=3 uid="uid://b7h2g0xb1lmqx"]
+
+[ext_resource type="Script" uid="uid://0qri7op4mfno" path="res://scripts/robot_ability.gd" id="1_cmu0k"]
+
+[resource]
+script = ExtResource("1_cmu0k")
+id = "memory"
+skill_level = 2
+ability_type = 1
+description = "Bonus value and previous card is remembered between rounds"
+metadata/_custom_type_script = "uid://0qri7op4mfno"

@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="RobotAbility" load_steps=2 format=3 uid="uid://cy4xef20aqp4r"]
+
+[ext_resource type="Script" uid="uid://0qri7op4mfno" path="res://scripts/robot_ability.gd" id="1_jmv0j"]
+
+[resource]
+script = ExtResource("1_jmv0j")
+id = "suits"
+skill_level = 2
+ability_type = 1
+description = "Suit bonus rules have higher base value"
+metadata/_custom_type_script = "uid://0qri7op4mfno"

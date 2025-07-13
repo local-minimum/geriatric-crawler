@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="RobotAbility" load_steps=2 format=3 uid="uid://l2hkibnimtck"]
+
+[ext_resource type="Script" uid="uid://0qri7op4mfno" path="res://scripts/robot_ability.gd" id="1_5cguv"]
+
+[resource]
+script = ExtResource("1_5cguv")
+id = "storage"
+skill_level = 2
+ability_type = 0
+description = "Standard tier - enough for a short trip"
+metadata/_custom_type_script = "uid://0qri7op4mfno"

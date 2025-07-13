@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="RobotAbility" load_steps=2 format=3 uid="uid://gqeu8xvpnfnn"]
+
+[ext_resource type="Script" uid="uid://0qri7op4mfno" path="res://scripts/robot_ability.gd" id="1_i5omd"]
+
+[resource]
+script = ExtResource("1_i5omd")
+id = "lock-picking"
+skill_level = 1
+ability_type = 0
+description = "Open children's toy containers"
+metadata/_custom_type_script = "uid://0qri7op4mfno"

@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="RobotAbility" load_steps=2 format=3 uid="uid://c20q4v4qvcf6i"]
+
+[ext_resource type="Script" uid="uid://0qri7op4mfno" path="res://scripts/robot_ability.gd" id="1_nkikx"]
+
+[resource]
+script = ExtResource("1_nkikx")
+id = "sonar"
+skill_level = 1
+ability_type = 0
+description = "Detect entities in the vicinity"
+metadata/_custom_type_script = "uid://0qri7op4mfno"

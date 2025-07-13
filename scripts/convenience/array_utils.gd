@@ -37,3 +37,15 @@ static func sumi(arr: Array[int], start_value: int = 0) -> int:
             return acc + value,
         start_value,
     )
+
+static func maxi(arr: Array, pred: Callable, start_value: int = 0) -> int:
+    return arr.reduce(
+        func summer(acc: Variant, item: Variant) -> int:
+            var value: Variant = pred.call(item)
+            if value is int:
+                @warning_ignore_start("unsafe_cast")
+                return max(acc, value as int)
+                @warning_ignore_restore("unsafe_cast")
+            return acc,
+        start_value,
+    )

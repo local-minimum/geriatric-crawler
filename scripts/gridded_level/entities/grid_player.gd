@@ -16,6 +16,9 @@ var persist_repeat_moves: bool
 @export
 var repeat_move_delay: float = 100
 
+@export
+var robot: Robot
+
 func _ready() -> void:
     if spawn_node != null:
         var anchor: GridAnchor = spawn_node.get_grid_anchor(down)
@@ -110,6 +113,8 @@ func _process(_delta: float) -> void:
         _next_move_repeat = Time.get_ticks_msec() + repeat_move_delay
 
 
+const _ROBOT_KEY: String = "robot"
+
 func save() -> Dictionary:
     var anchor: GridAnchor = get_grid_anchor()
     var anchor_direction: CardinalDirections.CardinalDirection = CardinalDirections.CardinalDirection.NONE
@@ -121,7 +126,8 @@ func save() -> Dictionary:
         _LOOK_DIRECTION_KEY: look_direction,
         _ANCHOR_KEY: anchor_direction,
         _COORDINATES_KEY: coordinates(),
-        _DOWN_KEY: down
+        _DOWN_KEY: down,
+        _ROBOT_KEY: robot.collect_save_data(),
     }
 
 func initial_state() -> Dictionary:
@@ -130,7 +136,8 @@ func initial_state() -> Dictionary:
         _LOOK_DIRECTION_KEY: look_direction,
         _DOWN_KEY: down,
         _ANCHOR_KEY: down,
-        _COORDINATES_KEY: spawn_node.coordinates
+        _COORDINATES_KEY: spawn_node.coordinates,
+        _ROBOT_KEY: robot.collect_save_data(),
     }
 
 func _valid_save_data(save_data: Dictionary) -> bool:
@@ -144,6 +151,17 @@ func load_from_save(level: GridLevel, save_data: Dictionary) -> void:
     if !_valid_save_data(save_data):
         push_error("Player save data is not valid %s" % save_data)
         return
+
+    if save_data.has(_ROBOT_KEY):
+        var robot_save: Variant = save_data[_ROBOT_KEY]
+        if robot_save is Dictionary:
+            @warning_ignore_start("unsafe_call_argument")
+            robot.load_from_save(robot_save)
+            @warning_ignore_restore("unsafe_call_argument")
+        else:
+            push_warning("No save present for robot save on %s isn't a dictionary but %s" % [_ROBOT_KEY, robot_save])
+    else:
+        push_warning("Save lacks robot save on %s in %s" % [_ROBOT_KEY, save_data])
 
     var coords: Vector3i = save_data[_COORDINATES_KEY]
     var node: GridNode = level.get_grid_node(coords)
