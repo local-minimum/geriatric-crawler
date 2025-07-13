@@ -2,6 +2,9 @@ extends Node
 class_name Robot
 
 @export
+var _player: GridPlayer
+
+@export
 var model: RobotModel
 
 @export
@@ -11,11 +14,14 @@ var _obtained_level_abilities: Array[RobotAbility]
 
 var _fights: int
 
+func _ready() -> void:
+    _sync_player_transportation_mode()
+
 func obtained_level() -> int: return _obtained_level_abilities.size()
 
 func can_level_up() -> bool: return model.get_level(_fights) > obtained_level()
 
-func get_highest_level(skill: String) -> int:
+func get_skill_level(skill: String) -> int:
     var level: int = ArrayUtils.maxi(
         _obtained_level_abilities.filter(func (ability: RobotAbility) -> bool: return ability.id == skill),
         func (item: RobotAbility) -> int: return item.skill_level,
@@ -92,3 +98,24 @@ func load_from_save(data: Dictionary) -> void:
             push_warning("Save doesn't have an array on %s in %s" % [_ABILITIES_KEY, data])
     else:
         push_warning("Save lacks abilities on %s for robot %s" % [_FIGHTS_KEY, data])
+
+    _sync_player_transportation_mode()
+
+
+func _sync_player_transportation_mode() -> void:
+    if _player == null:
+        return
+
+    var climbing: int = get_skill_level(GridPlayer.CLIMBING_SKILL)
+    match climbing:
+        0:
+            _player.transportation_abilities.remove_flag(TransportationMode.WALL_WALKING)
+            _player.transportation_abilities.remove_flag(TransportationMode.CEILING_WALKING)
+        1:
+            _player.transportation_abilities.set_flag(TransportationMode.WALL_WALKING)
+            _player.transportation_abilities.remove_flag(TransportationMode.CEILING_WALKING)
+        2:
+            _player.transportation_abilities.set_flag(TransportationMode.WALL_WALKING)
+            _player.transportation_abilities.set_flag(TransportationMode.CEILING_WALKING)
+        _:
+            push_error("We don't know of the %s climbing skill level" % climbing)

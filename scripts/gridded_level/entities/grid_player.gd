@@ -19,6 +19,35 @@ var repeat_move_delay: float = 100
 @export
 var robot: Robot
 
+const CLIMBING_SKILL: String = "climbing"
+
+var override_wall_walking: bool:
+    set(value):
+        override_wall_walking = value
+        if value:
+            transportation_abilities.set_flag(TransportationMode.WALL_WALKING)
+        else:
+            var climbing: int = robot.get_skill_level(CLIMBING_SKILL)
+            if climbing == 0:
+                transportation_abilities.remove_flag(TransportationMode.WALL_WALKING)
+            else:
+                transportation_abilities.set_flag(TransportationMode.WALL_WALKING)
+
+var override_ceiling_walking: bool:
+    set(value):
+        override_ceiling_walking = value
+        if value:
+            transportation_abilities.set_flag(TransportationMode.WALL_WALKING)
+            transportation_abilities.set_flag(TransportationMode.CEILING_WALKING)
+        else:
+            var climbing: int = robot.get_skill_level(CLIMBING_SKILL)
+            if climbing < 2:
+                if !override_wall_walking && climbing == 0:
+                    transportation_abilities.set_flag(TransportationMode.WALL_WALKING)
+                transportation_abilities.remove_flag(TransportationMode.CEILING_WALKING)
+            else:
+                transportation_abilities.set_flag(TransportationMode.CEILING_WALKING)
+
 func _ready() -> void:
     if spawn_node != null:
         var anchor: GridAnchor = spawn_node.get_grid_anchor(down)

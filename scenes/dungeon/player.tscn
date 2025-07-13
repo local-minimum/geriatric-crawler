@@ -63,8 +63,9 @@ exotic_translation_time = 0.4
 turn_time = 0.2
 metadata/_custom_type_script = "uid://meibvvwp8mvg"
 
-[node name="Robot" type="Node" parent="."]
+[node name="Robot" type="Node" parent="." node_paths=PackedStringArray("_player")]
 script = ExtResource("5_se4x3")
+_player = NodePath("..")
 model = ExtResource("6_2f68n")
 given_name = "Robbie"
 metadata/_custom_type_script = "uid://bsao4ssvb051r"

@@ -73,8 +73,6 @@ func _sync() -> void:
 
     fov.value = level.player.camera.fov
 
-    wall_walking.button_pressed = level.player.transportation_abilities.has_flag(TransportationMode.WALL_WALKING)
-    ceiling_walking.button_pressed = level.player.transportation_abilities.has_flag(TransportationMode.CEILING_WALKING)
     jump_off.button_pressed = level.player.can_jump_off_walls
 
     inited = true
@@ -104,16 +102,12 @@ func _on_tank_animations_toggled(toggled_on: bool) -> void:
 
 
 func _on_wall_walking_toggled(toggled_on: bool) -> void:
-    if toggled_on:
-        level.player.transportation_abilities.set_flag(TransportationMode.WALL_WALKING)
-    else:
-        level.player.transportation_abilities.remove_flag(TransportationMode.WALL_WALKING)
+    level.player.override_wall_walking = toggled_on
 
 func _on_ceiling_walking_toggled(toggled_on: bool) -> void:
     if toggled_on:
-        level.player.transportation_abilities.set_flag(TransportationMode.CEILING_WALKING)
-    else:
-        level.player.transportation_abilities.remove_flag(TransportationMode.CEILING_WALKING)
+        wall_walking.button_pressed = true
+    level.player.override_ceiling_walking = toggled_on
 
 
 func _on_jump_off_walls_toggled(toggled_on: bool) -> void:
