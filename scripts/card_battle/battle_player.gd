@@ -57,6 +57,7 @@ func _execute_next_card() -> void:
 
     var battle: BattleMode = BattleMode.find_battle_parent(self)
     var suit_bonus: int = 0 if battle == null else battle.suit_bonus
+    var rank_bonus: int = 0 if battle == null else battle.rank_bonus
 
     card.card_played = true
 
@@ -75,14 +76,30 @@ func _execute_next_card() -> void:
     suit_bonus = get_suit_bonus(
         card.data,
         suit_bonus,
-        battle.get_suit_bonus_step() if battle != null else 1,
+        battle.get_suit_bonus_step() if battle != null else 0,
         battle.previous_card if battle != null else null,
         next.data if next != null else null,
         _active_card_index == 0,
     )
 
+    rank_bonus = get_rank_bonus(
+        card.data,
+        rank_bonus,
+        battle.get_rank_bonus_step() if battle != null else 0,
+        battle.previous_card if battle != null else null,
+        battle.rank_direction if battle != null else 0,
+        next.data if next != null else null,
+        _active_card_index == 0,
+        battle.get_rank_bonus_allow_descending(),
+    )
+
+
     if battle != null:
+        battle.rank_bonus = rank_bonus
+        battle.rank_direction = signi(card.data.rank - battle.previous_card.rank) if battle.previous_card != null else 0
+
         battle.suit_bonus = suit_bonus
+
         battle.previous_card = card.data
 
     _active_card_effect_index = 0
@@ -207,11 +224,12 @@ func add_target(target: BattleEntity) -> bool:
 func _execute_effect_on_targets() -> void:
     var battle: BattleMode = BattleMode.find_battle_parent(self)
     var suit_bonus: int = 0 if battle == null else battle.suit_bonus
+    var rank_bonus: int = 0 if battle == null else battle.rank_bonus
 
     for target: BattleEntity in _effect_targets:
         on_before_execute_effect_on_target.emit(target)
 
-        var effect_magnitude: int = _active_effect.calculate_effect(suit_bonus, _allies.has(target))
+        var effect_magnitude: int = _active_effect.calculate_effect(suit_bonus + rank_bonus, _allies.has(target))
         print_debug("Doing %s %s to %s" % [effect_magnitude, BattleCardPrimaryEffect.humanize(_effect_mode), target.name])
 
         match _effect_mode:

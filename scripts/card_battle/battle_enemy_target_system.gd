@@ -18,13 +18,13 @@ var _self: BattleEnemy
 
 func get_target_order(
     effect: BattleCardPrimaryEffect,
-    suit_bonus: int,
+    bonus: int,
     targets: Array[BattleEntity],
     n_targets: int,
     allies: Array[BattleEntity],
 ) -> Array[int]:
     match effect.mode:
-        BattleCardPrimaryEffect.EffectMode.Damage: return _get_attack_order(effect, suit_bonus, targets, n_targets, allies)
+        BattleCardPrimaryEffect.EffectMode.Damage: return _get_attack_order(effect, bonus, targets, n_targets, allies)
         BattleCardPrimaryEffect.EffectMode.Heal: return _get_heal_order(targets, n_targets, allies)
         BattleCardPrimaryEffect.EffectMode.Defence: return _get_shield_order(targets, n_targets, allies)
 
@@ -35,7 +35,7 @@ func get_target_order(
 
 func _get_attack_order(
     effect: BattleCardPrimaryEffect,
-    suit_bonus: int,
+    bonus: int,
     targets: Array[BattleEntity],
     n_targets: int,
     allies: Array[BattleEntity],
@@ -47,7 +47,7 @@ func _get_attack_order(
         var healthyness: float = target.get_healthiness()
         var shielding: Array[int] = target.get_shields()
         var effect_range: Array[int] = effect.get_effect_range(
-            suit_bonus if effect.allows_crit(allies.has(target)) else 0
+            bonus if effect.allows_crit(allies.has(target)) else 0
         )
         @warning_ignore_start("integer_division")
         var effect_magnitude: int = (effect_range[0] + effect_range[1]) / 2

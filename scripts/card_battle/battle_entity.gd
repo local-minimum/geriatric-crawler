@@ -79,6 +79,23 @@ func heal(amount: int) -> void:
 
     on_heal.emit(self, amount - (raw_new - _health), _health, overshoot)
 
+func get_rank_bonus(
+    card: BattleCardData,
+    rank_bonus: int,
+    step_size: int,
+    prev_card: BattleCardData,
+    rank_direction: int,
+    _next_card: BattleCardData,
+    first_card: bool,
+    allow_descending: bool,
+) -> int:
+    if prev_card == null:
+        return rank_bonus if first_card else 0
+
+    if allow_descending:
+        return rank_bonus + step_size if card.rank < prev_card.rank && rank_direction < 0 else 0
+    return rank_bonus + step_size if card.rank > prev_card.rank && rank_direction > 0 else 0
+
 
 func get_suit_bonus(
     card: BattleCardData,

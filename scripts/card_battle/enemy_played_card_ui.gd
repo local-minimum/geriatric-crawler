@@ -39,9 +39,9 @@ func _remove_new_enemy(entity: BattleEntity) -> void:
 
 var _tween: Tween
 
-func _show_card(card: BattleCardData, suit_bonus: int, pause: float) -> void:
+func _show_card(card: BattleCardData, suit_bonus: int, rank_bonus: int, pause: float) -> void:
     _battle_card.data = card
-    _battle_card.sync_display(suit_bonus)
+    _battle_card.sync_display(suit_bonus + rank_bonus)
     _battle_card.position = Vector2.ZERO
     _battle_card.scale = Vector2.ZERO
     _battle_card.rotation_degrees = 0

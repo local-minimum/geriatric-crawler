@@ -2,7 +2,7 @@ extends BattleEntity
 class_name BattleEnemy
 
 signal on_prepare_hand(battle_enemy: BattleEnemy, slotted_cards: Array[BattleCard])
-signal on_play_card(card: BattleCardData, suit_bonus: int, pause: float)
+signal on_play_card(card: BattleCardData, suit_bonus: int, rank_bonus: int, pause: float)
 
 static var _VARIANT_KEY: String = "variant"
 static var _LEVEL_KEY: String = "level"
@@ -37,7 +37,13 @@ var brain: BattleBrain
 var _target_system: BattleEnemyTargetSystem
 
 @export
-var _bonus_step_size: int = 1
+var _rank_bonus_step_size: int = 1
+
+@export
+var _suit_bonus_step_size: int = 0
+
+@export
+var _suit_bonus_on_descending: bool
 
 var _hand: Array[BattleCardData]
 var _slotted: Array[BattleCardData]
@@ -73,6 +79,8 @@ func play_actions(
     var previous: BattleCardData = null
     var idx: int = 0
     var suit_bonus: int
+    var rank_bonus: int
+    var rank_direction: int
     var card_pause: float = 3
 
     ArrayUtils.shift_nulls_to_end(_slotted)
@@ -91,9 +99,13 @@ func play_actions(
 
         var next: BattleCardData = _slotted[idx + 1] if idx < _slotted.size() - 1 else null
 
-        suit_bonus = get_suit_bonus(card, suit_bonus, _bonus_step_size, previous, next, idx == 0)
+        suit_bonus = get_suit_bonus(card, suit_bonus, _suit_bonus_step_size, previous, next, idx == 0)
+        rank_bonus = get_rank_bonus(card, rank_bonus, _rank_bonus_step_size, previous, rank_direction, next, idx == 0, _suit_bonus_on_descending)
 
-        on_play_card.emit(card, suit_bonus, card_pause)
+        if previous != null:
+            rank_direction = signi(card.rank - previous.rank)
+
+        on_play_card.emit(card, suit_bonus, rank_bonus, card_pause)
 
         await get_tree().create_timer(card_pause).timeout
 
@@ -103,16 +115,16 @@ func play_actions(
             var had_effect: bool = false
 
             if effect.targets_enemies() && effect.targets_allies():
-                await _execute_effect(effect, suit_bonus, enemies + allies, n_targets, allies)
+                await _execute_effect(effect, suit_bonus + rank_bonus, enemies + allies, n_targets, allies)
                 had_effect = true
             elif effect.targets_enemies():
-                await _execute_effect(effect, suit_bonus, enemies, n_targets, allies)
+                await _execute_effect(effect, suit_bonus + rank_bonus, enemies, n_targets, allies)
                 had_effect = true
             elif effect.targets_allies():
-                await _execute_effect(effect, suit_bonus, allies , n_targets, allies)
+                await _execute_effect(effect, suit_bonus + rank_bonus, allies , n_targets, allies)
                 had_effect = true
             elif effect.targets_self():
-                await _execute_effect(effect, suit_bonus, [self], n_targets, allies)
+                await _execute_effect(effect, suit_bonus + rank_bonus, [self], n_targets, allies)
                 had_effect = true
 
             if !had_effect:
@@ -130,7 +142,7 @@ func play_actions(
 
 func _execute_effect(
     effect: BattleCardPrimaryEffect,
-    suit_bonus: int,
+    bonus: int,
     targets: Array[BattleEntity],
     n_targets: int,
     allies: Array[BattleEntity],
@@ -140,12 +152,12 @@ func _execute_effect(
         target_order = ArrayUtils.int_range(targets.size())
         target_order.shuffle()
     else:
-        target_order = _target_system.get_target_order(effect, suit_bonus, targets, n_targets, allies)
+        target_order = _target_system.get_target_order(effect, bonus, targets, n_targets, allies)
 
     for i: int in range(n_targets):
         var target: BattleEntity = targets[target_order[i]]
 
-        var value: int = effect.calculate_effect(suit_bonus, allies.has(target))
+        var value: int = effect.calculate_effect(bonus, allies.has(target))
 
         print_debug("Doing %s %s to %s" % [value, effect.mode_name(), target.name])
 

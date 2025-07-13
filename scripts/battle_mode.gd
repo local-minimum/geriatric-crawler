@@ -34,7 +34,9 @@ const _battle_card_resource: PackedScene = preload("res://scenes/battle_card.tsc
 var _cards: Array[BattleCard] = []
 
 var previous_card: BattleCardData
+var rank_direction: int
 var suit_bonus: int
+var rank_bonus: int
 
 static func find_battle_parent(current: Node, inclusive: bool = true) ->  BattleMode:
     if inclusive && current is BattleMode:
@@ -194,8 +196,23 @@ func get_suit_bonus_step() -> int:
             push_warning("Not implemented level %s skill for suits (skill '%s')" % [robot.get_skill_level(_SUIT_SKILL), _SUIT_SKILL])
             return 3
 
+const _RANK_SKILL: String = "rank"
+func get_rank_bonus_step() -> int:
+    match robot.get_skill_level(_RANK_SKILL):
+        0: return 0
+        1: return 2
+        2: return 2
+        _:
+            push_warning("Not implemented level %s skill for suits (skill '%s')" % [robot.get_skill_level(_RANK_SKILL), _RANK_SKILL])
+            return 2
+
+func get_rank_bonus_allow_descending() -> bool:
+    return robot.get_skill_level(_RANK_SKILL) < 2
+
 func _handle_update_slotted(cards: Array[BattleCard]) -> void:
     var acc_suit_bonus: int = suit_bonus
+    var acc_rank_bonus: int = rank_bonus
+    var current_rank_direction: int = rank_direction
     var prev_card: BattleCardData = previous_card
 
     var slotted_cards: Array[BattleCard]
@@ -204,16 +221,22 @@ func _handle_update_slotted(cards: Array[BattleCard]) -> void:
 
     var idx: int = 0
     var suit_skill_step: int = get_suit_bonus_step()
+    var rank_skill_step: int = get_rank_bonus_step()
 
     for card: BattleCard in slotted_cards:
         var next_card: BattleCardData = slotted_cards[idx + 1].data if idx + 1 < slotted_cards.size() else null
         acc_suit_bonus = battle_player.get_suit_bonus(card.data, acc_suit_bonus, suit_skill_step, prev_card, next_card, idx == 0)
+        acc_rank_bonus = battle_player.get_rank_bonus(card.data, acc_rank_bonus, rank_skill_step, prev_card, current_rank_direction, next_card, idx == 0, get_rank_bonus_allow_descending())
+
+        if prev_card != null:
+            current_rank_direction = signi(card.data.rank - prev_card.rank)
+
         print_debug("%s with %s prev gets bonus %s (start bonus %s)" % [
             card.data.id, prev_card.id if prev_card != null else "[NONE]", acc_suit_bonus, suit_bonus])
 
         idx += 1
 
-        card.sync_display(acc_suit_bonus)
+        card.sync_display(acc_suit_bonus + acc_rank_bonus)
 
         prev_card = card.data
 
@@ -354,6 +377,7 @@ func _clean_up_round(exit_battle_cleanup: bool = false) -> void:
 
     if !_remembers_bonus_end_of_round():
         suit_bonus = 0
+        rank_bonus = 0
 
     if !_remembers_previous_end_of_round():
         previous_card = null
@@ -372,6 +396,7 @@ func exit_battle() -> void:
 
     if !_remembers_to_next_battle():
         suit_bonus = 0
+        rank_bonus = 0
         previous_card = null
 
     for enemy: BattleEnemy in _enemies:
