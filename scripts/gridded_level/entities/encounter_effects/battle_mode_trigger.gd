@@ -65,12 +65,12 @@ func invoke(triggering_encounter: GridEncounter, player: GridEntity) -> bool:
     print_debug("Entering battle with %s" % triggering_encounter.name)
 
     @warning_ignore_start("return_value_discarded")
-    super(triggering_encounter, player)
+    super.invoke(triggering_encounter, player)
     @warning_ignore_restore("return_value_discarded")
 
     level = triggering_encounter.get_level()
     level.paused = true
-    level.battle_mode.enter_battle(self)
+    level.battle_mode.enter_battle(self, level.player.robot)
     return true
 
 func complete() -> void:

@@ -28,6 +28,7 @@ var _ui: CanvasLayer
 var battle_player: BattlePlayer
 
 var trigger: GridEncounterEffect
+var robot: Robot
 
 const _battle_card_resource: PackedScene = preload("res://scenes/battle_card.tscn")
 var _cards: Array[BattleCard] = []
@@ -76,7 +77,7 @@ func get_party() -> Array[BattlePlayer]:
     return [battle_player]
 
 #region ENTER BATTLE
-func enter_battle(battle_trigger: BattleModeTrigger) -> void:
+func enter_battle(battle_trigger: BattleModeTrigger, player_robot: Robot) -> void:
     on_battle_start.emit()
 
     _ui.visible = true
@@ -85,6 +86,7 @@ func enter_battle(battle_trigger: BattleModeTrigger) -> void:
     # TODO: Consider need to wait for enemy to animate death before lettning new enter...
 
     trigger = battle_trigger
+    robot = player_robot
 
     on_entity_join_battle.emit(battle_player)
     if battle_player.on_end_turn.connect(_next_agent_turn) != OK:
@@ -128,11 +130,15 @@ func round_start_prepare_hands() -> void:
 
     deal_player_hand()
 
+const _HAND_SIZE: String = "hand"
+
+func _get_hand_size() -> int:
+    return robot.get_skill_level(_HAND_SIZE) + 4
+
 func deal_player_hand() -> void:
-    # TODO: Something should manage hand size
     var cards: Array[BattleCard] = []
     cards.append_array(battle_hand.hand)
-    var hand_size: int = 6
+    var hand_size: int = _get_hand_size()
     var new_cards: int = hand_size - cards.size()
 
     var card_data: Array[BattleCardData] = player_deck.draw(new_cards)
@@ -200,8 +206,13 @@ func _handle_update_slotted(cards: Array[BattleCard]) -> void:
 
         prev_card = card.data
 
+const _SLOTS: String = "slots"
+
+func _get_number_of_slots() -> int:
+    return robot.get_skill_level(_SLOTS) + 1
+
 func _after_deal() -> void:
-    battle_hand.slots.show_slots(3)
+    battle_hand.slots.show_slots(_get_number_of_slots())
 #endregion PHASE DRAW AND SLOT CARDS
 
 #region PHASE PLAY CARD

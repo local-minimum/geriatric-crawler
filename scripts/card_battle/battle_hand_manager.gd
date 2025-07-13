@@ -21,7 +21,7 @@ var _draw_origin: Control
 var slots: BattleCardSlots
 
 @export
-var min_slots: int = 5
+var min_card_places: int = 5
 
 var hand: Array[BattleCard] = []
 var _connected_cards: Array[BattleCard] = []
@@ -139,8 +139,8 @@ func _calculate_slots_range(n_cards: int) -> int:
         push_error("Hand only supports %s cards, we got %s" % [n_controls, n_cards])
 
     # Center layouts
-    var matching_min_count: bool = (min_slots % 2) == (n_cards % 2)
-    n_controls = clampi(n_cards + _hand_size_offset, min_slots if matching_min_count else min_slots + 1, n_controls)
+    var matching_min_count: bool = (min_card_places % 2) == (n_cards % 2)
+    n_controls = clampi(n_cards + _hand_size_offset, min_card_places if matching_min_count else min_card_places + 1, n_controls)
     for slot_idx: int in range(_target_controls.size()):
         _target_controls[slot_idx].visible = slot_idx < n_controls
 
