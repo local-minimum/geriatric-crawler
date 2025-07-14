@@ -40,20 +40,27 @@ func initial_data(extentsion_save_data: Dictionary) -> Dictionary:
     return extentsion_save_data
 
 func load_from_data(extentsion_save_data: Dictionary) -> void:
+    print_debug("-- Loading battle mode save --")
+
     if _battle == null:
         if extentsion_save_data != null && !extentsion_save_data.is_empty():
             push_error("Could not load battle state from save")
         return
 
+    # TODO: We should create the party from the save instead of hoping the scene has everyone
     var party: Array[BattlePlayer] = _battle.get_party()
-    if extentsion_save_data.has(_PARTY_KEY):
-        for save: Dictionary in extentsion_save_data[_PARTY_KEY]:
+    for item: Variant in DictionaryUtils.safe_geta(extentsion_save_data, _PARTY_KEY):
+        if item is Dictionary:
+            var save: Dictionary = item
             var id: String = save.get(BattlePlayer._ID_KEY, "")
             var player_idx: int = party.find_custom(func (p: BattlePlayer) -> bool: return p.character_id == id)
             if player_idx < 0:
+                push_warning("'%s' is not in the party" % id)
                 continue
 
             party[player_idx].load_from_save(save)
+        else:
+            push_warning("Party member %s save wasn't a dictionary" % item)
 
     _battle.suit_bonus = DictionaryUtils.safe_geti(extentsion_save_data, _SUIT_BONUS_KEY)
     _battle.rank_bonus = DictionaryUtils.safe_geti(extentsion_save_data, _RANK_BONUS_KEY)
@@ -64,4 +71,3 @@ func load_from_data(extentsion_save_data: Dictionary) -> void:
         _battle.previous_card = BattleCardData.get_card_by_id(BattleCardData.CardCategory.Player, prev_card_id)
     else:
         _battle.previous_card = null
-        push_error("There was no previous card on %s in save %s" % [_PREV_CARD_KEY, extentsion_save_data])

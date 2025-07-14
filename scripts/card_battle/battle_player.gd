@@ -253,8 +253,21 @@ func _execute_effect_on_targets() -> void:
     _active_card_effect_index += 1
     _execute_next_effect()
 
+var _robot: Robot
+
+func use_robot(robot: Robot) -> void:
+    _robot = robot
+
+    if _robot != null:
+        max_health = _robot.model.max_hp
+    else:
+        max_health = 0
+
+    validate_health()
+
+
 func get_entity_name() -> String:
-    return "Simon Cyberdeck"
+    return "Simon Cyberdeck" if _robot == null else _robot.given_name
 
 func clean_up_round() -> void:
     _restore_card_size()
@@ -279,10 +292,4 @@ func load_from_save(data: Dictionary) -> void:
         push_error("Attmpted to load %s onto %s" % [data[_ID_KEY], character_id])
         return
 
-    var health: Variant = data[_HEALTH_KEY]
-    if health is int:
-        _health = health
-        _health = clampi(_health, 0, max_health)
-    else:
-        push_error("There was no health for %s in save %s" % [character_id, data])
-        _health = max_health
+    _health = maxi(0, DictionaryUtils.safe_geti(data, _HEALTH_KEY, max_health))

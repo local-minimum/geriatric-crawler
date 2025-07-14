@@ -3,6 +3,7 @@ class_name Robot
 
 signal on_robot_death(robot: Robot)
 signal on_robot_complete_fight(robot: Robot)
+signal on_robot_loaded(robot: Robot)
 
 @export
 var _player: GridPlayer
@@ -21,6 +22,9 @@ var _alive: bool = true
 
 func _ready() -> void:
     _sync_player_transportation_mode()
+
+    var battle_player: BattlePlayer = _player.get_level().battle_mode.battle_player
+    battle_player.use_robot(self)
 
 func is_alive() -> bool: return _alive
 
@@ -111,6 +115,10 @@ func load_from_save(data: Dictionary) -> void:
 
     _sync_player_transportation_mode()
 
+    var battle_player: BattlePlayer = _player.get_level().battle_mode.battle_player
+    battle_player.use_robot(self)
+
+    on_robot_loaded.emit(self)
 
 func _sync_player_transportation_mode() -> void:
     if _player == null:

@@ -16,7 +16,10 @@ signal on_end_turn(entity: BattleEntity)
 
 static var _HEALTH_KEY: String = "health"
 
-var _health: int = -1
+var _health: int = -1:
+    set (value):
+        print_debug("%s health %s -> %s" % [name, _health, value])
+        _health = value
 
 @export
 var max_health: int = 20
@@ -41,9 +44,11 @@ func get_healthiness() -> float:
 func validate_health() -> void:
     if _health < 0:
         _health = max_health
+        on_heal.emit(self, 0, _health, false)
 
     if _health > max_health:
         _health = max_health
+        on_heal.emit(self, 0, _health, false)
 
 func is_alive() -> bool:
     return _health > 0

@@ -91,12 +91,12 @@ func enter_battle(battle_trigger: BattleModeTrigger, player_robot: Robot) -> voi
     # TODO: Consider need to wait for enemy to animate death before lettning new enter...
 
     trigger = battle_trigger
+
     robot = player_robot
+    battle_player.use_robot(robot)
 
     player_deck.load_deck(robot.get_deck())
 
-    battle_player.max_health = robot.model.max_hp
-    battle_player.validate_health()
 
     on_entity_join_battle.emit(battle_player)
     if battle_player.on_end_turn.connect(_next_agent_turn) != OK:

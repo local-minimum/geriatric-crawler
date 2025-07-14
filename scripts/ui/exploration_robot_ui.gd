@@ -16,9 +16,22 @@ var _health_label: Label
 var _level_label: Label
 
 func _ready() -> void:
+    if _exploration_ui.level.on_change_player.connect(_handle_new_player) != OK:
+        push_error("Failed to connect on new player")
+
     _connect_player(_exploration_ui.level.player, _exploration_ui.battle.battle_player)
 
-func _connect_player(grid_player: GridPlayer, battle_player: BattlePlayer) -> void:
+func _handle_new_player() -> void:
+    var grid_player: GridPlayer = _exploration_ui.level.player
+    if grid_player.robot.on_robot_complete_fight.connect(_handle_on_complete_fight) != OK:
+        push_error("Failed to connect on robot complete fight")
+
+    if grid_player.robot.on_robot_loaded.connect(_handle_on_robot_loaded) != OK:
+        push_error("Failed to connect on robot loaded")
+
+    _sync_robot(grid_player.robot, _exploration_ui.battle.battle_player)
+
+func _connect_player(grid_player: GridPlayer, battle_player: BattlePlayer, omit_connecting_robot: bool = false) -> void:
     if battle_player.on_heal.connect(_handle_on_heal) != OK:
         push_error("Failed to connect on heal")
     if battle_player.on_hurt.connect(_handle_on_hurt) != OK:
@@ -26,10 +39,11 @@ func _connect_player(grid_player: GridPlayer, battle_player: BattlePlayer) -> vo
     if battle_player.on_death.connect(_handle_on_death) != OK:
         push_error("Failed to connect on death")
 
-    if grid_player.robot.on_robot_complete_fight.connect(_handle_on_complete_fight) != OK:
-        push_error("Failed to connect on robot complete fight")
-
-    _sync_robot(grid_player.robot, battle_player)
+    if !omit_connecting_robot:
+        # sync robot also called from new player
+        _handle_new_player()
+    else:
+        _sync_robot(grid_player.robot, battle_player)
 
 func _sync_robot(robot: Robot, battle_player: BattlePlayer) -> void:
     _name_label.text = robot.given_name
@@ -37,7 +51,8 @@ func _sync_robot(robot: Robot, battle_player: BattlePlayer) -> void:
 
     _sync_level(robot)
 
-    if battle_player == null || !_exploration_ui.battle.get_battling():
+    if battle_player == null:
+        push_warning("Assuming full health because battle player not set")
         _health_label.text = "%s/%s HP" % [robot.model.max_hp, robot.model.max_hp]
     else:
         _sync_health(battle_player)
@@ -76,3 +91,7 @@ func _handle_on_death(entity: BattleEntity) -> void:
 
 func _handle_on_complete_fight(robot: Robot) -> void:
     _sync_level(robot)
+
+func _handle_on_robot_loaded(_robot: Robot) -> void:
+    print_debug("Handling robot loaded %s (%s, %s)" % [_robot.given_name, _exploration_ui.level.player, _exploration_ui.battle.battle_player])
+    _connect_player(_exploration_ui.level.player, _exploration_ui.battle.battle_player, true)
