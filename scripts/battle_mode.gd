@@ -89,6 +89,7 @@ func enter_battle(battle_trigger: BattleModeTrigger, player_robot: Robot) -> voi
 
     trigger = battle_trigger
     robot = player_robot
+    player_deck.load_deck(robot.get_deck())
 
     on_entity_join_battle.emit(battle_player)
     if battle_player.on_end_turn.connect(_next_agent_turn) != OK:
@@ -415,6 +416,13 @@ func exit_battle() -> void:
     animator.play("fade_out_battle")
     await get_tree().create_timer(0.5).timeout
     trigger.complete()
+
+    trigger = null
+    if battle_player.is_alive():
+        robot.complete_fight()
+    else:
+        robot.killed_in_fight()
+    robot = null
 
     on_battle_end.emit()
     _ui.visible = false

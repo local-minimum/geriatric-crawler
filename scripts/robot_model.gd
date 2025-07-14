@@ -28,6 +28,9 @@ var level_3_steps: int = 5
 @export_range(1, 6)
 var level_4_steps: int = 6
 
+@export
+var starter_deck: Array[BattleCardData]
+
 func get_level(steps: int) -> int:
     if steps < level_1_steps:
         return 0

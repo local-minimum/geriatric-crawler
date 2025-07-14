@@ -4,18 +4,16 @@ class_name BattleDeck
 signal on_shuffle(draw: Array[BattleCardData])
 signal on_updated_piles(draw: Array[BattleCardData], hand: Array[BattleCardData], discard: Array[BattleCardData])
 
-@export
-var _start_deck: Array[BattleCardData]
-
 var _draw_pile: Array[BattleCardData] = []
 var _active_hand: Array[BattleCardData] = []
 var _discard_pile: Array[BattleCardData] = []
 
-func _ready() -> void:
-    if _draw_pile.is_empty() && _active_hand.is_empty() && _discard_pile.is_empty():
-        _draw_pile.append_array(_start_deck)
-        shuffle()
-
+func load_deck(deck: Array[BattleCardData]) -> void:
+    _draw_pile.clear()
+    _discard_pile.clear()
+    _active_hand.clear()
+    _draw_pile.append_array(deck)
+    shuffle()
 
 func shuffle(include_hand: bool = false) -> void:
     if include_hand:

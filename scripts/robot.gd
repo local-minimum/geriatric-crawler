@@ -1,6 +1,9 @@
 extends Node
 class_name Robot
 
+signal on_robot_death(robot: Robot)
+signal on_robot_complete_fight(robot: Robot)
+
 @export
 var _player: GridPlayer
 
@@ -10,12 +13,16 @@ var model: RobotModel
 @export
 var given_name: String
 
+var _obtained_cards: Array[BattleCardData]
 var _obtained_level_abilities: Array[RobotAbility]
 
 var _fights: int
+var _alive: bool = true
 
 func _ready() -> void:
     _sync_player_transportation_mode()
+
+func is_alive() -> bool: return _alive
 
 func obtained_level() -> int: return _obtained_level_abilities.size()
 
@@ -49,55 +56,46 @@ func set_level_reward(reward_full_id: String) -> void:
 const _NAME_KEY: String = "name"
 const _FIGHTS_KEY: String = "fights"
 const _ABILITIES_KEY: String = "abilites"
+const _ALIVE_KEY: String = "alive"
+const _OBTAINED_CARDS_KEY: String = "bonus-cards"
 
 func collect_save_data() -> Dictionary:
     return {
         _NAME_KEY: given_name,
         _FIGHTS_KEY: _fights,
+        _ALIVE_KEY: _alive,
         _ABILITIES_KEY: _obtained_level_abilities.map(func (ability: RobotAbility) -> String: return ability.full_id()),
+        _OBTAINED_CARDS_KEY: _obtained_cards.map(func (card: BattleCardData) -> String: return card.id),
     }
 
 func load_from_save(data: Dictionary) -> void:
-    given_name = "Sad roboto noname"
-    if data.has(_NAME_KEY):
-        if data[_NAME_KEY] is String:
-            given_name = data[_NAME_KEY]
-        else:
-            push_warning("Save value %s on %s isn't a string in %s" % [data[_NAME_KEY], _NAME_KEY, data])
-    else:
-        push_warning("Save lacks name on %s for robot %s" % [_NAME_KEY, data])
-
-    _fights = 0
-    if data.has(_FIGHTS_KEY):
-        if data[_FIGHTS_KEY] is int:
-            _fights = data[_FIGHTS_KEY]
-        else:
-            push_warning("Save value %s on %s expected to be integer in %s" % [data[_FIGHTS_KEY], _FIGHTS_KEY, data])
-    else:
-        push_warning("Save lacks fights on %s for robot %s" % [_FIGHTS_KEY, data])
+    given_name = DictionaryUtils.safe_gets(data, _NAME_KEY, "Sad roboto noname")
+    _fights = DictionaryUtils.safe_geti(data, _FIGHTS_KEY)
+    _alive = DictionaryUtils.safe_getb(data, _ALIVE_KEY, true)
 
     _obtained_level_abilities.clear()
-    if data.has(_ABILITIES_KEY):
-        var arr: Variant = data[_ABILITIES_KEY]
-        if arr is Array:
-            var level: int = 1
-            for ability_id: Variant in arr:
-                if ability_id is String:
-                    @warning_ignore_start("unsafe_call_argument")
-                    var ability: RobotAbility = model.get_skill(ability_id, level)
-                    @warning_ignore_restore("unsafe_call_argument")
-                    if ability != null:
-                        _obtained_level_abilities.append(ability)
-                    else:
-                        push_warning("%s is not a known level %s ability of %s" % [ability_id, level, model])
-                else:
-                    push_warning("%s is not a string value (expected on %s in %s)" % [ability_id, _ABILITIES_KEY, data])
-
-                level += 1
+    var level: int = 1
+    for ability_id: Variant in DictionaryUtils.safe_geta(data, _ABILITIES_KEY):
+        if ability_id is String:
+            @warning_ignore_start("unsafe_call_argument")
+            var ability: RobotAbility = model.get_skill(ability_id, level)
+            @warning_ignore_restore("unsafe_call_argument")
+            if ability != null:
+                _obtained_level_abilities.append(ability)
+            else:
+                push_warning("%s is not a known level %s ability of %s" % [ability_id, level, model])
         else:
-            push_warning("Save doesn't have an array on %s in %s" % [_ABILITIES_KEY, data])
-    else:
-        push_warning("Save lacks abilities on %s for robot %s" % [_FIGHTS_KEY, data])
+            push_warning("%s is not a string value (expected on %s in %s)" % [ability_id, _ABILITIES_KEY, data])
+
+        level += 1
+
+    _obtained_cards.clear()
+    for card_id: Variant in DictionaryUtils.safe_geta(data, _OBTAINED_CARDS_KEY):
+        if card_id is String:
+            # TODO: Actually load card from resource
+            pass
+        else:
+            push_warning("%s is not a string value (expected on %s in %s)" % [card_id, _OBTAINED_CARDS_KEY, data])
 
     _sync_player_transportation_mode()
 
@@ -119,3 +117,15 @@ func _sync_player_transportation_mode() -> void:
             _player.transportation_abilities.set_flag(TransportationMode.CEILING_WALKING)
         _:
             push_error("We don't know of the %s climbing skill level" % climbing)
+
+func complete_fight() -> void:
+    _fights += 1
+    on_robot_complete_fight.emit(self)
+
+
+func killed_in_fight() -> void:
+    _alive = false
+    on_robot_death.emit(self)
+
+func get_deck() -> Array[BattleCardData]:
+    return model.starter_deck + _obtained_cards
