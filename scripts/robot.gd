@@ -90,10 +90,16 @@ func load_from_save(data: Dictionary) -> void:
         level += 1
 
     _obtained_cards.clear()
+
     for card_id: Variant in DictionaryUtils.safe_geta(data, _OBTAINED_CARDS_KEY):
         if card_id is String:
-            # TODO: Actually load card from resource
-            pass
+            @warning_ignore_start("unsafe_call_argument")
+            var card: BattleCardData = BattleCardData.get_card_by_id(BattleCardData.CardCategory.Player, card_id)
+            @warning_ignore_restore("unsafe_call_argument")
+            if card == null:
+                push_warning("%s couldn't be found among player cards" % card_id)
+            else:
+                _obtained_cards.append(card)
         else:
             push_warning("%s is not a string value (expected on %s in %s)" % [card_id, _OBTAINED_CARDS_KEY, data])
 

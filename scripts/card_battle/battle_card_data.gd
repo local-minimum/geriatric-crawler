@@ -7,6 +7,59 @@ const SUIT_METAL: int = 2
 const SUIT_DATA: int = 4
 
 const ALL_SUITES: Array[int] = [SUIT_ELECTRICITY, SUIT_METAL, SUIT_DATA]
+enum CardCategory {Player, Enemy}
+
+static var _ALL_CARD: Dictionary[String, Dictionary] = {}
+
+static func _card_category_name(category: CardCategory, enemy_id: String = "") -> String:
+    match category:
+        CardCategory.Player: return "player"
+        CardCategory.Enemy:
+            if enemy_id != "":
+                return "enemy-%s" % enemy_id
+            return "enemy"
+        _: return "unknown"
+
+static func _card_category_path(category: CardCategory, enemy_id: String = "") -> String:
+    match category:
+        CardCategory.Player: return "res://resources/player_cards"
+        CardCategory.Enemy:
+            if enemy_id != "" && !enemy_id.contains("/") && !enemy_id.contains("."):
+                return "res://resources/enemy_cards/%s" % enemy_id
+
+            return "res://resources/enemy_cards"
+        _: return "res://resources/other_cards"
+
+static func _load_cards_cateogry(category: CardCategory, enemy_id: String = "") -> void:
+    var key: String = _card_category_name(category, enemy_id)
+    var cards: Dictionary[String, BattleCardData] = _ALL_CARD.get(key)
+
+    var dir_path: String = _card_category_path(category, enemy_id)
+    for file_name: String in DirAccess.get_files_at(dir_path):
+        if file_name.get_extension() == "import":
+            file_name = file_name.replace(".import", "")
+            if file_name.get_extension() != "tres":
+                continue
+            var resource: Resource = ResourceLoader.load("%s%s" % [dir_path, file_name])
+
+            if resource is BattleCardData:
+                var card: BattleCardData = resource
+
+                cards[card.id] = card as BattleCardData
+
+    _ALL_CARD[key] = cards
+
+static func get_card_by_id(category: CardCategory, card_id: String, enemy_id: String = "") -> BattleCardData:
+    var key: String = _card_category_name(category, enemy_id)
+    if !_ALL_CARD.has(key):
+        _load_cards_cateogry(category, enemy_id)
+
+    var items: Dictionary = DictionaryUtils.safe_getd(_ALL_CARD, key)
+    var item: Variant = items.get(card_id)
+    if item is BattleCardData:
+        return item
+
+    return null
 
 @export
 var id: String
