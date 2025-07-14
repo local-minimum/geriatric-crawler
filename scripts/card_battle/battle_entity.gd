@@ -16,7 +16,7 @@ signal on_end_turn(entity: BattleEntity)
 
 static var _HEALTH_KEY: String = "health"
 
-var _health: int
+var _health: int = -1
 
 @export
 var max_health: int = 20
@@ -25,7 +25,8 @@ var max_health: int = 20
 var sprite: Texture
 
 func _ready() -> void:
-    _health = max_health
+    if _health < 0:
+        _health = max_health
 
 func get_entity_name() -> String:
     push_error("%s doesn't have a name" % name)
@@ -36,6 +37,13 @@ func get_health() -> int:
 
 func get_healthiness() -> float:
     return _health as float / max_health
+
+func validate_health() -> void:
+    if _health < 0:
+        _health = max_health
+
+    if _health > max_health:
+        _health = max_health
 
 func is_alive() -> bool:
     return _health > 0

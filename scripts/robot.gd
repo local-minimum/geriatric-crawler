@@ -26,6 +26,12 @@ func is_alive() -> bool: return _alive
 
 func obtained_level() -> int: return _obtained_level_abilities.size()
 
+func get_fights_to_next_level() -> int:
+    return model.get_steps_on_level(_fights, obtained_level() + 1)
+
+func get_fights_required_to_level() -> int:
+    return model.get_level_required_steps(obtained_level() + 1)
+
 func can_level_up() -> bool: return model.get_level(_fights) > obtained_level()
 
 func get_skill_level(skill: String) -> int:
@@ -125,13 +131,14 @@ func _sync_player_transportation_mode() -> void:
             push_error("We don't know of the %s climbing skill level" % climbing)
 
 func complete_fight() -> void:
-    _fights += 1
-    on_robot_complete_fight.emit(self)
-
+    if _alive:
+        _fights += 1
+        on_robot_complete_fight.emit(self)
 
 func killed_in_fight() -> void:
-    _alive = false
-    on_robot_death.emit(self)
+    if _alive:
+        _alive = false
+        on_robot_death.emit(self)
 
 func get_deck() -> Array[BattleCardData]:
     return model.starter_deck + _obtained_cards

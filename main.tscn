@@ -62,11 +62,12 @@ light_color = Color(1, 0.7535, 0.49, 1)
 environment = SubResource("Environment_ig7tw")
 camera_attributes = SubResource("CameraAttributesPractical_0xm2m")
 
-[node name="Exploration UI" parent="." node_paths=PackedStringArray("level") instance=ExtResource("4_1bvp3")]
+[node name="Exploration UI" parent="." node_paths=PackedStringArray("level", "battle") instance=ExtResource("4_1bvp3")]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.82
 offset_left = 0.0
 level = NodePath("../SubViewportContainer/SubViewport/TestLevel")
+battle = NodePath("../Battle Mode")
 
 [node name="Battle Mode" parent="." instance=ExtResource("5_lquwl")]

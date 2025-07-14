@@ -55,6 +55,8 @@ static func find_battle_parent(current: Node, inclusive: bool = true) ->  Battle
 func _init() -> void:
     add_to_group(LEVEL_GROUP)
 
+var _inited: bool
+
 func _ready() -> void:
     if battle_hand.on_hand_drawn.connect(_after_deal) != OK:
         push_error("Failed to connect callback to hand dealt")
@@ -64,12 +66,13 @@ func _ready() -> void:
         push_error("Failed to connect callback to hand actions completed")
 
     _ui.visible = false
+    _inited = true
 
 var _next_active_enemy: int
 var _player_initiative: int
 
 func get_battling() -> bool:
-    return _ui.visible
+    return _ui.visible && _inited
 
 var _enemies: Array[BattleEnemy]
 func get_enemies() -> Array[BattleEnemy]:
@@ -89,7 +92,11 @@ func enter_battle(battle_trigger: BattleModeTrigger, player_robot: Robot) -> voi
 
     trigger = battle_trigger
     robot = player_robot
+
     player_deck.load_deck(robot.get_deck())
+
+    battle_player.max_health = robot.model.max_hp
+    battle_player.validate_health()
 
     on_entity_join_battle.emit(battle_player)
     if battle_player.on_end_turn.connect(_next_agent_turn) != OK:

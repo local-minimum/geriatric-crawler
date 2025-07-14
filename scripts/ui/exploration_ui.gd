@@ -4,6 +4,9 @@ class_name  ExplorationUI
 @export
 var level: GridLevel
 
+@export
+var battle: BattleMode
+
 func _on_turn_left_pressed() -> void:
     if !level.player.attempt_movement(Movement.MovementType.TURN_COUNTER_CLOCKWISE):
         print_debug("Refused Turn Left")
