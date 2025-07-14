@@ -6,6 +6,7 @@
 script = ExtResource("1_5cguv")
 id = "storage"
 skill_level = 2
+skill_name = "Storage"
 ability_type = 0
 description = "Standard tier - enough for a short trip"
 metadata/_custom_type_script = "uid://0qri7op4mfno"

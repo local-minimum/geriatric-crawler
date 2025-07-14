@@ -38,20 +38,22 @@ func get_fights_required_to_level() -> int:
 
 func can_level_up() -> bool: return model.get_level(_fights) > obtained_level()
 
+func get_active_abilities() -> Array[RobotAbility]:
+    var abilites: Dictionary[String, RobotAbility] = {}
+    for ability: RobotAbility in model.innate_abilities + _obtained_level_abilities:
+        if !abilites.has(ability.id):
+            abilites[ability.id] = ability
+            continue
+
+        if ability.skill_level > abilites[ability.id].skill_level:
+            abilites[ability.id] = ability
+
+    return abilites.values()
+
 func get_skill_level(skill: String) -> int:
-    var level: int = ArrayUtils.maxi(
-        _obtained_level_abilities.filter(func (ability: RobotAbility) -> bool: return ability.id == skill),
-        func (item: RobotAbility) -> int: return item.skill_level,
-    )
-
-    if model == null:
-        return level
-
-
     return ArrayUtils.maxi(
-        model.innate_abilities.filter(func (ability: RobotAbility) -> bool: return ability.id == skill),
+        get_active_abilities().filter(func (ability: RobotAbility) -> bool: return ability.id == skill),
         func (item: RobotAbility) -> int: return item.skill_level,
-        level
     )
 
 func set_level_reward(reward_full_id: String) -> void:

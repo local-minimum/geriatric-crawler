@@ -4,8 +4,9 @@
 
 [resource]
 script = ExtResource("1_rb5fa")
-id = "hand"
+id = "memory"
 skill_level = 1
+skill_name = "Memory"
 ability_type = 1
-description = "Deals an extra card"
+description = "Bonus value is remembered between rounds"
 metadata/_custom_type_script = "uid://0qri7op4mfno"

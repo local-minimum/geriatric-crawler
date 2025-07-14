@@ -6,6 +6,7 @@
 script = ExtResource("1_k1wqi")
 id = "suits"
 skill_level = 1
+skill_name = "Suit Bonus"
 ability_type = 1
 description = "Suit bonus rules"
 metadata/_custom_type_script = "uid://0qri7op4mfno"

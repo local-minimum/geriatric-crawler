@@ -1,10 +1,12 @@
-[gd_scene load_steps=8 format=3 uid="uid://5mvkmlsl4h3x"]
+[gd_scene load_steps=14 format=3 uid="uid://5mvkmlsl4h3x"]
 
 [ext_resource type="PackedScene" uid="uid://dwqcwbgj8p6q0" path="res://scenes/dungeon/test_level.tscn" id="1_ig7tw"]
 [ext_resource type="PackedScene" uid="uid://dx6ngxriyyq7l" path="res://scenes/ui/ui_debug_settings.tscn" id="2_0xm2m"]
 [ext_resource type="PackedScene" uid="uid://xqedv5aeal6n" path="res://scenes/save_system.tscn" id="3_h2yge"]
 [ext_resource type="PackedScene" uid="uid://d3iceirfj21qw" path="res://scenes/ui/exploration_ui.tscn" id="4_1bvp3"]
 [ext_resource type="PackedScene" uid="uid://sx8om7lfql6j" path="res://scenes/battle_mode.tscn" id="5_lquwl"]
+[ext_resource type="Script" uid="uid://crchgnovga7nc" path="res://scripts/ui/robot_inspection_ui.gd" id="6_7mycd"]
+[ext_resource type="Texture2D" uid="uid://cgijt2to15yms" path="res://sprites/kenny game icons/cross.png" id="7_272bh"]
 
 [sub_resource type="Environment" id="Environment_ig7tw"]
 background_mode = 1
@@ -19,6 +21,23 @@ fog_depth_begin = 4.0
 fog_depth_end = 15.0
 
 [sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_0xm2m"]
+
+[sub_resource type="Curve" id="Curve_7mycd"]
+_data = [Vector2(0, 0.0905457), 0.0, 0.0, 0, 0, Vector2(0.330494, 0.571257), 0.0, 0.0, 0, 0, Vector2(0.681431, 0.693384), 0.593166, 0.593166, 0, 0, Vector2(1, 0.914251), 0.00953312, 0.0, 0, 0]
+point_count = 4
+
+[sub_resource type="Curve" id="Curve_272bh"]
+_data = [Vector2(0, 0.823306), 0.0, 0.0, 0, 0, Vector2(1, 0.321807), 0.356981, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="Curve" id="Curve_5vw27"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0]
+point_count = 1
+
+[sub_resource type="CurveXYZTexture" id="CurveXYZTexture_5vw27"]
+curve_x = SubResource("Curve_7mycd")
+curve_y = SubResource("Curve_272bh")
+curve_z = SubResource("Curve_5vw27")
 
 [node name="Main" type="Control"]
 layout_mode = 3
@@ -62,12 +81,146 @@ light_color = Color(1, 0.7535, 0.49, 1)
 environment = SubResource("Environment_ig7tw")
 camera_attributes = SubResource("CameraAttributesPractical_0xm2m")
 
-[node name="Exploration UI" parent="." node_paths=PackedStringArray("level", "battle") instance=ExtResource("4_1bvp3")]
+[node name="Exploration UI" parent="." node_paths=PackedStringArray("level", "battle", "inspect_robot_ui") instance=ExtResource("4_1bvp3")]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.82
 offset_left = 0.0
 level = NodePath("../SubViewportContainer/SubViewport/TestLevel")
 battle = NodePath("../Battle Mode")
+inspect_robot_ui = NodePath("../Robot Inspection UI")
 
 [node name="Battle Mode" parent="." instance=ExtResource("5_lquwl")]
+
+[node name="Robot Inspection UI" type="CanvasLayer" parent="." node_paths=PackedStringArray("_name_label", "_model_label", "_health_label", "_tabs", "_active_skills_parent")]
+layer = 10
+script = ExtResource("6_7mycd")
+_name_label = NodePath("MarginContainer/Main/Name & Status/Robot Name")
+_model_label = NodePath("MarginContainer/Main/Name & Status/Robot Model")
+_health_label = NodePath("MarginContainer/Main/Name & Status/Robot Health")
+_tabs = [NodePath("MarginContainer/Main/ActiveSkills"), NodePath("MarginContainer/Main/SkillTree")]
+_active_skills_parent = NodePath("MarginContainer/Main/ActiveSkills/MarginContainer/Main/Skills")
+
+[node name="Background" type="TextureRect" parent="Robot Inspection UI"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 0
+texture = SubResource("CurveXYZTexture_5vw27")
+
+[node name="MarginContainer" type="MarginContainer" parent="Robot Inspection UI"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="Main" type="VBoxContainer" parent="Robot Inspection UI/MarginContainer"]
+layout_mode = 2
+
+[node name="Name & Status" type="HBoxContainer" parent="Robot Inspection UI/MarginContainer/Main"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Robot Name" type="Label" parent="Robot Inspection UI/MarginContainer/Main/Name & Status"]
+layout_mode = 2
+
+[node name="Robot Model" type="Label" parent="Robot Inspection UI/MarginContainer/Main/Name & Status"]
+layout_mode = 2
+
+[node name="Spacer" type="Control" parent="Robot Inspection UI/MarginContainer/Main/Name & Status"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Robot Health" type="Label" parent="Robot Inspection UI/MarginContainer/Main/Name & Status"]
+layout_mode = 2
+
+[node name="CloseButton" type="Button" parent="Robot Inspection UI/MarginContainer/Main/Name & Status"]
+layout_mode = 2
+icon = ExtResource("7_272bh")
+
+[node name="TabBar" type="TabBar" parent="Robot Inspection UI/MarginContainer/Main"]
+layout_mode = 2
+current_tab = 0
+scrolling_enabled = false
+tab_count = 2
+tab_0/title = "Active Skills"
+tab_1/title = "Skill Tree"
+
+[node name="ActiveSkills" type="Control" parent="Robot Inspection UI/MarginContainer/Main"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Background" type="ColorRect" parent="Robot Inspection UI/MarginContainer/Main/ActiveSkills"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(1, 1, 1, 0.486275)
+
+[node name="MarginContainer" type="MarginContainer" parent="Robot Inspection UI/MarginContainer/Main/ActiveSkills"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 4
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 4
+theme_override_constants/margin_bottom = 4
+
+[node name="Main" type="VBoxContainer" parent="Robot Inspection UI/MarginContainer/Main/ActiveSkills/MarginContainer"]
+layout_mode = 2
+
+[node name="Panel Title" type="Label" parent="Robot Inspection UI/MarginContainer/Main/ActiveSkills/MarginContainer/Main"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 20
+text = "Active Skills"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Skills" type="VBoxContainer" parent="Robot Inspection UI/MarginContainer/Main/ActiveSkills/MarginContainer/Main"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="SkillTree" type="Control" parent="Robot Inspection UI/MarginContainer/Main"]
+visible = false
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Background" type="ColorRect" parent="Robot Inspection UI/MarginContainer/Main/SkillTree"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(1, 1, 1, 0.486275)
+
+[node name="MarginContainer" type="MarginContainer" parent="Robot Inspection UI/MarginContainer/Main/SkillTree"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 4
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 4
+theme_override_constants/margin_bottom = 4
+
+[node name="Skills" type="VBoxContainer" parent="Robot Inspection UI/MarginContainer/Main/SkillTree/MarginContainer"]
+layout_mode = 2
+
+[connection signal="pressed" from="Robot Inspection UI/MarginContainer/Main/Name & Status/CloseButton" to="Robot Inspection UI" method="_on_close_button_pressed"]
+[connection signal="tab_changed" from="Robot Inspection UI/MarginContainer/Main/TabBar" to="Robot Inspection UI" method="_on_tab_bar_tab_changed"]

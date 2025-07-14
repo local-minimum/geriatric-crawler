@@ -6,6 +6,7 @@
 script = ExtResource("1_lv683")
 id = "storage"
 skill_level = 4
+skill_name = "Storage"
 ability_type = 0
 description = "Delux tier distributed mulit-pocket system"
 metadata/_custom_type_script = "uid://0qri7op4mfno"

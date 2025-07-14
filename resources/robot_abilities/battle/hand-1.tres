@@ -4,8 +4,9 @@
 
 [resource]
 script = ExtResource("1_yct8n")
-id = "suits"
-skill_level = 3
+id = "hand"
+skill_level = 1
+skill_name = "Hand"
 ability_type = 1
-description = "Extreme suit bonuses"
+description = "Deal one extra card"
 metadata/_custom_type_script = "uid://0qri7op4mfno"

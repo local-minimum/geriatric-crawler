@@ -6,6 +6,7 @@
 script = ExtResource("1_5stud")
 id = "climbing"
 skill_level = 1
+skill_name = "Climbing"
 ability_type = 0
 description = "Walls are just another type of floor"
 metadata/_custom_type_script = "uid://0qri7op4mfno"

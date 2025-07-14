@@ -7,6 +7,9 @@ var level: GridLevel
 @export
 var battle: BattleMode
 
+@export
+var inspect_robot_ui: RobotInspectionUI
+
 func _on_turn_left_pressed() -> void:
     if !level.player.attempt_movement(Movement.MovementType.TURN_COUNTER_CLOCKWISE):
         print_debug("Refused Turn Left")
@@ -38,3 +41,6 @@ func _on_back_button_down() -> void:
 
 func _on_back_button_up() -> void:
     level.player.clear_held_movement(Movement.MovementType.BACK)
+
+func inspect_robot() -> void:
+    inspect_robot_ui.inspect(level.player.robot, battle.battle_player)

@@ -6,7 +6,7 @@
 [ext_resource type="Resource" uid="uid://c20q4v4qvcf6i" path="res://resources/robot_abilities/exploration/storage-1.tres" id="3_lew8e"]
 [ext_resource type="Resource" uid="uid://brhvmnis6vtk1" path="res://resources/robot_abilities/battle/suits-1.tres" id="4_mno2y"]
 [ext_resource type="Resource" uid="uid://bpdab343fo7cq" path="res://resources/robot_abilities/exploration/mapping-1.tres" id="5_3en2o"]
-[ext_resource type="Resource" uid="uid://8aoyvdht0msx" path="res://resources/robot_abilities/exploration/sonar-1.tres" id="6_n57fe"]
+[ext_resource type="Resource" uid="uid://8aoyvdht0msx" path="res://resources/robot_abilities/exploration/sonar-2.tres" id="6_e4jh0"]
 [ext_resource type="Resource" uid="uid://br0wnot24fw1b" path="res://resources/robot_abilities/battle/memory-1.tres" id="7_gfie8"]
 [ext_resource type="Resource" uid="uid://c2kaiyaateugc" path="res://resources/robot_abilities/battle/slots-2.tres" id="8_micf8"]
 [ext_resource type="Resource" uid="uid://bprdlp26xbu37" path="res://resources/robot_abilities/exploration/climbing-1.tres" id="9_2kcf8"]
@@ -29,7 +29,7 @@ id = "base-robot"
 model_name = "B100"
 innate_abilities = Array[ExtResource("1_olfye")]([ExtResource("2_i2741"), ExtResource("3_lew8e")])
 level_1_options = Array[ExtResource("1_olfye")]([ExtResource("4_mno2y")])
-level_2_options = Array[ExtResource("1_olfye")]([ExtResource("5_3en2o"), ExtResource("6_n57fe")])
+level_2_options = Array[ExtResource("1_olfye")]([ExtResource("5_3en2o"), ExtResource("6_e4jh0")])
 level_3_options = Array[ExtResource("1_olfye")]([ExtResource("7_gfie8"), ExtResource("8_micf8")])
 level_4_options = Array[ExtResource("1_olfye")]([ExtResource("9_2kcf8"), ExtResource("10_hp843")])
 level_1_steps = 3
@@ -37,4 +37,5 @@ level_2_steps = 4
 level_3_steps = 5
 level_4_steps = 6
 starter_deck = Array[ExtResource("12_lew8e")]([ExtResource("13_e4jh0"), ExtResource("14_ta0qa"), ExtResource("15_c4jpc"), ExtResource("16_a1hkw"), ExtResource("17_s8fqk"), ExtResource("18_wbmxl"), ExtResource("19_lqutm"), ExtResource("20_uq2bs"), ExtResource("21_es0jf"), ExtResource("22_hvicc")])
+max_hp = 20
 metadata/_custom_type_script = "uid://cy6jm0o40d2qm"

@@ -5,7 +5,8 @@
 [resource]
 script = ExtResource("1_xxafx")
 id = "hand"
-skill_level = 1
+skill_level = 2
+skill_name = "Hand"
 ability_type = 1
-description = "Deals an extra card"
+description = "Deal two extra cards"
 metadata/_custom_type_script = "uid://0qri7op4mfno"

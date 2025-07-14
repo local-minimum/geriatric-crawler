@@ -6,6 +6,7 @@
 script = ExtResource("1_qmw6e")
 id = "lock-picking"
 skill_level = 3
+skill_name = "Lock Picking"
 ability_type = 0
 description = "Open doors and containers without security classification"
 metadata/_custom_type_script = "uid://0qri7op4mfno"

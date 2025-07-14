@@ -6,6 +6,7 @@
 script = ExtResource("1_8rqag")
 id = "storage"
 skill_level = 3
+skill_name = "Storage"
 ability_type = 0
 description = "Large haul fittings"
 metadata/_custom_type_script = "uid://0qri7op4mfno"

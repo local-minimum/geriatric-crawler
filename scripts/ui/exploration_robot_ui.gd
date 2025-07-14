@@ -1,4 +1,4 @@
-extends Node
+extends Control
 
 @export
 var _exploration_ui: ExplorationUI
@@ -20,6 +20,21 @@ func _ready() -> void:
         push_error("Failed to connect on new player")
 
     _connect_player(_exploration_ui.level.player, _exploration_ui.battle.battle_player)
+
+func _gui_input(event: InputEvent) -> void:
+    if !_hovered || !event.is_pressed() || event.is_echo():
+        return
+
+    if event is InputEventMouseButton:
+        var mouse: InputEventMouseButton = event
+        if mouse.button_index == MOUSE_BUTTON_LEFT:
+            _click_robot()
+
+    if event is InputEventScreenTouch:
+        _click_robot()
+
+func _click_robot() -> void:
+    _exploration_ui.inspect_robot()
 
 func _handle_new_player() -> void:
     var grid_player: GridPlayer = _exploration_ui.level.player
@@ -95,3 +110,11 @@ func _handle_on_complete_fight(robot: Robot) -> void:
 func _handle_on_robot_loaded(_robot: Robot) -> void:
     print_debug("Handling robot loaded %s (%s, %s)" % [_robot.given_name, _exploration_ui.level.player, _exploration_ui.battle.battle_player])
     _connect_player(_exploration_ui.level.player, _exploration_ui.battle.battle_player, true)
+
+var _hovered: bool = false
+
+func _on_mouse_entered() -> void:
+    _hovered = true
+
+func _on_mouse_exited() -> void:
+    _hovered = false

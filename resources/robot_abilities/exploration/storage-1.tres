@@ -4,8 +4,9 @@
 
 [resource]
 script = ExtResource("1_nkikx")
-id = "sonar"
+id = "storage"
 skill_level = 1
+skill_name = "Storage"
 ability_type = 0
-description = "Detect entities in the vicinity"
+description = "Minimal space to gather some resources"
 metadata/_custom_type_script = "uid://0qri7op4mfno"
