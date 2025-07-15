@@ -3,6 +3,13 @@ class_name GridEntity
 
 signal on_move_start(entity: GridEntity)
 signal on_move_end(entity: GridEntity)
+signal on_update_orientation(
+    entity: GridEntity,
+    old_down: CardinalDirections.CardinalDirection,
+    down: CardinalDirections.CardinalDirection,
+    old_forward: CardinalDirections.CardinalDirection,
+    forward: CardinalDirections.CardinalDirection,
+)
 
 const _LOOK_DIRECTION_KEY: String = "look_direction"
 const _DOWN_KEY: String = "down"
@@ -10,10 +17,16 @@ const _ANCHOR_KEY: String = "anchor"
 const _COORDINATES_KEY: String = "coordinates"
 
 @export
-var look_direction: CardinalDirections.CardinalDirection
+var look_direction: CardinalDirections.CardinalDirection:
+    set(value):
+        on_update_orientation.emit(self, down, down, look_direction, value)
+        look_direction = value
 
 @export
-var down: CardinalDirections.CardinalDirection = CardinalDirections.CardinalDirection.DOWN
+var down: CardinalDirections.CardinalDirection = CardinalDirections.CardinalDirection.DOWN:
+    set(value):
+        on_update_orientation.emit(self, down, value, look_direction, look_direction)
+        down = value
 
 @export
 var transportation_abilities: TransportationMode
