@@ -1,12 +1,12 @@
 [gd_resource type="Resource" script_class="RobotAbility" load_steps=2 format=3 uid="uid://53fx21fdmrcq"]
 
-[ext_resource type="Script" uid="uid://0qri7op4mfno" path="res://scripts/robot_ability.gd" id="1_2nwqq"]
+[ext_resource type="Script" uid="uid://0qri7op4mfno" path="res://scripts/robot_ability.gd" id="1_6kdum"]
 
 [resource]
-script = ExtResource("1_2nwqq")
+script = ExtResource("1_6kdum")
 id = "mapping"
-skill_level = 3
+skill_level = 4
 skill_name = "Mapping"
 ability_type = 0
-description = "Automap surroundings"
+description = "Full cartographic module with smart annotations"
 metadata/_custom_type_script = "uid://0qri7op4mfno"

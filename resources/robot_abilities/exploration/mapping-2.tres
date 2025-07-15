@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="RobotAbility" load_steps=2 format=3 uid="uid://wxsrj0nrfsys"]
+[gd_resource type="Resource" script_class="RobotAbility" load_steps=2 format=3 uid="uid://ckcki8npktx8i"]
 
 [ext_resource type="Script" uid="uid://0qri7op4mfno" path="res://scripts/robot_ability.gd" id="1_hx4f0"]
 
@@ -8,5 +8,5 @@ id = "mapping"
 skill_level = 2
 skill_name = "Mapping"
 ability_type = 0
-description = "Automap surroundings"
+description = "Limited map of recently traversed terrain"
 metadata/_custom_type_script = "uid://0qri7op4mfno"
