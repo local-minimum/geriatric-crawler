@@ -58,6 +58,7 @@ player = NodePath("Player")
 level_geometry = NodePath("LevelGeometry")
 
 [node name="Player" parent="." node_paths=PackedStringArray("spawn_node") instance=ExtResource("3_m6mav")]
+process_mode = 3
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0145968, -0.00857759, 0.00070858)
 spawn_node = NodePath("../LevelGeometry/Elevation 0/Node (0, 0, 1)")
 look_direction = 1

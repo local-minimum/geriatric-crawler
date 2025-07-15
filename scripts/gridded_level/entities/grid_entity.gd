@@ -16,17 +16,25 @@ const _DOWN_KEY: String = "down"
 const _ANCHOR_KEY: String = "anchor"
 const _COORDINATES_KEY: String = "coordinates"
 
+var _old_look_direction: CardinalDirections.CardinalDirection
+var _old_down: CardinalDirections.CardinalDirection
+var _emit_orientation: bool
+
 @export
 var look_direction: CardinalDirections.CardinalDirection:
     set(value):
-        on_update_orientation.emit(self, down, down, look_direction, value)
+        _old_look_direction = look_direction
+        _emit_orientation = true
         look_direction = value
+        delay_emit.call_deferred()
 
 @export
 var down: CardinalDirections.CardinalDirection = CardinalDirections.CardinalDirection.DOWN:
     set(value):
-        on_update_orientation.emit(self, down, value, look_direction, look_direction)
+        _old_down = down
+        _emit_orientation = true
         down = value
+        delay_emit.call_deferred()
 
 @export
 var transportation_abilities: TransportationMode
@@ -57,6 +65,13 @@ var _next_next_movement: Movement.MovementType = Movement.MovementType.NONE
 func _ready() -> void:
     super()
     orient()
+
+func delay_emit() -> void:
+    if _emit_orientation:
+        _emit_orientation = false
+        on_update_orientation.emit(self, _old_down, down, _old_look_direction, look_direction)
+        _old_down = down
+        _old_look_direction = look_direction
 
 func is_moving() -> bool:
     return _active_movement != Movement.MovementType.NONE || _concurrent_movement != Movement.MovementType.NONE

@@ -135,8 +135,10 @@ spacers_north_down = [NodePath("MarginContainer/Control/Marker NND"), NodePath("
 spacers_south_down = [NodePath("MarginContainer/Control/Marker SSD"), NodePath("MarginContainer/Control/Marker SDD")]
 spacers_west_down = [NodePath("MarginContainer/Control/Marker WWD"), NodePath("MarginContainer/Control/Marker WDD")]
 spacers_east_down = [NodePath("MarginContainer/Control/Marker EED"), NodePath("MarginContainer/Control/Marker EDD")]
+_horizontal_label_offset = -6.0
 
 [node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/CompassModule"]
+clip_contents = true
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -154,86 +156,104 @@ layout_mode = 2
 
 [node name="Cardinal Label N" type="Label" parent="MarginContainer/VBoxContainer/CompassModule/MarginContainer/Control"]
 layout_mode = 1
-anchors_preset = 4
+anchors_preset = 8
+anchor_left = 0.5
 anchor_top = 0.5
+anchor_right = 0.5
 anchor_bottom = 0.5
-offset_top = -11.5
-offset_right = 23.0
-offset_bottom = 11.5
+offset_left = -11.5
+offset_top = -14.0
+offset_right = 11.5
+offset_bottom = 14.0
+grow_horizontal = 2
 grow_vertical = 2
 theme_override_font_sizes/font_size = 20
 text = "N"
-horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="Cardinal Label S" type="Label" parent="MarginContainer/VBoxContainer/CompassModule/MarginContainer/Control"]
 layout_mode = 1
-anchors_preset = 4
+anchors_preset = 8
+anchor_left = 0.5
 anchor_top = 0.5
+anchor_right = 0.5
 anchor_bottom = 0.5
-offset_top = -11.5
-offset_right = 23.0
-offset_bottom = 11.5
+offset_left = -11.5
+offset_top = -14.0
+offset_right = 11.5
+offset_bottom = 14.0
+grow_horizontal = 2
 grow_vertical = 2
 theme_override_font_sizes/font_size = 20
 text = "S"
-horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="Cardinal Label W" type="Label" parent="MarginContainer/VBoxContainer/CompassModule/MarginContainer/Control"]
 layout_mode = 1
-anchors_preset = 4
+anchors_preset = 8
+anchor_left = 0.5
 anchor_top = 0.5
+anchor_right = 0.5
 anchor_bottom = 0.5
-offset_top = -11.5
-offset_right = 23.0
-offset_bottom = 11.5
+offset_left = -11.5
+offset_top = -14.0
+offset_right = 11.5
+offset_bottom = 14.0
+grow_horizontal = 2
 grow_vertical = 2
 theme_override_font_sizes/font_size = 20
 text = "W"
-horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="Cardinal Label E" type="Label" parent="MarginContainer/VBoxContainer/CompassModule/MarginContainer/Control"]
 layout_mode = 1
-anchors_preset = 4
+anchors_preset = 8
+anchor_left = 0.5
 anchor_top = 0.5
+anchor_right = 0.5
 anchor_bottom = 0.5
-offset_top = -11.5
-offset_right = 23.0
-offset_bottom = 11.5
+offset_left = -11.5
+offset_top = -14.0
+offset_right = 11.5
+offset_bottom = 14.0
+grow_horizontal = 2
 grow_vertical = 2
 theme_override_font_sizes/font_size = 20
 text = "E"
-horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="Cardinal Label U" type="Label" parent="MarginContainer/VBoxContainer/CompassModule/MarginContainer/Control"]
 layout_mode = 1
-anchors_preset = 4
+anchors_preset = 8
+anchor_left = 0.5
 anchor_top = 0.5
+anchor_right = 0.5
 anchor_bottom = 0.5
-offset_top = -11.5
-offset_right = 23.0
-offset_bottom = 11.5
+offset_left = -11.5
+offset_top = -14.0
+offset_right = 11.5
+offset_bottom = 14.0
+grow_horizontal = 2
 grow_vertical = 2
 theme_override_font_sizes/font_size = 20
 text = "U"
-horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="Cardinal Label D" type="Label" parent="MarginContainer/VBoxContainer/CompassModule/MarginContainer/Control"]
 layout_mode = 1
-anchors_preset = 4
+anchors_preset = 8
+anchor_left = 0.5
 anchor_top = 0.5
+anchor_right = 0.5
 anchor_bottom = 0.5
-offset_top = -11.5
-offset_right = 23.0
-offset_bottom = 11.5
+offset_left = -11.5
+offset_top = -14.0
+offset_right = 11.5
+offset_bottom = 14.0
+grow_horizontal = 2
 grow_vertical = 2
 theme_override_font_sizes/font_size = 20
 text = "D"
-horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="Marker NNE" type="TextureRect" parent="MarginContainer/VBoxContainer/CompassModule/MarginContainer/Control"]

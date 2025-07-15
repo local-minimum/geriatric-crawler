@@ -58,12 +58,9 @@ var spacers_west_down: Array[Control]
 @export
 var spacers_east_down: Array[Control]
 
-func _ready() -> void:
-    var start_anchor: Vector2 = _get_coordinates(CompassCardinalLabelPosition.UP)
-    for direction: CardinalDirections.CardinalDirection in CardinalDirections.ALL_DIRECTIONS:
-        var label: Control = _get_cardinal(direction)
-        label.global_position = start_anchor
+const _MAPPING_SKILL: String = "mapping"
 
+func _ready() -> void:
     if exploration_ui.level.on_change_player.connect(_handle_new_player) != OK:
         push_error("Failed to connect on change player")
 
@@ -74,6 +71,8 @@ func _handle_new_player() -> void:
     if player.on_update_orientation.connect(_handle_update_orientation) != OK:
         push_error("Failed to connect on move start")
 
+    _sync_robot.call_deferred(player, player.robot)
+
 func _handle_update_orientation(
     _entity: GridEntity,
     old_down: CardinalDirections.CardinalDirection,
@@ -83,7 +82,7 @@ func _handle_update_orientation(
 ) -> void:
     if _entity is GridPlayer:
         var player: GridPlayer = _entity
-        if player.robot.get_skill_level("mapping") < 1:
+        if player.robot.get_skill_level(_MAPPING_SKILL) < 1:
             visible = false
             return
     else:
@@ -91,10 +90,117 @@ func _handle_update_orientation(
 
     visible = true
 
-    if down == old_down:
-        _animate_planar_rotation(down, old_forward, forward)
+    print_debug("Down %s -> %s, Look %s -> %s" % [
+        CardinalDirections.name(old_down),
+        CardinalDirections.name(down),
+        CardinalDirections.name(old_forward),
+        CardinalDirections.name(forward),
+    ])
+    if down == old_down || old_down == CardinalDirections.CardinalDirection.NONE:
+        _animate_yaw_rotation(down, old_forward, forward)
+    elif old_forward == forward:
+        _animate_roll_rotation(old_down, old_forward, down, forward)
+    else:
+        _animate_pitch_rotation(old_down, old_forward, forward)
 
-func _animate_planar_rotation(
+func _sync_robot(player: GridPlayer, robot: Robot) -> void:
+    if robot == null || robot.get_skill_level(_MAPPING_SKILL) < 1:
+        print_debug("%s doesn't have enough mapping skill %s" % [robot.given_name, robot.get_skill_level(_MAPPING_SKILL)])
+        visible = false
+        return
+
+    visible = true
+
+    var left_coords: Vector2 = _get_coordinates(CompassCardinalLabelPosition.LEFT)
+    var mid_coords: Vector2 = _get_coordinates(CompassCardinalLabelPosition.MID)
+    var right_coords: Vector2 = _get_coordinates(CompassCardinalLabelPosition.RIGHT)
+
+    var mid: CardinalDirections.CardinalDirection = player.look_direction
+    var left: CardinalDirections.CardinalDirection = CardinalDirections.yaw_ccw(player.look_direction, player.down)[0]
+    var right: CardinalDirections.CardinalDirection = CardinalDirections.yaw_cw(player.look_direction, player.down)[0]
+
+    _get_cardinal(mid).global_position = mid_coords
+    _get_cardinal(left).global_position = left_coords
+    _get_cardinal(right).global_position = right_coords
+
+    var up_coords: Vector2 = _get_coordinates(CompassCardinalLabelPosition.UP)
+    for direction: CardinalDirections.CardinalDirection in CardinalDirections.ALL_DIRECTIONS:
+        if direction == mid || direction == left || direction == right:
+            continue
+
+        _get_cardinal(direction).global_position = up_coords
+
+@export
+var _animation_duration: float = 0.3
+
+func _animate_roll_rotation(
+    old_down: CardinalDirections.CardinalDirection,
+    old_forward: CardinalDirections.CardinalDirection,
+    down: CardinalDirections.CardinalDirection,
+    forward: CardinalDirections.CardinalDirection,
+) -> void:
+    var clockwise: bool = CardinalDirections.roll_cw(old_forward, old_down)[1] == down
+    var old_left: CardinalDirections.CardinalDirection = CardinalDirections.yaw_ccw(old_forward, old_down)[0]
+    var old_right: CardinalDirections.CardinalDirection = CardinalDirections.yaw_cw(old_forward, old_down)[0]
+    var left: CardinalDirections.CardinalDirection = CardinalDirections.yaw_ccw(forward, down)[0]
+    var right: CardinalDirections.CardinalDirection = CardinalDirections.yaw_cw(forward, down)[0]
+
+    var tween: Tween = get_tree().create_tween()
+
+    var left_coords: Vector2 = _get_coordinates(CompassCardinalLabelPosition.LEFT)
+    var right_coords: Vector2 = _get_coordinates(CompassCardinalLabelPosition.RIGHT)
+    var up_coords: Vector2 = _get_coordinates(CompassCardinalLabelPosition.UP)
+    var down_coords: Vector2 = _get_coordinates(CompassCardinalLabelPosition.DOWN)
+
+    if clockwise:
+        tween.tween_property(_get_cardinal(old_left), "global_position", up_coords, _animation_duration)
+
+        var left_label: Control = _get_cardinal(left)
+        left_label.global_position = down_coords
+        tween.parallel().tween_property(left_label, "global_position", left_coords, _animation_duration)
+
+        tween.parallel().tween_property(_get_cardinal(old_right), "global_position", down_coords, _animation_duration)
+
+        var right_label: Control = _get_cardinal(right)
+        right_label.global_position = up_coords
+        tween.parallel().tween_property(right_label, "global_position", right_coords, _animation_duration)
+    else:
+        tween.tween_property(_get_cardinal(old_right), "global_position", up_coords, _animation_duration)
+
+        var right_label: Control = _get_cardinal(right)
+        right_label.global_position = down_coords
+        tween.parallel().tween_property(right_label, "global_position", right_coords, _animation_duration)
+
+        tween.parallel().tween_property(_get_cardinal(old_left), "global_position", down_coords, _animation_duration)
+
+        var left_label: Control = _get_cardinal(left)
+        left_label.global_position = up_coords
+        tween.parallel().tween_property(left_label, "global_position", left_coords, _animation_duration)
+
+func _animate_pitch_rotation(
+    old_down: CardinalDirections.CardinalDirection,
+    old_forward: CardinalDirections.CardinalDirection,
+    forward: CardinalDirections.CardinalDirection,
+) -> void:
+    var pitch_up: bool = CardinalDirections.pitch_up(old_forward, old_down)[0] == forward
+
+    var tween: Tween = get_tree().create_tween()
+
+    var up_coords: Vector2 = _get_coordinates(CompassCardinalLabelPosition.UP)
+    var mid_coords: Vector2 = _get_coordinates(CompassCardinalLabelPosition.MID)
+    var down_coords: Vector2 = _get_coordinates(CompassCardinalLabelPosition.DOWN)
+
+    var forward_label: Control = _get_cardinal(forward)
+    if pitch_up:
+        tween.tween_property(_get_cardinal(old_forward), "global_position", down_coords, _animation_duration)
+        forward_label.global_position = up_coords
+    else:
+        tween.tween_property(_get_cardinal(old_forward), "global_position", up_coords, _animation_duration)
+        forward_label.global_position = down_coords
+
+    tween.parallel().tween_property(forward_label, "global_position", mid_coords, _animation_duration)
+
+func _animate_yaw_rotation(
     down: CardinalDirections.CardinalDirection,
     old_forward: CardinalDirections.CardinalDirection,
     forward: CardinalDirections.CardinalDirection,
@@ -110,24 +216,23 @@ func _animate_planar_rotation(
     var mid_coords: Vector2 = _get_coordinates(CompassCardinalLabelPosition.MID)
     var right_coords: Vector2 = _get_coordinates(CompassCardinalLabelPosition.RIGHT)
 
-    var animation_duration: float = 0.3
 
     if old_forward == left:
         var far_left_coords: Vector2 = _get_coordinates(CompassCardinalLabelPosition.FAR_LEFT)
-        tween.tween_property(_get_cardinal(old_forward), "global_position", left_coords, animation_duration)
-        tween.tween_property(_get_cardinal(old_left), "global_position", far_left_coords, animation_duration)
+        tween.tween_property(_get_cardinal(old_forward), "global_position", left_coords, _animation_duration)
+        tween.parallel().tween_property(_get_cardinal(old_left), "global_position", far_left_coords, _animation_duration)
         var right_label: Control = _get_cardinal(right)
         right_label.position = _get_coordinates(CompassCardinalLabelPosition.FAR_RIGHT)
-        tween.tween_property(right_label, "global_position", right_coords, animation_duration)
+        tween.parallel().tween_property(right_label, "global_position", right_coords, _animation_duration)
     else:
         var far_right_coords: Vector2 = _get_coordinates(CompassCardinalLabelPosition.FAR_RIGHT)
-        tween.tween_property(_get_cardinal(old_forward), "global_position", right_coords, animation_duration)
-        tween.tween_property(_get_cardinal(old_right), "global_position", far_right_coords, animation_duration)
+        tween.tween_property(_get_cardinal(old_forward), "global_position", right_coords, _animation_duration)
+        tween.parallel().tween_property(_get_cardinal(old_right), "global_position", far_right_coords, _animation_duration)
         var left_label: Control = _get_cardinal(left)
         left_label.position = _get_coordinates(CompassCardinalLabelPosition.FAR_LEFT)
-        tween.tween_property(left_label, "global_position", left_coords, animation_duration)
+        tween.parallel().tween_property(left_label, "global_position", left_coords, _animation_duration)
 
-    tween.tween_property(_get_cardinal(forward), "global_position", mid_coords, animation_duration)
+    tween.parallel().tween_property(_get_cardinal(forward), "global_position", mid_coords, _animation_duration)
 
 
 func _get_cardinal(direction: CardinalDirections.CardinalDirection) -> Control:
@@ -189,9 +294,16 @@ func _get_spacers(from: CardinalDirections.CardinalDirection, to: CardinalDirect
 
 enum CompassCardinalLabelPosition {FAR_LEFT, LEFT, MID, RIGHT, FAR_RIGHT, UP, DOWN}
 
+@export
+var _vertical_label_offset: float = -14
+@export
+var _horizontal_label_offset: float = -10
+
 func _get_coordinates(label_position: CompassCardinalLabelPosition) -> Vector2:
     var rect: Rect2 = get_global_rect()
     var center: Vector2 = rect.get_center()
+    center.y += _vertical_label_offset
+    center.x += _horizontal_label_offset
     # We need some space to edge
     var offset: float = rect.size.x * 0.4
     var far_offset: float = rect.size.x * 0.7
