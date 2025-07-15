@@ -30,9 +30,20 @@ func is_alive() -> bool: return _alive
 
 func obtained_level() -> int: return _obtained_level_abilities.size()
 
-func get_fights_to_next_level() -> int:
+func get_obtained_ability(level: int) -> RobotAbility:
+    if level < 1 || level - 1 >= _obtained_level_abilities.size():
+        return null
+    return _obtained_level_abilities[level - 1]
+
+## Number of fights completed on the current level
+func get_fights_done_on_current_level() -> int:
     return model.get_steps_on_level(_fights, obtained_level() + 1)
 
+## Number of fights completed on the level
+func get_fights_done_on_level(level: int) -> int:
+    return model.get_steps_on_level(_fights, level)
+
+## Number of fights needed to complete the level
 func get_fights_required_to_level() -> int:
     return model.get_level_required_steps(obtained_level() + 1)
 

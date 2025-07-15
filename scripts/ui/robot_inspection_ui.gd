@@ -11,15 +11,24 @@ var _model_label: Label
 var _health_label: Label
 
 @export
+var _credits_label: Label
+
+@export
+var _tab_bar: TabBar
+
+@export
 var _tabs: Array[Control]
 
 @export
 var _active_skills_parent: Control
 
+@export
+var _robot_skill_tree: RobotSkillTreeUI
+
 func _ready() -> void:
     visible = false
 
-func inspect(robot: Robot, battle_player: BattlePlayer) -> void:
+func inspect(robot: Robot, battle_player: BattlePlayer, credits: int) -> void:
     _name_label.text = robot.given_name
     _model_label.text = "Model: %s" % robot.model.model_name
 
@@ -28,8 +37,16 @@ func inspect(robot: Robot, battle_player: BattlePlayer) -> void:
     else:
         _health_label.text = "DISEASED"
 
+    _credits_label.text = "₳%s" % credits
+
     visible = true
 
+    _sync_active_abilities(robot)
+
+    _robot_skill_tree.sync(robot, credits)
+    _on_tab_bar_tab_changed(_tab_bar.current_tab)
+
+func _sync_active_abilities(robot: Robot) -> void:
     var abilites: Array[RobotAbility] = robot.get_active_abilities()
     var n_children: int = _active_skills_parent.get_child_count()
     for idx: int in range(maxi(n_children, abilites.size())):
@@ -61,6 +78,7 @@ func inspect(robot: Robot, battle_player: BattlePlayer) -> void:
         label.text = "%s: %s" % [ability.full_skill_name(), ability.description]
 
         _active_skills_parent.add_child(label)
+
 
 func _on_tab_bar_tab_changed(tab:int) -> void:
     for idx: int in range(_tabs.size()):

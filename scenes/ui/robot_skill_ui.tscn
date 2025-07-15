@@ -1,0 +1,62 @@
+[gd_scene load_steps=3 format=3 uid="uid://dmnwxi7fmruws"]
+
+[ext_resource type="Script" uid="uid://sg48vqp6eaqn" path="res://scripts/ui/robot_skill_ui.gd" id="1_7qv8u"]
+[ext_resource type="Texture2D" uid="uid://426qf31enipp" path="res://icon.svg" id="2_64ol8"]
+
+[node name="Skill 1" type="MarginContainer" node_paths=PackedStringArray("_icon", "_title", "_description", "_buy_button", "_background")]
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_bottom = 4
+script = ExtResource("1_7qv8u")
+_icon = NodePath("MarginContainer/Skill Contents/Title Row/Skill Icon")
+_generic_icon = ExtResource("2_64ol8")
+_title = NodePath("MarginContainer/Skill Contents/Title Row/Skill Title")
+_description = NodePath("MarginContainer/Skill Contents/Skill Description")
+_buy_button = NodePath("MarginContainer/Skill Contents/Actions/Buy Skill Button")
+_background = NodePath("Skill background")
+_option_color = Color(0.389711, 0.143053, 0.446108, 1)
+_buyable_color = Color(0.760784, 0.431373, 0.839216, 1)
+_bought_color = Color(0.4284, 0.84, 0.79884, 1)
+_not_bought_color = Color(0.2847, 0.39, 0.381225, 1)
+
+[node name="Skill background" type="ColorRect" parent="."]
+layout_mode = 2
+color = Color(0.759479, 0.431609, 0.840291, 1)
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 4
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 4
+theme_override_constants/margin_bottom = 4
+
+[node name="Skill Contents" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+
+[node name="Title Row" type="HBoxContainer" parent="MarginContainer/Skill Contents"]
+layout_mode = 2
+
+[node name="Skill Icon" type="TextureRect" parent="MarginContainer/Skill Contents/Title Row"]
+layout_mode = 2
+texture = ExtResource("2_64ol8")
+expand_mode = 3
+
+[node name="Skill Title" type="Label" parent="MarginContainer/Skill Contents/Title Row"]
+layout_mode = 2
+text = "Climbing II"
+
+[node name="Skill Description" type="Label" parent="MarginContainer/Skill Contents"]
+custom_minimum_size = Vector2(10, 10)
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 10
+text = "Skill description is long and wraps please!!!"
+autowrap_mode = 2
+
+[node name="Actions" type="HBoxContainer" parent="MarginContainer/Skill Contents"]
+layout_mode = 2
+alignment = 2
+
+[node name="Buy Skill Button" type="Button" parent="MarginContainer/Skill Contents/Actions"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 8
+text = "BUY ₳1000 "

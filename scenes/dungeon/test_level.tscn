@@ -510,6 +510,7 @@ level = 1
 deck = NodePath("BattleDeck")
 brain = NodePath("BattleStrategies")
 _target_system = NodePath("BattleEnemyTargetSystem")
+max_health = 12
 sprite = ExtResource("12_26eu7")
 
 [node name="BattleDeck" type="Node" parent="Encounters/Target Dummy Blob/Battle Trigger/Target Dummy AI"]

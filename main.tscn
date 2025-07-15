@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://5mvkmlsl4h3x"]
+[gd_scene load_steps=16 format=3 uid="uid://5mvkmlsl4h3x"]
 
 [ext_resource type="PackedScene" uid="uid://dwqcwbgj8p6q0" path="res://scenes/dungeon/test_level.tscn" id="1_ig7tw"]
 [ext_resource type="PackedScene" uid="uid://dx6ngxriyyq7l" path="res://scenes/ui/ui_debug_settings.tscn" id="2_0xm2m"]
@@ -7,6 +7,8 @@
 [ext_resource type="PackedScene" uid="uid://sx8om7lfql6j" path="res://scenes/battle_mode.tscn" id="5_lquwl"]
 [ext_resource type="Script" uid="uid://crchgnovga7nc" path="res://scripts/ui/robot_inspection_ui.gd" id="6_7mycd"]
 [ext_resource type="Texture2D" uid="uid://cgijt2to15yms" path="res://sprites/kenny game icons/cross.png" id="7_272bh"]
+[ext_resource type="PackedScene" uid="uid://qvbyso8n7n8j" path="res://scenes/ui/robot_skill_level_ui.tscn" id="8_5vw27"]
+[ext_resource type="Script" uid="uid://5lsjirgudi0w" path="res://scripts/ui/robot_skill_tree_ui.gd" id="8_kek77"]
 
 [sub_resource type="Environment" id="Environment_ig7tw"]
 background_mode = 1
@@ -92,14 +94,17 @@ inspect_robot_ui = NodePath("../Robot Inspection UI")
 
 [node name="Battle Mode" parent="." instance=ExtResource("5_lquwl")]
 
-[node name="Robot Inspection UI" type="CanvasLayer" parent="." node_paths=PackedStringArray("_name_label", "_model_label", "_health_label", "_tabs", "_active_skills_parent")]
+[node name="Robot Inspection UI" type="CanvasLayer" parent="." node_paths=PackedStringArray("_name_label", "_model_label", "_health_label", "_credits_label", "_tab_bar", "_tabs", "_active_skills_parent", "_robot_skill_tree")]
 layer = 10
 script = ExtResource("6_7mycd")
 _name_label = NodePath("MarginContainer/Main/Name & Status/Robot Name")
 _model_label = NodePath("MarginContainer/Main/Name & Status/Robot Model")
-_health_label = NodePath("MarginContainer/Main/Name & Status/Robot Health")
+_health_label = NodePath("MarginContainer/Main/Name & Status/VBoxContainer/Robot Health")
+_credits_label = NodePath("MarginContainer/Main/Name & Status/VBoxContainer/Robot Credits")
+_tab_bar = NodePath("MarginContainer/Main/TabBar")
 _tabs = [NodePath("MarginContainer/Main/ActiveSkills"), NodePath("MarginContainer/Main/SkillTree")]
 _active_skills_parent = NodePath("MarginContainer/Main/ActiveSkills/MarginContainer/Main/Skills")
+_robot_skill_tree = NodePath("MarginContainer/Main/SkillTree")
 
 [node name="Background" type="TextureRect" parent="Robot Inspection UI"]
 anchors_preset = 15
@@ -130,16 +135,26 @@ theme_override_constants/separation = 8
 
 [node name="Robot Name" type="Label" parent="Robot Inspection UI/MarginContainer/Main/Name & Status"]
 layout_mode = 2
+text = "Name"
 
 [node name="Robot Model" type="Label" parent="Robot Inspection UI/MarginContainer/Main/Name & Status"]
 layout_mode = 2
+text = "model"
 
 [node name="Spacer" type="Control" parent="Robot Inspection UI/MarginContainer/Main/Name & Status"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Robot Health" type="Label" parent="Robot Inspection UI/MarginContainer/Main/Name & Status"]
+[node name="VBoxContainer" type="VBoxContainer" parent="Robot Inspection UI/MarginContainer/Main/Name & Status"]
 layout_mode = 2
+
+[node name="Robot Health" type="Label" parent="Robot Inspection UI/MarginContainer/Main/Name & Status/VBoxContainer"]
+layout_mode = 2
+text = "Health"
+
+[node name="Robot Credits" type="Label" parent="Robot Inspection UI/MarginContainer/Main/Name & Status/VBoxContainer"]
+layout_mode = 2
+text = "Credits"
 
 [node name="CloseButton" type="Button" parent="Robot Inspection UI/MarginContainer/Main/Name & Status"]
 layout_mode = 2
@@ -154,6 +169,7 @@ tab_0/title = "Active Skills"
 tab_1/title = "Skill Tree"
 
 [node name="ActiveSkills" type="Control" parent="Robot Inspection UI/MarginContainer/Main"]
+visible = false
 layout_mode = 2
 size_flags_vertical = 3
 
@@ -164,7 +180,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(1, 1, 1, 0.486275)
+color = Color(0.430057, 0.430057, 0.430057, 0.486275)
 
 [node name="MarginContainer" type="MarginContainer" parent="Robot Inspection UI/MarginContainer/Main/ActiveSkills"]
 layout_mode = 1
@@ -193,10 +209,11 @@ vertical_alignment = 1
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="SkillTree" type="Control" parent="Robot Inspection UI/MarginContainer/Main"]
-visible = false
+[node name="SkillTree" type="Control" parent="Robot Inspection UI/MarginContainer/Main" node_paths=PackedStringArray("_levels")]
 layout_mode = 2
 size_flags_vertical = 3
+script = ExtResource("8_kek77")
+_levels = [NodePath("MarginContainer/Levels/Robot Skill Level 1"), NodePath("MarginContainer/Levels/Robot Skill Level 2"), NodePath("MarginContainer/Levels/Robot Skill Level 3"), NodePath("MarginContainer/Levels/Robot Skill Level 4")]
 
 [node name="Background" type="ColorRect" parent="Robot Inspection UI/MarginContainer/Main/SkillTree"]
 layout_mode = 1
@@ -205,7 +222,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(1, 1, 1, 0.486275)
+color = Color(0.431373, 0.431373, 0.431373, 0.486275)
 
 [node name="MarginContainer" type="MarginContainer" parent="Robot Inspection UI/MarginContainer/Main/SkillTree"]
 layout_mode = 1
@@ -219,7 +236,34 @@ theme_override_constants/margin_top = 4
 theme_override_constants/margin_right = 4
 theme_override_constants/margin_bottom = 4
 
-[node name="Skills" type="VBoxContainer" parent="Robot Inspection UI/MarginContainer/Main/SkillTree/MarginContainer"]
+[node name="Levels" type="HBoxContainer" parent="Robot Inspection UI/MarginContainer/Main/SkillTree/MarginContainer"]
+layout_mode = 2
+
+[node name="Robot Skill Level 1" parent="Robot Inspection UI/MarginContainer/Main/SkillTree/MarginContainer/Levels" instance=ExtResource("8_5vw27")]
+layout_mode = 2
+
+[node name="Divider" type="ColorRect" parent="Robot Inspection UI/MarginContainer/Main/SkillTree/MarginContainer/Levels"]
+custom_minimum_size = Vector2(4, 0)
+layout_mode = 2
+color = Color(0, 0, 0, 1)
+
+[node name="Robot Skill Level 2" parent="Robot Inspection UI/MarginContainer/Main/SkillTree/MarginContainer/Levels" instance=ExtResource("8_5vw27")]
+layout_mode = 2
+
+[node name="Divider2" type="ColorRect" parent="Robot Inspection UI/MarginContainer/Main/SkillTree/MarginContainer/Levels"]
+custom_minimum_size = Vector2(4, 0)
+layout_mode = 2
+color = Color(0, 0, 0, 1)
+
+[node name="Robot Skill Level 3" parent="Robot Inspection UI/MarginContainer/Main/SkillTree/MarginContainer/Levels" instance=ExtResource("8_5vw27")]
+layout_mode = 2
+
+[node name="Divider3" type="ColorRect" parent="Robot Inspection UI/MarginContainer/Main/SkillTree/MarginContainer/Levels"]
+custom_minimum_size = Vector2(4, 0)
+layout_mode = 2
+color = Color(0, 0, 0, 1)
+
+[node name="Robot Skill Level 4" parent="Robot Inspection UI/MarginContainer/Main/SkillTree/MarginContainer/Levels" instance=ExtResource("8_5vw27")]
 layout_mode = 2
 
 [connection signal="pressed" from="Robot Inspection UI/MarginContainer/Main/Name & Status/CloseButton" to="Robot Inspection UI" method="_on_close_button_pressed"]

@@ -79,7 +79,7 @@ func _sync_level(robot: Robot) -> void:
         _level_label.text = "LVL %s (MAX)" % lvl
     else:
         var required: int = robot.get_fights_required_to_level()
-        var done: int = robot.get_fights_to_next_level()
+        var done: int = robot.get_fights_required_to_level()
 
         if done >= required:
             _level_label.text = "LVL %s (LVL UP!)" % [lvl]

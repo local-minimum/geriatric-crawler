@@ -1,0 +1,112 @@
+[gd_scene load_steps=6 format=3 uid="uid://qvbyso8n7n8j"]
+
+[ext_resource type="Script" uid="uid://bx8cbkyycyukx" path="res://scripts/ui/robot_skill_level_ui.gd" id="1_2ad7f"]
+[ext_resource type="Script" uid="uid://n24o3x64dhoh" path="res://scripts/ui/robot_skill_level_fights_ui.gd" id="2_kis4d"]
+[ext_resource type="Texture2D" uid="uid://bwji56lm10win" path="res://sprites/buttons/separator.png" id="2_vsixo"]
+[ext_resource type="PackedScene" uid="uid://dmnwxi7fmruws" path="res://scenes/ui/robot_skill_ui.tscn" id="3_2ad7f"]
+[ext_resource type="Texture2D" uid="uid://dko4nx3ayjyjr" path="res://sprites/buttons/bonus.png" id="3_kis4d"]
+
+[node name="Robot Skill Level" type="VBoxContainer" node_paths=PackedStringArray("_fights", "_level_title", "_skills")]
+size_flags_horizontal = 3
+script = ExtResource("1_2ad7f")
+_fights = NodePath("Header/VBoxContainer/Fights")
+_level_title = NodePath("Header/VBoxContainer/Level  Label")
+_skills = [NodePath("Skill 1"), NodePath("Skill 2"), NodePath("Skill 3"), NodePath("Skill 4"), NodePath("Skill 5")]
+
+[node name="Header" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 4
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 4
+theme_override_constants/margin_bottom = 4
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Header"]
+layout_mode = 2
+
+[node name="Level  Label" type="Label" parent="Header/VBoxContainer"]
+layout_mode = 2
+text = "LEVEL I"
+
+[node name="Fights" type="HBoxContainer" parent="Header/VBoxContainer" node_paths=PackedStringArray("_fight_rects")]
+layout_mode = 2
+theme_override_constants/separation = 6
+script = ExtResource("2_kis4d")
+_fight_rects = [NodePath("Fight Marker 1"), NodePath("Fight Marker 2"), NodePath("Fight Marker 3"), NodePath("Fight Marker 4"), NodePath("Fight Marker 5"), NodePath("Fight Marker 6"), NodePath("Fight Marker 7"), NodePath("Fight Marker 8")]
+_completed_tex = ExtResource("3_kis4d")
+_remaining_tex = ExtResource("2_vsixo")
+
+[node name="Fight Marker 1" type="TextureRect" parent="Header/VBoxContainer/Fights"]
+custom_minimum_size = Vector2(12, 12)
+layout_mode = 2
+texture = ExtResource("2_vsixo")
+expand_mode = 3
+stretch_mode = 5
+
+[node name="Fight Marker 2" type="TextureRect" parent="Header/VBoxContainer/Fights"]
+custom_minimum_size = Vector2(12, 12)
+layout_mode = 2
+texture = ExtResource("2_vsixo")
+expand_mode = 3
+stretch_mode = 5
+
+[node name="Fight Marker 3" type="TextureRect" parent="Header/VBoxContainer/Fights"]
+custom_minimum_size = Vector2(12, 12)
+layout_mode = 2
+texture = ExtResource("2_vsixo")
+expand_mode = 3
+stretch_mode = 5
+
+[node name="Fight Marker 4" type="TextureRect" parent="Header/VBoxContainer/Fights"]
+custom_minimum_size = Vector2(12, 12)
+layout_mode = 2
+texture = ExtResource("2_vsixo")
+expand_mode = 3
+stretch_mode = 5
+
+[node name="Fight Marker 5" type="TextureRect" parent="Header/VBoxContainer/Fights"]
+custom_minimum_size = Vector2(12, 12)
+layout_mode = 2
+texture = ExtResource("2_vsixo")
+expand_mode = 3
+stretch_mode = 5
+
+[node name="Fight Marker 6" type="TextureRect" parent="Header/VBoxContainer/Fights"]
+custom_minimum_size = Vector2(12, 12)
+layout_mode = 2
+texture = ExtResource("2_vsixo")
+expand_mode = 3
+stretch_mode = 5
+
+[node name="Fight Marker 7" type="TextureRect" parent="Header/VBoxContainer/Fights"]
+custom_minimum_size = Vector2(12, 12)
+layout_mode = 2
+texture = ExtResource("2_vsixo")
+expand_mode = 3
+stretch_mode = 5
+
+[node name="Fight Marker 8" type="TextureRect" parent="Header/VBoxContainer/Fights"]
+custom_minimum_size = Vector2(12, 12)
+layout_mode = 2
+texture = ExtResource("2_vsixo")
+expand_mode = 3
+stretch_mode = 5
+
+[node name="Divider" type="ColorRect" parent="."]
+custom_minimum_size = Vector2(0, 2)
+layout_mode = 2
+color = Color(0, 0, 0, 1)
+
+[node name="Skill 1" parent="." instance=ExtResource("3_2ad7f")]
+layout_mode = 2
+
+[node name="Skill 2" parent="." instance=ExtResource("3_2ad7f")]
+layout_mode = 2
+
+[node name="Skill 3" parent="." instance=ExtResource("3_2ad7f")]
+layout_mode = 2
+
+[node name="Skill 4" parent="." instance=ExtResource("3_2ad7f")]
+layout_mode = 2
+
+[node name="Skill 5" parent="." instance=ExtResource("3_2ad7f")]
+layout_mode = 2
