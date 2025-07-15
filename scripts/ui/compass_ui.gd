@@ -152,6 +152,7 @@ func _animate_roll_rotation(
     var up_coords: Vector2 = _get_coordinates(CompassCardinalLabelPosition.UP)
     var down_coords: Vector2 = _get_coordinates(CompassCardinalLabelPosition.DOWN)
 
+    @warning_ignore_start("return_value_discarded")
     if clockwise:
         tween.tween_property(_get_cardinal(old_left), "global_position", up_coords, _animation_duration)
 
@@ -176,6 +177,7 @@ func _animate_roll_rotation(
         var left_label: Control = _get_cardinal(left)
         left_label.global_position = up_coords
         tween.parallel().tween_property(left_label, "global_position", left_coords, _animation_duration)
+    @warning_ignore_restore("return_value_discarded")
 
 func _animate_pitch_rotation(
     old_down: CardinalDirections.CardinalDirection,
@@ -191,6 +193,7 @@ func _animate_pitch_rotation(
     var down_coords: Vector2 = _get_coordinates(CompassCardinalLabelPosition.DOWN)
 
     var forward_label: Control = _get_cardinal(forward)
+    @warning_ignore_start("return_value_discarded")
     if pitch_up:
         tween.tween_property(_get_cardinal(old_forward), "global_position", down_coords, _animation_duration)
         forward_label.global_position = up_coords
@@ -199,6 +202,7 @@ func _animate_pitch_rotation(
         forward_label.global_position = down_coords
 
     tween.parallel().tween_property(forward_label, "global_position", mid_coords, _animation_duration)
+    @warning_ignore_restore("return_value_discarded")
 
 func _animate_yaw_rotation(
     down: CardinalDirections.CardinalDirection,
@@ -216,7 +220,7 @@ func _animate_yaw_rotation(
     var mid_coords: Vector2 = _get_coordinates(CompassCardinalLabelPosition.MID)
     var right_coords: Vector2 = _get_coordinates(CompassCardinalLabelPosition.RIGHT)
 
-
+    @warning_ignore_start("return_value_discarded")
     if old_forward == left:
         var far_left_coords: Vector2 = _get_coordinates(CompassCardinalLabelPosition.FAR_LEFT)
         tween.tween_property(_get_cardinal(old_forward), "global_position", left_coords, _animation_duration)
@@ -233,6 +237,7 @@ func _animate_yaw_rotation(
         tween.parallel().tween_property(left_label, "global_position", left_coords, _animation_duration)
 
     tween.parallel().tween_property(_get_cardinal(forward), "global_position", mid_coords, _animation_duration)
+    @warning_ignore_restore("return_value_discarded")
 
 
 func _get_cardinal(direction: CardinalDirections.CardinalDirection) -> Control:
