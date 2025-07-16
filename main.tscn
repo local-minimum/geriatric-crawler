@@ -167,8 +167,8 @@ layout_mode = 2
 current_tab = 0
 scrolling_enabled = false
 tab_count = 2
-tab_0/title = "Active Skills"
-tab_1/title = "Skill Tree"
+tab_0/title = "Abilities"
+tab_1/title = "Upgrades"
 
 [node name="ActiveSkills" type="Control" parent="Robot Inspection UI/MarginContainer/Main"]
 visible = false
