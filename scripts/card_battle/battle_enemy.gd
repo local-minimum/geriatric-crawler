@@ -22,6 +22,9 @@ var level: int
 var difficulty: int = 0
 
 @export
+var carried_credits: int = 0
+
+@export
 var hand_size: int = 3
 
 @export

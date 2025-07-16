@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://5mvkmlsl4h3x"]
+[gd_scene load_steps=17 format=3 uid="uid://5mvkmlsl4h3x"]
 
 [ext_resource type="PackedScene" uid="uid://dwqcwbgj8p6q0" path="res://scenes/dungeon/test_level.tscn" id="1_ig7tw"]
 [ext_resource type="PackedScene" uid="uid://dx6ngxriyyq7l" path="res://scenes/ui/ui_debug_settings.tscn" id="2_0xm2m"]
@@ -9,6 +9,7 @@
 [ext_resource type="Texture2D" uid="uid://cgijt2to15yms" path="res://sprites/kenny game icons/cross.png" id="7_272bh"]
 [ext_resource type="PackedScene" uid="uid://qvbyso8n7n8j" path="res://scenes/ui/robot_skill_level_ui.tscn" id="8_5vw27"]
 [ext_resource type="Script" uid="uid://5lsjirgudi0w" path="res://scripts/ui/robot_skill_tree_ui.gd" id="8_kek77"]
+[ext_resource type="Script" uid="uid://dftf4h6eyrsio" path="res://scripts/exploration_inventory.gd" id="10_4c57u"]
 
 [sub_resource type="Environment" id="Environment_ig7tw"]
 background_mode = 1
@@ -155,6 +156,7 @@ text = "Health"
 [node name="Robot Credits" type="Label" parent="Robot Inspection UI/MarginContainer/Main/Name & Status/VBoxContainer"]
 layout_mode = 2
 text = "Credits"
+horizontal_alignment = 2
 
 [node name="CloseButton" type="Button" parent="Robot Inspection UI/MarginContainer/Main/Name & Status"]
 layout_mode = 2
@@ -265,6 +267,11 @@ color = Color(0, 0, 0, 1)
 
 [node name="Robot Skill Level 4" parent="Robot Inspection UI/MarginContainer/Main/SkillTree/MarginContainer/Levels" instance=ExtResource("8_5vw27")]
 layout_mode = 2
+
+[node name="ExplorationInventory" type="Node" parent="." node_paths=PackedStringArray("battle")]
+script = ExtResource("10_4c57u")
+battle = NodePath("../Battle Mode")
+metadata/_custom_type_script = "uid://dftf4h6eyrsio"
 
 [connection signal="pressed" from="Robot Inspection UI/MarginContainer/Main/Name & Status/CloseButton" to="Robot Inspection UI" method="_on_close_button_pressed"]
 [connection signal="tab_changed" from="Robot Inspection UI/MarginContainer/Main/TabBar" to="Robot Inspection UI" method="_on_tab_bar_tab_changed"]
