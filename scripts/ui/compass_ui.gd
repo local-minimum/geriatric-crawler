@@ -61,7 +61,8 @@ func _handle_update_orientation(
         CardinalDirections.name(forward),
     ])
     if down == old_down || old_down == CardinalDirections.CardinalDirection.NONE:
-        _animate_yaw_rotation(down, old_forward, forward)
+        if old_forward != CardinalDirections.CardinalDirection.NONE:
+            _animate_yaw_rotation(down, old_forward, forward)
     elif old_forward == forward:
         _animate_roll_rotation(old_down, old_forward, down, forward)
     else:
