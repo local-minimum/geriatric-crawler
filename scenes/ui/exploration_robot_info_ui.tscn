@@ -1,0 +1,60 @@
+[gd_scene load_steps=2 format=3 uid="uid://boccd8l2p0s0r"]
+
+[ext_resource type="Script" uid="uid://ds0xko5iuludm" path="res://scripts/ui/exploration_robot_ui.gd" id="1_3owbm"]
+
+[node name="RobotInfo" type="VBoxContainer" node_paths=PackedStringArray("_exploration_ui", "_name_label", "_model_label", "_health_label", "_level_label")]
+mouse_default_cursor_shape = 2
+theme_override_constants/separation = 1
+script = ExtResource("1_3owbm")
+_exploration_ui = NodePath("")
+_name_label = NodePath("Name & Model/Name")
+_model_label = NodePath("Name & Model/Model")
+_health_label = NodePath("Health & Level/Health")
+_level_label = NodePath("Health & Level/Level")
+
+[node name="Name & Model" type="HBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="Name" type="Label" parent="Name & Model"]
+layout_mode = 2
+mouse_filter = 1
+text = "Robbie"
+
+[node name="Spacer" type="Control" parent="Name & Model"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+size_flags_stretch_ratio = 3.0
+mouse_filter = 1
+
+[node name="Model" type="Label" parent="Name & Model"]
+layout_mode = 2
+mouse_filter = 1
+theme_override_colors/font_color = Color(0.479183, 0.479183, 0.479183, 1)
+theme_override_font_sizes/font_size = 10
+text = "D100"
+
+[node name="Health & Level" type="HBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="Health" type="Label" parent="Health & Level"]
+layout_mode = 2
+mouse_filter = 1
+theme_override_font_sizes/font_size = 10
+text = "10 / 20 HP"
+
+[node name="Spacer" type="Control" parent="Health & Level"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+size_flags_stretch_ratio = 3.0
+mouse_filter = 1
+
+[node name="Level" type="Label" parent="Health & Level"]
+layout_mode = 2
+mouse_filter = 1
+theme_override_font_sizes/font_size = 10
+text = "LVL 0 (1/5)"
+
+[connection signal="mouse_entered" from="." to="." method="_on_mouse_entered"]
+[connection signal="mouse_exited" from="." to="." method="_on_mouse_exited"]
