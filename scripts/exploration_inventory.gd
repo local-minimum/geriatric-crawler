@@ -6,7 +6,6 @@ static var _INVENTORY: ExplorationInventory
 
 signal on_update_credits(credits: int)
 
-
 static func credits() -> int: return _CREDITS
 
 static func withdraw(amount: int) -> bool:
@@ -16,6 +15,11 @@ static func withdraw(amount: int) -> bool:
             _INVENTORY.on_update_credits.emit(_CREDITS)
         return true
     return false
+
+static func set_credits(amount: int) -> void:
+    _CREDITS = amount
+    if _INVENTORY != null:
+        _INVENTORY.on_update_credits.emit(_CREDITS)
 
 @export
 var base_slaying_income: int = 20
