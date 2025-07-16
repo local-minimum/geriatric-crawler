@@ -1,10 +1,9 @@
-[gd_scene load_steps=11 format=3 uid="uid://d3iceirfj21qw"]
+[gd_scene load_steps=10 format=3 uid="uid://d3iceirfj21qw"]
 
 [ext_resource type="Script" uid="uid://dng6kx20nqasv" path="res://scripts/ui/exploration_ui.gd" id="1_jvesw"]
 [ext_resource type="Texture2D" uid="uid://37t534r3ua0p" path="res://sprites/kenny game icons/open-xflipped.png" id="2_m3jmt"]
 [ext_resource type="Script" uid="uid://ds0xko5iuludm" path="res://scripts/ui/exploration_robot_ui.gd" id="2_rfm22"]
 [ext_resource type="Script" uid="uid://b8urty4ia3p2j" path="res://scripts/ui/compass_ui.gd" id="3_4stpx"]
-[ext_resource type="Texture2D" uid="uid://bwji56lm10win" path="res://sprites/buttons/separator.png" id="3_eifl5"]
 [ext_resource type="Texture2D" uid="uid://cev0382nhv46i" path="res://sprites/kenny game icons/arrowUp.png" id="3_rfm22"]
 [ext_resource type="Texture2D" uid="uid://davhidpjbpjq2" path="res://sprites/kenny game icons/open.png" id="4_eifl5"]
 [ext_resource type="Texture2D" uid="uid://bowjve07f2wq0" path="res://sprites/kenny game icons/arrowLeft.png" id="5_4stpx"]
@@ -110,7 +109,7 @@ layout_mode = 2
 size_flags_vertical = 3
 size_flags_stretch_ratio = 3.0
 
-[node name="CompassModule" type="ColorRect" parent="MarginContainer/VBoxContainer" node_paths=PackedStringArray("exploration_ui", "cardinal_north", "cardinal_south", "cardinal_west", "cardinal_east", "cardinal_up", "cardinal_down", "spacers_north_west", "spacers_north_east", "spacers_south_west", "spacers_south_east", "spacers_north_up", "spacers_south_up", "spacers_west_up", "spacers_east_up", "spacers_north_down", "spacers_south_down", "spacers_west_down", "spacers_east_down")]
+[node name="CompassModule" type="ColorRect" parent="MarginContainer/VBoxContainer" node_paths=PackedStringArray("exploration_ui", "cardinal_north", "cardinal_south", "cardinal_west", "cardinal_east", "cardinal_up", "cardinal_down")]
 clip_contents = true
 custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
@@ -123,18 +122,6 @@ cardinal_west = NodePath("MarginContainer/Control/Cardinal Label W")
 cardinal_east = NodePath("MarginContainer/Control/Cardinal Label E")
 cardinal_up = NodePath("MarginContainer/Control/Cardinal Label U")
 cardinal_down = NodePath("MarginContainer/Control/Cardinal Label D")
-spacers_north_west = [NodePath("MarginContainer/Control/Marker NNW"), NodePath("MarginContainer/Control/Marker NWW")]
-spacers_north_east = [NodePath("MarginContainer/Control/Marker NNE"), NodePath("MarginContainer/Control/Marker NEE")]
-spacers_south_west = [NodePath("MarginContainer/Control/Marker SSW"), NodePath("MarginContainer/Control/Marker SWW")]
-spacers_south_east = [NodePath("MarginContainer/Control/Marker SSE"), NodePath("MarginContainer/Control/Marker SEE")]
-spacers_north_up = [NodePath("MarginContainer/Control/Marker NNU"), NodePath("MarginContainer/Control/Marker NUU")]
-spacers_south_up = [NodePath("MarginContainer/Control/Marker SSU"), NodePath("MarginContainer/Control/Marker SUU")]
-spacers_west_up = [NodePath("MarginContainer/Control/Marker WWU"), NodePath("MarginContainer/Control/Marker WUU")]
-spacers_east_up = [NodePath("MarginContainer/Control/Marker EEU"), NodePath("MarginContainer/Control/Marker EUU")]
-spacers_north_down = [NodePath("MarginContainer/Control/Marker NND"), NodePath("MarginContainer/Control/Marker NDD")]
-spacers_south_down = [NodePath("MarginContainer/Control/Marker SSD"), NodePath("MarginContainer/Control/Marker SDD")]
-spacers_west_down = [NodePath("MarginContainer/Control/Marker WWD"), NodePath("MarginContainer/Control/Marker WDD")]
-spacers_east_down = [NodePath("MarginContainer/Control/Marker EED"), NodePath("MarginContainer/Control/Marker EDD")]
 _horizontal_label_offset = -6.0
 
 [node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/CompassModule"]
@@ -255,222 +242,6 @@ grow_vertical = 2
 theme_override_font_sizes/font_size = 20
 text = "D"
 vertical_alignment = 1
-
-[node name="Marker NNE" type="TextureRect" parent="MarginContainer/VBoxContainer/CompassModule/MarginContainer/Control"]
-visible = false
-layout_mode = 0
-offset_right = 6.0
-offset_bottom = 6.0
-texture = ExtResource("3_eifl5")
-expand_mode = 3
-stretch_mode = 5
-
-[node name="Marker NEE" type="TextureRect" parent="MarginContainer/VBoxContainer/CompassModule/MarginContainer/Control"]
-visible = false
-layout_mode = 0
-offset_right = 6.0
-offset_bottom = 6.0
-texture = ExtResource("3_eifl5")
-expand_mode = 3
-stretch_mode = 5
-
-[node name="Marker SEE" type="TextureRect" parent="MarginContainer/VBoxContainer/CompassModule/MarginContainer/Control"]
-visible = false
-layout_mode = 0
-offset_right = 6.0
-offset_bottom = 6.0
-texture = ExtResource("3_eifl5")
-expand_mode = 3
-stretch_mode = 5
-
-[node name="Marker SSE" type="TextureRect" parent="MarginContainer/VBoxContainer/CompassModule/MarginContainer/Control"]
-visible = false
-layout_mode = 0
-offset_right = 6.0
-offset_bottom = 6.0
-texture = ExtResource("3_eifl5")
-expand_mode = 3
-stretch_mode = 5
-
-[node name="Marker SSW" type="TextureRect" parent="MarginContainer/VBoxContainer/CompassModule/MarginContainer/Control"]
-visible = false
-layout_mode = 0
-offset_right = 6.0
-offset_bottom = 6.0
-texture = ExtResource("3_eifl5")
-expand_mode = 3
-stretch_mode = 5
-
-[node name="Marker SWW" type="TextureRect" parent="MarginContainer/VBoxContainer/CompassModule/MarginContainer/Control"]
-visible = false
-layout_mode = 0
-offset_right = 6.0
-offset_bottom = 6.0
-texture = ExtResource("3_eifl5")
-expand_mode = 3
-stretch_mode = 5
-
-[node name="Marker NWW" type="TextureRect" parent="MarginContainer/VBoxContainer/CompassModule/MarginContainer/Control"]
-visible = false
-layout_mode = 0
-offset_right = 6.0
-offset_bottom = 6.0
-texture = ExtResource("3_eifl5")
-expand_mode = 3
-stretch_mode = 5
-
-[node name="Marker NNW" type="TextureRect" parent="MarginContainer/VBoxContainer/CompassModule/MarginContainer/Control"]
-visible = false
-layout_mode = 0
-offset_right = 6.0
-offset_bottom = 6.0
-texture = ExtResource("3_eifl5")
-expand_mode = 3
-stretch_mode = 5
-
-[node name="Marker NNU" type="TextureRect" parent="MarginContainer/VBoxContainer/CompassModule/MarginContainer/Control"]
-visible = false
-layout_mode = 0
-offset_right = 6.0
-offset_bottom = 6.0
-texture = ExtResource("3_eifl5")
-expand_mode = 3
-stretch_mode = 5
-
-[node name="Marker NUU" type="TextureRect" parent="MarginContainer/VBoxContainer/CompassModule/MarginContainer/Control"]
-visible = false
-layout_mode = 0
-offset_right = 6.0
-offset_bottom = 6.0
-texture = ExtResource("3_eifl5")
-expand_mode = 3
-stretch_mode = 5
-
-[node name="Marker SUU" type="TextureRect" parent="MarginContainer/VBoxContainer/CompassModule/MarginContainer/Control"]
-visible = false
-layout_mode = 0
-offset_right = 6.0
-offset_bottom = 6.0
-texture = ExtResource("3_eifl5")
-expand_mode = 3
-stretch_mode = 5
-
-[node name="Marker SSU" type="TextureRect" parent="MarginContainer/VBoxContainer/CompassModule/MarginContainer/Control"]
-visible = false
-layout_mode = 0
-offset_right = 6.0
-offset_bottom = 6.0
-texture = ExtResource("3_eifl5")
-expand_mode = 3
-stretch_mode = 5
-
-[node name="Marker WWU" type="TextureRect" parent="MarginContainer/VBoxContainer/CompassModule/MarginContainer/Control"]
-visible = false
-layout_mode = 0
-offset_right = 6.0
-offset_bottom = 6.0
-texture = ExtResource("3_eifl5")
-expand_mode = 3
-stretch_mode = 5
-
-[node name="Marker WUU" type="TextureRect" parent="MarginContainer/VBoxContainer/CompassModule/MarginContainer/Control"]
-visible = false
-layout_mode = 0
-offset_right = 6.0
-offset_bottom = 6.0
-texture = ExtResource("3_eifl5")
-expand_mode = 3
-stretch_mode = 5
-
-[node name="Marker EUU" type="TextureRect" parent="MarginContainer/VBoxContainer/CompassModule/MarginContainer/Control"]
-visible = false
-layout_mode = 0
-offset_right = 6.0
-offset_bottom = 6.0
-texture = ExtResource("3_eifl5")
-expand_mode = 3
-stretch_mode = 5
-
-[node name="Marker EEU" type="TextureRect" parent="MarginContainer/VBoxContainer/CompassModule/MarginContainer/Control"]
-visible = false
-layout_mode = 0
-offset_right = 6.0
-offset_bottom = 6.0
-texture = ExtResource("3_eifl5")
-expand_mode = 3
-stretch_mode = 5
-
-[node name="Marker NND" type="TextureRect" parent="MarginContainer/VBoxContainer/CompassModule/MarginContainer/Control"]
-visible = false
-layout_mode = 0
-offset_right = 6.0
-offset_bottom = 6.0
-texture = ExtResource("3_eifl5")
-expand_mode = 3
-stretch_mode = 5
-
-[node name="Marker NDD" type="TextureRect" parent="MarginContainer/VBoxContainer/CompassModule/MarginContainer/Control"]
-visible = false
-layout_mode = 0
-offset_right = 6.0
-offset_bottom = 6.0
-texture = ExtResource("3_eifl5")
-expand_mode = 3
-stretch_mode = 5
-
-[node name="Marker SDD" type="TextureRect" parent="MarginContainer/VBoxContainer/CompassModule/MarginContainer/Control"]
-visible = false
-layout_mode = 0
-offset_right = 6.0
-offset_bottom = 6.0
-texture = ExtResource("3_eifl5")
-expand_mode = 3
-stretch_mode = 5
-
-[node name="Marker SSD" type="TextureRect" parent="MarginContainer/VBoxContainer/CompassModule/MarginContainer/Control"]
-visible = false
-layout_mode = 0
-offset_right = 6.0
-offset_bottom = 6.0
-texture = ExtResource("3_eifl5")
-expand_mode = 3
-stretch_mode = 5
-
-[node name="Marker WWD" type="TextureRect" parent="MarginContainer/VBoxContainer/CompassModule/MarginContainer/Control"]
-visible = false
-layout_mode = 0
-offset_right = 6.0
-offset_bottom = 6.0
-texture = ExtResource("3_eifl5")
-expand_mode = 3
-stretch_mode = 5
-
-[node name="Marker WDD" type="TextureRect" parent="MarginContainer/VBoxContainer/CompassModule/MarginContainer/Control"]
-visible = false
-layout_mode = 0
-offset_right = 6.0
-offset_bottom = 6.0
-texture = ExtResource("3_eifl5")
-expand_mode = 3
-stretch_mode = 5
-
-[node name="Marker EDD" type="TextureRect" parent="MarginContainer/VBoxContainer/CompassModule/MarginContainer/Control"]
-visible = false
-layout_mode = 0
-offset_right = 6.0
-offset_bottom = 6.0
-texture = ExtResource("3_eifl5")
-expand_mode = 3
-stretch_mode = 5
-
-[node name="Marker EED" type="TextureRect" parent="MarginContainer/VBoxContainer/CompassModule/MarginContainer/Control"]
-visible = false
-layout_mode = 0
-offset_right = 6.0
-offset_bottom = 6.0
-texture = ExtResource("3_eifl5")
-expand_mode = 3
-stretch_mode = 5
 
 [node name="Exploration Movement Controls" type="GridContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2

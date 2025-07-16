@@ -22,42 +22,6 @@ var cardinal_up: Control
 @export
 var cardinal_down: Control
 
-@export
-var spacers_north_west: Array[Control]
-
-@export
-var spacers_north_east: Array[Control]
-
-@export
-var spacers_south_west: Array[Control]
-
-@export
-var spacers_south_east: Array[Control]
-
-@export
-var spacers_north_up: Array[Control]
-
-@export
-var spacers_south_up: Array[Control]
-
-@export
-var spacers_west_up: Array[Control]
-
-@export
-var spacers_east_up: Array[Control]
-
-@export
-var spacers_north_down: Array[Control]
-
-@export
-var spacers_south_down: Array[Control]
-
-@export
-var spacers_west_down: Array[Control]
-
-@export
-var spacers_east_down: Array[Control]
-
 const _MAPPING_SKILL: String = "mapping"
 
 func _ready() -> void:
@@ -250,52 +214,6 @@ func _get_cardinal(direction: CardinalDirections.CardinalDirection) -> Control:
         CardinalDirections.CardinalDirection.DOWN: return cardinal_down
 
     return null
-
-func _get_spacers(from: CardinalDirections.CardinalDirection, to: CardinalDirections.CardinalDirection) -> Array[Control]:
-    match from:
-        CardinalDirections.CardinalDirection.NORTH:
-            match to:
-                CardinalDirections.CardinalDirection.WEST: return spacers_north_west
-                CardinalDirections.CardinalDirection.EAST: return spacers_north_east
-                CardinalDirections.CardinalDirection.UP: return spacers_north_up
-                CardinalDirections.CardinalDirection.DOWN: return spacers_north_down
-        CardinalDirections.CardinalDirection.SOUTH:
-            match to:
-                CardinalDirections.CardinalDirection.WEST: return spacers_south_west
-                CardinalDirections.CardinalDirection.EAST: return spacers_south_east
-                CardinalDirections.CardinalDirection.UP: return spacers_south_up
-                CardinalDirections.CardinalDirection.DOWN: return spacers_south_down
-        CardinalDirections.CardinalDirection.WEST:
-            match to:
-                CardinalDirections.CardinalDirection.NORTH: return [spacers_north_west[1], spacers_north_west[0]]
-                CardinalDirections.CardinalDirection.SOUTH: return [spacers_south_west[1], spacers_south_west[0]]
-                CardinalDirections.CardinalDirection.UP: return spacers_west_up
-                CardinalDirections.CardinalDirection.DOWN: return spacers_west_down
-        CardinalDirections.CardinalDirection.EAST:
-            match to:
-                CardinalDirections.CardinalDirection.NORTH: return [spacers_north_east[1], spacers_north_east[0]]
-                CardinalDirections.CardinalDirection.SOUTH: return [spacers_south_east[1], spacers_south_east[0]]
-                CardinalDirections.CardinalDirection.UP: return spacers_east_up
-                CardinalDirections.CardinalDirection.DOWN: return spacers_east_down
-        CardinalDirections.CardinalDirection.UP:
-            match to:
-                CardinalDirections.CardinalDirection.NORTH: return [spacers_north_up[1], spacers_north_up[0]]
-                CardinalDirections.CardinalDirection.SOUTH: return [spacers_south_up[1], spacers_south_up[0]]
-                CardinalDirections.CardinalDirection.WEST: return [spacers_west_up[1], spacers_west_up[0]]
-                CardinalDirections.CardinalDirection.EAST: return [spacers_east_up[1], spacers_east_up[0]]
-        CardinalDirections.CardinalDirection.DOWN:
-            match to:
-                CardinalDirections.CardinalDirection.NORTH: return [spacers_north_down[1], spacers_north_down[0]]
-                CardinalDirections.CardinalDirection.SOUTH: return [spacers_south_down[1], spacers_south_down[0]]
-                CardinalDirections.CardinalDirection.WEST: return [spacers_west_down[1], spacers_west_down[0]]
-                CardinalDirections.CardinalDirection.EAST: return [spacers_east_down[1], spacers_east_down[0]]
-
-    push_error("%s and %s are not next to each other" % [
-        CardinalDirections.name(from),
-        CardinalDirections.name(to),
-    ])
-
-    return []
 
 enum CompassCardinalLabelPosition {FAR_LEFT, LEFT, MID, RIGHT, FAR_RIGHT, UP, DOWN}
 
