@@ -73,18 +73,18 @@ func _sync_robot(robot: Robot, battle_player: BattlePlayer) -> void:
         _sync_health(battle_player)
 
 func _sync_level(robot: Robot) -> void:
-    var lvl: int = robot.obtained_level()
+    var next_level: int = robot.obtained_level() + 1
 
-    if lvl == 4:
-        _level_label.text = "LVL %s (MAX)" % lvl
+    if next_level == 5:
+        _level_label.text = "LVL %s (MAX)" % next_level
     else:
         var required: int = robot.get_fights_required_to_level()
-        var done: int = robot.get_fights_required_to_level()
+        var done: int = robot.get_fights_done_on_current_level()
 
         if done >= required:
-            _level_label.text = "LVL %s (LVL UP!)" % [lvl]
+            _level_label.text = "LVL %s (LVL UP!)" % [next_level]
         else:
-            _level_label.text = "LVL %s (%s/%s)" % [lvl, done, required]
+            _level_label.text = "LVL %s (%s/%s)" % [next_level, done, required]
 
 func _sync_health(battle_player: BattleEntity) -> void:
     if battle_player == null:
