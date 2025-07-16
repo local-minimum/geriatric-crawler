@@ -73,18 +73,19 @@ func _sync_robot(robot: Robot, battle_player: BattlePlayer) -> void:
         _sync_health(battle_player)
 
 func _sync_level(robot: Robot) -> void:
-    var next_level: int = robot.obtained_level() + 1
+    if robot.must_upgrade():
+        _level_label.text = "UPGRADE!"
+        return
 
-    if next_level == 5:
-        _level_label.text = "LVL %s (MAX)" % next_level
+    if robot.fully_upgraded():
+        _level_label.text = "MAXED OUT"
+        return
+
+    var slots: int = robot.available_upgrade_slots()
+    if slots == 0:
+        _level_label.text ="%s UNTIL SLOT" % robot.get_fights_required_to_level()
     else:
-        var required: int = robot.get_fights_required_to_level()
-        var done: int = robot.get_fights_done_on_current_level()
-
-        if done >= required:
-            _level_label.text = "LVL %s (LVL UP!)" % [next_level]
-        else:
-            _level_label.text = "LVL %s (%s/%s)" % [next_level, done, required]
+        _level_label.text ="%s SLOTS (%s UNTIL NEXT)" % [slots, robot.get_fights_required_to_level()]
 
 func _sync_health(battle_player: BattleEntity) -> void:
     if battle_player == null:

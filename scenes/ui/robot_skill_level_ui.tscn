@@ -25,7 +25,7 @@ layout_mode = 2
 
 [node name="Level  Label" type="Label" parent="Header/VBoxContainer"]
 layout_mode = 2
-text = "LEVEL I"
+text = "TIER I"
 
 [node name="Fights" type="HBoxContainer" parent="Header/VBoxContainer" node_paths=PackedStringArray("_fight_rects")]
 layout_mode = 2

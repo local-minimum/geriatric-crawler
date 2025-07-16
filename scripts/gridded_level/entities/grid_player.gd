@@ -19,7 +19,6 @@ var repeat_move_delay: float = 100
 @export
 var robot: Robot
 
-const CLIMBING_SKILL: String = "climbing"
 
 var override_wall_walking: bool:
     set(value):
@@ -27,7 +26,7 @@ var override_wall_walking: bool:
         if value:
             transportation_abilities.set_flag(TransportationMode.WALL_WALKING)
         else:
-            var climbing: int = robot.get_skill_level(CLIMBING_SKILL)
+            var climbing: int = robot.get_skill_level(RobotAbility.SKILL_CLIMBING)
             if climbing == 0:
                 transportation_abilities.remove_flag(TransportationMode.WALL_WALKING)
             else:
@@ -40,7 +39,7 @@ var override_ceiling_walking: bool:
             transportation_abilities.set_flag(TransportationMode.WALL_WALKING)
             transportation_abilities.set_flag(TransportationMode.CEILING_WALKING)
         else:
-            var climbing: int = robot.get_skill_level(CLIMBING_SKILL)
+            var climbing: int = robot.get_skill_level(RobotAbility.SKILL_CLIMBING)
             if climbing < 2:
                 if !override_wall_walking && climbing == 0:
                     transportation_abilities.set_flag(TransportationMode.WALL_WALKING)

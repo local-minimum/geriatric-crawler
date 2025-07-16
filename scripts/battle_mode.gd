@@ -194,28 +194,26 @@ func deal_player_hand() -> void:
 
     battle_hand.draw_hand(cards)
 
-const _SUIT_SKILL: String = "suits"
 func get_suit_bonus_step() -> int:
-    match robot.get_skill_level(_SUIT_SKILL):
+    match robot.get_skill_level(RobotAbility.SKILL_SUIT):
         0: return 0
         1: return 1
         2: return 3
         _:
-            push_warning("Not implemented level %s skill for suits (skill '%s')" % [robot.get_skill_level(_SUIT_SKILL), _SUIT_SKILL])
+            push_warning("Not implemented level %s skill for suits (skill '%s')" % [robot.get_skill_level(RobotAbility.SKILL_SUIT), RobotAbility.SKILL_SUIT])
             return 3
 
-const _RANK_SKILL: String = "rank"
 func get_rank_bonus_step() -> int:
-    match robot.get_skill_level(_RANK_SKILL):
+    match robot.get_skill_level(RobotAbility.SKILL_RANK):
         0: return 0
         1: return 2
         2: return 2
         _:
-            push_warning("Not implemented level %s skill for suits (skill '%s')" % [robot.get_skill_level(_RANK_SKILL), _RANK_SKILL])
+            push_warning("Not implemented level %s skill for suits (skill '%s')" % [robot.get_skill_level(RobotAbility.SKILL_RANK), RobotAbility.SKILL_RANK])
             return 2
 
 func get_rank_bonus_allow_descending() -> bool:
-    return robot.get_skill_level(_RANK_SKILL) < 2
+    return robot.get_skill_level(RobotAbility.SKILL_RANK) < 2
 
 func _handle_update_slotted(cards: Array[BattleCard]) -> void:
     var acc_suit_bonus: int = suit_bonus

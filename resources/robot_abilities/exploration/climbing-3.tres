@@ -5,8 +5,8 @@
 [resource]
 script = ExtResource("1_4eo6l")
 id = "climbing"
-skill_level = 2
+skill_level = 3
 skill_name = "Climbing"
 ability_type = 0
-description = "Can walk up stairs and on walls"
+description = "Can walk up stairs, on walls and in the ceiling"
 metadata/_custom_type_script = "uid://0qri7op4mfno"

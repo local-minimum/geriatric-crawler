@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="RobotAbility" load_steps=2 format=3 uid="uid://5yxapnvomnd8"]
+
+[ext_resource type="Script" uid="uid://0qri7op4mfno" path="res://scripts/robot_ability.gd" id="1_4cknv"]
+
+[resource]
+script = ExtResource("1_4cknv")
+id = "upgrades"
+skill_level = 3
+skill_name = "Upgrades"
+ability_type = 2
+description = "Can buy multiple upgrades on same tier"
+metadata/_custom_type_script = "uid://0qri7op4mfno"

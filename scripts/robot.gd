@@ -15,7 +15,7 @@ var model: RobotModel
 var given_name: String
 
 var _obtained_cards: Array[BattleCardData]
-var _obtained_level_abilities: Array[RobotAbility]
+var _obtained_upgrades: Array[RobotAbility]
 
 var _fights: int
 var _alive: bool = true
@@ -28,30 +28,38 @@ func _ready() -> void:
 
 func is_alive() -> bool: return _alive
 
-func obtained_level() -> int: return _obtained_level_abilities.size()
+func obtained_upgrades() -> int: return _obtained_upgrades.size()
 
-func get_obtained_ability(level: int) -> RobotAbility:
-    if level < 1 || level - 1 >= _obtained_level_abilities.size():
-        return null
-    return _obtained_level_abilities[level - 1]
+func available_upgrade_slots() -> int:
+    var level: int = model.get_completed_level(_fights)
+    if get_skill_level(RobotAbility.SKILL_UPGRADES) >= 4:
+        return model.count_available_options(level, _obtained_upgrades)
+    return level - obtained_upgrades()
+
+func get_obtained_abilities(level: int) -> Array[RobotAbility]:
+    return _obtained_upgrades.filter(func (ability: RobotAbility) -> bool: return model.find_skill_level(ability) == level)
 
 ## Number of fights completed on the current level
 func get_fights_done_on_current_level() -> int:
-    return model.get_steps_on_level(_fights, obtained_level() + 1)
+    return model.get_completed_steps_on_current_level(_fights)
 
 ## Number of fights completed on the level
 func get_fights_done_on_level(level: int) -> int:
-    return model.get_steps_on_level(_fights, level)
+    return model.get_completed_steps_on_level(_fights, level)
 
 ## Number of fights needed to complete the level
 func get_fights_required_to_level() -> int:
-    return model.get_level_required_steps(obtained_level() + 1)
+    return model.get_remaining_steps_on_current_level(_fights)
 
-func can_level_up() -> bool: return model.get_level(_fights) > obtained_level()
+func fully_upgraded() -> bool:
+    return model.get_level(_fights) == 5 && available_upgrade_slots() == 0
+
+func must_upgrade() -> bool:
+    return get_skill_level(RobotAbility.SKILL_UPGRADES) == 0 && model.get_remaining_steps_on_current_level(_fights) == 0
 
 func get_active_abilities() -> Array[RobotAbility]:
     var abilites: Dictionary[String, RobotAbility] = {}
-    for ability: RobotAbility in model.innate_abilities + _obtained_level_abilities:
+    for ability: RobotAbility in model.innate_abilities + _obtained_upgrades:
         if !abilites.has(ability.id):
             abilites[ability.id] = ability
             continue
@@ -67,13 +75,12 @@ func get_skill_level(skill: String) -> int:
         func (item: RobotAbility) -> int: return item.skill_level,
     )
 
-func set_level_reward(reward_full_id: String) -> void:
-    var reward_level: int = obtained_level() + 1
-    var reward: RobotAbility = model.get_skill(reward_full_id, reward_level)
+func obtain_upgrade(reward_full_id: String) -> void:
+    var reward: RobotAbility = model.find_skill(reward_full_id)
     if reward == null:
-        push_error("Reward %s not a proper level %s reward for %s" % [reward_full_id, reward_level, model])
+        push_error("Reward %s not present in model %s" % [reward_full_id, model])
     else:
-        _obtained_level_abilities.append(reward)
+        _obtained_upgrades.append(reward)
 
 
 const _NAME_KEY: String = "name"
@@ -87,7 +94,7 @@ func collect_save_data() -> Dictionary:
         _NAME_KEY: given_name,
         _FIGHTS_KEY: _fights,
         _ALIVE_KEY: _alive,
-        _ABILITIES_KEY: _obtained_level_abilities.map(func (ability: RobotAbility) -> String: return ability.full_id()),
+        _ABILITIES_KEY: _obtained_upgrades.map(func (ability: RobotAbility) -> String: return ability.full_id()),
         _OBTAINED_CARDS_KEY: _obtained_cards.map(func (card: BattleCardData) -> String: return card.id),
     }
 
@@ -96,21 +103,18 @@ func load_from_save(data: Dictionary) -> void:
     _fights = DictionaryUtils.safe_geti(data, _FIGHTS_KEY)
     _alive = DictionaryUtils.safe_getb(data, _ALIVE_KEY, true)
 
-    _obtained_level_abilities.clear()
-    var level: int = 1
+    _obtained_upgrades.clear()
     for ability_id: Variant in DictionaryUtils.safe_geta(data, _ABILITIES_KEY):
         if ability_id is String:
             @warning_ignore_start("unsafe_call_argument")
-            var ability: RobotAbility = model.get_skill(ability_id, level)
+            var ability: RobotAbility = model.find_skill(ability_id)
             @warning_ignore_restore("unsafe_call_argument")
             if ability != null:
-                _obtained_level_abilities.append(ability)
+                _obtained_upgrades.append(ability)
             else:
-                push_warning("%s is not a known level %s ability of %s" % [ability_id, level, model])
+                push_warning("%s is not a known ability of %s" % [ability_id, model])
         else:
             push_warning("%s is not a string value (expected on %s in %s)" % [ability_id, _ABILITIES_KEY, data])
-
-        level += 1
 
     _obtained_cards.clear()
 
@@ -137,15 +141,19 @@ func _sync_player_transportation_mode() -> void:
     if _player == null:
         return
 
-    var climbing: int = get_skill_level(GridPlayer.CLIMBING_SKILL)
+    var climbing: int = get_skill_level(RobotAbility.SKILL_CLIMBING)
     match climbing:
         0:
             _player.transportation_abilities.remove_flag(TransportationMode.WALL_WALKING)
             _player.transportation_abilities.remove_flag(TransportationMode.CEILING_WALKING)
         1:
-            _player.transportation_abilities.set_flag(TransportationMode.WALL_WALKING)
+            # TODO: When we have stairs, allow on this level
+            _player.transportation_abilities.remove_flag(TransportationMode.WALL_WALKING)
             _player.transportation_abilities.remove_flag(TransportationMode.CEILING_WALKING)
         2:
+            _player.transportation_abilities.set_flag(TransportationMode.WALL_WALKING)
+            _player.transportation_abilities.remove_flag(TransportationMode.CEILING_WALKING)
+        3:
             _player.transportation_abilities.set_flag(TransportationMode.WALL_WALKING)
             _player.transportation_abilities.set_flag(TransportationMode.CEILING_WALKING)
         _:
@@ -153,7 +161,13 @@ func _sync_player_transportation_mode() -> void:
 
 func complete_fight() -> void:
     if _alive:
-        _fights += 1
+        var can_progress_without_upgrade: bool = get_skill_level(RobotAbility.SKILL_UPGRADES) >= 1
+        var current_level: int = model.get_level(_fights)
+        if current_level < 5:
+            var required: int = model.get_level_required_steps(current_level)
+            var done: int = model.get_completed_steps_on_level(_fights, current_level)
+            if can_progress_without_upgrade || done < required:
+                _fights += 1
         on_robot_complete_fight.emit(self)
 
 func killed_in_fight() -> void:
