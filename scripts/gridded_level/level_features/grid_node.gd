@@ -20,11 +20,40 @@ func get_level() -> GridLevel:
         level = GridLevel.find_level_parent(self)
 
     return level
+#region Events
+var _events: Array[GridEvent]
+var _events_inited: bool = false
 
-#
-# Anchors
-#
+func _init_events() -> void:
+    if _events_inited:
+        return
 
+    for event: GridEvent in find_children("", "GridEvent"):
+        _events.append(event)
+
+func _entry_blocking_events(move_direction: CardinalDirections.CardinalDirection, wanted_anchor: CardinalDirections.CardinalDirection) -> bool:
+    _init_events()
+    return _events.any(
+        func (evt: GridEvent) -> bool:
+            return evt.blocks_entry_translation(
+                move_direction,
+                wanted_anchor,
+            )
+    )
+
+func _exit_blocking_events(move_direction: CardinalDirections.CardinalDirection) -> bool:
+    _init_events()
+    return _events.any(
+        func (evt: GridEvent) -> bool:
+            return evt.blocks_exit_translation(move_direction)
+    )
+
+func triggering_events(entity: GridEntity, anchor_direction: CardinalDirections.CardinalDirection) -> Array[GridEvent]:
+    pass
+
+#endregion Events
+
+#region Anchor
 var _anchords_inited: bool
 
 func _init_anchors() -> void:
@@ -110,11 +139,9 @@ func get_grid_anchor(direction: CardinalDirections.CardinalDirection) -> GridAnc
 
 func get_center_pos() -> Vector3:
     return global_position + Vector3.UP * level.node_size * 0.5
+#endregion Anchor
 
-#
-# Navigation
-#
-
+#region Navigation
 ## Gives the neighbour in a direction, disregarding walls and obstructions
 func neighbour(direction: CardinalDirections.CardinalDirection) -> GridNode:
     var _level: GridLevel = get_level()
@@ -135,6 +162,9 @@ func may_enter(
     anchor_direction: CardinalDirections.CardinalDirection,
     ignore_require_anchor: bool = false,
 ) -> bool:
+    if _entry_blocking_events(move_direction, anchor_direction):
+        return false
+
     var entry_direction: CardinalDirections.CardinalDirection = CardinalDirections.invert(move_direction)
     var entry_anchor: GridAnchor = get_grid_anchor(entry_direction)
 
@@ -155,6 +185,9 @@ func may_enter(
     return true
 
 func may_exit(entity: GridEntity, move_direction: CardinalDirections.CardinalDirection) -> bool:
+    if _exit_blocking_events(move_direction):
+        return false
+
     var anchor: GridAnchor = get_grid_anchor(move_direction)
 
     if anchor == null:
@@ -194,3 +227,4 @@ static func find_node_parent(current: Node, inclusive: bool = true) ->  GridNode
         return parent as GridNode
 
     return find_node_parent(parent, false)
+#endregion Navigation
