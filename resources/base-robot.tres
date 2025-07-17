@@ -9,7 +9,7 @@
 [ext_resource type="Resource" uid="uid://8aoyvdht0msx" path="res://resources/robot_abilities/exploration/sonar-2.tres" id="6_e4jh0"]
 [ext_resource type="Resource" uid="uid://br0wnot24fw1b" path="res://resources/robot_abilities/battle/memory-1.tres" id="7_gfie8"]
 [ext_resource type="Resource" uid="uid://c2kaiyaateugc" path="res://resources/robot_abilities/battle/slots-2.tres" id="8_micf8"]
-[ext_resource type="Resource" uid="uid://bprdlp26xbu37" path="res://resources/robot_abilities/exploration/climbing-2.tres" id="9_2kcf8"]
+[ext_resource type="Resource" uid="uid://duokj17pplsk" path="res://resources/robot_abilities/exploration/climbing-3.tres" id="9_2kcf8"]
 [ext_resource type="Resource" uid="uid://dpy5qucyu25fx" path="res://resources/robot_abilities/exploration/lock-picking-2.tres" id="10_hp843"]
 [ext_resource type="Script" uid="uid://cqlxwfe858g4h" path="res://scripts/card_battle/battle_card_data.gd" id="12_lew8e"]
 [ext_resource type="Resource" uid="uid://dcob2h4luvnbl" path="res://resources/player_cards/card_defrag_5.tres" id="13_e4jh0"]
