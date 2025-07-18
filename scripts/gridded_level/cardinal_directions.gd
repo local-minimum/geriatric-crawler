@@ -26,9 +26,7 @@ const ALL_PLANAR_DIRECTIONS: Array[CardinalDirection] = [
     CardinalDirection.EAST,
 ]
 
-#
-# Creation
-#
+#region Creation
 
 static func vector_to_direction(vector: Vector3i) -> CardinalDirection:
     match vector:
@@ -59,9 +57,9 @@ static func node_planar_rotation_to_direction(node: Node3D) -> CardinalDirection
             print_stack()
             return CardinalDirection.NONE
 
-#
-# Checks
-#
+#endregion Creation
+
+#region Checks
 
 static func is_parallell(direction: CardinalDirection, other: CardinalDirection) -> bool:
     return direction == other || direction == invert(other)
@@ -69,9 +67,9 @@ static func is_parallell(direction: CardinalDirection, other: CardinalDirection)
 static func is_planar_cardinal(direction: CardinalDirection) -> bool:
     return ALL_PLANAR_DIRECTIONS.has(direction)
 
-#
-# Modifying a direction
-#
+#endregion Checks
+
+#region Modifying Directions
 
 static func invert(direction: CardinalDirection) -> CardinalDirection:
     match direction:
@@ -228,9 +226,9 @@ static func orthogonal_axis(first: CardinalDirection, second: CardinalDirection)
     print_stack()
     return CardinalDirection.NONE
 
-#
-# To other objects
-#
+#endregion Modifying Directions
+
+#region To Other
 
 static func direction_to_vector(direction: CardinalDirection) -> Vector3i:
     match direction:
@@ -348,9 +346,21 @@ static func angle_around_axis(direction: CardinalDirection, down: CardinalDirect
 static func name(direction: CardinalDirection) -> String:
     return CardinalDirection.find_key(direction)
 
-#
-# Operating on other objects
-#
+#region To Other
+
+#region Operate on Other
 
 static func translate(coordinates: Vector3i, direction: CardinalDirection) -> Vector3i:
     return coordinates + direction_to_vector(direction)
+
+static func vectori_axis_value(coordinates: Vector3i, direction: CardinalDirection) -> int:
+    match direction:
+        CardinalDirection.UP: return coordinates.z
+        CardinalDirection.DOWN: return coordinates.z
+        CardinalDirection.NORTH: return coordinates.y
+        CardinalDirection.SOUTH: return coordinates.y
+        CardinalDirection.WEST: return coordinates.x
+        CardinalDirection.EAST: return coordinates.x
+        _: return 0
+
+#endregion Operate on Other

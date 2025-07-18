@@ -157,30 +157,31 @@ func _handle_landing(
 func _handle_node_transition(
     movement: Movement.MovementType,
     tween: Tween,
-    node: GridNode,
-    anchor: GridAnchor,
+    from: GridNode,
+    from_anchor: GridAnchor,
     move_direction: CardinalDirections.CardinalDirection,
     was_excotic_walk: bool,
 ) -> int:
-    if node.may_exit(entity, move_direction):
-        var neighbour: GridNode = node.neighbour(move_direction)
-        if neighbour == null:
+    if from.may_exit(entity, move_direction):
+        var target: GridNode = from.neighbour(move_direction)
+        if target == null:
             print_debug("No tile in %s direction" % CardinalDirections.name(move_direction))
             return _UNHANDLED
 
-        var handled: int = _handle_outer_corner_transition(movement, tween, anchor, move_direction, neighbour)
+        # If we are doing outer corner, the assumed target is actually the imtermediate node
+        var handled: int = _handle_outer_corner_transition(movement, tween, from, from_anchor, move_direction, target)
         if handled:
             print_debug("Outer corner")
             return handled
 
-        if neighbour.may_enter(entity, move_direction, entity.down):
+        if target.may_enter(entity, from, move_direction, entity.down):
 
-            var neighbour_anchor: GridAnchor = neighbour.get_grid_anchor(entity.down)
+            var neighbour_anchor: GridAnchor = target.get_grid_anchor(entity.down)
 
             if was_excotic_walk && !entity.can_jump_off_walls && neighbour_anchor == null:
                 return _UNHANDLED
 
-            var events: Array[GridEvent] = neighbour.triggering_events(
+            var events: Array[GridEvent] = target.triggering_events(
                 entity,
                 entity.get_grid_node(),
                 entity.get_grid_anchor_direction(),
@@ -194,7 +195,7 @@ func _handle_node_transition(
 
             if neighbour_anchor != null:
                 # Normal movement between two tiles keeping the same down
-                entity.update_entity_anchorage(neighbour, neighbour_anchor)
+                entity.update_entity_anchorage(target, neighbour_anchor)
 
                 @warning_ignore_start("return_value_discarded")
                 var prop_tweener: PropertyTweener = tween.tween_property(
@@ -216,17 +217,17 @@ func _handle_node_transition(
                 print_debug("Normal move no exotics")
                 return _HANDLED
 
-            print_debug("%s has no anchor %s" % [neighbour.name, CardinalDirections.name(entity.down)])
+            print_debug("%s has no anchor %s" % [target.name, CardinalDirections.name(entity.down)])
             entity.block_concurrent_movement()
 
             @warning_ignore_start("return_value_discarded")
             tween.tween_property(
                 entity,
                 "global_position",
-                neighbour.get_center_pos(),
+                target.get_center_pos(),
                 translation_time / animation_speed)
 
-            entity.update_entity_anchorage(neighbour, null)
+            entity.update_entity_anchorage(target, null)
 
             if was_excotic_walk:
                 var end_look_direction: CardinalDirections.CardinalDirection = entity.look_direction
@@ -240,7 +241,7 @@ func _handle_node_transition(
                     Vector3(CardinalDirections.direction_to_vector(end_look_direction)),
                     Vector3(CardinalDirections.direction_to_vector(CardinalDirections.CardinalDirection.UP)))
 
-                events = neighbour.triggering_events(
+                events = target.triggering_events(
                     entity,
                     entity.get_grid_node(),
                     entity.get_grid_anchor_direction(),
@@ -283,17 +284,18 @@ func _handle_node_transition(
             print_debug("normal jump-off")
             return _HANDLED
 
-    print_debug("not allowed to exit node")
+    print_debug("not allowed to exit from")
     return _UNHANDLED
 
 func _handle_outer_corner_transition(
     movement: Movement.MovementType,
     tween: Tween,
-    anchor: GridAnchor,
+    from: GridNode,
+    from_anchor: GridAnchor,
     move_direction: CardinalDirections.CardinalDirection,
-    neighbour: GridNode,
+    intermediate: GridNode,
 ) -> int:
-    if anchor == null || !neighbour.may_transit(entity, move_direction, entity.down):
+    if from_anchor == null || !intermediate.may_transit(entity, from, move_direction, entity.down):
         # if anchor == null:
             # print_debug("Anchor is null")
         # else:
@@ -303,8 +305,8 @@ func _handle_outer_corner_transition(
     var updated_directions: Array[CardinalDirections.CardinalDirection] = CardinalDirections.calculate_outer_corner(
         move_direction, entity.look_direction, entity.down)
 
-    var target: GridNode = neighbour.neighbour(entity.down)
-    if target == null || !target.may_enter(entity, entity.down, updated_directions[1]):
+    var target: GridNode = intermediate.neighbour(entity.down)
+    if target == null || !target.may_enter(entity, intermediate, entity.down, updated_directions[1]):
         # if target == null:
             # print_debug("Target is null")
         # else:
@@ -337,7 +339,7 @@ func _handle_outer_corner_transition(
         movement,
         tween,
         entity.get_grid_node(),
-        anchor,
+        from_anchor,
         target_anchor,
         move_direction,
         CardinalDirections.invert(entity.down),
@@ -352,12 +354,12 @@ func _handle_node_inner_corner_transition(
     movement: Movement.MovementType,
     tween: Tween,
     node: GridNode,
-    anchor: GridAnchor,
+    from_anchor: GridAnchor,
     move_direction: CardinalDirections.CardinalDirection,
 ) -> int:
     var target_anchor: GridAnchor = node.get_grid_anchor(move_direction)
 
-    if target_anchor == null || anchor == null || !target_anchor.can_anchor(entity):
+    if target_anchor == null || from_anchor == null || !target_anchor.can_anchor(entity):
         print_debug("not allowed inner corner transition (has target anchor %s)" % [target_anchor != null])
         # if target_anchor != null:
         #    print_debug("%s may anchor on %s = %s" % [entity.name, target_anchor.name, target_anchor.can_anchor(entity)])
@@ -382,7 +384,7 @@ func _handle_node_inner_corner_transition(
         movement,
         tween,
         node,
-        anchor,
+        from_anchor,
         target_anchor,
         move_direction,
         entity.down,

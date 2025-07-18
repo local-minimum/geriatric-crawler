@@ -31,11 +31,16 @@ func _init_events() -> void:
     for event: GridEvent in find_children("", "GridEvent"):
         _events.append(event)
 
-func _entry_blocking_events(move_direction: CardinalDirections.CardinalDirection, wanted_anchor: CardinalDirections.CardinalDirection) -> bool:
+func _entry_blocking_events(
+    from: GridNode,
+    move_direction: CardinalDirections.CardinalDirection,
+    wanted_anchor: CardinalDirections.CardinalDirection,
+) -> bool:
     _init_events()
     return _events.any(
         func (evt: GridEvent) -> bool:
             return evt.blocks_entry_translation(
+                from,
                 move_direction,
                 wanted_anchor,
             )
@@ -176,11 +181,12 @@ func neighbour(direction: CardinalDirections.CardinalDirection) -> GridNode:
 
 func may_enter(
     entity: GridEntity,
+    from: GridNode,
     move_direction: CardinalDirections.CardinalDirection,
     anchor_direction: CardinalDirections.CardinalDirection,
     ignore_require_anchor: bool = false,
 ) -> bool:
-    if _entry_blocking_events(move_direction, anchor_direction):
+    if _entry_blocking_events(from, move_direction, anchor_direction):
         print_debug("Cannot enter moving %s because of events" % CardinalDirections.name(move_direction))
         return false
 
@@ -228,10 +234,11 @@ func may_exit(entity: GridEntity, move_direction: CardinalDirections.CardinalDir
 
 func may_transit(
     entity: GridEntity,
+    from: GridNode,
     move_direction: CardinalDirections.CardinalDirection,
     exit_direction: CardinalDirections.CardinalDirection,
 ) -> bool:
-    return may_enter(entity, move_direction, entity.down, true) && may_exit(entity, exit_direction)
+    return may_enter(entity, from, move_direction, entity.down, true) && may_exit(entity, exit_direction)
 
 static func find_node_parent(current: Node, inclusive: bool = true) ->  GridNode:
     if inclusive && current is GridNode:
