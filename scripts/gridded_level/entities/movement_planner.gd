@@ -24,7 +24,8 @@ var tank_movement: bool
 
 const _UNHANDLED: int = 0
 const _HANDLED: int = 1
-const _HANDLED_REFUSED: int = 2
+const _HANDLED_EVENT_MANAGED: int = 2
+const _HANDLED_REFUSED: int = 3
 
 func move_entity(
     movement: Movement.MovementType,
@@ -44,15 +45,21 @@ func move_entity(
     var handled: int = _handle_landing(movement, tween, node, anchor, move_direction)
 
     if handled:
-        return tween if handled == _HANDLED else null
+        if handled == _HANDLED_REFUSED:
+            _refuse_translation(movement, tween, node, anchor, move_direction)
+        return tween if handled != _HANDLED_EVENT_MANAGED else null
 
     handled = _handle_node_transition(movement, tween, node, anchor, move_direction, was_excotic_walk)
     if handled:
-        return tween if handled == _HANDLED else null
+        if handled == _HANDLED_REFUSED:
+            _refuse_translation(movement, tween, node, anchor, move_direction)
+        return tween if handled != _HANDLED_EVENT_MANAGED else null
 
     handled = _handle_node_inner_corner_transition(movement, tween, node, anchor, move_direction)
     if handled:
-        return tween if handled == _HANDLED else null
+        if handled == _HANDLED_REFUSED:
+            _refuse_translation(movement, tween, node, anchor, move_direction)
+        return tween if handled != _HANDLED_EVENT_MANAGED else null
 
     tween.kill()
     return null
@@ -108,6 +115,45 @@ func rotate_entity(
 
     return tween
 
+func _refuse_translation(
+    movement: Movement.MovementType,
+    tween: Tween,
+    node: GridNode,
+    anchor: GridAnchor,
+    move_direction: CardinalDirections.CardinalDirection,
+) -> void:
+    var origin: Vector3 = anchor.global_position if anchor != null else node.get_center_pos()
+    var edge: Vector3 = anchor.get_edge_position(move_direction)
+    var target: Vector3 = lerp(origin, edge, 0.45)
+
+    @warning_ignore_start("return_value_discarded")
+    var prop_tweener: PropertyTweener = tween.tween_property(
+        entity,
+        "global_position",
+        target,
+        translation_time * 0.5 / animation_speed)
+
+    if !tank_movement:
+        prop_tweener.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+
+    var second_tween: Tween = tween.chain()
+    prop_tweener = second_tween.tween_property(
+        entity,
+        "global_position",
+        origin,
+        translation_time * 0.5 / animation_speed)
+
+    if !tank_movement:
+        prop_tweener.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+
+    tween.connect(
+        "finished",
+        func () -> void:
+            entity.sync_position()
+            entity.end_movement(movement))
+    @warning_ignore_restore("return_value_discarded")
+
+    print_debug("Refusing translation movement")
 
 func _handle_landing(
     movement: Movement.MovementType,
@@ -126,10 +172,10 @@ func _handle_landing(
                 land_anchor.direction,
             )
 
-            if _check_handled_by_event_and_trigger(events):
+            if _check_handled_by_event_and_trigger(events, movement):
                 tween.kill()
                 print_debug("event manages landing")
-                return _HANDLED_REFUSED
+                return _HANDLED_EVENT_MANAGED
 
             var prop_tweener: PropertyTweener = tween.tween_property(
                 entity,
@@ -188,10 +234,10 @@ func _handle_node_transition(
                 entity.down,
             )
 
-            if _check_handled_by_event_and_trigger(events):
+            if _check_handled_by_event_and_trigger(events, movement):
                 tween.kill()
                 print_debug("event manages normal same side translation")
-                return _HANDLED_REFUSED
+                return _HANDLED_EVENT_MANAGED
 
             if neighbour_anchor != null:
                 # Normal movement between two tiles keeping the same down
@@ -248,10 +294,10 @@ func _handle_node_transition(
                     end_down,
                 )
 
-                if _check_handled_by_event_and_trigger(events):
+                if _check_handled_by_event_and_trigger(events, movement):
                     tween.kill()
                     print_debug("event manages jump-off")
-                    return _HANDLED_REFUSED
+                    return _HANDLED_EVENT_MANAGED
 
                 tween.tween_method(
                     func (value: Basis) -> void:
@@ -306,11 +352,14 @@ func _handle_outer_corner_transition(
         move_direction, entity.look_direction, entity.down)
 
     var target: GridNode = intermediate.neighbour(entity.down)
-    if target == null || !target.may_enter(entity, intermediate, entity.down, updated_directions[1]):
-        # if target == null:
-            # print_debug("Target is null")
-        # else:
-            # print_debug("We may not enter %s from %s" % [target.name, entity.down])
+    if target == null:
+        # print_debug("Target is null")
+        return _UNHANDLED
+
+    if !target.may_enter(entity, intermediate, entity.down, updated_directions[1]):
+        # print_debug("We may not enter %s from %s" % [target.name, entity.down])
+        if target._entry_blocking_events(entity, from, move_direction, entity.down):
+            return _HANDLED_REFUSED
         return _UNHANDLED
 
 
@@ -327,10 +376,10 @@ func _handle_outer_corner_transition(
         target_anchor.direction,
     )
 
-    if _check_handled_by_event_and_trigger(events):
+    if _check_handled_by_event_and_trigger(events, movement):
         tween.kill()
         print_debug("event manages outer corner")
-        return _HANDLED_REFUSED
+        return _HANDLED_EVENT_MANAGED
 
     # We only check anchorage afterwards in case the event overrides those rules
     if !target_anchor.can_anchor(entity):
@@ -365,7 +414,7 @@ func _handle_node_inner_corner_transition(
         print_debug("not allowed inner corner transition (has target anchor %s)" % [target_anchor != null])
         # if target_anchor != null:
         #    print_debug("%s may anchor on %s = %s" % [entity.name, target_anchor.name, target_anchor.can_anchor(entity)])
-        return _UNHANDLED
+        return _HANDLED_REFUSED
 
     var events: Array[GridEvent] = node.triggering_events(
         entity,
@@ -374,10 +423,10 @@ func _handle_node_inner_corner_transition(
         target_anchor.direction,
     )
 
-    if _check_handled_by_event_and_trigger(events):
+    if _check_handled_by_event_and_trigger(events, movement):
         tween.kill()
         print_debug("event manages inner corner movement")
-        return _HANDLED_REFUSED
+        return _HANDLED_EVENT_MANAGED
 
     var updated_directions: Array[CardinalDirections.CardinalDirection] = CardinalDirections.calculate_innner_corner(
         move_direction, entity.look_direction, entity.down)
@@ -469,12 +518,12 @@ func _handle_corner(
     @warning_ignore_restore("return_value_discarded")
 
 
-func _check_handled_by_event_and_trigger(events: Array[GridEvent]) -> bool:
+func _check_handled_by_event_and_trigger(events: Array[GridEvent], movement: Movement.MovementType) -> bool:
     var handled: bool
     for event: GridEvent in events:
         if event.manages_triggering_translation():
             handled = true
 
-        event.trigger(entity)
+        event.trigger(entity, movement)
 
     return handled

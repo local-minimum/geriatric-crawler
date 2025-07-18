@@ -162,6 +162,7 @@ func get_grid_anchor(direction: CardinalDirections.CardinalDirection) -> GridAnc
 
     return null
 
+## Returns global position of node center
 func get_center_pos() -> Vector3:
     return global_position + Vector3.UP * level.node_size * 0.5
 #endregion Anchor

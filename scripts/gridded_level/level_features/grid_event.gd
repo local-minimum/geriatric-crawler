@@ -65,5 +65,5 @@ func side_blocked(side: CardinalDirections.CardinalDirection) -> bool:
 func manages_triggering_translation() -> bool:
     return false
 
-func trigger(_entity: GridEntity) -> void:
+func trigger(_entity: GridEntity, _movement: Movement.MovementType) -> void:
     _triggered = true

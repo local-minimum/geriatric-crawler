@@ -17,10 +17,11 @@ var lower_exit_direction: CardinalDirections.CardinalDirection
 func manages_triggering_translation() -> bool:
     return true
 
-func trigger(entity: GridEntity) -> void:
-    super.trigger(entity)
+func trigger(entity: GridEntity, movement: Movement.MovementType) -> void:
+    super.trigger(entity, movement)
     entity.cinematic = true
     # TODO: Implement the walk!
+    # TODO: Callback entity.end_movement(movement)
 
 func blocks_entry_translation(
     entity: GridEntity,
