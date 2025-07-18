@@ -291,11 +291,11 @@ func _handle_outer_corner_transition(
     movement: Movement.MovementType,
     tween: Tween,
     from: GridNode,
-    from_anchor: GridAnchor,
+    anchor: GridAnchor,
     move_direction: CardinalDirections.CardinalDirection,
     intermediate: GridNode,
 ) -> int:
-    if from_anchor == null || !intermediate.may_transit(entity, from, move_direction, entity.down):
+    if anchor == null || !intermediate.may_transit(entity, from, move_direction, entity.down):
         # if anchor == null:
             # print_debug("Anchor is null")
         # else:
@@ -316,11 +316,8 @@ func _handle_outer_corner_transition(
 
     var target_anchor: GridAnchor = target.get_grid_anchor(updated_directions[1])
 
-    if target_anchor == null || !target_anchor.can_anchor(entity):
-        # if target_anchor == null:
-            # print_debug("%s doesn't have an anchor %s" % [target.name, updated_directions[1]])
-        # else:
-            # print_debug("%s of %s doesn't alow us to anchor" % [target_anchor.name, target.name])
+    if target_anchor == null:
+        # print_debug("%s doesn't have an anchor %s" % [target.name, updated_directions[1]])
         return _UNHANDLED
 
     var events: Array[GridEvent] = target.triggering_events(
@@ -335,11 +332,16 @@ func _handle_outer_corner_transition(
         print_debug("event manages outer corner")
         return _HANDLED_REFUSED
 
+    # We only check anchorage afterwards in case the event overrides those rules
+    if !target_anchor.can_anchor(entity):
+        # print_debug("%s of %s doesn't alow us to anchor" % [target_anchor.name, target.name])
+        return _UNHANDLED
+
     _handle_corner(
         movement,
         tween,
         entity.get_grid_node(),
-        from_anchor,
+        anchor,
         target_anchor,
         move_direction,
         CardinalDirections.invert(entity.down),
@@ -354,12 +356,12 @@ func _handle_node_inner_corner_transition(
     movement: Movement.MovementType,
     tween: Tween,
     node: GridNode,
-    from_anchor: GridAnchor,
+    anchor: GridAnchor,
     move_direction: CardinalDirections.CardinalDirection,
 ) -> int:
     var target_anchor: GridAnchor = node.get_grid_anchor(move_direction)
 
-    if target_anchor == null || from_anchor == null || !target_anchor.can_anchor(entity):
+    if target_anchor == null || anchor == null || !target_anchor.can_anchor(entity):
         print_debug("not allowed inner corner transition (has target anchor %s)" % [target_anchor != null])
         # if target_anchor != null:
         #    print_debug("%s may anchor on %s = %s" % [entity.name, target_anchor.name, target_anchor.can_anchor(entity)])
@@ -384,7 +386,7 @@ func _handle_node_inner_corner_transition(
         movement,
         tween,
         node,
-        from_anchor,
+        anchor,
         target_anchor,
         move_direction,
         entity.down,
