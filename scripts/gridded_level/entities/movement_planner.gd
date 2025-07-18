@@ -126,8 +126,9 @@ func _handle_landing(
                 land_anchor.direction,
             )
 
-            if events.any(func (evt: GridEvent) -> bool: return evt.manages_triggering_translation()):
+            if _check_handled_by_event_and_trigger(events):
                 tween.kill()
+                print_debug("event manages landing")
                 return _HANDLED_REFUSED
 
             var prop_tweener: PropertyTweener = tween.tween_property(
@@ -149,6 +150,7 @@ func _handle_landing(
                     entity.end_movement(movement))
             @warning_ignore_restore("return_value_discarded")
 
+            print_debug("landing")
             return _HANDLED
     return _UNHANDLED
 
@@ -185,8 +187,9 @@ func _handle_node_transition(
                 entity.down,
             )
 
-            if events.any(func (evt: GridEvent) -> bool: return evt.manages_triggering_translation()):
+            if _check_handled_by_event_and_trigger(events):
                 tween.kill()
+                print_debug("event manages normal same side translation")
                 return _HANDLED_REFUSED
 
             if neighbour_anchor != null:
@@ -244,8 +247,9 @@ func _handle_node_transition(
                     end_down,
                 )
 
-                if events.any(func (evt: GridEvent) -> bool: return evt.manages_triggering_translation()):
+                if _check_handled_by_event_and_trigger(events):
                     tween.kill()
+                    print_debug("event manages jump-off")
                     return _HANDLED_REFUSED
 
                 tween.tween_method(
@@ -324,8 +328,9 @@ func _handle_outer_corner_transition(
         target_anchor.direction,
     )
 
-    if events.any(func (evt: GridEvent) -> bool: return evt.manages_triggering_translation()):
+    if _check_handled_by_event_and_trigger(events):
         tween.kill()
+        print_debug("event manages outer corner")
         return _HANDLED_REFUSED
 
     _handle_corner(
@@ -338,6 +343,8 @@ func _handle_outer_corner_transition(
         CardinalDirections.invert(entity.down),
         updated_directions
     )
+
+    print_debug("outer corner movement")
     return _HANDLED
 
 
@@ -360,8 +367,9 @@ func _handle_node_inner_corner_transition(
         target_anchor.direction,
     )
 
-    if events.any(func (evt: GridEvent) -> bool: return evt.manages_triggering_translation()):
+    if _check_handled_by_event_and_trigger(events):
         tween.kill()
+        print_debug("event manages inner corner movement")
         return _HANDLED_REFUSED
 
     var updated_directions: Array[CardinalDirections.CardinalDirection] = CardinalDirections.calculate_innner_corner(
@@ -378,7 +386,7 @@ func _handle_node_inner_corner_transition(
         updated_directions
     )
 
-    print_debug("inner corner")
+    print_debug("inner corner movement")
     return _HANDLED
 
 func _handle_corner(
@@ -452,3 +460,14 @@ func _handle_corner(
             entity.end_movement(movement))
 
     @warning_ignore_restore("return_value_discarded")
+
+
+func _check_handled_by_event_and_trigger(events: Array[GridEvent]) -> bool:
+    var handled: bool
+    for event: GridEvent in events:
+        if event.manages_triggering_translation():
+            handled = true
+
+        event.trigger(entity)
+
+    return handled

@@ -181,6 +181,7 @@ func may_enter(
     ignore_require_anchor: bool = false,
 ) -> bool:
     if _entry_blocking_events(move_direction, anchor_direction):
+        print_debug("Cannot enter moving %s because of events" % CardinalDirections.name(move_direction))
         return false
 
     var entry_direction: CardinalDirections.CardinalDirection = CardinalDirections.invert(move_direction)
@@ -204,6 +205,7 @@ func may_enter(
 
 func may_exit(entity: GridEntity, move_direction: CardinalDirections.CardinalDirection) -> bool:
     if _exit_blocking_events(move_direction):
+        print_debug("Cannot exit %s moving %s because of events" % [name, CardinalDirections.name(move_direction)])
         return false
 
     var anchor: GridAnchor = get_grid_anchor(move_direction)
@@ -212,17 +214,16 @@ func may_exit(entity: GridEntity, move_direction: CardinalDirections.CardinalDir
         return true
 
     print_debug("%s is at %s" % [entity.name, entity.coordinates()])
-    print_debug("%s of %s has anchor %s" % [entity.coordinates(), name, CardinalDirections.name(move_direction)])
 
     if anchor.can_anchor(entity):
-        print_debug("Cannot exit %s from %s because we can anchor on %s" % [move_direction, name, anchor.name])
-        # print_stack()
+        print_debug("Cannot exit %s from %s because we could anchor on %s" % [CardinalDirections.name(move_direction), name, anchor.name])
+        print_stack()
         return false
 
     if anchor.pass_through_on_refuse:
         return true
 
-    print_debug("Cannot exit %s from %s because  anchor %s" % [move_direction, name, anchor.name])
+    print_debug("Cannot exit %s from %s because anchor %s" % [CardinalDirections.name(move_direction), name, anchor.name])
     return false
 
 func may_transit(
