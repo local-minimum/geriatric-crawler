@@ -49,7 +49,7 @@ func _draw_debug_edges() -> void:
 func can_anchor(entity: GridEntity) -> bool:
     return (
         entity.transportation_abilities.has_all(required_transportation_mode.get_flags()) &&
-        get_grid_node().any_event_blocks_anchorage(entity, direction)
+        !get_grid_node().any_event_blocks_anchorage(entity, direction)
     )
 
 func get_edge_position(edge_direction: CardinalDirections.CardinalDirection, local: bool = false) -> Vector3:

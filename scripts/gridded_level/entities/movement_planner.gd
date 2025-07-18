@@ -283,7 +283,7 @@ func _handle_node_transition(
             print_debug("normal jump-off")
             return _HANDLED
 
-    print_debug("not allowed to exit")
+    print_debug("not allowed to exit node")
     return _UNHANDLED
 
 func _handle_outer_corner_transition(
@@ -358,6 +358,9 @@ func _handle_node_inner_corner_transition(
     var target_anchor: GridAnchor = node.get_grid_anchor(move_direction)
 
     if target_anchor == null || anchor == null || !target_anchor.can_anchor(entity):
+        print_debug("not allowed inner corner transition (has target anchor %s)" % [target_anchor != null])
+        # if target_anchor != null:
+        #    print_debug("%s may anchor on %s = %s" % [entity.name, target_anchor.name, target_anchor.can_anchor(entity)])
         return _UNHANDLED
 
     var events: Array[GridEvent] = node.triggering_events(
