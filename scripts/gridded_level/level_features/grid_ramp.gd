@@ -20,14 +20,22 @@ func manages_triggering_translation() -> bool:
 func trigger(entity: GridEntity) -> void:
     super.trigger(entity)
     entity.cinematic = true
+    # TODO: Implement the walk!
 
 func blocks_entry_translation(
+    entity: GridEntity,
     from: GridNode,
     move_direction: CardinalDirections.CardinalDirection,
     to_side: CardinalDirections.CardinalDirection,
 ) -> bool:
-    if super.blocks_entry_translation(from, move_direction, to_side):
+    if super.blocks_entry_translation(entity, from, move_direction, to_side):
         return true
+
+    if entity is GridPlayer:
+        var player: GridPlayer = entity
+        if player.robot.get_skill_level(RobotAbility.SKILL_CLIMBING) < climbing_requirement:
+            print_debug("Entry to ramp blocked by too low climbing-skill")
+            return true
 
     var expected_from: Vector3i = CardinalDirections.translate(
         CardinalDirections.translate(coordinates(), up_direction),

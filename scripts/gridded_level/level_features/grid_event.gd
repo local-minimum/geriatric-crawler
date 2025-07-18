@@ -37,6 +37,7 @@ func should_trigger(
 
 ## If event blocks entry translation
 func blocks_entry_translation(
+    _entity: GridEntity,
     _from: GridNode,
     move_direction: CardinalDirections.CardinalDirection,
     to_side: CardinalDirections.CardinalDirection,

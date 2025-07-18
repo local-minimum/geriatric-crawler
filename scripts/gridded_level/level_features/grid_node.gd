@@ -32,6 +32,7 @@ func _init_events() -> void:
         _events.append(event)
 
 func _entry_blocking_events(
+    entity: GridEntity,
     from: GridNode,
     move_direction: CardinalDirections.CardinalDirection,
     wanted_anchor: CardinalDirections.CardinalDirection,
@@ -40,6 +41,7 @@ func _entry_blocking_events(
     return _events.any(
         func (evt: GridEvent) -> bool:
             return evt.blocks_entry_translation(
+                entity,
                 from,
                 move_direction,
                 wanted_anchor,
@@ -186,7 +188,7 @@ func may_enter(
     anchor_direction: CardinalDirections.CardinalDirection,
     ignore_require_anchor: bool = false,
 ) -> bool:
-    if _entry_blocking_events(from, move_direction, anchor_direction):
+    if _entry_blocking_events(entity, from, move_direction, anchor_direction):
         print_debug("Cannot enter moving %s because of events" % CardinalDirections.name(move_direction))
         return false
 
