@@ -21,7 +21,8 @@ var _triggered: bool
 func available() -> bool: return _repeatable || !_triggered
 
 ## If a translation should trigger the event
-func should_triggers(
+func should_trigger(
+    _entity: GridEntity,
     from: GridNode,
     from_side: CardinalDirections.CardinalDirection,
     to_side: CardinalDirections.CardinalDirection,
@@ -36,19 +37,31 @@ func should_triggers(
 
 ## If event blocks entry translation
 func blocks_entry_translation(
-    from_direction: CardinalDirections.CardinalDirection,
+    move_direction: CardinalDirections.CardinalDirection,
     to_side: CardinalDirections.CardinalDirection,
 ) -> bool:
-    if _blocks_sides.has(to_side): return true
+    if _blocks_sides.has(to_side):
+        print_debug("Event %s blocks entry to side %s" % [name, CardinalDirections.name(to_side)])
+        return true
 
-    var entry_from: CardinalDirections.CardinalDirection = CardinalDirections.invert(from_direction)
-    return _blocks_sides.has(entry_from)
+    var entry_from: CardinalDirections.CardinalDirection = CardinalDirections.invert(move_direction)
+    if _blocks_sides.has(entry_from):
+        print_debug("Event %s blocks entry from %s" % [name, CardinalDirections.name(entry_from)])
+        return true
+
+    return false
 
 ## If event blocks entry translation
 func blocks_exit_translation(
     exit_direction: CardinalDirections.CardinalDirection,
 ) -> bool:
     return _blocks_sides.has(exit_direction)
+
+func side_blocked(side: CardinalDirections.CardinalDirection) -> bool:
+    return _blocks_sides.has(side)
+
+func manages_triggering_translation() -> bool:
+    return false
 
 func trigger(_entity: GridEntity) -> void:
     _triggered = true

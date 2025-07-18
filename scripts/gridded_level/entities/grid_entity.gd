@@ -10,6 +10,7 @@ signal on_update_orientation(
     old_forward: CardinalDirections.CardinalDirection,
     forward: CardinalDirections.CardinalDirection,
 )
+signal on_cinematic(entity: GridEntity, active: bool)
 
 const _LOOK_DIRECTION_KEY: String = "look_direction"
 const _DOWN_KEY: String = "down"
@@ -19,6 +20,14 @@ const _COORDINATES_KEY: String = "coordinates"
 var _old_look_direction: CardinalDirections.CardinalDirection
 var _old_down: CardinalDirections.CardinalDirection
 var _emit_orientation: bool
+
+## If cinematic, AI or player shouldn't be allowed to do inputs
+var cinematic: bool:
+    set (value):
+        cinematic = value
+        if value:
+            clear_queue()
+        on_cinematic.emit(self, value)
 
 @export
 var look_direction: CardinalDirections.CardinalDirection:
@@ -215,6 +224,7 @@ func _enqeue_movement(movement: Movement.MovementType) -> void:
         # Movement.name(_next_movement),
     # ])
 
+## Empties queued up moves
 func clear_queue() -> void:
     _next_movement = Movement.MovementType.NONE
     _next_next_movement = Movement.MovementType.NONE
@@ -228,6 +238,7 @@ func _handle_new_tween(tween: Tween, primary_tween: bool) -> void:
             while tween.custom_step(t):
                 t *= 2
 
+    # I don't know why this is an elif here but somehow it's very important
     elif primary_tween:
         _tween = tween
     else:

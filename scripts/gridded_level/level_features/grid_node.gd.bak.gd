@@ -215,7 +215,7 @@ func may_exit(entity: GridEntity, move_direction: CardinalDirections.CardinalDir
     print_debug("%s of %s has anchor %s" % [entity.coordinates(), name, CardinalDirections.name(move_direction)])
 
     if anchor.can_anchor(entity):
-        print_debug("Cannot exit %s from %s because we can anchor on %s" % [move_direction, name, anchor.name])
+        print_debug("Cannot exit %s from %s because we could anchor on %s" % [CardinalDirections.name(move_direction), name, anchor.name])
         # print_stack()
         return false
 

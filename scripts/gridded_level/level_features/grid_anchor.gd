@@ -46,9 +46,11 @@ func _draw_debug_edges() -> void:
     for edge: CardinalDirections.CardinalDirection in CardinalDirections.orthogonals(direction):
         _draw_debug_sphere(get_edge_position(edge, false), 0.1)
 
-
 func can_anchor(entity: GridEntity) -> bool:
-    return entity.transportation_abilities.has_all(required_transportation_mode.get_flags())
+    return (
+        entity.transportation_abilities.has_all(required_transportation_mode.get_flags()) &&
+        get_grid_node().any_event_blocks_anchorage(entity, direction)
+    )
 
 func get_edge_position(edge_direction: CardinalDirections.CardinalDirection, local: bool = false) -> Vector3:
     var node: GridNode = get_grid_node()

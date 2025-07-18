@@ -103,10 +103,7 @@ func _trigger(entity: GridEntity) -> void:
         _triggered = true
 
 func save() -> Dictionary:
-    var anchor: GridAnchor = get_grid_anchor()
-    var anchor_direction: CardinalDirections.CardinalDirection = CardinalDirections.CardinalDirection.NONE
-    if anchor != null:
-        anchor_direction = anchor.direction
+    var anchor_direction: CardinalDirections.CardinalDirection = get_grid_anchor_direction()
 
     return {
         _ID_KEY: encounter_id,

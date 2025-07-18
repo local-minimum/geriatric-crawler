@@ -50,6 +50,12 @@ func get_grid_anchor() -> GridAnchor:
     _init_feature()
     return _anchor
 
+func get_grid_anchor_direction() -> CardinalDirections.CardinalDirection:
+    var anchor: GridAnchor = get_grid_anchor()
+    if anchor == null:
+        return CardinalDirections.CardinalDirection.NONE
+    return anchor.direction
+
 func set_grid_anchor(anchor: GridAnchor, _deferred: bool = false) -> void:
     _anchor = anchor
     _node = _anchor.get_grid_node()

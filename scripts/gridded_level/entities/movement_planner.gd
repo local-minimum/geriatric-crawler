@@ -22,6 +22,10 @@ var animation_speed: float = 1.0
 @export
 var tank_movement: bool
 
+const _UNHANDLED: int = 0
+const _HANDLED: int = 1
+const _HANDLED_REFUSED: int = 2
+
 func move_entity(
     movement: Movement.MovementType,
     move_direction: CardinalDirections.CardinalDirection,
@@ -37,16 +41,21 @@ func move_entity(
     var was_excotic_walk: bool = entity.transportation_mode.has_any(TransportationMode.EXOTIC_WALKS)
 
     # We're in the air but moving onto an anchor of the current node
-    if _handle_landing(movement, tween, node, anchor, move_direction):
-        return tween
+    var handled: int = _handle_landing(movement, tween, node, anchor, move_direction)
 
-    if _handle_node_transition(movement, tween, node, anchor, move_direction, was_excotic_walk):
-        return tween
+    if handled:
+        return tween if handled == _HANDLED else null
 
-    if !_handle_node_inner_corner_transition(movement, tween, node, anchor, move_direction):
-        tween.kill()
-        return null
-    return tween
+    handled = _handle_node_transition(movement, tween, node, anchor, move_direction, was_excotic_walk)
+    if handled:
+        return tween if handled == _HANDLED else null
+
+    handled = _handle_node_inner_corner_transition(movement, tween, node, anchor, move_direction)
+    if handled:
+        return tween if handled == _HANDLED else null
+
+    tween.kill()
+    return null
 
 func rotate_entity(
     movement: Movement.MovementType,
@@ -106,10 +115,20 @@ func _handle_landing(
     node: GridNode,
     anchor: GridAnchor,
     move_direction: CardinalDirections.CardinalDirection,
-) -> bool:
+) -> int:
     if anchor == null:
         var land_anchor: GridAnchor = node.get_grid_anchor(move_direction)
         if land_anchor != null && land_anchor.can_anchor(entity):
+            var events: Array[GridEvent] = node.triggering_events(
+                entity,
+                entity.get_grid_node(),
+                entity.get_grid_anchor_direction(),
+                land_anchor.direction,
+            )
+
+            if events.any(func (evt: GridEvent) -> bool: return evt.manages_triggering_translation()):
+                tween.kill()
+                return _HANDLED_REFUSED
 
             var prop_tweener: PropertyTweener = tween.tween_property(
                 entity,
@@ -130,8 +149,8 @@ func _handle_landing(
                     entity.end_movement(movement))
             @warning_ignore_restore("return_value_discarded")
 
-            return true
-    return false
+            return _HANDLED
+    return _UNHANDLED
 
 func _handle_node_transition(
     movement: Movement.MovementType,
@@ -140,23 +159,35 @@ func _handle_node_transition(
     anchor: GridAnchor,
     move_direction: CardinalDirections.CardinalDirection,
     was_excotic_walk: bool,
-) -> bool:
+) -> int:
     if node.may_exit(entity, move_direction):
         var neighbour: GridNode = node.neighbour(move_direction)
         if neighbour == null:
             print_debug("No tile in %s direction" % CardinalDirections.name(move_direction))
-            return false
+            return _UNHANDLED
 
-        if _handle_outer_corner_transition(movement, tween, anchor, move_direction, neighbour):
+        var handled: int = _handle_outer_corner_transition(movement, tween, anchor, move_direction, neighbour)
+        if handled:
             print_debug("Outer corner")
-            return true
+            return handled
 
         if neighbour.may_enter(entity, move_direction, entity.down):
 
             var neighbour_anchor: GridAnchor = neighbour.get_grid_anchor(entity.down)
 
             if was_excotic_walk && !entity.can_jump_off_walls && neighbour_anchor == null:
-                return false
+                return _UNHANDLED
+
+            var events: Array[GridEvent] = neighbour.triggering_events(
+                entity,
+                entity.get_grid_node(),
+                entity.get_grid_anchor_direction(),
+                entity.down,
+            )
+
+            if events.any(func (evt: GridEvent) -> bool: return evt.manages_triggering_translation()):
+                tween.kill()
+                return _HANDLED_REFUSED
 
             if neighbour_anchor != null:
                 # Normal movement between two tiles keeping the same down
@@ -180,7 +211,7 @@ func _handle_node_transition(
                 @warning_ignore_restore("return_value_discarded")
 
                 print_debug("Normal move no exotics")
-                return true
+                return _HANDLED
 
             print_debug("%s has no anchor %s" % [neighbour.name, CardinalDirections.name(entity.down)])
             entity.block_concurrent_movement()
@@ -206,6 +237,17 @@ func _handle_node_transition(
                     Vector3(CardinalDirections.direction_to_vector(end_look_direction)),
                     Vector3(CardinalDirections.direction_to_vector(CardinalDirections.CardinalDirection.UP)))
 
+                events = neighbour.triggering_events(
+                    entity,
+                    entity.get_grid_node(),
+                    entity.get_grid_anchor_direction(),
+                    end_down,
+                )
+
+                if events.any(func (evt: GridEvent) -> bool: return evt.manages_triggering_translation()):
+                    tween.kill()
+                    return _HANDLED_REFUSED
+
                 tween.tween_method(
                     func (value: Basis) -> void:
                         entity.global_rotation = value.get_euler(),
@@ -224,8 +266,7 @@ func _handle_node_transition(
                         entity.end_movement(movement))
 
                 print_debug("exotic jump-off")
-                return true
-
+                return _HANDLED
 
             tween.connect(
                 "finished",
@@ -236,10 +277,10 @@ func _handle_node_transition(
             @warning_ignore_restore("return_value_discarded")
 
             print_debug("normal jump-off")
-            return true
+            return _HANDLED
 
     print_debug("not allowed to exit")
-    return false
+    return _UNHANDLED
 
 func _handle_outer_corner_transition(
     movement: Movement.MovementType,
@@ -247,13 +288,13 @@ func _handle_outer_corner_transition(
     anchor: GridAnchor,
     move_direction: CardinalDirections.CardinalDirection,
     neighbour: GridNode,
-) -> bool:
+) -> int:
     if anchor == null || !neighbour.may_transit(entity, move_direction, entity.down):
         # if anchor == null:
             # print_debug("Anchor is null")
         # else:
             # print_debug("We may not transit %s entering %s exiting %s" % [neighbour.name, move_direction, entity.down])
-        return false
+        return _UNHANDLED
 
     var updated_directions: Array[CardinalDirections.CardinalDirection] = CardinalDirections.calculate_outer_corner(
         move_direction, entity.look_direction, entity.down)
@@ -264,7 +305,7 @@ func _handle_outer_corner_transition(
             # print_debug("Target is null")
         # else:
             # print_debug("We may not enter %s from %s" % [target.name, entity.down])
-        return false
+        return _UNHANDLED
 
 
     var target_anchor: GridAnchor = target.get_grid_anchor(updated_directions[1])
@@ -274,7 +315,18 @@ func _handle_outer_corner_transition(
             # print_debug("%s doesn't have an anchor %s" % [target.name, updated_directions[1]])
         # else:
             # print_debug("%s of %s doesn't alow us to anchor" % [target_anchor.name, target.name])
-        return false
+        return _UNHANDLED
+
+    var events: Array[GridEvent] = target.triggering_events(
+        entity,
+        entity.get_grid_node(),
+        entity.get_grid_anchor_direction(),
+        target_anchor.direction,
+    )
+
+    if events.any(func (evt: GridEvent) -> bool: return evt.manages_triggering_translation()):
+        tween.kill()
+        return _HANDLED_REFUSED
 
     _handle_corner(
         movement,
@@ -286,7 +338,7 @@ func _handle_outer_corner_transition(
         CardinalDirections.invert(entity.down),
         updated_directions
     )
-    return true
+    return _HANDLED
 
 
 func _handle_node_inner_corner_transition(
@@ -295,12 +347,22 @@ func _handle_node_inner_corner_transition(
     node: GridNode,
     anchor: GridAnchor,
     move_direction: CardinalDirections.CardinalDirection,
-) -> bool:
+) -> int:
     var target_anchor: GridAnchor = node.get_grid_anchor(move_direction)
 
     if target_anchor == null || anchor == null || !target_anchor.can_anchor(entity):
-        return false
+        return _UNHANDLED
 
+    var events: Array[GridEvent] = node.triggering_events(
+        entity,
+        entity.get_grid_node(),
+        entity.get_grid_anchor_direction(),
+        target_anchor.direction,
+    )
+
+    if events.any(func (evt: GridEvent) -> bool: return evt.manages_triggering_translation()):
+        tween.kill()
+        return _HANDLED_REFUSED
 
     var updated_directions: Array[CardinalDirections.CardinalDirection] = CardinalDirections.calculate_innner_corner(
         move_direction, entity.look_direction, entity.down)
@@ -317,7 +379,7 @@ func _handle_node_inner_corner_transition(
     )
 
     print_debug("inner corner")
-    return true
+    return _HANDLED
 
 func _handle_corner(
     movement: Movement.MovementType,

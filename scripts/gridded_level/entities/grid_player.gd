@@ -19,7 +19,6 @@ var repeat_move_delay: float = 100
 @export
 var robot: Robot
 
-
 var override_wall_walking: bool:
     set(value):
         override_wall_walking = value
@@ -66,7 +65,7 @@ func _ready() -> void:
 var _repeat_movement: Array[Movement.MovementType] = []
 
 func _input(event: InputEvent) -> void:
-    if transportation_mode.mode == TransportationMode.NONE:
+    if cinematic || transportation_mode.mode == TransportationMode.NONE:
         return
 
     if !event.is_echo():
@@ -144,15 +143,9 @@ func _process(_delta: float) -> void:
 const _ROBOT_KEY: String = "robot"
 
 func save() -> Dictionary:
-    var anchor: GridAnchor = get_grid_anchor()
-    var anchor_direction: CardinalDirections.CardinalDirection = CardinalDirections.CardinalDirection.NONE
-    if anchor != null:
-        anchor_direction = anchor.direction
-
-
     return {
         _LOOK_DIRECTION_KEY: look_direction,
-        _ANCHOR_KEY: anchor_direction,
+        _ANCHOR_KEY: get_grid_anchor_direction(),
         _COORDINATES_KEY: coordinates(),
         _DOWN_KEY: down,
         _ROBOT_KEY: robot.collect_save_data(),
