@@ -10,7 +10,7 @@ var delay_per_fall_move_msec: int = 20
 var next_fall: int = 0
 
 func _process(_delta: float) -> void:
-    if entity.transportation_mode.mode != TransportationMode.NONE || entity.is_moving():
+    if entity.transportation_mode.mode != TransportationMode.NONE || entity.is_moving() || entity.cinematic:
         next_fall = 0
         return
 
