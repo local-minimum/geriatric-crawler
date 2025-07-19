@@ -47,13 +47,13 @@ func trigger(entity: GridEntity, movement: Movement.MovementType) -> void:
     var down: CardinalDirections.CardinalDirection = CardinalDirections.invert(up_direction)
     var down_anchor: GridAnchor = get_grid_node().get_grid_anchor(down)
     # TODO: It would be nice to not assume so much about the
-    var lower_point: Vector3 = down_anchor.get_edge_position(lower_exit_direction) + get_level().node_size * CardinalDirections.direction_to_look_vector(lower_exit_direction)
+    var lower_point: Vector3 = down_anchor.get_edge_position(lower_exit_direction) + get_level().node_size * CardinalDirections.direction_to_look_vector(lower_exit_direction) * lower_overshoot
     var upper_point: Vector3 = down_anchor.get_edge_position(upper_exit_direction) + get_level().node_size * CardinalDirections.direction_to_look_vector(up_direction)
 
     var exit_anchor: GridAnchor
 
-    var translations: Tween = create_tween()
-    var rotations: Tween = translations.parallel()
+    var translations: Tween = get_tree().create_tween()
+    var rotations: Tween = get_tree().create_tween()
 
     var update_rotation: Callable = func (value: Quaternion) -> void:
         entity.global_rotation = value.get_euler()
@@ -78,15 +78,22 @@ func trigger(entity: GridEntity, movement: Movement.MovementType) -> void:
         var ramp_plane_ortho: Vector3 = CardinalDirections.direction_to_look_vector(CardinalDirections.yaw_ccw(upper_exit_direction, down)[0])
 
         var ramp_normal_direction: Vector3 = ramp_look_direction.cross(ramp_plane_ortho)
-        if ramp_normal_direction.dot(CardinalDirections.direction_to_look_vector(up_direction)) > 0:
+        if ramp_normal_direction.dot(CardinalDirections.direction_to_look_vector(up_direction)) < 0:
             ramp_normal_direction *= -1
-        var ramp_rotation: Quaternion = Transform3D.IDENTITY.looking_at(ramp_look_direction, ramp_normal_direction).basis.get_rotation_quaternion()
+        var ramp_rotation: Quaternion = QuaternionUtils.look_rotation(ramp_look_direction, ramp_normal_direction)
 
         var intermediate_coordinates: Vector3i = CardinalDirections.translate(coordinates(), up_direction)
         var exit_node_coordinates: Vector3i = CardinalDirections.translate(intermediate_coordinates, upper_exit_direction)
         var intermediate: GridNode = get_level().get_grid_node(intermediate_coordinates)
         var exit_node: GridNode = get_level().get_grid_node(exit_node_coordinates)
         exit_anchor = exit_node.get_grid_anchor(down)
+
+        print_debug("Start %s, lower_entry %s, rampt %s, upper_exit %s" % [
+                entity.global_transform.basis.get_rotation_quaternion(),
+                lower_entry_rotation,
+                ramp_rotation,
+                upper_exit_rotation
+        ])
 
         # TODO: Handle refuses (transit intermediate, there's no exit, we can't anchor on its down)
         # TODO: Easings and such

@@ -462,12 +462,9 @@ func _handle_corner(
     var target_edge: Vector3 = target_anchor.get_edge_position(target_anchor_edge)
     var intermediate: Vector3 = lerp(start_edge, target_edge, 0.5)
 
-    var final_rotation: Transform3D = Transform3D.IDENTITY.looking_at(
-        Vector3(CardinalDirections.direction_to_vector(updated_directions[0])),
-        Vector3(CardinalDirections.direction_to_vector(CardinalDirections.invert(updated_directions[1]))),
-        )
+    var final_rotation: Quaternion = QuaternionUtils.look_rotation_from_vectors(updated_directions)
 
-    var intermediate_rotation: Quaternion = lerp(entity.global_transform.basis.get_rotation_quaternion(), final_rotation.basis.get_rotation_quaternion(), 0.5)
+    var intermediate_rotation: Quaternion = lerp(entity.global_transform.basis.get_rotation_quaternion(), final_rotation, 0.5)
     var half_time: float = exotic_translation_time * 0.5 / animation_speed
 
     entity.block_concurrent_movement()
@@ -502,7 +499,7 @@ func _handle_corner(
         func (value: Quaternion) -> void:
             entity.global_rotation = value.get_euler(),
         intermediate_rotation,
-        final_rotation.basis.get_rotation_quaternion(),
+        final_rotation,
         half_time)
 
     if !tank_movement:
