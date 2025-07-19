@@ -42,11 +42,8 @@ func trigger(entity: GridEntity, movement: Movement.MovementType) -> void:
     entity.cinematic = true
     entity.end_movement(movement, false)
     entity.clear_queue()
-    # TODO: Implement the walk!
-    # TODO: Callback entity.end_movement(movement)
     var down: CardinalDirections.CardinalDirection = CardinalDirections.invert(up_direction)
     var down_anchor: GridAnchor = get_grid_node().get_grid_anchor(down)
-    # TODO: It would be nice to not assume so much about the
     var lower_point: Vector3 = down_anchor.get_edge_position(lower_exit_direction) + get_level().node_size * CardinalDirections.direction_to_look_vector(lower_exit_direction) * lower_overshoot
     var upper_point: Vector3 = down_anchor.get_edge_position(upper_exit_direction) + get_level().node_size * CardinalDirections.direction_to_look_vector(up_direction)
 
@@ -61,6 +58,15 @@ func trigger(entity: GridEntity, movement: Movement.MovementType) -> void:
     var rotation_pause: Callable = func (_value: float) -> void:
         pass
 
+    var ramp_look_going_up_direction: Vector3 = (upper_point - lower_point).normalized()
+    var ramp_plane_ortho: Vector3 = CardinalDirections.direction_to_look_vector(CardinalDirections.yaw_ccw(upper_exit_direction, down)[0])
+
+    var ramp_normal_direction: Vector3 = ramp_look_going_up_direction.cross(ramp_plane_ortho)
+    if ramp_normal_direction.dot(CardinalDirections.direction_to_look_vector(up_direction)) < 0:
+        ramp_normal_direction *= -1
+
+    var exit_direction: CardinalDirections.CardinalDirection = lower_exit_direction
+
     print_debug("Entity at %s entering ramp at %s (%s is expected lower)" % [
         entity.coordinates(),
         coordinates(),
@@ -70,33 +76,31 @@ func trigger(entity: GridEntity, movement: Movement.MovementType) -> void:
         print_debug("Landing")
     elif entity.coordinates() == CardinalDirections.translate(coordinates(), lower_exit_direction):
         print_debug("Going up")
-        # Going up
+
         var upper_exit_rotation: Quaternion = CardinalDirections.direction_to_rotation(up_direction, upper_exit_direction)
         var lower_entry_rotation: Quaternion = CardinalDirections.direction_to_rotation(up_direction, CardinalDirections.invert(lower_exit_direction))
-
-        var ramp_look_direction: Vector3 = (upper_point - lower_point).normalized()
-        var ramp_plane_ortho: Vector3 = CardinalDirections.direction_to_look_vector(CardinalDirections.yaw_ccw(upper_exit_direction, down)[0])
-
-        var ramp_normal_direction: Vector3 = ramp_look_direction.cross(ramp_plane_ortho)
-        if ramp_normal_direction.dot(CardinalDirections.direction_to_look_vector(up_direction)) < 0:
-            ramp_normal_direction *= -1
-        var ramp_rotation: Quaternion = QuaternionUtils.look_rotation(ramp_look_direction, ramp_normal_direction)
+        var ramp_rotation: Quaternion = QuaternionUtils.look_rotation(ramp_look_going_up_direction, ramp_normal_direction)
 
         var intermediate_coordinates: Vector3i = CardinalDirections.translate(coordinates(), up_direction)
         var exit_node_coordinates: Vector3i = CardinalDirections.translate(intermediate_coordinates, upper_exit_direction)
         var intermediate: GridNode = get_level().get_grid_node(intermediate_coordinates)
         var exit_node: GridNode = get_level().get_grid_node(exit_node_coordinates)
-        exit_anchor = exit_node.get_grid_anchor(down)
+        exit_anchor = exit_node.get_grid_anchor(down) if exit_node != null else null
 
-        print_debug("Start %s, lower_entry %s, rampt %s, upper_exit %s" % [
-                entity.global_transform.basis.get_rotation_quaternion(),
-                lower_entry_rotation,
-                ramp_rotation,
-                upper_exit_rotation
-        ])
+        # Handle reasons to refuse
+        if (
+            exit_anchor == null
+            || exit_node == null
+            || !get_grid_node().may_exit(entity, up_direction)
+            || !exit_node.may_enter(entity, get_grid_node(), upper_exit_direction, down)
+            || intermediate != null && !intermediate.may_transit(entity, get_grid_node(), up_direction, upper_exit_direction)
+        ):
+            _refuse_animation(translations, entity, lower_point, animation_duration * lower_duration_fraction)
+            rotations.kill()
+            return
 
-        # TODO: Handle refuses (transit intermediate, there's no exit, we can't anchor on its down)
         # TODO: Easings and such
+        @warning_ignore_start("return_value_discarded")
         translations.tween_property(entity, "global_position", lower_point, animation_duration * lower_duration_fraction)
         translations.tween_property(entity, "global_position", upper_point, animation_duration * ramp_duration_fraction)
         translations.tween_property(entity, "global_position", exit_anchor.global_position, animation_duration * ramp_upper_duration_fraction)
@@ -120,22 +124,87 @@ func trigger(entity: GridEntity, movement: Movement.MovementType) -> void:
             upper_exit_rotation,
             animation_duration * pivot_duration_fraction
         )
+        @warning_ignore_restore("return_value_discarded")
+
+        exit_direction = upper_exit_direction
     else:
-        # Going down
         print_debug("Going down")
 
+        var upper_entry_rotation: Quaternion = CardinalDirections.direction_to_rotation(up_direction, CardinalDirections.invert(upper_exit_direction))
+        var lower_exit_rotation: Quaternion = CardinalDirections.direction_to_rotation(up_direction, lower_exit_direction)
+        var ramp_rotation: Quaternion = QuaternionUtils.look_rotation(ramp_look_going_up_direction * -1, ramp_normal_direction)
+
+        var exit_node_coordinates: Vector3i = CardinalDirections.translate(coordinates(), lower_exit_direction)
+        var exit_node: GridNode = get_level().get_grid_node(exit_node_coordinates)
+        exit_anchor = exit_node.get_grid_anchor(down) if exit_node != null else null
+
+        # Handle reasons to refuse
+        if (
+            exit_anchor == null
+            || exit_node == null
+            || !get_grid_node().may_exit(entity, up_direction)
+            || !exit_node.may_enter(entity, get_grid_node(), upper_exit_direction, down)
+        ):
+            _refuse_animation(translations, entity, lower_point, animation_duration * lower_duration_fraction)
+            rotations.kill()
+            return
+
+        # TODO: Easings and such
+        @warning_ignore_start("return_value_discarded")
+        translations.tween_property(entity, "global_position", upper_point, animation_duration * lower_duration_fraction)
+        translations.tween_property(entity, "global_position", lower_point, animation_duration * ramp_duration_fraction)
+        translations.tween_property(entity, "global_position", exit_anchor.global_position, animation_duration * ramp_upper_duration_fraction)
+
+        rotations.tween_method(
+            update_rotation,
+            entity.global_transform.basis.get_rotation_quaternion(),
+            upper_entry_rotation,
+            animation_duration * (lower_duration_fraction - 0.5 * pivot_duration_fraction),
+        )
+        rotations.tween_method(
+            update_rotation,
+            lower_exit_rotation,
+            ramp_rotation,
+            animation_duration * pivot_duration_fraction
+        )
+        rotations.tween_method(rotation_pause, 0.0, 1.0, animation_duration * (ramp_duration_fraction - pivot_duration_fraction))
+        rotations.tween_method(
+            update_rotation,
+            ramp_rotation,
+            lower_exit_direction,
+            animation_duration * pivot_duration_fraction
+        )
+        @warning_ignore_restore("return_value_discarded")
+
+    @warning_ignore_start("return_value_discarded")
     translations.finished.connect(
         func () -> void:
             entity.set_grid_anchor(exit_anchor)
             entity.sync_position()
 
-            entity.look_direction = upper_exit_direction
+            entity.look_direction = exit_direction
             entity.down = down
             entity.orient()
 
             entity.remove_concurrent_movement_block()
             entity.cinematic = false
     )
+    @warning_ignore_restore("return_value_discarded")
+
+    translations.play()
+
+func _refuse_animation(translations: Tween, entity: GridEntity, refuse_point: Vector3, step_duration: float) -> void:
+    @warning_ignore_start("return_value_discarded")
+    translations.tween_property(entity, "global_position", refuse_point, step_duration)
+    translations.tween_property(entity, "global_position", entity.global_position, step_duration)
+    translations.finished.connect(
+        func () -> void:
+            entity.orient()
+
+            entity.remove_concurrent_movement_block()
+            entity.cinematic = false
+    )
+    @warning_ignore_restore("return_value_discarded")
 
     translations.play()
 
