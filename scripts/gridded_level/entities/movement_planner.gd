@@ -22,6 +22,9 @@ var animation_speed: float = 1.0
 @export
 var tank_movement: bool
 
+@export
+var _refuse_distance_factor: float = 0.45
+
 const _UNHANDLED: int = 0
 const _HANDLED: int = 1
 const _HANDLED_EVENT_MANAGED: int = 2
@@ -124,7 +127,7 @@ func _refuse_translation(
 ) -> void:
     var origin: Vector3 = anchor.global_position if anchor != null else node.get_center_pos()
     var edge: Vector3 = anchor.get_edge_position(move_direction)
-    var target: Vector3 = lerp(origin, edge, 0.45)
+    var target: Vector3 = lerp(origin, edge, _refuse_distance_factor)
 
     @warning_ignore_start("return_value_discarded")
     var prop_tweener: PropertyTweener = tween.tween_property(

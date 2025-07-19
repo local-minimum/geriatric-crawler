@@ -65,35 +65,35 @@ func _ready() -> void:
 var _repeat_movement: Array[Movement.MovementType] = []
 
 func _input(event: InputEvent) -> void:
-    if cinematic || transportation_mode.mode == TransportationMode.NONE:
+    if transportation_mode.mode == TransportationMode.NONE:
         return
 
     if !event.is_echo():
-        if event.is_action_pressed("crawl_forward"):
+        if !cinematic && event.is_action_pressed("crawl_forward"):
             hold_movement(Movement.MovementType.FORWARD)
         elif event.is_action_released("crawl_forward"):
             clear_held_movement(Movement.MovementType.FORWARD)
 
-        elif event.is_action_pressed("crawl_backward"):
+        elif !cinematic && event.is_action_pressed("crawl_backward"):
             hold_movement(Movement.MovementType.BACK)
         elif event.is_action_released("crawl_backward"):
             clear_held_movement(Movement.MovementType.BACK)
 
-        elif event.is_action_pressed("crawl_strafe_left"):
+        elif !cinematic && event.is_action_pressed("crawl_strafe_left"):
             hold_movement(Movement.MovementType.STRAFE_LEFT)
         elif event.is_action_released("crawl_strafe_left"):
             clear_held_movement(Movement.MovementType.STRAFE_LEFT)
 
-        elif event.is_action_pressed("crawl_strafe_right"):
+        elif !cinematic && event.is_action_pressed("crawl_strafe_right"):
             hold_movement(Movement.MovementType.STRAFE_RIGHT)
         elif event.is_action_released("crawl_strafe_right"):
             clear_held_movement(Movement.MovementType.STRAFE_RIGHT)
 
-        elif event.is_action_pressed("crawl_turn_left"):
+        elif !cinematic && event.is_action_pressed("crawl_turn_left"):
             if !attempt_movement(Movement.MovementType.TURN_COUNTER_CLOCKWISE):
                 print_debug("Refused Rotate Left")
 
-        elif event.is_action_pressed("crawl_turn_right"):
+        elif !cinematic && event.is_action_pressed("crawl_turn_right"):
             if !attempt_movement(Movement.MovementType.TURN_CLOCKWISE):
                 print_debug("Refused Rotate Right")
         else:
@@ -130,7 +130,7 @@ func clear_held_movement(movement: Movement.MovementType) -> void:
 var _next_move_repeat: float
 
 func _process(_delta: float) -> void:
-    if !allow_replays || is_moving() || Time.get_ticks_msec() < _next_move_repeat:
+    if cinematic || !allow_replays || is_moving() || Time.get_ticks_msec() < _next_move_repeat:
         return
 
     var count: int = _repeat_movement.size()

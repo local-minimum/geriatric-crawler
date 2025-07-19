@@ -369,8 +369,10 @@ direction = 4
 
 [node name="Ramp" type="Node3D" parent="LevelGeometry/Elevation 0/Node (1, 0, -3)"]
 script = ExtResource("8_n55gf")
-upper_exit_direction = 3
-lower_exit_direction = 4
+upper_exit_direction = 4
+lower_exit_direction = 3
+lower_overshoot = 0.1
+animation_duration = 5.0
 _trigger_sides = Array[int]([6, 4])
 _blocks_sides = Array[int]([1, 2])
 metadata/_custom_type_script = "uid://b8ewgty4lcw6y"
