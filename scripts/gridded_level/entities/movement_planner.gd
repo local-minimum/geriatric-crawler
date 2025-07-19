@@ -478,9 +478,10 @@ func _handle_corner(
         intermediate,
         half_time)
 
+    var update_rotation: Callable = QuaternionUtils.create_tween_rotation_method(entity)
+
     var meth_tweener: MethodTweener = tween.tween_method(
-        func (value: Quaternion) -> void:
-            entity.global_rotation = value.get_euler(),
+        update_rotation,
         entity.global_basis.get_rotation_quaternion(),
         intermediate_rotation,
         half_time)
@@ -496,8 +497,7 @@ func _handle_corner(
         half_time)
 
     var meth_tweener2: MethodTweener = second_tween.tween_method(
-        func (value: Quaternion) -> void:
-            entity.global_rotation = value.get_euler(),
+        update_rotation,
         intermediate_rotation,
         final_rotation,
         half_time)

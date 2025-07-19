@@ -52,8 +52,7 @@ func trigger(entity: GridEntity, movement: Movement.MovementType) -> void:
     var translations: Tween = get_tree().create_tween()
     var rotations: Tween = get_tree().create_tween()
 
-    var update_rotation: Callable = func (value: Quaternion) -> void:
-        entity.global_rotation = value.get_euler()
+    var update_rotation: Callable = QuaternionUtils.create_tween_rotation_method(entity)
 
     var rotation_pause: Callable = func (_value: float) -> void:
         pass
@@ -74,6 +73,54 @@ func trigger(entity: GridEntity, movement: Movement.MovementType) -> void:
     ])
     if entity.coordinates() == coordinates() && entity.get_grid_anchor_direction() == CardinalDirections.CardinalDirection.NONE:
         print_debug("Landing")
+
+        var upper_entry_rotation: Quaternion = CardinalDirections.direction_to_rotation(up_direction, CardinalDirections.invert(upper_exit_direction))
+        var lower_exit_rotation: Quaternion = CardinalDirections.direction_to_rotation(up_direction, lower_exit_direction)
+        var ramp_rotation: Quaternion = QuaternionUtils.look_rotation(ramp_look_going_up_direction * -1, ramp_normal_direction)
+
+        var exit_node_coordinates: Vector3i = CardinalDirections.translate(coordinates(), lower_exit_direction)
+        var exit_node: GridNode = get_level().get_grid_node(exit_node_coordinates)
+        exit_anchor = exit_node.get_grid_anchor(down) if exit_node != null else null
+
+        var mid_point: Vector3 = lerp(upper_point, lower_point, 0.5)
+
+        # Handle reasons to refuse
+        if (
+            exit_anchor == null
+            || exit_node == null
+            || !get_grid_node().may_exit(entity, up_direction)
+            || !exit_node.may_enter(entity, get_grid_node(), upper_exit_direction, down)
+        ):
+            _refuse_animation(translations, entity, lower_point, animation_duration * lower_duration_fraction)
+            rotations.kill()
+            return
+
+        # TODO: Easings and such
+        @warning_ignore_start("return_value_discarded")
+        translations.tween_property(entity, "global_position", mid_point, animation_duration * lower_duration_fraction)
+        translations.tween_property(entity, "global_position", lower_point, animation_duration * ramp_duration_fraction)
+        translations.tween_property(entity, "global_position", exit_anchor.global_position, animation_duration * ramp_upper_duration_fraction)
+
+        rotations.tween_method(
+            update_rotation,
+            entity.global_transform.basis.get_rotation_quaternion(),
+            upper_entry_rotation,
+            animation_duration * (lower_duration_fraction - 0.5 * pivot_duration_fraction),
+        )
+        rotations.tween_method(
+            update_rotation,
+            lower_exit_rotation,
+            ramp_rotation,
+            animation_duration * pivot_duration_fraction
+        )
+        rotations.tween_method(rotation_pause, 0.0, 1.0, animation_duration * (ramp_duration_fraction - pivot_duration_fraction))
+        rotations.tween_method(
+            update_rotation,
+            ramp_rotation,
+            lower_exit_direction,
+            animation_duration * pivot_duration_fraction
+        )
+        @warning_ignore_restore("return_value_discarded")
     elif entity.coordinates() == CardinalDirections.translate(coordinates(), lower_exit_direction):
         print_debug("Going up")
 
@@ -151,9 +198,9 @@ func trigger(entity: GridEntity, movement: Movement.MovementType) -> void:
 
         # TODO: Easings and such
         @warning_ignore_start("return_value_discarded")
-        translations.tween_property(entity, "global_position", upper_point, animation_duration * lower_duration_fraction)
-        translations.tween_property(entity, "global_position", lower_point, animation_duration * ramp_duration_fraction)
-        translations.tween_property(entity, "global_position", exit_anchor.global_position, animation_duration * ramp_upper_duration_fraction)
+        translations.tween_property(entity, "global_position", upper_point, animation_duration * ramp_upper_duration_fraction)
+        translations.tween_property(entity, "global_position", lower_point, animation_duration * ramp_duration_fraction * 0.5)
+        translations.tween_property(entity, "global_position", exit_anchor.global_position, animation_duration * lower_duration_fraction)
 
         rotations.tween_method(
             update_rotation,
@@ -167,7 +214,7 @@ func trigger(entity: GridEntity, movement: Movement.MovementType) -> void:
             ramp_rotation,
             animation_duration * pivot_duration_fraction
         )
-        rotations.tween_method(rotation_pause, 0.0, 1.0, animation_duration * (ramp_duration_fraction - pivot_duration_fraction))
+        rotations.tween_method(rotation_pause, 0.0, 1.0, animation_duration * (ramp_duration_fraction - pivot_duration_fraction) * 0.5)
         rotations.tween_method(
             update_rotation,
             ramp_rotation,
