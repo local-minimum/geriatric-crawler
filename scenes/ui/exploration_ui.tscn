@@ -1,9 +1,10 @@
-[gd_scene load_steps=11 format=3 uid="uid://d3iceirfj21qw"]
+[gd_scene load_steps=12 format=3 uid="uid://d3iceirfj21qw"]
 
 [ext_resource type="Script" uid="uid://dng6kx20nqasv" path="res://scripts/ui/exploration_ui.gd" id="1_jvesw"]
 [ext_resource type="Texture2D" uid="uid://37t534r3ua0p" path="res://sprites/kenny game icons/open-xflipped.png" id="2_m3jmt"]
 [ext_resource type="PackedScene" uid="uid://boccd8l2p0s0r" path="res://scenes/ui/exploration_robot_info_ui.tscn" id="2_rfm22"]
 [ext_resource type="Script" uid="uid://ccd5c8wiv7kia" path="res://scripts/ui/simple_map_ui.gd" id="3_4stpx"]
+[ext_resource type="Script" uid="uid://dcq4t1cqwva08" path="res://scripts/robot_exploration_mapper.gd" id="3_2458l"]
 [ext_resource type="PackedScene" uid="uid://dbvjynwqexkui" path="res://scenes/ui/compass_ui.tscn" id="3_eifl5"]
 [ext_resource type="Texture2D" uid="uid://cev0382nhv46i" path="res://sprites/kenny game icons/arrowUp.png" id="3_rfm22"]
 [ext_resource type="Texture2D" uid="uid://davhidpjbpjq2" path="res://sprites/kenny game icons/open.png" id="4_eifl5"]
@@ -59,10 +60,13 @@ layout_mode = 2
 size_flags_vertical = 3
 size_flags_stretch_ratio = 3.0
 
-[node name="SimpleMapModule" type="ColorRect" parent="MarginContainer/VBoxContainer"]
+[node name="SimpleMapModule" type="ColorRect" parent="MarginContainer/VBoxContainer" node_paths=PackedStringArray("_simple_map_ui", "_mapping_area")]
 custom_minimum_size = Vector2(0, 150)
 layout_mode = 2
 color = Color(0.207843, 0.0862745, 0.105882, 1)
+script = ExtResource("3_2458l")
+_simple_map_ui = NodePath("Padding/Control/MapDrawArea")
+_mapping_area = NodePath(".")
 
 [node name="Padding" type="MarginContainer" parent="MarginContainer/VBoxContainer/SimpleMapModule"]
 layout_mode = 1
@@ -91,7 +95,6 @@ line_color = Color(1, 1, 1, 0.345098)
 ground_color = Color(0.227982, 0.37, 0.1887, 0.843137)
 no_floor_color = Color(0.04416, 0.06, 0.0402, 0.937255)
 exploration_ui = NodePath("../../../../../..")
-memory_size = 100
 metadata/_custom_type_script = "uid://ccd5c8wiv7kia"
 
 [node name="CompassModule" parent="MarginContainer/VBoxContainer" node_paths=PackedStringArray("exploration_ui") instance=ExtResource("3_eifl5")]

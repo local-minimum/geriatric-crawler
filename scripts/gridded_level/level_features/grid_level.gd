@@ -1,6 +1,8 @@
 extends Node3D
 class_name GridLevel
 
+static var active_level: GridLevel
+
 signal on_change_player
 
 const LEVEL_GROUP: String = "grid-level"
@@ -37,6 +39,8 @@ func _init() -> void:
     add_to_group(LEVEL_GROUP)
 
 func _ready() -> void:
+    active_level = self
+
     _sync_nodes()
 
     if _nodes.size() == 0:
@@ -85,6 +89,7 @@ static func find_level_parent(current: Node, inclusive: bool = true) ->  GridLev
         return null
 
     if parent is GridLevel:
+        active_level = parent
         return parent as GridLevel
 
     return find_level_parent(parent, false)

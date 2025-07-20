@@ -25,14 +25,19 @@ var wanted_columns: int = 10
 @export_range(4, 20)
 var wanted_rows: int = 8
 
-@export_range(5, 100)
-var memory_size: int = 30
-
-var _seen: Array[Vector3i]
 var _player: GridPlayer
-var _last_seen_idx: int
+var _seen: Array[Vector3i]
+
+func trigger_redraw(player: GridPlayer, seens_coordinates: Array[Vector3i]) -> void:
+    _player = player
+    _seen = seens_coordinates
+
+    queue_redraw()
 
 func _draw() -> void:
+    if _player == null:
+        return
+
     var area: Rect2 = get_rect()
     var center: Vector2 = area.get_center()
 
@@ -90,38 +95,3 @@ func _draw() -> void:
                 draw_rect(RectUtils.shrink(rect, player_marker_padding, player_marker_padding, true), line_color, false, 1)
 
     print_debug("Map redrawn")
-
-
-func _ready() -> void:
-    if exploration_ui.level.on_change_player.connect(_connect_new_player) != OK:
-        push_error("Failed to connect new player")
-
-    _connect_new_player()
-    _handle_move_end(_player)
-
-func _connect_new_player() -> void:
-    _player = exploration_ui.level.player
-    if _player.on_move_end.connect(_handle_move_end) != OK:
-        push_error("Failed to connect on move end")
-
-    print_debug("Connected %s to map" % _player)
-
-func _handle_move_end(_entity: GridEntity) -> void:
-    var coords: Vector3i = _entity.coordinates()
-    _enter_new_coordinates(coords)
-
-    if _player.get_grid_node().may_exit(_player, _player.look_direction):
-        coords = CardinalDirections.translate(coords, _player.look_direction)
-        _enter_new_coordinates(coords)
-
-    queue_redraw()
-
-func _enter_new_coordinates(coords: Vector3i) -> void:
-    if !_seen.has(coords):
-        if _seen.size() < memory_size:
-            _seen.append(coords)
-            _last_seen_idx = _seen.size() - 1
-        else:
-            _last_seen_idx += 1
-            _last_seen_idx %= mini(memory_size, _seen.size())
-            _seen[_last_seen_idx] = coords

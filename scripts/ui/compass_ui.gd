@@ -22,8 +22,6 @@ var cardinal_up: Control
 @export
 var cardinal_down: Control
 
-const _MAPPING_SKILL: String = "mapping"
-
 func _ready() -> void:
     if exploration_ui.level.on_change_player.connect(_handle_new_player) != OK:
         push_error("Failed to connect on change player")
@@ -46,7 +44,7 @@ func _handle_update_orientation(
 ) -> void:
     if _entity is GridPlayer:
         var player: GridPlayer = _entity
-        if player.robot.get_skill_level(_MAPPING_SKILL) < 1:
+        if player.robot.get_skill_level(RobotAbility.SKILL_MAPPING) < 1:
             visible = false
             return
     else:
@@ -69,8 +67,8 @@ func _handle_update_orientation(
         _animate_pitch_rotation(old_down, old_forward, forward)
 
 func _sync_robot(player: GridPlayer, robot: Robot) -> void:
-    if robot == null || robot.get_skill_level(_MAPPING_SKILL) < 1:
-        print_debug("%s doesn't have enough mapping skill %s" % [robot.given_name, robot.get_skill_level(_MAPPING_SKILL)])
+    if robot == null || robot.get_skill_level(RobotAbility.SKILL_MAPPING) < 1:
+        print_debug("%s doesn't have enough mapping skill %s" % [robot.given_name, robot.get_skill_level(RobotAbility.SKILL_MAPPING)])
         visible = false
         return
 

@@ -20,6 +20,8 @@ static func shrink(rect: Rect2, x_amount: float, y_amount: float, keep_center: b
     size.x -= sign(size.x) * x_amount
     size.y -= sign(size.y) * y_amount
     if keep_center:
+        @warning_ignore_start("unsafe_call_argument")
         return Rect2(rect.position + Vector2(sign(size.x) * 0.5 * x_amount, sign(size.y) * 0.5 * y_amount), size)
+        @warning_ignore_restore("unsafe_call_argument")
 
     return Rect2(rect.position, size)

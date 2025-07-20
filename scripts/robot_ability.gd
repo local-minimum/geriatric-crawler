@@ -10,6 +10,9 @@ const SKILL_CLIMBING: String = "climbing"
 ## LVL 1: Earn progress beyond unlocked, LVL 2: Skip buying on level, LVL 3: Buy multiple of same level, LVL 4: Unlimited buys per level
 const SKILL_UPGRADES: String = "upgrades"
 
+## LVL 1: Compass, LVL 2: Simple map
+const SKILL_MAPPING: String = "mapping"
+
 enum AbilityType { Exploration, Battle, Other }
 
 ## Class id of the ability (doesn't include the level of the ability)
