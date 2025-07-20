@@ -111,18 +111,21 @@ func _start_movement(movement: Movement.MovementType, force: bool) -> bool:
 
     return true
 
-func end_movement(movement: Movement.MovementType, start_next_from_queue: bool = true) -> void:
+func end_movement(movement: Movement.MovementType, start_next_from_queue: bool = true, force_emit: bool = false) -> void:
     if _active_movement == movement:
         _active_movement = _concurrent_movement
         _concurrent_movement = Movement.MovementType.NONE
     elif _concurrent_movement == movement:
         _concurrent_movement = Movement.MovementType.NONE
     else:
-        push_warning("%s was not an active movement (%s / %s)" % [
-            Movement.name(movement),
-            Movement.name(_active_movement),
-            Movement.name(_concurrent_movement),
-        ])
+        if force_emit:
+            on_move_end.emit(self)
+        else:
+            push_warning("%s was not an active movement (%s / %s)" % [
+                Movement.name(movement),
+                Movement.name(_active_movement),
+                Movement.name(_concurrent_movement),
+            ])
         return
 
     # print_debug("%s ended, active are %s / %s" % [
@@ -131,7 +134,7 @@ func end_movement(movement: Movement.MovementType, start_next_from_queue: bool =
         # Movement.name(_concurrent_movement),
     # ])
 
-    if movement != null:
+    if movement != null || force_emit:
         on_move_end.emit(self)
 
     if start_next_from_queue:

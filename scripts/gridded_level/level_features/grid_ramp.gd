@@ -235,6 +235,8 @@ func trigger(entity: GridEntity, movement: Movement.MovementType) -> void:
 
             entity.remove_concurrent_movement_block()
             entity.cinematic = false
+
+            entity.end_movement(movement, false, true)
     )
     @warning_ignore_restore("return_value_discarded")
 
