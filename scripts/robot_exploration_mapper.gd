@@ -1,6 +1,8 @@
 extends Node
 class_name RobotExploratoinMapper
 
+static var active_mapper: RobotExploratoinMapper
+
 @export_range(5, 200)
 var _memory_size: int = 100
 
@@ -16,7 +18,23 @@ var _player: GridPlayer
 var _seen: Array[Vector3i]
 var _last_seen_idx: int
 
+func history() -> Array[Vector3i]:
+    var hist: Array[Vector3i]
+    var size: int = mini(_seen.size(), _memory_size)
+    for hist_idx: int in range(size):
+        hist.append(_seen[(_last_seen_idx + hist_idx) % size])
+    return hist
+
+func load_history(new_history: Array[Vector3i]) -> void:
+    _seen = new_history
+    _last_seen_idx = new_history.size() - 1
+    _after_load_history.call_deferred()
+
+func _after_load_history() -> void:
+    _handle_move_end(_player)
+
 func _ready() -> void:
+    active_mapper = self
     _setup.call_deferred()
 
 func _setup() -> void:
@@ -36,7 +54,7 @@ func _connect_new_player() -> void:
     print_debug("Connected %s to map" % _player)
 
 func _handle_move_end(entity: GridEntity) -> void:
-    if entity != _player:
+    if entity != _player || entity == null:
         return
 
     var coords: Vector3i = entity.coordinates()
