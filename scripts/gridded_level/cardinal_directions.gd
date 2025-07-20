@@ -426,8 +426,8 @@ static func name(direction: CardinalDirection) -> String:
 
 #region Operate on Other
 
-static func translate(coordinates: Vector3i, direction: CardinalDirection) -> Vector3i:
-    return coordinates + direction_to_vector(direction)
+static func translate(coordinates: Vector3i, direction: CardinalDirection, repeats: int = 1) -> Vector3i:
+    return coordinates + direction_to_vector(direction) * repeats
 
 static func vectori_axis_value(coordinates: Vector3i, direction: CardinalDirection) -> int:
     match direction:

@@ -115,8 +115,6 @@ func end_movement(movement: Movement.MovementType, start_next_from_queue: bool =
     if _active_movement == movement:
         _active_movement = _concurrent_movement
         _concurrent_movement = Movement.MovementType.NONE
-        if _active_movement != null:
-            on_move_end.emit(self)
     elif _concurrent_movement == movement:
         _concurrent_movement = Movement.MovementType.NONE
     else:
@@ -132,6 +130,9 @@ func end_movement(movement: Movement.MovementType, start_next_from_queue: bool =
         # Movement.name(_active_movement),
         # Movement.name(_concurrent_movement),
     # ])
+
+    if movement != null:
+        on_move_end.emit(self)
 
     if start_next_from_queue:
         _attempt_movement_from_queue()
