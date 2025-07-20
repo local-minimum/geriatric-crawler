@@ -92,6 +92,20 @@ func _draw() -> void:
             draw_rect(rect, color, true)
 
             if game_coords == _player.coordinates():
-                draw_rect(RectUtils.shrink(rect, player_marker_padding, player_marker_padding, true), line_color, false, 1)
+                var player_marker_rect: Rect2 = RectUtils.shrink(rect, player_marker_padding, player_marker_padding, true)
+                var player_center: Vector2 = player_marker_rect.get_center()
+                var top: Vector2 = player_center - Vector2(0, player_marker_rect.size.y * 0.5)
+                var lower_left: Vector2 = player_center + player_marker_rect.size * 0.5
+                var lower_right: Vector2 = lower_left - Vector2(player_marker_rect.size.x, 0)
+                draw_polyline([
+                    top,
+                    lower_right,
+                    lower_left,
+                    top,
+                    player_center,
+                    lower_right,
+                    lower_left,
+                    player_center,
+                ], line_color, 1)
 
     print_debug("Map redrawn")
