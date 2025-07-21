@@ -6,6 +6,10 @@ static var active_level: GridLevel
 signal on_change_player
 
 const LEVEL_GROUP: String = "grid-level"
+const UNKNOWN_LEVEL_ID: String = "--unknown--"
+
+@export
+var level_id: String = UNKNOWN_LEVEL_ID
 
 @export
 var node_size: Vector3 = Vector3(3, 3, 3)

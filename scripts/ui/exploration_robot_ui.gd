@@ -1,4 +1,5 @@
 extends Control
+class_name ExplorationRobotUI
 
 @export
 var _exploration_ui: ExplorationUI

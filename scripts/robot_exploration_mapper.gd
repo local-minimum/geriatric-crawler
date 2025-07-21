@@ -1,7 +1,7 @@
 extends Node
-class_name RobotExploratoinMapper
+class_name RobotExplorationMapper
 
-static var active_mapper: RobotExploratoinMapper
+static var active_mapper: RobotExplorationMapper
 
 @export_range(5, 200)
 var _memory_size: int = 100
@@ -15,6 +15,7 @@ var _mapping_area: Control
 var _level: GridLevel
 var _player: GridPlayer
 
+var _level_id: String
 var _seen: Array[Vector3i]
 var _last_seen_idx: int
 
@@ -25,12 +26,19 @@ func history() -> Array[Vector3i]:
         hist.append(_seen[(_last_seen_idx + hist_idx) % size])
     return hist
 
-func load_history(new_history: Array[Vector3i]) -> void:
+func level_id() -> String: return _level.level_id if _level != null else GridLevel.UNKNOWN_LEVEL_ID
+
+func load_history(history_level_id: String, new_history: Array[Vector3i]) -> void:
+    _level_id = history_level_id
     _seen = new_history
     _last_seen_idx = new_history.size() - 1
     _after_load_history.call_deferred()
 
 func _after_load_history() -> void:
+    if _level_id != level_id():
+        _level_id = level_id()
+        _seen.clear()
+
     _handle_move_end(_player)
 
 func _ready() -> void:
