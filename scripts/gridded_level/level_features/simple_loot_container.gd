@@ -40,10 +40,10 @@ func _handle_loooting(entity: GridEntity) -> void:
     if entity.on_move_end.is_connected(_handle_loooting):
         entity.on_move_end.disconnect(_handle_loooting)
 
-func collect_save_data() -> Variant:
-    return _looted
+func collect_save_data() -> Dictionary:
+    return {}
 
-func load_save_data(_data: Variant) -> void:
+func load_save_data(_data: Dictionary) -> void:
     # If we exist in the save we are looted no matter what
     _looted = true
     _set_open_graphics()

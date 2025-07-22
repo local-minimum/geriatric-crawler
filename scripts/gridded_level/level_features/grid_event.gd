@@ -79,8 +79,8 @@ func needs_saving() -> bool:
 func save_key() -> String:
     return ""
 
-func collect_save_data() -> Variant:
-    return null
+func collect_save_data() -> Dictionary:
+    return {}
 
-func load_save_data(_data: Variant) -> void:
+func load_save_data(_data: Dictionary) -> void:
     pass

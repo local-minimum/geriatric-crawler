@@ -7,10 +7,13 @@ var offset_if_on_same_tile: bool
 @export_range(0, 0.5)
 var offset_amount: float = 0
 
-var _anchor_position: Vector3
+@export_range(0, 1)
+var interpoation_fraction: float = 0.25
+
+var _local_anchor_position: Vector3
 
 func _ready() -> void:
-    _anchor_position = position
+    _local_anchor_position = position
     super._ready()
 
     var level: GridLevel = get_level()
@@ -33,7 +36,7 @@ func _connect_player_tracking() -> void:
     if level.player.on_move_end.connect(_end_track_player) != OK:
         push_error("%s cannot end player tracking during movement" % name)
 
-    _look_at_player()
+    _look_at_player(false)
 
 var _track: bool
 
@@ -52,12 +55,13 @@ func _end_track_player(entity: GridEntity) -> void:
         return
 
     _track = false
+    _look_at_player(false)
 
 func _process(_delta: float) -> void:
     if !_track: return
     _look_at_player()
 
-func _look_at_player() -> void:
+func _look_at_player(interpolate: bool = true) -> void:
     var level: GridLevel = get_level()
     if level == null:
         return
@@ -65,10 +69,14 @@ func _look_at_player() -> void:
     var player_pos: Vector3 = level.player.camera.global_position
     player_pos.y = global_position.y
 
+    if offset_if_on_same_tile && level.player.coordinates() == coordinates():
+        var target: Vector3 = _local_anchor_position + CardinalDirections.direction_to_look_vector(level.player.look_direction) * offset_amount * level.node_size
+        if interpolate:
+            position = lerp(position, target, interpoation_fraction)
+        else:
+            position = target
+    elif position != _local_anchor_position:
+        position = _local_anchor_position
+
     if player_pos != global_position:
         look_at(player_pos, Vector3.UP, true)
-
-    if offset_if_on_same_tile && level.player.coordinates() == coordinates():
-        position = _anchor_position + to_local(global_position + CardinalDirections.direction_to_look_vector(level.player.look_direction) * offset_amount * level.node_size)
-    elif position != _anchor_position:
-        position = _anchor_position

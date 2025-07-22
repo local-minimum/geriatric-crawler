@@ -31,7 +31,7 @@
 [ext_resource type="Script" uid="uid://qbk2psf0rmnw" path="res://scripts/card_battle/battle_strategy.gd" id="22_sy7nh"]
 [ext_resource type="Script" uid="uid://6vnrccj8frlq" path="res://scripts/card_battle/battle_enemy_target_system.gd" id="25_s5loo"]
 
-[sub_resource type="Resource" id="Resource_n55gf"]
+[sub_resource type="Resource" id="Resource_7gan6"]
 resource_local_to_scene = true
 script = ExtResource("4_840jk")
 mode = 61
@@ -74,7 +74,7 @@ process_mode = 3
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0145968, -0.00857759, 0.00070858)
 spawn_node = NodePath("../LevelGeometry/Elevation 0/Node (0, 0, 1)")
 look_direction = 1
-transportation_abilities = SubResource("Resource_n55gf")
+transportation_abilities = SubResource("Resource_7gan6")
 transportation_mode = SubResource("Resource_pgxau")
 
 [node name="LevelGeometry" type="Node3D" parent="."]
@@ -126,6 +126,8 @@ _contents = Dictionary[String, float]({
 })
 _mesh = NodePath("MeshInstance3D")
 _open_tex = ExtResource("9_7gan6")
+_repeatable = false
+_trigger_sides = Array[int]([6])
 metadata/_custom_type_script = "uid://4tbbs5wj6vj7"
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="LevelGeometry/Elevation 0/Node (0, 0, -1)/SimpleLootContainer"]
@@ -133,7 +135,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.590363, 0)
 mesh = SubResource("QuadMesh_wymjw")
 script = ExtResource("9_myev5")
 offset_if_on_same_tile = true
-offset_amount = 0.373
+offset_amount = 0.304
 
 [node name="Node (1, 0, -1)" parent="LevelGeometry/Elevation 0" instance=ExtResource("4_myev5")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.5, 0, -2.5)
