@@ -9,7 +9,7 @@
 [ext_resource type="Texture2D" uid="uid://cgijt2to15yms" path="res://sprites/kenny game icons/cross.png" id="7_272bh"]
 [ext_resource type="PackedScene" uid="uid://qvbyso8n7n8j" path="res://scenes/ui/robot_skill_level_ui.tscn" id="8_5vw27"]
 [ext_resource type="Script" uid="uid://5lsjirgudi0w" path="res://scripts/ui/robot_skill_tree_ui.gd" id="8_kek77"]
-[ext_resource type="Script" path="res://scripts/exploration_inventory.gd" id="10_4c57u"]
+[ext_resource type="Script" uid="uid://dftf4h6eyrsio" path="res://scripts/inventory.gd" id="10_4c57u"]
 
 [sub_resource type="Environment" id="Environment_ig7tw"]
 background_mode = 1
