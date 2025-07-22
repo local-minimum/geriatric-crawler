@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://xqedv5aeal6n"]
+[gd_scene load_steps=8 format=3 uid="uid://xqedv5aeal6n"]
 
 [ext_resource type="Script" uid="uid://bkjlt23hansuv" path="res://scripts/savesystem/save_system.gd" id="1_iwv0b"]
 [ext_resource type="Script" uid="uid://bemcpr6cqtnb3" path="res://scripts/savesystem/disk_json_storage_provider.gd" id="2_7c2yx"]
@@ -6,12 +6,13 @@
 [ext_resource type="Script" uid="uid://c2ktk27vk655o" path="res://scripts/card_battle/battle_mode_saver.gd" id="4_fhslq"]
 [ext_resource type="Script" uid="uid://olwh5plu8m2g" path="res://scripts/credits_saver.gd" id="5_jgrmh"]
 [ext_resource type="Script" uid="uid://qjheystlwhef" path="res://scripts/robot_mapper_saver.gd" id="6_ma5ye"]
+[ext_resource type="Script" uid="uid://clmlakb50km2n" path="res://scripts/inventory_saver.gd" id="7_681h2"]
 
-[node name="SaveSystem" type="Node" node_paths=PackedStringArray("storage_provider", "level_saver", "extensions")]
+[node name="Exploration Save System" type="Node" node_paths=PackedStringArray("storage_provider", "level_saver", "extensions")]
 script = ExtResource("1_iwv0b")
 storage_provider = NodePath("StorageProvider")
 level_saver = NodePath("LevelSaver")
-extensions = [NodePath("BattleModeSaver"), NodePath("CreditsSaver"), NodePath("RobotMapperSaver")]
+extensions = [NodePath("BattleModeSaver"), NodePath("CreditsSaver"), NodePath("RobotMapperSaver"), NodePath("InventorySaver")]
 metadata/_custom_type_script = "uid://bkjlt23hansuv"
 
 [node name="StorageProvider" type="Node" parent="."]
@@ -30,3 +31,6 @@ script = ExtResource("5_jgrmh")
 [node name="RobotMapperSaver" type="Node" parent="."]
 script = ExtResource("6_ma5ye")
 metadata/_custom_type_script = "uid://qjheystlwhef"
+
+[node name="InventorySaver" type="Node" parent="."]
+script = ExtResource("7_681h2")

@@ -17,3 +17,8 @@ static func to_roman(value: int) -> String:
             idx += 1
 
     return "".join(result)
+
+static func not_negative(value: int) -> bool: return value >= 0
+static func negative(value: int) -> bool: return value < 0
+static func positive(value: int) -> bool: return value > 0
+static func not_positive(value: int) -> bool: return value <= 0

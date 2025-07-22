@@ -43,4 +43,4 @@ func _on_back_button_up() -> void:
     level.player.clear_held_movement(Movement.MovementType.BACK)
 
 func inspect_robot() -> void:
-    inspect_robot_ui.inspect(level.player.robot, battle.battle_player, ExplorationInventory.credits())
+    inspect_robot_ui.inspect(level.player.robot, battle.battle_player, Inventory.credits())

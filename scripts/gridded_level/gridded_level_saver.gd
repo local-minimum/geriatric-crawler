@@ -88,15 +88,16 @@ func load_from_save(save_data: Dictionary) -> void:
     var player_node: GridPlayer = null
 
     if save_data.has(_PLAYER_KEY):
-        var player_save: Dictionary = save_data[_PLAYER_KEY]
+        var player_save: Dictionary = DictionaryUtils.safe_getd(save_data, _PLAYER_KEY)
         player_node = preload(_PLAYER_SCENE).instantiate()
         player_node.name = "Player Blob"
         level.add_child(player_node)
         player_node.load_from_save(level, player_save)
         level.player = player_node
 
-    if save_data.has(_ENCOUNTERS_KEY):
-        var encounters_save: Dictionary[String, Dictionary] = save_data[_ENCOUNTERS_KEY]
+    var encounters_data: Dictionary = DictionaryUtils.safe_getd(save_data, _ENCOUNTERS_KEY)
+    if encounters_data is Dictionary[String, Dictionary]:
+        var encounters_save: Dictionary[String, Dictionary] = encounters_data
 
         for encounter_node: Node in get_tree().get_nodes_in_group(encounter_group):
             if encounter_node is GridEncounter:
