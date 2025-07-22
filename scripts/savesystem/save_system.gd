@@ -224,6 +224,10 @@ func load_slot(slot: int) -> bool:
     return true
 
 func load_new_root_scene_by_level_name(wanted_level: String) -> bool:
+    if scene_loader == null:
+        push_error("Cannot load level %s because missing scene loader" % wanted_level)
+        return false
+
     return scene_loader.load_root_scene_by_id(wanted_level)
 
 func load_last_save() -> bool:

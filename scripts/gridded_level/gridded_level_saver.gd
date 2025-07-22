@@ -95,7 +95,7 @@ func load_from_save(save_data: Dictionary) -> void:
         player_node.load_from_save(level, player_save)
         level.player = player_node
 
-    var encounters_data: Dictionary = DictionaryUtils.safe_getd(save_data, _ENCOUNTERS_KEY)
+    var encounters_data: Dictionary = DictionaryUtils.safe_getd(save_data, _ENCOUNTERS_KEY, {}, false)
     if encounters_data is Dictionary[String, Dictionary]:
         var encounters_save: Dictionary[String, Dictionary] = encounters_data
 
@@ -110,7 +110,7 @@ func load_from_save(save_data: Dictionary) -> void:
     else:
         push_warning("Level has no encounters save data")
 
-    var events_save: Dictionary = DictionaryUtils.safe_getd(save_data, _EVENTS_KEY)
+    var events_save: Dictionary = DictionaryUtils.safe_getd(save_data, _EVENTS_KEY, {}, false)
     if !events_save.is_empty():
         if events_save is Dictionary[String, Variant]:
             for event_node: Node in get_tree().get_nodes_in_group(GridEvent.GRID_EVENT_GROUP):

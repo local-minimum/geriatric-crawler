@@ -210,7 +210,7 @@ func trigger(entity: GridEntity, movement: Movement.MovementType) -> void:
         )
         rotations.tween_method(
             update_rotation,
-            lower_exit_rotation,
+            upper_entry_rotation,
             ramp_rotation,
             animation_duration * pivot_duration_fraction
         )
@@ -218,7 +218,7 @@ func trigger(entity: GridEntity, movement: Movement.MovementType) -> void:
         rotations.tween_method(
             update_rotation,
             ramp_rotation,
-            lower_exit_direction,
+            lower_exit_rotation,
             animation_duration * pivot_duration_fraction
         )
         @warning_ignore_restore("return_value_discarded")

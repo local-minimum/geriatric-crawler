@@ -1,7 +1,16 @@
 extends GridNodeFeature
 class_name PlayerFacer
 
+@export
+var offset_if_on_same_tile: bool
+
+@export_range(0, 0.5)
+var offset_amount: float = 0
+
+var _anchor_position: Vector3
+
 func _ready() -> void:
+    _anchor_position = position
     super._ready()
 
     var level: GridLevel = get_level()
@@ -58,3 +67,8 @@ func _look_at_player() -> void:
 
     if player_pos != global_position:
         look_at(player_pos, Vector3.UP, true)
+
+    if offset_if_on_same_tile && level.player.coordinates() == coordinates():
+        position = _anchor_position + to_local(global_position + CardinalDirections.direction_to_look_vector(level.player.look_direction) * offset_amount * level.node_size)
+    elif position != _anchor_position:
+        position = _anchor_position

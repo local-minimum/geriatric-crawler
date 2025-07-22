@@ -1,4 +1,4 @@
-[gd_scene load_steps=34 format=3 uid="uid://dwqcwbgj8p6q0"]
+[gd_scene load_steps=39 format=3 uid="uid://dwqcwbgj8p6q0"]
 
 [ext_resource type="Script" uid="uid://dqe42q7uub84r" path="res://scripts/gridded_level/level_features/grid_level.gd" id="1_dd1ob"]
 [ext_resource type="PackedScene" uid="uid://bfoog3fb4v5ij" path="res://scenes/dungeon/player.tscn" id="3_m6mav"]
@@ -7,10 +7,13 @@
 [ext_resource type="PackedScene" uid="uid://b3heljhlu4hop" path="res://scenes/dungeon/basic_wall.tscn" id="6_5axwy"]
 [ext_resource type="PackedScene" uid="uid://deupet1cvom4e" path="res://scenes/dungeon/basic_ceiling.tscn" id="8_72dvb"]
 [ext_resource type="PackedScene" uid="uid://d1hvyppfcbfng" path="res://models/ramp.fbx" id="8_632b7"]
+[ext_resource type="Script" uid="uid://4tbbs5wj6vj7" path="res://scripts/gridded_level/level_features/simple_loot_container.gd" id="8_j1mj1"]
 [ext_resource type="Script" uid="uid://bqahhkn6dpex" path="res://scripts/gridded_level/entities/grid_encounter.gd" id="8_kmgg5"]
 [ext_resource type="Script" uid="uid://b8ewgty4lcw6y" path="res://scripts/gridded_level/level_features/grid_ramp.gd" id="8_n55gf"]
 [ext_resource type="PackedScene" uid="uid://ds0fqw6fso67w" path="res://scenes/dungeon/basic_floor.tscn" id="9_4mxkc"]
+[ext_resource type="Texture2D" uid="uid://ca81d0hg5b0p" path="res://sprites/treasure-chest-open.png" id="9_7gan6"]
 [ext_resource type="Script" uid="uid://dexigkhejxn1h" path="res://scripts/gridded_level/level_features/player_facer.gd" id="9_myev5"]
+[ext_resource type="Texture2D" uid="uid://cfgpkpq4rx67j" path="res://sprites/treasure-chest-closed.png" id="10_7gan6"]
 [ext_resource type="Script" uid="uid://dmpqfljj24gh6" path="res://scripts/gridded_level/entities/encounter_effects/battle_mode_trigger.gd" id="10_rvj20"]
 [ext_resource type="Script" uid="uid://ccsqys7ldqoh" path="res://scripts/card_battle/battle_enemy.gd" id="11_fxt0s"]
 [ext_resource type="Texture2D" uid="uid://d4i1sxn0646on" path="res://sprites/enemies/training-dummy.png" id="12_26eu7"]
@@ -38,6 +41,13 @@ metadata/_custom_type_script = "uid://b8a6yvndcxtpa"
 script = ExtResource("4_840jk")
 mode = 0
 metadata/_custom_type_script = "uid://b8a6yvndcxtpa"
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_sn1co"]
+transparency = 1
+albedo_texture = ExtResource("10_7gan6")
+
+[sub_resource type="QuadMesh" id="QuadMesh_wymjw"]
+material = SubResource("StandardMaterial3D_sn1co")
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_26eu7"]
 transparency = 1
@@ -106,6 +116,24 @@ direction = 3
 [node name="Side UP" parent="LevelGeometry/Elevation 0/Node (0, 0, -1)" instance=ExtResource("8_72dvb")]
 
 [node name="Side DOWN" parent="LevelGeometry/Elevation 0/Node (0, 0, -1)" instance=ExtResource("9_4mxkc")]
+
+[node name="SimpleLootContainer" type="Node3D" parent="LevelGeometry/Elevation 0/Node (0, 0, -1)" node_paths=PackedStringArray("_mesh")]
+script = ExtResource("8_j1mj1")
+_contents = Dictionary[String, float]({
+"Cu": 3.0,
+"Fe": 10.0,
+"Ti": 8.0
+})
+_mesh = NodePath("MeshInstance3D")
+_open_tex = ExtResource("9_7gan6")
+metadata/_custom_type_script = "uid://4tbbs5wj6vj7"
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="LevelGeometry/Elevation 0/Node (0, 0, -1)/SimpleLootContainer"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.590363, 0)
+mesh = SubResource("QuadMesh_wymjw")
+script = ExtResource("9_myev5")
+offset_if_on_same_tile = true
+offset_amount = 0.373
 
 [node name="Node (1, 0, -1)" parent="LevelGeometry/Elevation 0" instance=ExtResource("4_myev5")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.5, 0, -2.5)
