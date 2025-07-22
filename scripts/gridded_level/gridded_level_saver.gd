@@ -120,7 +120,11 @@ func load_from_save(save_data: Dictionary) -> void:
                         continue
 
                     if events_save.has(event.save_key()):
-                        event.load_save_data(events_save[event.save_key()])
+                        var event_save: Variant = events_save[event.save_key()]
+                        if event_save is Dictionary:
+                            @warning_ignore_start("unsafe_cast")
+                            event.load_save_data(event_save as Dictionary)
+                            @warning_ignore_restore("unsafe_cast")
                     else:
                         push_warning("Event '%s' not present in save" % event.save_key())
 
