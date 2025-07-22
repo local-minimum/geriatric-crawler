@@ -76,7 +76,10 @@ func _look_at_player(interpolate: bool = true) -> void:
         else:
             position = target
     elif position != _local_anchor_position:
-        position = _local_anchor_position
+        if interpolate:
+            position = lerp(position, _local_anchor_position, interpoation_fraction)
+        else:
+            position = _local_anchor_position
 
     if player_pos != global_position:
         look_at(player_pos, Vector3.UP, true)
