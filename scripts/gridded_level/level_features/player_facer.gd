@@ -2,6 +2,9 @@ extends GridNodeFeature
 class_name PlayerFacer
 
 @export
+var use_look_direction_for_rotation: bool
+
+@export
 var offset_if_on_same_tile: bool
 
 @export_range(0, 0.5)
@@ -36,7 +39,7 @@ func _connect_player_tracking() -> void:
     if level.player.on_move_end.connect(_end_track_player) != OK:
         push_error("%s cannot end player tracking during movement" % name)
 
-    _look_at_player(false)
+    _update_position_and_rotation(false)
 
 var _track: bool
 
@@ -55,22 +58,19 @@ func _end_track_player(entity: GridEntity) -> void:
         return
 
     _track = false
-    _look_at_player(false)
+    _update_position_and_rotation(false)
 
 func _process(_delta: float) -> void:
     if !_track: return
-    _look_at_player()
+    _update_position_and_rotation()
 
-func _look_at_player(interpolate: bool = true) -> void:
+func _update_position_and_rotation(interpolate: bool = true) -> void:
     var level: GridLevel = get_level()
     if level == null:
         return
 
-    var player_pos: Vector3 = level.player.camera.global_position
-    player_pos.y = global_position.y
-
     if offset_if_on_same_tile && level.player.coordinates() == coordinates():
-        var target: Vector3 = _local_anchor_position + CardinalDirections.direction_to_look_vector(level.player.look_direction) * offset_amount * level.node_size
+        var target: Vector3 = _local_anchor_position - offset_amount * level.node_size * level.player.camera.global_basis.z
         if interpolate:
             position = lerp(position, target, interpoation_fraction)
         else:
@@ -81,5 +81,11 @@ func _look_at_player(interpolate: bool = true) -> void:
         else:
             position = _local_anchor_position
 
-    if player_pos != global_position:
-        look_at(player_pos, Vector3.UP, true)
+    if use_look_direction_for_rotation:
+        global_basis = level.player.camera.global_transform.basis
+    else:
+        var player_pos: Vector3 = level.player.camera.global_position
+        player_pos.y = global_position.y
+
+        if player_pos != global_position:
+            look_at(player_pos, Vector3.UP, true)

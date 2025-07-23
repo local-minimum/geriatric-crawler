@@ -134,8 +134,10 @@ metadata/_custom_type_script = "uid://4tbbs5wj6vj7"
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.590363, 0)
 mesh = SubResource("QuadMesh_wymjw")
 script = ExtResource("9_myev5")
+use_look_direction_for_rotation = true
 offset_if_on_same_tile = true
-offset_amount = 0.304
+offset_amount = 0.137
+interpoation_fraction = 0.13
 
 [node name="Node (1, 0, -1)" parent="LevelGeometry/Elevation 0" instance=ExtResource("4_myev5")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.5, 0, -2.5)
