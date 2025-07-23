@@ -21,6 +21,11 @@ var _min_time_between_messages: float = 300
 @export
 var _min_time_visible_message: float = 400
 
+static var _waiting_callbacks: Array[Callable] = []
+
+static func await_manager(on_update_manager_callback: Callable) -> void:
+    _waiting_callbacks.append(on_update_manager_callback)
+
 static func notify(message: NotificationData) -> void:
     if message == null:
         return
@@ -104,10 +109,16 @@ func _ready() -> void:
     if active_manager != self && !inherit_queue:
         _queue.clear()
 
-    if active_manager != self && active_manager != null:
-        active_manager.on_update_manager.emit(self)
+    var old_manager: NotificationsManager = active_manager
 
     active_manager = self
+
+    if active_manager != self && active_manager != null:
+        active_manager.on_update_manager.emit(old_manager, self)
+
+    if !_waiting_callbacks.is_empty():
+        for callback: Callable in _waiting_callbacks:
+            callback.call(old_manager, active_manager)
 
 static var _active_messages: Dictionary[String, NotificationData] = {}
 
@@ -148,8 +159,9 @@ func _process_message_queue() -> void:
     var showing: int = _active_messages.size()
     if showing < max_concurrent_messages:
         _show_next_message()
+        return
 
-    showing -= _force_timeout_messages(_queue.size())
+    showing -= _force_timeout_messages(1)
 
     if showing < max_concurrent_messages:
         _show_next_message()
@@ -158,13 +170,16 @@ func _show_next_message() -> void:
     if _queue.size() == 0:
         return
 
-    var msg: NotificationData = _queue.pop_front()
+    var msg: NotificationData = _queue[0]
+    _queue = _queue.slice(1)
     if msg == null:
         return
 
+    _active_messages[msg.id] = msg
     msg.set_shown()
-    on_show_message.emit(msg)
     _next_show_time = Time.get_ticks_msec() + _min_time_between_messages
+
+    on_show_message.emit(msg)
 
 func _force_remove_message_by_id(id: String) -> bool:
     if _active_messages.has(id):

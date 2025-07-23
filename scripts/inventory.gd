@@ -74,6 +74,7 @@ func add_to_inventory(id: String, amount: float) -> bool:
         _inventory[id] = amount
 
     on_add_to_inventory.emit(id, amount, _inventory[id])
+    NotificationsManager.info("Gained", "%10.2f kg [b]%s[/b]" % [amount, id], 5000)
     return true
 
 func add_many_to_inventory(items: Dictionary[String, float]) -> bool:
@@ -98,6 +99,7 @@ func remove_from_inventory(id: String, amount: float, accept_less: bool = false)
 
     _inventory[id] = total - withdraw
     on_remove_from_inventory.emit(id, withdraw, _inventory[id])
+    NotificationsManager.info("Lost", "%4.3f kg [b]%s[/b]" % [amount, id], 5000)
 
     return withdraw
 

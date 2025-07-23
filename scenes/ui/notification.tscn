@@ -1,0 +1,72 @@
+[gd_scene load_steps=3 format=3 uid="uid://b8sa3ncwh7x2b"]
+
+[ext_resource type="Script" uid="uid://dw4dlxccimty6" path="res://scripts/ui/notifications/notification_ui.gd" id="1_5bafy"]
+[ext_resource type="Texture2D" uid="uid://cgijt2to15yms" path="res://sprites/kenny game icons/cross.png" id="2_jvqrl"]
+
+[node name="Notification" type="HBoxContainer" node_paths=PackedStringArray("_background", "title", "close_button")]
+custom_minimum_size = Vector2(0, 30)
+script = ExtResource("1_5bafy")
+_background = NodePath("Control/Background")
+_info_color = Color(0.15, 0.15, 0.15, 0.87451)
+_important_color = Color(0.48575, 0.1675, 0.67, 0.807843)
+_warning_color = Color(0.55, 0.156475, 0.1045, 0.886275)
+title = NodePath("Control/MarginContainer/Message")
+close_button = NodePath("Control/Dismiss Button")
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Background" type="ColorRect" parent="Control"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+color = Color(0.0445579, 0.0445578, 0.0445578, 1)
+
+[node name="Dismiss Button" type="Button" parent="Control"]
+custom_minimum_size = Vector2(14, 14)
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -14.0
+offset_right = 2.0
+offset_bottom = 16.0
+grow_horizontal = 0
+icon = ExtResource("2_jvqrl")
+flat = true
+icon_alignment = 1
+expand_icon = true
+
+[node name="MarginContainer" type="MarginContainer" parent="Control"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 2
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 2
+
+[node name="Message" type="RichTextLabel" parent="Control/MarginContainer"]
+custom_minimum_size = Vector2(0, 15)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/bold_italics_font_size = 10
+theme_override_font_sizes/italics_font_size = 10
+theme_override_font_sizes/mono_font_size = 10
+theme_override_font_sizes/normal_font_size = 10
+theme_override_font_sizes/bold_font_size = 10
+bbcode_enabled = true
+text = "[b]Fe[/b] 20"
+fit_content = true
+vertical_alignment = 1
+
+[connection signal="pressed" from="Control/Dismiss Button" to="." method="_on_dismiss_button_pressed"]

@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=3 uid="uid://5mvkmlsl4h3x"]
+[gd_scene load_steps=19 format=3 uid="uid://5mvkmlsl4h3x"]
 
 [ext_resource type="PackedScene" uid="uid://dwqcwbgj8p6q0" path="res://scenes/dungeon/test_level.tscn" id="1_ig7tw"]
 [ext_resource type="PackedScene" uid="uid://dx6ngxriyyq7l" path="res://scenes/ui/ui_debug_settings.tscn" id="2_0xm2m"]
@@ -12,7 +12,6 @@
 [ext_resource type="Script" uid="uid://dftf4h6eyrsio" path="res://scripts/inventory.gd" id="10_4c57u"]
 [ext_resource type="Script" uid="uid://cune3lm2ngiy1" path="res://scripts/ui/notifications/notifications_manager.gd" id="11_dg77c"]
 [ext_resource type="Script" uid="uid://bkky4nqo47eiv" path="res://scripts/ui/notifications/notifications_panel_ui.gd" id="12_ycdy4"]
-[ext_resource type="Script" uid="uid://dw4dlxccimty6" path="res://scripts/ui/notifications/notification_ui.gd" id="13_ycdy4"]
 
 [sub_resource type="Environment" id="Environment_ig7tw"]
 background_mode = 1
@@ -279,75 +278,17 @@ metadata/_custom_type_script = "uid://dftf4h6eyrsio"
 [node name="ExplorationNotifications" type="CanvasLayer" parent="."]
 layer = 128
 script = ExtResource("11_dg77c")
+_min_time_between_messages = 600.0
 
 [node name="NotificationsPanel" type="VBoxContainer" parent="ExplorationNotifications"]
 anchors_preset = -1
 anchor_left = 0.042
 anchor_top = 0.304
-anchor_right = 0.336
+anchor_right = 0.256
 anchor_bottom = 0.802
 alignment = 2
 script = ExtResource("12_ycdy4")
-
-[node name="Notification" type="Container" parent="ExplorationNotifications/NotificationsPanel" node_paths=PackedStringArray("_background", "title", "body", "close_button")]
-custom_minimum_size = Vector2(0, 30)
-layout_mode = 2
-script = ExtResource("13_ycdy4")
-_background = NodePath("Background")
-_info_color = Color(0.15, 0.15, 0.15, 0.87451)
-_important_color = Color(0.48575, 0.1675, 0.67, 0.807843)
-_warning_color = Color(0.55, 0.156475, 0.1045, 0.886275)
-title = NodePath("MarginContainer/HBoxContainer/Title")
-body = NodePath("MarginContainer/HBoxContainer/Body")
-close_button = NodePath("Dismiss Button")
-
-[node name="Background" type="ColorRect" parent="ExplorationNotifications/NotificationsPanel/Notification"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-color = Color(0.0445579, 0.0445578, 0.0445578, 1)
-
-[node name="Dismiss Button" type="Button" parent="ExplorationNotifications/NotificationsPanel/Notification"]
-custom_minimum_size = Vector2(14, 14)
-layout_mode = 2
-icon = ExtResource("7_272bh")
-flat = true
-icon_alignment = 1
-expand_icon = true
-
-[node name="MarginContainer" type="MarginContainer" parent="ExplorationNotifications/NotificationsPanel/Notification"]
-layout_mode = 2
-theme_override_constants/margin_left = 8
-theme_override_constants/margin_top = 2
-theme_override_constants/margin_right = 8
-theme_override_constants/margin_bottom = 2
-
-[node name="HBoxContainer" type="VBoxContainer" parent="ExplorationNotifications/NotificationsPanel/Notification/MarginContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-
-[node name="Title" type="RichTextLabel" parent="ExplorationNotifications/NotificationsPanel/Notification/MarginContainer/HBoxContainer"]
-custom_minimum_size = Vector2(0, 15)
-layout_mode = 2
-theme_override_font_sizes/bold_italics_font_size = 10
-theme_override_font_sizes/italics_font_size = 10
-theme_override_font_sizes/mono_font_size = 10
-theme_override_font_sizes/normal_font_size = 10
-theme_override_font_sizes/bold_font_size = 10
-text = "ddd"
-fit_content = true
-
-[node name="Body" type="RichTextLabel" parent="ExplorationNotifications/NotificationsPanel/Notification/MarginContainer/HBoxContainer"]
-custom_minimum_size = Vector2(0, 15)
-layout_mode = 2
-theme_override_font_sizes/bold_italics_font_size = 10
-theme_override_font_sizes/italics_font_size = 10
-theme_override_font_sizes/mono_font_size = 10
-theme_override_font_sizes/normal_font_size = 10
-theme_override_font_sizes/bold_font_size = 10
-text = "ddd"
-fit_content = true
+_tween_notifiction_duration = 0.5
 
 [connection signal="pressed" from="Robot Inspection UI/MarginContainer/Main/Name & Status/CloseButton" to="Robot Inspection UI" method="_on_close_button_pressed"]
 [connection signal="tab_changed" from="Robot Inspection UI/MarginContainer/Main/TabBar" to="Robot Inspection UI" method="_on_tab_bar_tab_changed"]

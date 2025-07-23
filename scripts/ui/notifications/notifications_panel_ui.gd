@@ -7,9 +7,11 @@ var _tween_notifiction_duration: float = 0.3
 @export_range(0, 2)
 var _tween_offset_width_factor: float = 1.2
 
+var _notification: PackedScene = preload("res://scenes/ui/notification.tscn")
+
 func _ready() -> void:
     if NotificationsManager.active_manager == null:
-        push_warning("There's manager in the scene, the panel won't have anything to do")
+        NotificationsManager.await_manager(_handle_update_manager)
     else:
         _handle_update_manager(null, NotificationsManager.active_manager)
 
@@ -46,8 +48,13 @@ func _get_tween_offset() -> float:
     # TODO: Offset side direction should be based on settings
     return -1 * _tween_offset_width_factor * get_rect().size.x
 
-func _show_message(_msg: NotificationsManager.NotificationData) -> void:
-    pass
+func _show_message(mgs: NotificationsManager.NotificationData) -> void:
+    var to_show: NotificationUI = _notification.instantiate()
+
+    add_child(to_show)
+
+    to_show.show_message.call_deferred(mgs, _get_tween_offset(), _tween_notifiction_duration)
+    _active_notifications.append(to_show)
 
 func _hide_message(id: String) -> void:
     var notification_idx: int = _active_notifications.find_custom(func (noti: NotificationUI) -> bool: return noti.message_id == id)
