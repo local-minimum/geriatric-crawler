@@ -19,6 +19,8 @@ static func withdraw_credits(amount: int) -> bool:
         _CREDITS -= amount
         if active_inventory != null:
             active_inventory.on_update_credits.emit(_CREDITS)
+
+        NotificationsManager.info("Lost", "₳ %s" % amount, 5000)
         return true
     return false
 
@@ -61,8 +63,10 @@ func _handle_enity_leave_battle(entity: BattleEntity) -> void:
 func _handle_enemy_death(entity: BattleEntity) -> void:
     if entity is BattleEnemy:
         var enemy: BattleEnemy = entity
-        _CREDITS += base_slaying_income + maxi(0, enemy.level - 1) * enemy_level_bonus + enemy.carried_credits
+        var amount: int = base_slaying_income + maxi(0, enemy.level - 1) * enemy_level_bonus + enemy.carried_credits
+        _CREDITS += amount
         on_update_credits.emit(_CREDITS)
+        NotificationsManager.info("Gained", "₳ %s" % amount, 5000)
 
 func add_to_inventory(id: String, amount: float) -> bool:
     if amount <= 0:
