@@ -1,14 +1,14 @@
 extends Node
 class_name NotificationsManager
 
-signal on_update_manager(new_manager: NotificationsManager)
-signal on_show_message(message: NotificationsData)
+signal on_update_manager(old_manager: NotificationsManager, new_manager: NotificationsManager)
+signal on_show_message(message: NotificationData)
 signal on_hide_message(id: String)
 signal on_queue_updated(queue_size: int)
 
-static var _manager: NotificationsManager
+static var active_manager: NotificationsManager
 
-static var _queue: Array[NotificationsData]
+static var _queue: Array[NotificationData]
 
 enum NotificationType { INFO, IMPORTANT, WARNING }
 
@@ -21,46 +21,46 @@ var _min_time_between_messages: float = 300
 @export
 var _min_time_visible_message: float = 400
 
-static func notify(message: NotificationsData) -> void:
+static func notify(message: NotificationData) -> void:
     if message == null:
         return
 
-    if _manager == null:
+    if active_manager == null:
         push_warning("Notification %s may be lost because there's no active notifications system" % message)
 
     _queue.append(message)
-    if _manager != null:
-        _manager.on_queue_updated.emit(_queue.size())
+    if active_manager != null:
+        active_manager.on_queue_updated.emit(_queue.size())
 
 static func info(title: String, message: String, duration: float = 2000) -> void:
-    notify(NotificationsData.new(title, message, NotificationType.INFO, duration))
+    notify(NotificationData.new(title, message, NotificationType.INFO, duration))
 
 static func important(title: String, message: String, duration: float = 2000) -> void:
-    notify(NotificationsData.new(title, message, NotificationType.IMPORTANT, duration))
+    notify(NotificationData.new(title, message, NotificationType.IMPORTANT, duration))
 
 static func warn(title: String, message: String, duration: float = 2000) -> void:
-    notify(NotificationsData.new(title, message, NotificationType.WARNING, duration))
+    notify(NotificationData.new(title, message, NotificationType.WARNING, duration))
 
 static func force_remove_message(id: String) -> bool:
-    if _queue.any(func (msg: NotificationsData) -> bool: return msg.id == id):
-        var idx: int = _queue.find_custom(func (msg: NotificationsData) -> bool: return msg.id == id)
+    if _queue.any(func (msg: NotificationData) -> bool: return msg.id == id):
+        var idx: int = _queue.find_custom(func (msg: NotificationData) -> bool: return msg.id == id)
         _queue.erase(_queue[idx])
 
-        if _manager != null:
-            _manager.on_queue_updated.emit(_queue.size())
+        if active_manager != null:
+            active_manager.on_queue_updated.emit(_queue.size())
 
         return true
 
-    if _manager == null:
+    if active_manager == null:
         push_warning("There's no manager, cannot remove message %s since there's no active manager and not in queue" % id)
         return false
 
-    return _manager._force_remove_message_by_id(id)
+    return active_manager._force_remove_message_by_id(id)
 
 @export
 var inherit_queue: bool
 
-class NotificationsData:
+class NotificationData:
     var id: String
 
     var title: String
@@ -101,15 +101,15 @@ class NotificationsData:
         _show_duration = p_duration
 
 func _ready() -> void:
-    if _manager != self && !inherit_queue:
+    if active_manager != self && !inherit_queue:
         _queue.clear()
 
-    if _manager != self && _manager != null:
-        _manager.on_update_manager.emit(self)
+    if active_manager != self && active_manager != null:
+        active_manager.on_update_manager.emit(self)
 
-    _manager = self
+    active_manager = self
 
-static var _active_messages: Dictionary[String, NotificationsData] = {}
+static var _active_messages: Dictionary[String, NotificationData] = {}
 
 var _next_show_time: float
 
@@ -158,16 +158,17 @@ func _show_next_message() -> void:
     if _queue.size() == 0:
         return
 
-    var msg: NotificationsData = _queue.pop_front()
+    var msg: NotificationData = _queue.pop_front()
     if msg == null:
         return
 
+    msg.set_shown()
     on_show_message.emit(msg)
     _next_show_time = Time.get_ticks_msec() + _min_time_between_messages
 
 func _force_remove_message_by_id(id: String) -> bool:
     if _active_messages.has(id):
-        var msg: NotificationsData = _active_messages[id]
+        var msg: NotificationData = _active_messages[id]
         on_hide_message.emit(msg)
         return _active_messages.erase(id)
 
