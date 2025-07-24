@@ -20,7 +20,7 @@ static func withdraw_credits(amount: int) -> bool:
         if active_inventory != null:
             active_inventory.on_update_credits.emit(_CREDITS)
 
-        NotificationsManager.info("Lost", "₳ %s" % amount, 5000)
+        NotificationsManager.info("Lost", credits_with_sign(amount), 5000)
         return true
     return false
 
@@ -39,6 +39,15 @@ var enemy_level_bonus: int = 5
 var battle: BattleMode
 
 var _inventory: Dictionary[String, float] = {}
+
+static func inventory_item_id_to_text(id: String) -> String:
+    return id
+
+static func inventory_item_id_to_unit(_id: String) -> String:
+    return "kg"
+
+static func credits_with_sign(amount: int) -> String:
+    return "₳ %s" % amount
 
 func _ready() -> void:
     active_inventory = self
@@ -66,7 +75,24 @@ func _handle_enemy_death(entity: BattleEntity) -> void:
         var amount: int = base_slaying_income + maxi(0, enemy.level - 1) * enemy_level_bonus + enemy.carried_credits
         _CREDITS += amount
         on_update_credits.emit(_CREDITS)
-        NotificationsManager.info("Gained", "₳ %s" % amount, 5000)
+        NotificationsManager.info("Gained", credits_with_sign(amount), 5000)
+
+class InventoryListing:
+    var id: String
+    var amount: float
+
+    func _init(p_id: String, p_amount: float) -> void:
+        id = p_id
+        amount = p_amount
+
+func list_inventory() -> Array[InventoryListing]:
+    var result: Array[InventoryListing]
+    for item_id: String in _inventory:
+        var amount: float = _inventory[item_id]
+        if amount != 0:
+            result.append(InventoryListing.new(item_id, amount))
+
+    return result
 
 func add_to_inventory(id: String, amount: float) -> bool:
     if amount <= 0:
@@ -78,7 +104,7 @@ func add_to_inventory(id: String, amount: float) -> bool:
         _inventory[id] = amount
 
     on_add_to_inventory.emit(id, amount, _inventory[id])
-    NotificationsManager.info("Gained", "%10.2f kg [b]%s[/b]" % [amount, id], 5000)
+    NotificationsManager.info("Gained", "%10.2f %s [b]%s[/b]" % [amount, inventory_item_id_to_unit(id) , inventory_item_id_to_text(id)], 5000)
     return true
 
 func add_many_to_inventory(items: Dictionary[String, float]) -> bool:
@@ -103,7 +129,7 @@ func remove_from_inventory(id: String, amount: float, accept_less: bool = false)
 
     _inventory[id] = total - withdraw
     on_remove_from_inventory.emit(id, withdraw, _inventory[id])
-    NotificationsManager.info("Lost", "%4.3f kg [b]%s[/b]" % [amount, id], 5000)
+    NotificationsManager.info("Lost", "%4.3f %s [b]%s[/b]" % [amount, inventory_item_id_to_unit(id), inventory_item_id_to_text(id)], 5000)
 
     return withdraw
 

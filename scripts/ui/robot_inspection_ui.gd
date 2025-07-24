@@ -25,6 +25,9 @@ var _active_skills_parent: Control
 @export
 var _robot_skill_tree: RobotSkillTreeUI
 
+@export
+var _exploration_inventory: ExplorationInventoryUI
+
 func _ready() -> void:
     visible = false
 
@@ -43,6 +46,7 @@ func inspect(robot: Robot, battle_player: BattlePlayer, credits: int) -> void:
 
     _sync_active_abilities(robot)
 
+    _exploration_inventory.list_inventory()
     _robot_skill_tree.sync(robot, credits)
     _on_tab_bar_tab_changed(_tab_bar.current_tab)
 

@@ -1,0 +1,260 @@
+[gd_scene load_steps=10 format=3 uid="uid://ueqtmtn8vb0v"]
+
+[ext_resource type="Script" uid="uid://crchgnovga7nc" path="res://scripts/ui/robot_inspection_ui.gd" id="1_j3vuf"]
+[ext_resource type="Texture2D" uid="uid://cgijt2to15yms" path="res://sprites/kenny game icons/cross.png" id="2_0f0fp"]
+[ext_resource type="Script" uid="uid://5lsjirgudi0w" path="res://scripts/ui/robot_skill_tree_ui.gd" id="3_4hdtw"]
+[ext_resource type="PackedScene" uid="uid://qvbyso8n7n8j" path="res://scenes/ui/robot_skill_level_ui.tscn" id="4_yfo5l"]
+[ext_resource type="Script" uid="uid://bkudjqfkkgxlw" path="res://scripts/ui/exploration_inventory_ui.gd" id="5_0f0fp"]
+
+[sub_resource type="Curve" id="Curve_7mycd"]
+_data = [Vector2(0, 0.0905457), 0.0, 0.0, 0, 0, Vector2(0.330494, 0.571257), 0.0, 0.0, 0, 0, Vector2(0.681431, 0.693384), 0.593166, 0.593166, 0, 0, Vector2(1, 0.914251), 0.00953312, 0.0, 0, 0]
+point_count = 4
+
+[sub_resource type="Curve" id="Curve_272bh"]
+_data = [Vector2(0, 0.823306), 0.0, 0.0, 0, 0, Vector2(1, 0.321807), 0.356981, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="Curve" id="Curve_5vw27"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0]
+point_count = 1
+
+[sub_resource type="CurveXYZTexture" id="CurveXYZTexture_5vw27"]
+curve_x = SubResource("Curve_7mycd")
+curve_y = SubResource("Curve_272bh")
+curve_z = SubResource("Curve_5vw27")
+
+[node name="Robot Inspection UI" type="CanvasLayer" node_paths=PackedStringArray("_name_label", "_model_label", "_health_label", "_credits_label", "_tab_bar", "_tabs", "_active_skills_parent", "_robot_skill_tree", "_exploration_inventory")]
+layer = 10
+script = ExtResource("1_j3vuf")
+_name_label = NodePath("MarginContainer/Main/Name & Status/Robot Name")
+_model_label = NodePath("MarginContainer/Main/Name & Status/Robot Model")
+_health_label = NodePath("MarginContainer/Main/Name & Status/VBoxContainer/Robot Health")
+_credits_label = NodePath("MarginContainer/Main/Name & Status/VBoxContainer/Robot Credits")
+_tab_bar = NodePath("MarginContainer/Main/TabBar")
+_tabs = [NodePath("MarginContainer/Main/ActiveSkills"), NodePath("MarginContainer/Main/SkillTree"), NodePath("MarginContainer/Main/Inventory")]
+_active_skills_parent = NodePath("MarginContainer/Main/ActiveSkills/MarginContainer/Main/Skills")
+_robot_skill_tree = NodePath("MarginContainer/Main/SkillTree")
+_exploration_inventory = NodePath("MarginContainer/Main/Inventory")
+
+[node name="Background" type="TextureRect" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 0
+texture = SubResource("CurveXYZTexture_5vw27")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="Main" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+
+[node name="Name & Status" type="HBoxContainer" parent="MarginContainer/Main"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Robot Name" type="Label" parent="MarginContainer/Main/Name & Status"]
+layout_mode = 2
+text = "Name"
+
+[node name="Robot Model" type="Label" parent="MarginContainer/Main/Name & Status"]
+layout_mode = 2
+text = "model"
+
+[node name="Spacer" type="Control" parent="MarginContainer/Main/Name & Status"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/Main/Name & Status"]
+layout_mode = 2
+
+[node name="Robot Health" type="Label" parent="MarginContainer/Main/Name & Status/VBoxContainer"]
+layout_mode = 2
+text = "Health"
+
+[node name="Robot Credits" type="Label" parent="MarginContainer/Main/Name & Status/VBoxContainer"]
+layout_mode = 2
+text = "Credits"
+horizontal_alignment = 2
+
+[node name="CloseButton" type="Button" parent="MarginContainer/Main/Name & Status"]
+layout_mode = 2
+icon = ExtResource("2_0f0fp")
+
+[node name="TabBar" type="TabBar" parent="MarginContainer/Main"]
+layout_mode = 2
+current_tab = 0
+scrolling_enabled = false
+tab_count = 3
+tab_0/title = "Abilities"
+tab_1/title = "Upgrades"
+tab_2/title = "Inventory"
+
+[node name="ActiveSkills" type="Control" parent="MarginContainer/Main"]
+visible = false
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Background" type="ColorRect" parent="MarginContainer/Main/ActiveSkills"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.430057, 0.430057, 0.430057, 0.486275)
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/Main/ActiveSkills"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 4
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 4
+theme_override_constants/margin_bottom = 4
+
+[node name="Main" type="VBoxContainer" parent="MarginContainer/Main/ActiveSkills/MarginContainer"]
+layout_mode = 2
+
+[node name="Panel Title" type="Label" parent="MarginContainer/Main/ActiveSkills/MarginContainer/Main"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 20
+text = "Active Skills"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Skills" type="VBoxContainer" parent="MarginContainer/Main/ActiveSkills/MarginContainer/Main"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="SkillTree" type="Control" parent="MarginContainer/Main" node_paths=PackedStringArray("_levels")]
+visible = false
+layout_mode = 2
+size_flags_vertical = 3
+script = ExtResource("3_4hdtw")
+_levels = [NodePath("MarginContainer/Levels/Robot Skill Level 1"), NodePath("MarginContainer/Levels/Robot Skill Level 2"), NodePath("MarginContainer/Levels/Robot Skill Level 3"), NodePath("MarginContainer/Levels/Robot Skill Level 4")]
+
+[node name="Background" type="ColorRect" parent="MarginContainer/Main/SkillTree"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.431373, 0.431373, 0.431373, 0.486275)
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/Main/SkillTree"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 4
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 4
+theme_override_constants/margin_bottom = 4
+
+[node name="Levels" type="HBoxContainer" parent="MarginContainer/Main/SkillTree/MarginContainer"]
+layout_mode = 2
+
+[node name="Robot Skill Level 1" parent="MarginContainer/Main/SkillTree/MarginContainer/Levels" instance=ExtResource("4_yfo5l")]
+layout_mode = 2
+
+[node name="Divider" type="ColorRect" parent="MarginContainer/Main/SkillTree/MarginContainer/Levels"]
+custom_minimum_size = Vector2(4, 0)
+layout_mode = 2
+color = Color(0, 0, 0, 1)
+
+[node name="Robot Skill Level 2" parent="MarginContainer/Main/SkillTree/MarginContainer/Levels" instance=ExtResource("4_yfo5l")]
+layout_mode = 2
+
+[node name="Divider2" type="ColorRect" parent="MarginContainer/Main/SkillTree/MarginContainer/Levels"]
+custom_minimum_size = Vector2(4, 0)
+layout_mode = 2
+color = Color(0, 0, 0, 1)
+
+[node name="Robot Skill Level 3" parent="MarginContainer/Main/SkillTree/MarginContainer/Levels" instance=ExtResource("4_yfo5l")]
+layout_mode = 2
+
+[node name="Divider3" type="ColorRect" parent="MarginContainer/Main/SkillTree/MarginContainer/Levels"]
+custom_minimum_size = Vector2(4, 0)
+layout_mode = 2
+color = Color(0, 0, 0, 1)
+
+[node name="Robot Skill Level 4" parent="MarginContainer/Main/SkillTree/MarginContainer/Levels" instance=ExtResource("4_yfo5l")]
+layout_mode = 2
+
+[node name="Inventory" type="Control" parent="MarginContainer/Main" node_paths=PackedStringArray("columns")]
+layout_mode = 2
+size_flags_vertical = 3
+script = ExtResource("5_0f0fp")
+columns = [NodePath("MarginContainer/Main/HBoxContainer/Column 1"), NodePath("MarginContainer/Main/HBoxContainer/Column 2"), NodePath("MarginContainer/Main/HBoxContainer/Column 3")]
+
+[node name="Background" type="ColorRect" parent="MarginContainer/Main/Inventory"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.430057, 0.430057, 0.430057, 0.486275)
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/Main/Inventory"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 4
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 4
+theme_override_constants/margin_bottom = 4
+
+[node name="Main" type="VBoxContainer" parent="MarginContainer/Main/Inventory/MarginContainer"]
+layout_mode = 2
+
+[node name="Panel Title" type="Label" parent="MarginContainer/Main/Inventory/MarginContainer/Main"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 20
+text = "Inventory"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/Main/Inventory/MarginContainer/Main"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Column 1" type="VBoxContainer" parent="MarginContainer/Main/Inventory/MarginContainer/Main/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 8
+
+[node name="Column 2" type="VBoxContainer" parent="MarginContainer/Main/Inventory/MarginContainer/Main/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 8
+
+[node name="Column 3" type="VBoxContainer" parent="MarginContainer/Main/Inventory/MarginContainer/Main/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 8
+
+[connection signal="pressed" from="MarginContainer/Main/Name & Status/CloseButton" to="." method="_on_close_button_pressed"]
+[connection signal="tab_changed" from="MarginContainer/Main/TabBar" to="." method="_on_tab_bar_tab_changed"]
