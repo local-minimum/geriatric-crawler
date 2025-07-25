@@ -36,8 +36,14 @@ var ramp_upper_duration_fraction: float = 0.15
 @export_range(0, 1)
 var pivot_duration_fraction: float = 0.05
 
+var _transporting_entities: Array[GridEntity]
+
 func trigger(entity: GridEntity, movement: Movement.MovementType) -> void:
     # TODO: Support inner corner wedges
+    if _transporting_entities.has(entity):
+        return
+
+    _transporting_entities.append(entity)
     super.trigger(entity, movement)
     entity.cinematic = true
     entity.end_movement(movement, false)
@@ -236,6 +242,7 @@ func trigger(entity: GridEntity, movement: Movement.MovementType) -> void:
             entity.remove_concurrent_movement_block()
             entity.cinematic = false
 
+            _transporting_entities.erase(entity)
             entity.end_movement(movement, false, true)
     )
     @warning_ignore_restore("return_value_discarded")
@@ -249,6 +256,8 @@ func _refuse_animation(translations: Tween, entity: GridEntity, refuse_point: Ve
     translations.finished.connect(
         func () -> void:
             entity.orient()
+
+            _transporting_entities.erase(entity)
 
             entity.remove_concurrent_movement_block()
             entity.cinematic = false

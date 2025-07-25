@@ -28,6 +28,7 @@ var cinematic: bool:
         if value:
             clear_queue()
         on_cinematic.emit(self, value)
+        print_debug("%s is cinematic %s" % [name, cinematic])
 
 @export
 var look_direction: CardinalDirections.CardinalDirection:
@@ -120,7 +121,7 @@ func end_movement(movement: Movement.MovementType, start_next_from_queue: bool =
     else:
         if force_emit:
             on_move_end.emit(self)
-        else:
+        elif !cinematic:
             push_warning("%s was not an active movement (%s / %s)" % [
                 Movement.name(movement),
                 Movement.name(_active_movement),

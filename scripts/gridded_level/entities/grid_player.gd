@@ -107,6 +107,9 @@ func _input(event: InputEvent) -> void:
             # transportation_mode.humanize()])
 
 func hold_movement(movement: Movement.MovementType) -> void:
+    if cinematic:
+        return
+
     if get_level().paused:
         return
 

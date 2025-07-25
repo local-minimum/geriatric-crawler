@@ -226,7 +226,6 @@ func may_exit(entity: GridEntity, move_direction: CardinalDirections.CardinalDir
 
     if anchor.can_anchor(entity):
         print_debug("Cannot exit %s from %s because we could anchor on %s" % [CardinalDirections.name(move_direction), name, anchor.name])
-        print_stack()
         return false
 
     if anchor.pass_through_on_refuse:
