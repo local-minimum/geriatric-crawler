@@ -78,12 +78,23 @@ theme_override_constants/margin_top = 2
 theme_override_constants/margin_right = 2
 theme_override_constants/margin_bottom = 2
 
-[node name="SonarUI" type="Control" parent="MarginContainer/VBoxContainer/ColorRect/MarginContainer"]
+[node name="SonarUI" type="Control" parent="MarginContainer/VBoxContainer/ColorRect/MarginContainer" node_paths=PackedStringArray("sonar_root", "sonar_label", "exploration_ui")]
 layout_mode = 2
 script = ExtResource("3_ld1f6")
+sonar_root = NodePath("../..")
+sonar_label = NodePath("../Sonar lvl make")
+exploration_ui = NodePath("../../../../..")
 bar_width = 8.015
 bar_color = Color(1, 1, 1, 1)
-update_frequency_msec = 400
+update_frequency_msec = 300
+
+[node name="Sonar lvl make" type="Label" parent="MarginContainer/VBoxContainer/ColorRect/MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+theme_override_colors/font_color = Color(1, 1, 1, 0.443137)
+theme_override_font_sizes/font_size = 6
+text = "S100 Mk II"
 
 [node name="SimpleMapModule" type="ColorRect" parent="MarginContainer/VBoxContainer" node_paths=PackedStringArray("_simple_map_ui", "_mapping_area")]
 custom_minimum_size = Vector2(0, 150)

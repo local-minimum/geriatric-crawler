@@ -2,6 +2,12 @@ extends Control
 class_name SonarUI
 
 @export
+var sonar_root: Control
+
+@export
+var sonar_label: Label
+
+@export
 var exploration_ui: ExplorationUI
 
 @export_range(4, 128)
@@ -13,13 +19,17 @@ var bar_width: float = 1
 @export
 var bar_color: Color
 
+@export_range(0, 10)
+var detection_range: int = 5
+
 @export
 var update_frequency_msec: int = 200
 
 func _ready() -> void:
     # TODO: Handle upgrade skills
     var skill_level: int = exploration_ui.level.player.robot.get_skill_level(RobotAbility.SKILL_SONAR)
-
+    sonar_root.visible = skill_level > 0
+    sonar_label.text = "SNR-100 Mk %s" % IntUtils.to_roman(skill_level)
 
 func _draw() -> void:
     var r: Rect2 = get_rect()
@@ -44,10 +54,30 @@ var next_update: int
 
 func _process(_delta: float) -> void:
     if is_visible_in_tree() && Time.get_ticks_msec() > next_update:
+        _calculate_detections()
         queue_redraw()
+
+var detect_dist: int
+var facing_detected: bool
+
+func _calculate_detections() -> void:
+    var level: GridLevel = exploration_ui.level
+    var player_coords: Vector3i = level.player.coordinates()
+
+    for entity: GridEntity in level.grid_entities:
+        if entity == level.player:
+            continue
+
+        var coords: Vector3i = entity.coordinates()
+
+        if VectorUtils.manhattan_distance(player_coords, coords) > detection_range:
+            continue
+
 
 const BASE_SIGNAL_HEIGHT: float = 0.2
 const SIGNAL_BASE_NOISE: float = 0.1
 
 func _get_signal_strength(progress: float) -> float:
-    return max(0, BASE_SIGNAL_HEIGHT + randf_range(-SIGNAL_BASE_NOISE, SIGNAL_BASE_NOISE))
+    if detect_dist < 0:
+        return max(0, BASE_SIGNAL_HEIGHT + randf_range(-SIGNAL_BASE_NOISE, SIGNAL_BASE_NOISE))
+    return 0

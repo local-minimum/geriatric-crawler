@@ -23,6 +23,8 @@ var player: GridPlayer:
         player = value
         on_change_player.emit()
 
+var grid_entities: Array[GridEntity]
+
 @export
 var level_geometry: Node3D
 

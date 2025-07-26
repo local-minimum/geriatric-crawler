@@ -75,6 +75,7 @@ var _next_next_movement: Movement.MovementType = Movement.MovementType.NONE
 func _ready() -> void:
     super()
     orient()
+    get_level().grid_entities.append(self)
 
 func delay_emit() -> void:
     if _emit_orientation:

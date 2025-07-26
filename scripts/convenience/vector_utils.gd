@@ -35,3 +35,9 @@ static func rotate_ccw(direction: Vector3i, up: Vector3i) -> Vector3i:
     push_error("Cannot rotate clockwise without an up direction")
     print_stack()
     return direction
+
+static func manhattan_distance(a: Vector3i, b: Vector3i) -> int:
+    return absi(a.x - b.x) + absi(a.y - b.y) + absi(a.z - b.z)
+
+static func chebychev_distance(a: Vector3i, b: Vector3i) -> int:
+    return maxi(maxi(absi(a.x - b.x), absi(a.y - b.y)), absi(a.z - b.z))
