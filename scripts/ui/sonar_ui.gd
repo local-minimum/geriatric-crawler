@@ -98,13 +98,13 @@ var next_update: int
 
 func _process(_delta: float) -> void:
     if is_visible_in_tree() && Time.get_ticks_msec() > next_update:
-        _calculate_detections()
+        _calculate_detection()
         queue_redraw()
 
 var detect_dist: int
 var facing_detected: bool
 
-func _calculate_detections() -> void:
+func _calculate_detection() -> void:
     var level: GridLevel = exploration_ui.level
     var player_coords: Vector3i = level.player.coordinates()
     var look_vector: Vector3i = CardinalDirections.direction_to_look_vector(level.player.look_direction)
@@ -112,7 +112,7 @@ func _calculate_detections() -> void:
     detect_dist = -1
 
     for entity: GridEntity in level.grid_entities:
-        if entity == level.player:
+        if entity == level.player || !entity.visible:
             continue
 
         var coords: Vector3i = entity.coordinates()
@@ -133,6 +133,10 @@ func _calculate_detections() -> void:
             detect_dist = d
             facing_detected = look_vector == VectorUtils.primary_direction(coords - player_coords)
 
+    if exploration_ui.level.player.robot.get_skill_level(RobotAbility.SKILL_SONAR) < 2:
+        return
+
+    # TODO: Detect secrets if lvl 2
 
 const BASE_SIGNAL_HEIGHT: float = 0.1
 const SIGNAL_BASE_NOISE: float = 0.02
