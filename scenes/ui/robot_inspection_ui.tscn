@@ -1,10 +1,11 @@
-[gd_scene load_steps=10 format=3 uid="uid://ueqtmtn8vb0v"]
+[gd_scene load_steps=11 format=3 uid="uid://ueqtmtn8vb0v"]
 
 [ext_resource type="Script" uid="uid://crchgnovga7nc" path="res://scripts/ui/robot_inspection_ui.gd" id="1_j3vuf"]
 [ext_resource type="Texture2D" uid="uid://cgijt2to15yms" path="res://sprites/kenny game icons/cross.png" id="2_0f0fp"]
 [ext_resource type="Script" uid="uid://5lsjirgudi0w" path="res://scripts/ui/robot_skill_tree_ui.gd" id="3_4hdtw"]
 [ext_resource type="PackedScene" uid="uid://qvbyso8n7n8j" path="res://scenes/ui/robot_skill_level_ui.tscn" id="4_yfo5l"]
 [ext_resource type="Script" uid="uid://bkudjqfkkgxlw" path="res://scripts/ui/exploration_inventory_ui.gd" id="5_0f0fp"]
+[ext_resource type="Script" uid="uid://c55ba5lckbxlc" path="res://scripts/ui/chained_vboxes.gd" id="6_4hdtw"]
 
 [sub_resource type="Curve" id="Curve_7mycd"]
 _data = [Vector2(0, 0.0905457), 0.0, 0.0, 0, 0, Vector2(0.330494, 0.571257), 0.0, 0.0, 0, 0, Vector2(0.681431, 0.693384), 0.593166, 0.593166, 0, 0, Vector2(1, 0.914251), 0.00953312, 0.0, 0, 0]
@@ -199,11 +200,11 @@ color = Color(0, 0, 0, 1)
 [node name="Robot Skill Level 4" parent="MarginContainer/Main/SkillTree/MarginContainer/Levels" instance=ExtResource("4_yfo5l")]
 layout_mode = 2
 
-[node name="Inventory" type="Control" parent="MarginContainer/Main" node_paths=PackedStringArray("columns")]
+[node name="Inventory" type="Control" parent="MarginContainer/Main" node_paths=PackedStringArray("_chained_boxes")]
 layout_mode = 2
 size_flags_vertical = 3
 script = ExtResource("5_0f0fp")
-columns = [NodePath("MarginContainer/Main/HBoxContainer/Column 1"), NodePath("MarginContainer/Main/HBoxContainer/Column 2"), NodePath("MarginContainer/Main/HBoxContainer/Column 3")]
+_chained_boxes = NodePath("MarginContainer/Main/Chained VBoxes")
 
 [node name="Background" type="ColorRect" parent="MarginContainer/Main/Inventory"]
 layout_mode = 1
@@ -237,21 +238,27 @@ text = "Inventory"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/Main/Inventory/MarginContainer/Main"]
+[node name="Chained VBoxes" type="HBoxContainer" parent="MarginContainer/Main/Inventory/MarginContainer/Main" node_paths=PackedStringArray("_boxes")]
+clip_contents = true
 layout_mode = 2
 size_flags_vertical = 3
+script = ExtResource("6_4hdtw")
+_boxes = [NodePath("Column 1"), NodePath("Column 2"), NodePath("Column 3")]
 
-[node name="Column 1" type="VBoxContainer" parent="MarginContainer/Main/Inventory/MarginContainer/Main/HBoxContainer"]
+[node name="Column 1" type="VBoxContainer" parent="MarginContainer/Main/Inventory/MarginContainer/Main/Chained VBoxes"]
+clip_contents = true
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 8
 
-[node name="Column 2" type="VBoxContainer" parent="MarginContainer/Main/Inventory/MarginContainer/Main/HBoxContainer"]
+[node name="Column 2" type="VBoxContainer" parent="MarginContainer/Main/Inventory/MarginContainer/Main/Chained VBoxes"]
+clip_contents = true
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 8
 
-[node name="Column 3" type="VBoxContainer" parent="MarginContainer/Main/Inventory/MarginContainer/Main/HBoxContainer"]
+[node name="Column 3" type="VBoxContainer" parent="MarginContainer/Main/Inventory/MarginContainer/Main/Chained VBoxes"]
+clip_contents = true
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 8

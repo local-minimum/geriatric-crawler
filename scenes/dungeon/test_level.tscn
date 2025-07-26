@@ -120,8 +120,15 @@ direction = 3
 [node name="SimpleLootContainer" type="Node3D" parent="LevelGeometry/Elevation 0/Node (0, 0, -1)" node_paths=PackedStringArray("_mesh")]
 script = ExtResource("8_j1mj1")
 _contents = Dictionary[String, float]({
+"Ag": 3.0,
+"Au": 1.0,
+"Carbide Polymere": 30.0,
 "Cu": 3.0,
 "Fe": 10.0,
+"Fullerene Clusters": 0.2,
+"He": 0.5,
+"Sn": 15.0,
+"Thermal Paste": 1.0,
 "Ti": 8.0
 })
 _mesh = NodePath("MeshInstance3D")
