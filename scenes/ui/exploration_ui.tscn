@@ -61,12 +61,12 @@ layout_mode = 2
 size_flags_vertical = 3
 size_flags_stretch_ratio = 3.0
 
-[node name="ColorRect" type="ColorRect" parent="MarginContainer/VBoxContainer"]
+[node name="Sonar" type="ColorRect" parent="MarginContainer/VBoxContainer"]
 custom_minimum_size = Vector2(0, 30)
 layout_mode = 2
 color = Color(0.0901961, 0.0901961, 0.0901961, 0.6)
 
-[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/ColorRect"]
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/Sonar"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -78,7 +78,7 @@ theme_override_constants/margin_top = 2
 theme_override_constants/margin_right = 2
 theme_override_constants/margin_bottom = 2
 
-[node name="SonarUI" type="Control" parent="MarginContainer/VBoxContainer/ColorRect/MarginContainer" node_paths=PackedStringArray("sonar_root", "sonar_label", "exploration_ui")]
+[node name="SonarUI" type="Control" parent="MarginContainer/VBoxContainer/Sonar/MarginContainer" node_paths=PackedStringArray("sonar_root", "sonar_label", "exploration_ui")]
 layout_mode = 2
 script = ExtResource("3_ld1f6")
 sonar_root = NodePath("../..")
@@ -87,8 +87,11 @@ exploration_ui = NodePath("../../../../..")
 bar_width = 8.015
 bar_color = Color(1, 1, 1, 1)
 update_frequency_msec = 300
+look_direction_signal_bar_progress = 4.0
+signal_speed = 0.002
+look_direction_signal_speed = 0.01
 
-[node name="Sonar lvl make" type="Label" parent="MarginContainer/VBoxContainer/ColorRect/MarginContainer"]
+[node name="Sonar lvl make" type="Label" parent="MarginContainer/VBoxContainer/Sonar/MarginContainer"]
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 0

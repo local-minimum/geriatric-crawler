@@ -41,3 +41,16 @@ static func manhattan_distance(a: Vector3i, b: Vector3i) -> int:
 
 static func chebychev_distance(a: Vector3i, b: Vector3i) -> int:
     return maxi(maxi(absi(a.x - b.x), absi(a.y - b.y)), absi(a.z - b.z))
+
+static func primary_direction(v: Vector3i) -> Vector3i:
+    var abs_x: int = abs(v.x)
+    var abs_y: int = abs(v.y)
+    var abs_z: int = abs(v.z)
+
+    if abs_x > abs_z && abs_x > abs_y:
+        return Vector3i(signi(v.x), 0, 0)
+
+    if abs_y > abs_z:
+        return Vector3i(0, signi(v.y), 0)
+
+    return Vector3i(0, 0, signi(v.z))

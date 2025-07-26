@@ -66,6 +66,9 @@ func get_grid_node(coordinates: Vector3i) -> GridNode:
 func has_grid_node(coordinates: Vector3i) -> bool:
     return _nodes.has(coordinates)
 
+func nodes() -> Array[GridNode]:
+    return _nodes.values()
+
 func _sync_nodes() -> void:
     _nodes.clear()
 
