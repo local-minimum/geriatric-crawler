@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://d3iceirfj21qw"]
+[gd_scene load_steps=13 format=3 uid="uid://d3iceirfj21qw"]
 
 [ext_resource type="Script" uid="uid://dng6kx20nqasv" path="res://scripts/ui/exploration_ui.gd" id="1_jvesw"]
 [ext_resource type="Texture2D" uid="uid://37t534r3ua0p" path="res://sprites/kenny game icons/open-xflipped.png" id="2_m3jmt"]
@@ -6,6 +6,7 @@
 [ext_resource type="Script" uid="uid://ccd5c8wiv7kia" path="res://scripts/ui/simple_map_ui.gd" id="3_4stpx"]
 [ext_resource type="Script" uid="uid://dcq4t1cqwva08" path="res://scripts/robot_exploration_mapper.gd" id="3_2458l"]
 [ext_resource type="PackedScene" uid="uid://dbvjynwqexkui" path="res://scenes/ui/compass_ui.tscn" id="3_eifl5"]
+[ext_resource type="Script" uid="uid://dgpd7jxisqmya" path="res://scripts/ui/sonar_ui.gd" id="3_ld1f6"]
 [ext_resource type="Texture2D" uid="uid://cev0382nhv46i" path="res://sprites/kenny game icons/arrowUp.png" id="3_rfm22"]
 [ext_resource type="Texture2D" uid="uid://davhidpjbpjq2" path="res://sprites/kenny game icons/open.png" id="4_eifl5"]
 [ext_resource type="Texture2D" uid="uid://bowjve07f2wq0" path="res://sprites/kenny game icons/arrowLeft.png" id="5_4stpx"]
@@ -59,6 +60,30 @@ _exploration_ui = NodePath("../../..")
 layout_mode = 2
 size_flags_vertical = 3
 size_flags_stretch_ratio = 3.0
+
+[node name="ColorRect" type="ColorRect" parent="MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+color = Color(0.0901961, 0.0901961, 0.0901961, 0.6)
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/ColorRect"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 2
+theme_override_constants/margin_top = 2
+theme_override_constants/margin_right = 2
+theme_override_constants/margin_bottom = 2
+
+[node name="SonarUI" type="Control" parent="MarginContainer/VBoxContainer/ColorRect/MarginContainer"]
+layout_mode = 2
+script = ExtResource("3_ld1f6")
+bar_width = 8.015
+bar_color = Color(1, 1, 1, 1)
+update_frequency_msec = 400
 
 [node name="SimpleMapModule" type="ColorRect" parent="MarginContainer/VBoxContainer" node_paths=PackedStringArray("_simple_map_ui", "_mapping_area")]
 custom_minimum_size = Vector2(0, 150)

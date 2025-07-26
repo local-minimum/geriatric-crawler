@@ -13,6 +13,9 @@ const SKILL_UPGRADES: String = "upgrades"
 ## LVL 1: Compass, LVL 2: Simple map, LVL 3: 3D map, LVL 4: Annotation
 const SKILL_MAPPING: String = "mapping"
 
+## LVL 1: Detect enemies, LVL 2: Detect enemies & hidden objects
+const SKILL_SONAR: String = "sonar"
+
 enum AbilityType { Exploration, Battle, Other }
 
 ## Class id of the ability (doesn't include the level of the ability)

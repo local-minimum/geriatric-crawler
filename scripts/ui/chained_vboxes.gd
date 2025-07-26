@@ -8,6 +8,9 @@ var _boxes: Array[VBoxContainer]
 var _static_child_height: bool
 
 func _process(_delta: float) -> void:
+    if !is_visible_in_tree():
+        return
+
     for idx: int in range(_boxes.size()):
         var box: VBoxContainer = _boxes[idx]
         var next_box: VBoxContainer = _boxes[idx + 1] if idx + 1 < _boxes.size() else null
