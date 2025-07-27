@@ -757,7 +757,7 @@ theme_override_constants/shadow_offset_x = 1
 theme_override_constants/shadow_offset_y = 1
 theme_override_constants/outline_size = 0
 theme_override_font_sizes/font_size = 29
-text = "This is my text very important about what to do"
+text = "This is my text very important about what to do in battle"
 script = ExtResource("12_g3sjl")
 battle = NodePath("../..")
 

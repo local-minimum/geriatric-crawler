@@ -45,6 +45,7 @@ func collect_save_data() -> Dictionary:
 
 func load_save_data(_data: Dictionary) -> void:
     # If we exist in the save we are looted no matter what
+    _triggered = true
     _looted = true
     _set_open_graphics()
 

@@ -1,0 +1,12 @@
+[gd_scene load_steps=3 format=3 uid="uid://ejop3mdqfxic"]
+
+[ext_resource type="Script" uid="uid://c2cd8hwgen7kp" path="res://scripts/gridded_level/level_features/grid_teleporter.gd" id="1_7lclv"]
+[ext_resource type="PackedScene" uid="uid://cl53mklatql55" path="res://models/circular_floor_detector.fbx" id="2_hbsnk"]
+
+[node name="Teleporter" type="Node3D"]
+script = ExtResource("1_7lclv")
+anchor_direction = 6
+_trigger_entire_node = true
+
+[node name="circular_floor_detector" parent="." instance=ExtResource("2_hbsnk")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, 0)
