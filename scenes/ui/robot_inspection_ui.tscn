@@ -242,6 +242,7 @@ vertical_alignment = 1
 clip_contents = true
 layout_mode = 2
 size_flags_vertical = 3
+theme_override_constants/separation = 20
 script = ExtResource("6_4hdtw")
 _boxes = [NodePath("Column 1"), NodePath("Column 2"), NodePath("Column 3")]
 
