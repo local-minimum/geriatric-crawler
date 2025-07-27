@@ -4,9 +4,12 @@
 [ext_resource type="PackedScene" uid="uid://cl53mklatql55" path="res://models/circular_floor_detector.fbx" id="2_hbsnk"]
 [ext_resource type="PackedScene" uid="uid://cmtuamsbxuqqk" path="res://scenes/dungeon/effects/portal_effect.tscn" id="3_hbsnk"]
 
-[node name="Teleporter" type="Node3D"]
+[node name="Teleporter" type="Node3D" node_paths=PackedStringArray("effect")]
 script = ExtResource("1_7lclv")
 anchor_direction = 6
+inactive_scale = 0.7
+effect = NodePath("PortalEffect")
+rotation_speed = 3.0
 _trigger_entire_node = true
 
 [node name="circular_floor_detector" parent="." instance=ExtResource("2_hbsnk")]

@@ -16,6 +16,23 @@ var look_direction: CardinalDirections.CardinalDirection
 @export
 var anchor_direction: CardinalDirections.CardinalDirection
 
+@export
+var inactive_scale: float = 0.3
+
+@export
+var effect: Node3D
+
+@export
+var rotation_speed: float = 1
+
+func _ready() -> void:
+    super._ready()
+    if effect != null:
+        if exit == null:
+            effect.visible = false
+        else:
+            effect.scale = Vector3.ONE * inactive_scale
+
 func needs_saving() -> bool:
     return _triggered && !_repeatable
 
@@ -67,10 +84,38 @@ func trigger(entity: GridEntity, movement: Movement.MovementType) -> void:
 
     super.trigger(entity, movement)
 
+    _show_effect(entity)
+
     entity.cinematic = true
     # TODO: Play some nice effect
     if entity.on_move_end.connect(_handle_teleport) != OK:
         _handle_teleport(entity)
+
+func _show_effect(entity: GridEntity) -> void:
+    if effect == null || exit == null:
+        return
+
+    var rot: Quaternion = CardinalDirections.direction_to_rotation(
+        CardinalDirections.invert(entity.down),
+        CardinalDirections.invert(entity.look_direction),
+    )
+
+    effect.global_rotation = rot.get_euler()
+    effect.scale = Vector3.ONE * inactive_scale
+    effect.visible = true
+
+    var tween: Tween = create_tween()
+
+    @warning_ignore_start("return_value_discarded")
+    tween.tween_property(effect, "scale", Vector3.ONE, 0.2).set_trans(Tween.TRANS_CUBIC)
+    @warning_ignore_restore("return_value_discarded")
+
+    if tween.connect(
+        "finished",
+        func () -> void:
+            effect.scale = Vector3.ONE * inactive_scale
+    ) != OK:
+        push_warning("Could not disable teleportation effect after done")
 
 func _handle_teleport(entity: GridEntity) -> void:
     print_debug("Handle teleport of %s from %s to %s" % [entity, coordinates(), "%s" % exit.coordinates() if exit != null else "Nowhere"])
@@ -99,3 +144,9 @@ func _handle_teleport(entity: GridEntity) -> void:
     entity.sync_position()
     entity.clear_queue()
     entity.cinematic = false
+
+func _process(delta: float) -> void:
+    if effect == null || !effect.visible || !_teleporting.is_empty():
+        return
+
+    effect.global_rotation += CardinalDirections.direction_to_look_vector(anchor_direction) * delta * rotation_speed

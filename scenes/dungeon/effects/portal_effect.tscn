@@ -164,6 +164,7 @@ size = Vector2(0.5, 0.5)
 [node name="PrimaryEmitter" type="GPUParticles3D" parent="."]
 amount = 6
 sub_emitter = NodePath("../Subemitter")
+local_coords = true
 process_material = SubResource("ParticleProcessMaterial_aerwb")
 draw_pass_1 = SubResource("QuadMesh_itmn0")
 
@@ -171,6 +172,7 @@ draw_pass_1 = SubResource("QuadMesh_itmn0")
 emitting = false
 amount = 200
 sub_emitter = NodePath("../Subemitter2")
+local_coords = true
 process_material = SubResource("ParticleProcessMaterial_0ba2q")
 draw_passes = 3
 draw_pass_1 = SubResource("QuadMesh_8e8rh")
@@ -180,5 +182,6 @@ draw_pass_3 = SubResource("QuadMesh_yh11p")
 [node name="Subemitter2" type="GPUParticles3D" parent="."]
 emitting = false
 amount = 200
+local_coords = true
 process_material = SubResource("ParticleProcessMaterial_u8qon")
 draw_pass_1 = SubResource("QuadMesh_0q817")
