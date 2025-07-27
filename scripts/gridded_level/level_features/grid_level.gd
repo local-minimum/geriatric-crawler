@@ -54,6 +54,25 @@ func _ready() -> void:
     else:
         print_debug("Level %s has %s nodes" % [name, _nodes.size()])
 
+func illusory_sides() -> Array[GridNodeSide]:
+    if _nodes.is_empty():
+        return []
+
+    var illusions: Array[GridNodeSide] = []
+    _nodes.values().reduce(
+        func (_acc: Variant, node: GridNode) -> int:
+            if node == null:
+                return 0
+
+            for side: GridNodeSide in node.illusory_sides():
+                illusions.append(side)
+
+            return 0,
+        0,
+    )
+
+    return illusions
+
 func get_grid_node(coordinates: Vector3i) -> GridNode:
     if _nodes.has(coordinates):
         return _nodes[coordinates]

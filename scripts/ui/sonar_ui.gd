@@ -117,26 +117,39 @@ func _calculate_detection() -> void:
 
         var coords: Vector3i = entity.coordinates()
 
-        if coords == player_coords:
-            detect_dist = 0
-            facing_detected = true
-            break
-
-        if VectorUtils.manhattan_distance(player_coords, coords) > detection_range:
-            continue
-
-        var d: int = _astar.get_point_path(_get_or_add_astar_id(player_coords), _get_or_add_astar_id(coords)).size()
-        if d > detection_range:
-            continue
-
-        if detect_dist < 0 || d < detect_dist:
-            detect_dist = d
-            facing_detected = look_vector == VectorUtils.primary_direction(coords - player_coords)
+        if _update_detect_based_on_coords(coords, player_coords, look_vector):
+            return
 
     if exploration_ui.level.player.robot.get_skill_level(RobotAbility.SKILL_SONAR) < 2:
         return
 
-    # TODO: Detect secrets if lvl 2
+    for side: GridNodeSide in level.illusory_sides():
+        if side == null:
+            continue
+
+        var coords: Vector3i = side.get_side_parent_grid_node().coordinates
+
+        if _update_detect_based_on_coords(coords, player_coords, look_vector):
+            return
+
+func _update_detect_based_on_coords(coords: Vector3i, player_coords: Vector3i, look_vector: Vector3i) -> bool:
+    if coords == player_coords:
+        detect_dist = 0
+        facing_detected = true
+        return true
+
+    if VectorUtils.manhattan_distance(player_coords, coords) > detection_range:
+        return false
+
+    var d: int = _astar.get_point_path(_get_or_add_astar_id(player_coords), _get_or_add_astar_id(coords)).size()
+    if d > detection_range:
+        return false
+
+    if detect_dist < 0 || d < detect_dist:
+        detect_dist = d
+        facing_detected = look_vector == VectorUtils.primary_direction(coords - player_coords)
+
+    return false
 
 const BASE_SIGNAL_HEIGHT: float = 0.1
 const SIGNAL_BASE_NOISE: float = 0.02

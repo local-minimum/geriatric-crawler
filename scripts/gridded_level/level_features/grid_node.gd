@@ -10,6 +10,7 @@ var entry_requires_anchor: bool = true
 var level: GridLevel
 
 var _anchors: Dictionary[CardinalDirections.CardinalDirection, GridAnchor] = {}
+var _sides: Dictionary[CardinalDirections.CardinalDirection, GridNodeSide] = {}
 
 func _ready() -> void:
     if level == null:
@@ -20,6 +21,14 @@ func get_level() -> GridLevel:
         level = GridLevel.find_level_parent(self)
 
     return level
+
+func _is_illusory_side(direction: CardinalDirections.CardinalDirection) -> bool:
+    return _sides.has(direction) && _sides[direction].illosory
+
+func illusory_sides() -> Array[GridNodeSide]:
+    _init_sides_and_anchors()
+    return _sides.values().filter(func (side: GridNodeSide) -> bool: return side.illosory)
+
 #region Events
 var _events: Array[GridEvent]
 var _events_inited: bool = false
@@ -81,11 +90,13 @@ func triggering_events(
 #region Anchor
 var _anchords_inited: bool
 
-func _init_anchors() -> void:
+func _init_sides_and_anchors() -> void:
     if _anchords_inited: return
 
     for side: GridNodeSide in find_children("", "GridNodeSide"):
         GridNodeSide.set_direction_from_rotation(side)
+
+        _sides[side.direction] = side
 
         if side.anchor == null:
             continue
@@ -136,7 +147,7 @@ func remove_anchor(anchor: GridAnchor) -> bool:
     return false
 
 func add_anchor(anchor: GridAnchor) -> bool:
-    _init_anchors()
+    _init_sides_and_anchors()
 
     if _anchors.has(anchor.direction):
         push_warning(
@@ -155,7 +166,7 @@ func get_grid_anchor(direction: CardinalDirections.CardinalDirection) -> GridAnc
     if _anchors.has(direction):
         return _anchors[direction]
 
-    _init_anchors()
+    _init_sides_and_anchors()
 
     if _anchors.has(direction):
         return _anchors[direction]
@@ -188,13 +199,16 @@ func may_enter(
     move_direction: CardinalDirections.CardinalDirection,
     anchor_direction: CardinalDirections.CardinalDirection,
     ignore_require_anchor: bool = false,
+    force_respect_illuory: bool = false,
 ) -> bool:
     if _entry_blocking_events(entity, from, move_direction, anchor_direction):
         print_debug("Cannot enter moving %s because of events" % CardinalDirections.name(move_direction))
         return false
 
     var entry_direction: CardinalDirections.CardinalDirection = CardinalDirections.invert(move_direction)
-    var entry_anchor: GridAnchor = get_grid_anchor(entry_direction)
+
+    # TODO: Regulate if some entity may treat illusory sides as a blocker
+    var entry_anchor: GridAnchor = get_grid_anchor(entry_direction) if !_is_illusory_side(entry_direction) || force_respect_illuory else null
 
     if entry_requires_anchor && !ignore_require_anchor && !(entity.falling() && move_direction == CardinalDirections.CardinalDirection.DOWN):
         var down_anchor: GridAnchor = get_grid_anchor(anchor_direction)
@@ -212,12 +226,13 @@ func may_enter(
 
     return true
 
-func may_exit(entity: GridEntity, move_direction: CardinalDirections.CardinalDirection) -> bool:
+func may_exit(entity: GridEntity, move_direction: CardinalDirections.CardinalDirection, force_respect_illuory: bool = false) -> bool:
     if _exit_blocking_events(move_direction):
         print_debug("Cannot exit %s moving %s because of events" % [name, CardinalDirections.name(move_direction)])
         return false
 
-    var anchor: GridAnchor = get_grid_anchor(move_direction)
+    # TODO: Regulate if some entity may treat illusory sides and blockers
+    var anchor: GridAnchor = get_grid_anchor(move_direction) if !_is_illusory_side(move_direction) || force_respect_illuory else null
 
     if anchor == null:
         return true

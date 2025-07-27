@@ -68,7 +68,7 @@ func _handle_move_end(entity: GridEntity) -> void:
     var coords: Vector3i = entity.coordinates()
     _enter_new_coordinates(coords)
 
-    if _player.get_grid_node().may_exit(_player, _player.look_direction):
+    if _player.get_grid_node().may_exit(_player, _player.look_direction, true):
         coords = CardinalDirections.translate(coords, _player.look_direction)
         _enter_new_coordinates(coords)
 

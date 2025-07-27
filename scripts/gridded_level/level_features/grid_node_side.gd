@@ -13,6 +13,9 @@ var anchor: GridAnchor
 @export
 var negative_anchor: GridAnchor
 
+@export
+var illosory: bool
+
 func is_two_sided() -> bool:
     return negative_anchor != null
 
@@ -22,13 +25,13 @@ func _ready() -> void:
 var _parent_node: GridNode
 var _inverse_parent_node: GridNode
 
-func _get_parent_node() -> GridNode:
+func get_side_parent_grid_node() -> GridNode:
     if _parent_node == null:
         _parent_node = GridNode.find_node_parent(self, false)
     return _parent_node
 
 func _get_inverse_parent_node() -> GridNode:
-    var parent_node: GridNode = _get_parent_node()
+    var parent_node: GridNode = get_side_parent_grid_node()
     if parent_node == null:
         push_warning("%s doesn't have a node parent" % name)
         print_tree()
@@ -40,7 +43,7 @@ func _get_inverse_parent_node() -> GridNode:
 
 func get_grid_node(value: GridAnchor) -> GridNode:
     if value == anchor:
-        return _get_parent_node()
+        return get_side_parent_grid_node()
     elif value == negative_anchor && negative_anchor != null:
         return _get_inverse_parent_node()
 
