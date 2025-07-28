@@ -1,4 +1,4 @@
-[gd_scene load_steps=43 format=3 uid="uid://dwqcwbgj8p6q0"]
+[gd_scene load_steps=44 format=3 uid="uid://dwqcwbgj8p6q0"]
 
 [ext_resource type="Script" uid="uid://dqe42q7uub84r" path="res://scripts/gridded_level/level_features/grid_level.gd" id="1_dd1ob"]
 [ext_resource type="PackedScene" uid="uid://bfoog3fb4v5ij" path="res://scenes/dungeon/player.tscn" id="3_m6mav"]
@@ -24,6 +24,7 @@
 [ext_resource type="Script" uid="uid://vhd085que0kg" path="res://scripts/gridded_level/level_features/grid_node.gd" id="15_sy7nh"]
 [ext_resource type="Script" uid="uid://c6733p4qj68p" path="res://scripts/gridded_level/level_features/grid_node_side.gd" id="16_dw5j8"]
 [ext_resource type="Resource" uid="uid://cbhpqqpyr05fu" path="res://resources/enemy_cards/enemy_training_dummy_cards/training_dummy_blank_200.tres" id="16_n55gf"]
+[ext_resource type="PackedScene" uid="uid://dd2j8au35b3wp" path="res://models/door.fbx" id="16_sy7nh"]
 [ext_resource type="Resource" uid="uid://jqj3jm50pkqs" path="res://resources/enemy_cards/enemy_training_dummy_cards/training_dummy_blank_420.tres" id="17_idbts"]
 [ext_resource type="Resource" uid="uid://bodhea2xa1exq" path="res://resources/enemy_cards/enemy_training_dummy_cards/training_dummy_blank_700.tres" id="18_j1mj1"]
 [ext_resource type="Resource" uid="uid://cgq448x54hl2k" path="res://resources/enemy_cards/enemy_training_dummy_cards/training_dummy_shield_up_65.tres" id="19_7gan6"]
@@ -515,6 +516,9 @@ anchor = NodePath("GridAnchor")
 script = ExtResource("16_dw5j8")
 infer_direction_from_rotation = false
 anchor = NodePath("Anchor")
+
+[node name="door" parent="LevelGeometry/Elevation 0/Node (3, 0, 1)" instance=ExtResource("16_sy7nh")]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -1.24616, 0, 0)
 
 [node name="Node (4, 0, 1)" type="Node3D" parent="LevelGeometry/Elevation 0" instance=ExtResource("4_myev5")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 0, 2.5)

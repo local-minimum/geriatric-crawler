@@ -12,6 +12,11 @@ var _mesh: MeshInstance3D
 @export
 var _open_tex: Texture
 
+func _ready() -> void:
+    var mat: Material = _mesh.get_active_material(0)
+    if mat.get_reference_count() > 1:
+        _mesh.material_overlay = mat.duplicate()
+
 func needs_saving() -> bool:
     return _looted
 
