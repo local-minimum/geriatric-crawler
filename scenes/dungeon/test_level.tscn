@@ -1,4 +1,4 @@
-[gd_scene load_steps=42 format=3 uid="uid://dwqcwbgj8p6q0"]
+[gd_scene load_steps=44 format=3 uid="uid://dwqcwbgj8p6q0"]
 
 [ext_resource type="Script" uid="uid://dqe42q7uub84r" path="res://scripts/gridded_level/level_features/grid_level.gd" id="1_dd1ob"]
 [ext_resource type="PackedScene" uid="uid://bfoog3fb4v5ij" path="res://scenes/dungeon/player.tscn" id="3_m6mav"]
@@ -51,6 +51,13 @@ albedo_texture = ExtResource("10_7gan6")
 
 [sub_resource type="QuadMesh" id="QuadMesh_wymjw"]
 material = SubResource("StandardMaterial3D_sn1co")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_sy7nh"]
+transparency = 1
+albedo_texture = ExtResource("10_7gan6")
+
+[sub_resource type="QuadMesh" id="QuadMesh_sy7nh"]
+material = SubResource("StandardMaterial3D_sy7nh")
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_26eu7"]
 transparency = 1
@@ -933,7 +940,7 @@ metadata/_custom_type_script = "uid://4tbbs5wj6vj7"
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="LevelGeometry/Elevation 2/Node (3, 2, 0)/SimpleLootContainer"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.590363, 0)
-mesh = SubResource("QuadMesh_wymjw")
+mesh = SubResource("QuadMesh_sy7nh")
 script = ExtResource("9_myev5")
 use_look_direction_for_rotation = true
 offset_if_on_same_tile = true
