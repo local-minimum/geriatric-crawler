@@ -67,7 +67,7 @@ func _exit_blocking_events(move_direction: CardinalDirections.CardinalDirection)
 func any_event_blocks_anchorage(_entity: GridEntity, side: CardinalDirections.CardinalDirection) -> bool:
     return _events.any(
         func (evt: GridEvent) -> bool:
-            return evt.side_blocked(side)
+            return evt.anchorage_blocked(side)
     )
 
 func triggering_events(

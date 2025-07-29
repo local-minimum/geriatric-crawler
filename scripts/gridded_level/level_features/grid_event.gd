@@ -64,7 +64,7 @@ func blocks_exit_translation(
 ) -> bool:
     return _blocks_sides.has(exit_direction)
 
-func side_blocked(side: CardinalDirections.CardinalDirection) -> bool:
+func anchorage_blocked(side: CardinalDirections.CardinalDirection) -> bool:
     return _blocks_sides.has(side)
 
 func manages_triggering_translation() -> bool:
