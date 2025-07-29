@@ -5,7 +5,7 @@ class_name GridDoor
 var animator: AnimationPlayer
 
 enum OpenAutomation { NONE, WALK_INTO, PROXIMITY }
-enum CloseAutomation { NONE, PROXIMITY }
+enum CloseAutomation { NONE, END_WALK, PROXIMITY }
 enum LockState { LOCKED, CLOSED, OPEN }
 
 static func lock_state_name(state: LockState) -> String:
@@ -63,6 +63,8 @@ func _ready() -> void:
     if _back_automation != OpenAutomation.NONE:
         _add_back_sentinel.call_deferred()
 
+    get_grid_node().add_grid_event(self)
+
 func _add_back_sentinel() -> void:
     var neighbour_coords: Vector3i = CardinalDirections.translate(coordinates(), _door_face)
     var neighbour: GridNode = get_level().get_grid_node(neighbour_coords)
@@ -102,6 +104,9 @@ func _add_back_sentinel() -> void:
     sentinel.automation = _back_automation
     sentinel.close_automation = _close_automation
 
+    sentinel._repeatable = true
+    sentinel._trigger_entire_node = true
+
     neighbour.add_child(sentinel)
     neighbour.add_grid_event(sentinel)
 
@@ -111,7 +116,7 @@ func should_trigger(
     _from_side: CardinalDirections.CardinalDirection,
     _to_side: CardinalDirections.CardinalDirection,
 ) -> bool:
-    return lock_state != LockState.OPEN
+    return true
 
 func blocks_entry_translation(
     entity: GridEntity,
@@ -137,24 +142,56 @@ func manages_triggering_translation() -> bool:
 var proximate_entitites: Array[GridEntity]
 
 func trigger(entity: GridEntity, movement: Movement.MovementType) -> void:
+    # print_debug("%s door is state %s automation %s" % [self, lock_state_name(lock_state), _automation])
+
     if !_repeatable && _triggered:
         return
 
     super.trigger(entity, movement)
 
-    # print_debug("%s door is state %s automation %s" % [self, lock_state_name(lock_state), _automation])
-
-    if _close_automation == CloseAutomation.PROXIMITY && !proximate_entitites.has(entity):
+    if _close_automation == CloseAutomation.PROXIMITY:
         _monitor_entity_for_closing(entity)
 
-    if _automation == OpenAutomation.PROXIMITY && lock_state == LockState.CLOSED:
-        open_door()
+    if lock_state == LockState.CLOSED:
+        if _automation == OpenAutomation.PROXIMITY:
+            open_door()
+            return
+
+        if _automation == OpenAutomation.WALK_INTO:
+            if !entity.on_move_start.is_connected(_check_walk_onto_closed_door):
+                if entity.on_move_start.connect(_check_walk_onto_closed_door) != OK:
+                    push_error("Failed to connect %s on move start to check door opening" % entity)
+            return
+
+func _check_walk_onto_closed_door(
+    entity: GridEntity,
+    from: Vector3i,
+    translation_direction: CardinalDirections.CardinalDirection,
+) -> void:
+    print_debug("%s %s vs %s and %s vs %s" % [
+        self,
+        from,
+        coordinates(),
+        CardinalDirections.name(translation_direction),
+        CardinalDirections.name(_door_face),
+    ])
+
+    if from != coordinates() && entity.coordinates() != coordinates():
+        entity.on_move_start.disconnect(_check_walk_onto_closed_door)
         return
 
+    if from == coordinates() && translation_direction == _door_face:
+        open_door()
+        entity.on_move_start.disconnect(_check_walk_onto_closed_door)
+
 func _monitor_entity_for_closing(entity: GridEntity) -> void:
-    proximate_entitites.append(entity)
-    if entity.on_move_end.connect(_check_autoclose) != OK:
-        push_error("Door %s failed to connect %s on move end for auto-closing" % [self, entity])
+    if !proximate_entitites.has(entity):
+        proximate_entitites.append(entity)
+
+    if !entity.on_move_end.is_connected(_check_autoclose):
+        print_debug("%s monitors %s" % [self, entity])
+        if entity.on_move_end.connect(_check_autoclose) != OK:
+            push_error("Door %s failed to connect %s on move end for auto-closing" % [self, entity])
 
 func _check_autoclose(entity: GridEntity) -> void:
     var e_coords: Vector3i = entity.coordinates()
@@ -166,7 +203,7 @@ func _check_autoclose(entity: GridEntity) -> void:
     proximate_entitites.erase(entity)
     entity.on_move_end.disconnect(_check_autoclose)
 
-    if proximate_entitites.is_empty():
+    if proximate_entitites.is_empty() && lock_state == LockState.OPEN:
         print_debug("%s close door" % self)
         close_door()
         return

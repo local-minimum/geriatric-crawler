@@ -1,7 +1,7 @@
 extends GridNodeFeature
 class_name GridEntity
 
-signal on_move_start(entity: GridEntity)
+signal on_move_start(entity: GridEntity, translation_direction: CardinalDirections.CardinalDirection)
 signal on_move_end(entity: GridEntity)
 signal on_update_orientation(
     entity: GridEntity,
@@ -200,9 +200,13 @@ func attempt_movement(
             _concurrent_movement = Movement.MovementType.NONE
             _concurrent_tween.kill()
 
+    var coords: Vector3i = coordinates()
     var tween: Tween
+    var translation_direction: CardinalDirections.CardinalDirection = CardinalDirections.CardinalDirection.NONE
+
     if Movement.is_translation(movement):
-        tween = planner.move_entity(movement, Movement.to_direction(movement, look_direction, down))
+        translation_direction = Movement.to_direction(movement, look_direction, down)
+        tween = planner.move_entity(movement, translation_direction)
     elif Movement.is_turn(movement):
         tween = planner.rotate_entity(movement, movement == Movement.MovementType.TURN_CLOCKWISE)
 
@@ -213,7 +217,7 @@ func attempt_movement(
         end_movement(movement, false)
         return false
 
-    on_move_start.emit(self)
+    on_move_start.emit(self, coords, translation_direction)
     return true
 
 func _enqeue_movement(movement: Movement.MovementType) -> void:

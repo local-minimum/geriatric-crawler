@@ -43,7 +43,11 @@ func _connect_player_tracking() -> void:
 
 var _track: bool
 
-func _track_player(entity: GridEntity) -> void:
+func _track_player(
+    entity: GridEntity,
+    _from: Vector3i,
+    _translation_direction: CardinalDirections.CardinalDirection,
+) -> void:
     var level: GridLevel = get_level()
 
     if entity != level.player:

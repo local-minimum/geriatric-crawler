@@ -503,7 +503,9 @@ direction = 2
 
 [node name="door" parent="LevelGeometry/Elevation 0/Node (3, 0, 1)" instance=ExtResource("14_wymjw")]
 transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -1.23292, 0, 0)
-_close_automation = 1
+_automation = 1
+_back_automation = 1
+_close_automation = 2
 _door_face = 3
 block_traversal_anchor_sides = Array[int]([1, 2])
 
