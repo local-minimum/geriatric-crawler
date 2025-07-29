@@ -43,6 +43,9 @@ var _opened_animation: String = "Opened"
 @export
 var _closed_animation: String = "Closed"
 
+@export
+var block_traversal_anchor_sides: Array[CardinalDirections.CardinalDirection]
+
 ## If door is locked, this identifies what key unlocks it
 @export
 var _key_id: String
@@ -111,12 +114,14 @@ func should_trigger(
     return lock_state != LockState.OPEN
 
 func blocks_entry_translation(
-    _entity: GridEntity,
+    entity: GridEntity,
     _from: GridNode,
     move_direction: CardinalDirections.CardinalDirection,
     _to_side: CardinalDirections.CardinalDirection,
 ) -> bool:
-    return CardinalDirections.invert(move_direction) == _door_face && lock_state != LockState.OPEN
+    return CardinalDirections.invert(move_direction) == _door_face && (
+        lock_state != LockState.OPEN || block_traversal_anchor_sides.has(entity.get_grid_anchor_direction())
+    )
 
 func blocks_exit_translation(
     exit_direction: CardinalDirections.CardinalDirection,
@@ -171,12 +176,12 @@ func _check_autoclose(entity: GridEntity) -> void:
 func close_door() -> void:
     print_debug("Close %s" % self)
     lock_state = LockState.CLOSED
-    animator.play(_close_animation)
+    animator.play(_close_animation, 0.5)
 
 func open_door() -> void:
     print_debug("Open %s" % self)
     lock_state = LockState.OPEN
-    animator.play(_open_animation)
+    animator.play(_open_animation, 0.5)
 
 func needs_saving() -> bool:
     return true

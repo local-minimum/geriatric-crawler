@@ -17,12 +17,15 @@ func should_trigger(
     return door.lock_state != GridDoor.LockState.OPEN
 
 func blocks_entry_translation(
-    _entity: GridEntity,
+    entity: GridEntity,
     _from: GridNode,
     move_direction: CardinalDirections.CardinalDirection,
     _to_side: CardinalDirections.CardinalDirection,
 ) -> bool:
-    return CardinalDirections.invert(move_direction) == door_face && door.lock_state != GridDoor.LockState.OPEN
+    return CardinalDirections.invert(move_direction) == door_face && (
+        door.lock_state != GridDoor.LockState.OPEN ||
+        door.block_traversal_anchor_sides.has(entity.get_grid_anchor_direction())
+    )
 
 func blocks_exit_translation(
     exit_direction: CardinalDirections.CardinalDirection,
