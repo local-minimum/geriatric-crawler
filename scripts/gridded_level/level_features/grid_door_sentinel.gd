@@ -46,9 +46,12 @@ func trigger(entity: GridEntity, movement: Movement.MovementType) -> void:
 
     if close_automation == GridDoor.CloseAutomation.PROXIMITY:
         _monitor_entity_for_closing(entity)
+    elif close_automation == GridDoor.CloseAutomation.END_WALK:
+        _monitor_entity_for_walkthrough_closing(entity)
 
     if door.lock_state == GridDoor.LockState.CLOSED:
         if automation == GridDoor.OpenAutomation.PROXIMITY:
+            print_debug("Sentinel opens %s" % door)
             door.open_door()
             return
 
@@ -63,7 +66,7 @@ func _check_walk_onto_closed_door(
     from: Vector3i,
     translation_direction: CardinalDirections.CardinalDirection,
 ) -> void:
-    print_debug("%s %s vs %s and %s vs %s" % [
+    print_debug("SENTINEL: %s %s vs %s and %s vs %s" % [
         door,
         from,
         coordinates(),
@@ -76,6 +79,7 @@ func _check_walk_onto_closed_door(
         return
 
     if from == coordinates() && translation_direction == door_face:
+        print_debug("Sentinel opens %s" % door)
         door.open_door()
         entity.on_move_start.disconnect(_check_walk_onto_closed_door)
 
@@ -87,6 +91,33 @@ func _monitor_entity_for_closing(entity: GridEntity) -> void:
         print_debug("%s monitors %s" % [self, entity])
         if entity.on_move_end.connect(_check_autoclose) != OK:
             push_error("Door %s failed to connect %s on move end for auto-closing" % [self, entity])
+
+func _monitor_entity_for_walkthrough_closing(
+    entity: GridEntity,
+) -> void:
+    if entity.on_move_start.is_connected(_check_traversing_door_should_autoclose):
+        return
+
+    if entity.on_move_start.connect(_check_traversing_door_should_autoclose) != OK:
+        push_error("Door %s failed to connect %s on move start for walk through auto-closing" % [self, entity])
+
+func _check_traversing_door_should_autoclose(
+    entity: GridEntity,
+    from: Vector3i,
+    translation_direction: CardinalDirections.CardinalDirection,
+) -> void:
+    if entity.coordinates() != coordinates():
+        entity.on_move_start.disconnect(_check_traversing_door_should_autoclose)
+
+    if from == coordinates() && translation_direction == door_face && door.lock_state == GridDoor.LockState.OPEN:
+        if entity.on_move_end.connect(_do_autoclose) != OK:
+            push_error("Door %s failed to conntect %s on move end when walking through door to autoclose it" % [self, entity])
+
+func _do_autoclose(entity: GridEntity) -> void:
+    entity.on_move_end.disconnect(_do_autoclose)
+
+    if door.lock_state == GridDoor.LockState.OPEN:
+        door.close_door()
 
 func _check_autoclose(entity: GridEntity) -> void:
     var e_coords: Vector3i = entity.coordinates()

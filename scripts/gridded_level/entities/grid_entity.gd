@@ -1,7 +1,7 @@
 extends GridNodeFeature
 class_name GridEntity
 
-signal on_move_start(entity: GridEntity, translation_direction: CardinalDirections.CardinalDirection)
+signal on_move_start(entity: GridEntity, from: Vector3i, translation_direction: CardinalDirections.CardinalDirection)
 signal on_move_end(entity: GridEntity)
 signal on_update_orientation(
     entity: GridEntity,

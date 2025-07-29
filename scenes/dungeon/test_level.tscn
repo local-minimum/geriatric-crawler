@@ -505,7 +505,7 @@ direction = 2
 transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -1.23292, 0, 0)
 _automation = 1
 _back_automation = 1
-_close_automation = 2
+_close_automation = 1
 _door_face = 3
 block_traversal_anchor_sides = Array[int]([1, 2])
 
