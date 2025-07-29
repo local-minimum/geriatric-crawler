@@ -8,6 +8,14 @@ enum OpenAutomation { NONE, WALK_INTO, PROXIMITY }
 enum CloseAutomation { NONE, PROXIMITY }
 enum LockState { LOCKED, CLOSED, OPEN }
 
+static func lock_state_name(state: LockState) -> String:
+    match state:
+        LockState.LOCKED: return "Locked"
+        LockState.CLOSED: return "Closed"
+        LockState.OPEN: return "Open"
+        _:
+            return "--UNKNOWN--"
+
 @export
 var _automation: OpenAutomation
 
@@ -44,6 +52,11 @@ var lock_state: LockState
 func _ready() -> void:
     super._ready()
     lock_state = _inital_lock_state
+    if lock_state == LockState.OPEN:
+        animator.play(_opened_animation)
+    else:
+        animator.play(_closed_animation)
+
     if _back_automation != OpenAutomation.NONE:
         _add_back_sentinel.call_deferred()
 
@@ -124,10 +137,12 @@ func trigger(entity: GridEntity, movement: Movement.MovementType) -> void:
 
     super.trigger(entity, movement)
 
+    # print_debug("%s door is state %s automation %s" % [self, lock_state_name(lock_state), _automation])
+
     if _close_automation == CloseAutomation.PROXIMITY && !proximate_entitites.has(entity):
         _monitor_entity_for_closing(entity)
 
-    if _automation == CloseAutomation.PROXIMITY && lock_state == LockState.CLOSED:
+    if _automation == OpenAutomation.PROXIMITY && lock_state == LockState.CLOSED:
         open_door()
         return
 
@@ -147,13 +162,19 @@ func _check_autoclose(entity: GridEntity) -> void:
     entity.on_move_end.disconnect(_check_autoclose)
 
     if proximate_entitites.is_empty():
+        print_debug("%s close door" % self)
         close_door()
+        return
+
+    print_debug("%s don't close door %s" % [self, proximate_entitites])
 
 func close_door() -> void:
+    print_debug("Close %s" % self)
     lock_state = LockState.CLOSED
     animator.play(_close_animation)
 
 func open_door() -> void:
+    print_debug("Open %s" % self)
     lock_state = LockState.OPEN
     animator.play(_open_animation)
 

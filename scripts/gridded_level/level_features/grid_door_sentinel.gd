@@ -49,6 +49,7 @@ func trigger(entity: GridEntity, movement: Movement.MovementType) -> void:
         return
 
 func _monitor_entity_for_closing(entity: GridEntity) -> void:
+    print_debug("%s monitors %s" % [self, entity])
     door.proximate_entitites.append(entity)
     if entity.on_move_end.connect(_check_autoclose) != OK:
         push_error("Door %s failed to connect %s on move end for auto-closing" % [self, entity])
@@ -64,7 +65,11 @@ func _check_autoclose(entity: GridEntity) -> void:
     entity.on_move_end.disconnect(_check_autoclose)
 
     if door.proximate_entitites.is_empty():
+        print_debug("%s close door" % self)
         door.close_door()
+        return
+
+    print_debug("%s don't close door %s" % [self, door.proximate_entitites])
 
 func needs_saving() -> bool:
     return false
