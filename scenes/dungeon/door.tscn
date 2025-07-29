@@ -311,6 +311,7 @@ _data = {
 script = ExtResource("2_4le7t")
 animator = NodePath("AnimationPlayer")
 _automation = 2
+_back_automation = 2
 _door_face = 1
 _trigger_entire_node = true
 

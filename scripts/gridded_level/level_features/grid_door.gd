@@ -4,34 +4,90 @@ class_name GridDoor
 @export
 var animator: AnimationPlayer
 
-enum _OpenAutomation { NONE, WALK_INTO, PROXIMITY }
-enum _CloseAutomation { NONE, PROXIMITY }
-enum _LockState { LOCKED, CLOSED, OPEN }
+enum OpenAutomation { NONE, WALK_INTO, PROXIMITY }
+enum CloseAutomation { NONE, PROXIMITY }
+enum LockState { LOCKED, CLOSED, OPEN }
 
 @export
-var _automation: _OpenAutomation
+var _automation: OpenAutomation
 
 @export
-var _back_automation: _OpenAutomation
+var _back_automation: OpenAutomation
 
 @export
-var _close_automation: _CloseAutomation
+var _close_automation: CloseAutomation
 
 @export
-var _inital_lock_state: _LockState = _LockState.CLOSED
+var _inital_lock_state: LockState = LockState.CLOSED
 
 @export
 var _door_face: CardinalDirections.CardinalDirection
+
+@export
+var _open_animation: String = "Open"
+
+@export
+var _close_animation: String = "Close"
+
+@export
+var _opened_animation: String = "Opened"
+
+@export
+var _closed_animation: String = "Closed"
 
 ## If door is locked, this identifies what key unlocks it
 @export
 var _key_id: String
 
-var _lock_state: _LockState
+var lock_state: LockState
 
 func _ready() -> void:
     super._ready()
-    _lock_state = _inital_lock_state
+    lock_state = _inital_lock_state
+    if _back_automation != OpenAutomation.NONE:
+        _add_back_sentinel.call_deferred()
+
+func _add_back_sentinel() -> void:
+    var neighbour_coords: Vector3i = CardinalDirections.translate(coordinates(), _door_face)
+    var neighbour: GridNode = get_level().get_grid_node(neighbour_coords)
+    if neighbour == null:
+        push_error("Door %s @ at %s direction %s is supposed to have a backside but there's no node at %s" % [
+            self,
+            coordinates(),
+            CardinalDirections.name(_door_face),
+            neighbour_coords,
+        ])
+        return
+
+    if neighbour.coordinates == coordinates():
+        push_error("Door %s @ %s direction %s gets its own node as sentinel position" % [
+            self,
+            coordinates(),
+            CardinalDirections.name(_door_face),
+        ])
+        return
+
+    for sentinel: GridDoorSentinel in neighbour.find_children("", "GridDoorSentinel"):
+        if sentinel.door == self:
+            push_error("Door %s @ %s direction %s already has a sentinel on %s (%s)" % [
+                self,
+                coordinates(),
+                CardinalDirections.name(_door_face),
+                neighbour,
+                sentinel,
+            ])
+            return
+
+    var sentinel: GridDoorSentinel = GridDoorSentinel.new()
+
+    sentinel.door = self
+    sentinel.door_face = CardinalDirections.invert(_door_face)
+
+    sentinel.automation = _back_automation
+    sentinel.close_automation = _close_automation
+
+    neighbour.add_child(sentinel)
+    neighbour.add_grid_event(sentinel)
 
 func should_trigger(
     _entity: GridEntity,
@@ -39,7 +95,7 @@ func should_trigger(
     _from_side: CardinalDirections.CardinalDirection,
     _to_side: CardinalDirections.CardinalDirection,
 ) -> bool:
-    return _lock_state != _LockState.OPEN
+    return lock_state != LockState.OPEN
 
 func blocks_entry_translation(
     _entity: GridEntity,
@@ -47,20 +103,20 @@ func blocks_entry_translation(
     move_direction: CardinalDirections.CardinalDirection,
     _to_side: CardinalDirections.CardinalDirection,
 ) -> bool:
-    return CardinalDirections.invert(move_direction) == _door_face && _lock_state != _LockState.OPEN
+    return CardinalDirections.invert(move_direction) == _door_face && lock_state != LockState.OPEN
 
 func blocks_exit_translation(
     exit_direction: CardinalDirections.CardinalDirection,
 ) -> bool:
-    return exit_direction == _door_face && _lock_state != _LockState.OPEN
+    return exit_direction == _door_face && lock_state != LockState.OPEN
 
 func anchorage_blocked(side: CardinalDirections.CardinalDirection) -> bool:
-    return side == _door_face && _lock_state == _LockState.OPEN || super.anchorage_blocked(side)
+    return side == _door_face && lock_state == LockState.OPEN || super.anchorage_blocked(side)
 
 func manages_triggering_translation() -> bool:
     return false
 
-var _proximate_entitites: Array[GridEntity]
+var proximate_entitites: Array[GridEntity]
 
 func trigger(entity: GridEntity, movement: Movement.MovementType) -> void:
     if !_repeatable && _triggered:
@@ -68,15 +124,17 @@ func trigger(entity: GridEntity, movement: Movement.MovementType) -> void:
 
     super.trigger(entity, movement)
 
-    if _close_automation == _CloseAutomation.PROXIMITY && !_proximate_entitites.has(entity):
-        _proximate_entitites.append(entity)
-        if entity.on_move_end.connect(_check_autoclose) != OK:
-            push_error("Door %s failed to connect %s on move end for auto-closing" % [self, entity])
+    if _close_automation == CloseAutomation.PROXIMITY && !proximate_entitites.has(entity):
+        _monitor_entity_for_closing(entity)
 
-    if _close_automation == _CloseAutomation.PROXIMITY && _lock_state == _LockState.CLOSED:
+    if _automation == CloseAutomation.PROXIMITY && lock_state == LockState.CLOSED:
         open_door()
         return
 
+func _monitor_entity_for_closing(entity: GridEntity) -> void:
+    proximate_entitites.append(entity)
+    if entity.on_move_end.connect(_check_autoclose) != OK:
+        push_error("Door %s failed to connect %s on move end for auto-closing" % [self, entity])
 
 func _check_autoclose(entity: GridEntity) -> void:
     var e_coords: Vector3i = entity.coordinates()
@@ -85,43 +143,56 @@ func _check_autoclose(entity: GridEntity) -> void:
     if e_coords == coords || e_coords == CardinalDirections.translate(coords, _door_face):
         return
 
-    _proximate_entitites.erase(entity)
+    proximate_entitites.erase(entity)
     entity.on_move_end.disconnect(_check_autoclose)
 
-    if _proximate_entitites.is_empty():
+    if proximate_entitites.is_empty():
         close_door()
 
 func close_door() -> void:
-    _lock_state = _LockState.CLOSED
+    lock_state = LockState.CLOSED
+    animator.play(_close_animation)
 
 func open_door() -> void:
-    _lock_state = _LockState.OPEN
+    lock_state = LockState.OPEN
+    animator.play(_open_animation)
 
 func needs_saving() -> bool:
     return true
 
 func save_key() -> String:
-    return "d-%s" % coordinates()
+    return "d-%s-%s" % [coordinates(), CardinalDirections.name(_door_face)]
 
 const _LOCK_STATE_KEY: String = "lock"
 const _TRIGGERED_KEY: String = "triggered"
 
 func collect_save_data() -> Dictionary:
     return {
-        _LOCK_STATE_KEY: _lock_state,
+        _LOCK_STATE_KEY: lock_state,
         _TRIGGERED_KEY: _triggered,
     }
 
-func _deserialize_lockstate(state: int) -> _LockState:
+func _deserialize_lockstate(state: int) -> LockState:
     match state:
-        0: return _LockState.LOCKED
-        1: return _LockState.CLOSED
-        2: return _LockState.OPEN
+        0: return LockState.LOCKED
+        1: return LockState.CLOSED
+        2: return LockState.OPEN
         _:
             push_error("State %s is not a serialized lockstate, using initial lock state" % state)
             return _inital_lock_state
 
-func load_save_data(_data: Dictionary) -> void:
-    _triggered = DictionaryUtils.safe_getb(_data, _TRIGGERED_KEY)
-    var lock_state_int: int = DictionaryUtils.safe_geti(_data, _LOCK_STATE_KEY)
-    _lock_state = _deserialize_lockstate(lock_state_int)
+func load_save_data(data: Dictionary) -> void:
+    _triggered = DictionaryUtils.safe_getb(data, _TRIGGERED_KEY)
+    var lock_state_int: int = DictionaryUtils.safe_geti(data, _LOCK_STATE_KEY)
+    lock_state = _deserialize_lockstate(lock_state_int)
+
+    if lock_state == LockState.OPEN:
+        animator.play(_opened_animation)
+    else:
+        animator.play(_closed_animation)
+
+    if _close_automation == CloseAutomation.PROXIMITY:
+        var coords: Vector3i = coordinates()
+        for entity: GridEntity in get_level().grid_entities:
+            if entity != null && coords == entity.coordinates():
+                _monitor_entity_for_closing(entity)

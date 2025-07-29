@@ -40,6 +40,15 @@ func _init_events() -> void:
     for event: GridEvent in find_children("", "GridEvent"):
         _events.append(event)
 
+
+func add_grid_event(event: GridEvent) -> void:
+    if _events.has(event):
+        return
+    _events.append(event)
+
+func remove_grid_event(event: GridEvent) -> void:
+    _events.erase(event)
+
 func _entry_blocking_events(
     entity: GridEntity,
     from: GridNode,
