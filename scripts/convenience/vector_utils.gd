@@ -54,3 +54,6 @@ static func primary_direction(v: Vector3i) -> Vector3i:
         return Vector3i(0, signi(v.y), 0)
 
     return Vector3i(0, 0, signi(v.z))
+
+static func all_dimensions_smaller(a: Vector3, b: Vector3) -> bool:
+    return a.x < b.x && a.y < b.y && a.z < b.z

@@ -72,7 +72,6 @@ material = SubResource("StandardMaterial3D_632b7")
 size = Vector2(0.8, 1.2)
 
 [node name="TestLevel" type="Node3D" node_paths=PackedStringArray("player", "level_geometry")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0123663, -0.00540423, 0.011484)
 script = ExtResource("1_dd1ob")
 node_size = Vector3(2.5, 2.5, 2.5)
 player = NodePath("Player")
@@ -503,9 +502,8 @@ direction = 2
 
 [node name="door" parent="LevelGeometry/Elevation 0/Node (3, 0, 1)" instance=ExtResource("14_wymjw")]
 transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -1.23292, 0, 0)
-_automation = 1
-_back_automation = 1
-_close_automation = 1
+_back_automation = 3
+_close_automation = 2
 _door_face = 3
 block_traversal_anchor_sides = Array[int]([1, 2])
 

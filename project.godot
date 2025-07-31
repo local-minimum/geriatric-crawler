@@ -99,4 +99,5 @@ crawl_turn_right={
 
 renderer/rendering_method="mobile"
 textures/vram_compression/import_etc2_astc=true
+lights_and_shadows/use_physical_light_units=true
 environment/defaults/default_clear_color=Color(0, 0, 0, 1)

@@ -1,10 +1,12 @@
 extends GridEvent
 class_name GridDoor
 
+signal on_door_state_chaged()
+
 @export
 var animator: AnimationPlayer
 
-enum OpenAutomation { NONE, WALK_INTO, PROXIMITY }
+enum OpenAutomation { NONE, WALK_INTO, PROXIMITY, INTERACT }
 enum CloseAutomation { NONE, END_WALK, PROXIMITY }
 enum LockState { LOCKED, CLOSED, OPEN }
 
@@ -109,6 +111,14 @@ func _add_back_sentinel() -> void:
 
     neighbour.add_child(sentinel)
     neighbour.add_grid_event(sentinel)
+
+func get_opening_automation(reader: GridDoorReader) -> OpenAutomation:
+    if reader.is_negative_side:
+        print_debug("door %s's reader %s is negative side %s" % [self, reader, _back_automation])
+        return _back_automation
+
+    print_debug("door %s's reader %s is positive side %s" % [self, reader, _automation])
+    return _automation
 
 func should_trigger(
     _entity: GridEntity,
@@ -245,11 +255,15 @@ func close_door() -> void:
     print_debug("Close %s" % self)
     lock_state = LockState.CLOSED
     animator.play(_close_animation, 0.5)
+    await get_tree().create_timer(0.5).timeout
+    on_door_state_chaged.emit()
 
 func open_door() -> void:
     print_debug("Open %s" % self)
     lock_state = LockState.OPEN
     animator.play(_open_animation, 0.5)
+    await get_tree().create_timer(0.5).timeout
+    on_door_state_chaged.emit()
 
 func needs_saving() -> bool:
     return true

@@ -23,8 +23,10 @@ var _alive: bool = true
 func _ready() -> void:
     _sync_player_transportation_mode()
 
-    var battle_player: BattlePlayer = _player.get_level().battle_mode.battle_player
-    battle_player.use_robot(self)
+    var battle_mode: BattleMode = _player.get_level().battle_mode
+    var battle_player: BattlePlayer = battle_mode.battle_player if battle_mode != null else null
+    if battle_player != null:
+        battle_player.use_robot(self)
 
 func is_alive() -> bool: return _alive
 

@@ -1,0 +1,34 @@
+[gd_scene load_steps=10 format=3 uid="uid://cxrcj6wtm65b0"]
+
+[ext_resource type="PackedScene" uid="uid://dvylchbo3q43j" path="res://models/door-pole-card-reader.fbx" id="1_cwvrh"]
+[ext_resource type="Script" uid="uid://y52tibb7romd" path="res://scripts/gridded_level/level_features/grid_door_reader.gd" id="2_iqnlb"]
+[ext_resource type="Texture2D" uid="uid://d1287mvsy4nr4" path="res://sprites/doors/door-reader-icons-automatic.png" id="3_t0i7i"]
+[ext_resource type="Texture2D" uid="uid://b1sdqv34srk1q" path="res://sprites/doors/door-reader-icons-bump.png" id="4_h2uq7"]
+[ext_resource type="Texture2D" uid="uid://0jt68rne7028" path="res://sprites/doors/door-reader-icons-no-entry.png" id="5_livh6"]
+[ext_resource type="Texture2D" uid="uid://d30evi6qgkwfd" path="res://sprites/doors/door-reader-icons-hand.png" id="6_1s630"]
+[ext_resource type="Texture2D" uid="uid://b5pedys1k0w1a" path="res://sprites/doors/door-reader-locked.png" id="7_m0ngr"]
+[ext_resource type="Texture2D" uid="uid://bam5ak5oqrcnx" path="res://sprites/doors/door-reader-icons-open.png" id="8_h2uq7"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_h2uq7"]
+size = Vector3(0.303833, 0.385254, 0.237427)
+
+[node name="door-pole-card-reader" node_paths=PackedStringArray("mesh") instance=ExtResource("1_cwvrh")]
+script = ExtResource("2_iqnlb")
+mesh = NodePath("DoorReader")
+automatic_door_tex = ExtResource("3_t0i7i")
+walk_into_door_tex = ExtResource("4_h2uq7")
+no_entry_door_tex = ExtResource("5_livh6")
+click_to_open_tex = ExtResource("6_1s630")
+locked_door_tex = ExtResource("7_m0ngr")
+open_door_tex = ExtResource("8_h2uq7")
+emission_intensity = 4.0
+
+[node name="StaticBody3D" type="StaticBody3D" parent="." index="1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.08333, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0106812, -0.00756836, 0.00457764)
+shape = SubResource("BoxShape3D_h2uq7")
+
+[connection signal="input_event" from="StaticBody3D" to="." method="_on_static_body_3d_input_event"]
+[connection signal="mouse_entered" from="StaticBody3D" to="." method="_on_static_body_3d_mouse_entered"]
