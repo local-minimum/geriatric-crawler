@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://5mvkmlsl4h3x"]
+[gd_scene load_steps=10 format=3 uid="uid://5mvkmlsl4h3x"]
 
 [ext_resource type="PackedScene" uid="uid://dx6ngxriyyq7l" path="res://scenes/ui/ui_debug_settings.tscn" id="1_6lmoa"]
 [ext_resource type="PackedScene" uid="uid://xqedv5aeal6n" path="res://scenes/exploration_save_system.tscn" id="2_n04bd"]
@@ -9,20 +9,6 @@
 [ext_resource type="Script" uid="uid://dftf4h6eyrsio" path="res://scripts/inventory.gd" id="7_hdcgk"]
 [ext_resource type="Script" uid="uid://cune3lm2ngiy1" path="res://scripts/ui/notifications/notifications_manager.gd" id="8_7qmp0"]
 [ext_resource type="Script" uid="uid://bkky4nqo47eiv" path="res://scripts/ui/notifications/notifications_panel_ui.gd" id="9_t2qw5"]
-
-[sub_resource type="Environment" id="Environment_ig7tw"]
-background_mode = 1
-background_color = Color(0.361575, 0.361575, 0.361575, 1)
-ambient_light_color = Color(0.101241, 0.101241, 0.101241, 1)
-fog_enabled = true
-fog_mode = 1
-fog_light_color = Color(0.0430788, 0.0511794, 0.0639149, 1)
-fog_density = 1.0
-fog_depth_curve = 0.659753
-fog_depth_begin = 4.0
-fog_depth_end = 15.0
-
-[sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_0xm2m"]
 
 [node name="Exploration" type="Control"]
 layout_mode = 3
@@ -57,14 +43,6 @@ render_target_update_mode = 4
 
 [node name="TestLevel" parent="SubViewportContainer/SubViewport" node_paths=PackedStringArray("battle_mode") instance=ExtResource("3_08vpu")]
 battle_mode = NodePath("../../../Battle Mode")
-
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="SubViewportContainer/SubViewport"]
-transform = Transform3D(0.804687, 0.403004, -0.435967, 0, 0.734323, 0.678801, 0.5937, -0.546222, 0.5909, 0.865872, 2.80495, 0)
-light_color = Color(1, 0.7535, 0.49, 1)
-
-[node name="WorldEnvironment" type="WorldEnvironment" parent="SubViewportContainer/SubViewport"]
-environment = SubResource("Environment_ig7tw")
-camera_attributes = SubResource("CameraAttributesPractical_0xm2m")
 
 [node name="Exploration UI" parent="." node_paths=PackedStringArray("level", "battle", "inspect_robot_ui") instance=ExtResource("4_kbxam")]
 layout_mode = 1

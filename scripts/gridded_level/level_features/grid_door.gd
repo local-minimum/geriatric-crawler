@@ -265,6 +265,15 @@ func open_door() -> void:
     await get_tree().create_timer(0.5).timeout
     on_door_state_chaged.emit()
 
+func toggle_door() -> void:
+    if lock_state == LockState.LOCKED:
+        return
+
+    if lock_state == LockState.CLOSED:
+        open_door()
+    else:
+        close_door()
+
 func needs_saving() -> bool:
     return true
 

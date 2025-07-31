@@ -1,4 +1,4 @@
-[gd_scene load_steps=42 format=3 uid="uid://dwqcwbgj8p6q0"]
+[gd_scene load_steps=44 format=3 uid="uid://dwqcwbgj8p6q0"]
 
 [ext_resource type="Script" uid="uid://dqe42q7uub84r" path="res://scripts/gridded_level/level_features/grid_level.gd" id="1_dd1ob"]
 [ext_resource type="PackedScene" uid="uid://bfoog3fb4v5ij" path="res://scenes/dungeon/player.tscn" id="3_m6mav"]
@@ -70,6 +70,20 @@ transparency = 1
 [sub_resource type="QuadMesh" id="QuadMesh_kmgg5"]
 material = SubResource("StandardMaterial3D_632b7")
 size = Vector2(0.8, 1.2)
+
+[sub_resource type="Environment" id="Environment_wymjw"]
+background_mode = 1
+background_color = Color(0.361575, 0.361575, 0.361575, 1)
+ambient_light_color = Color(0.101241, 0.101241, 0.101241, 1)
+fog_enabled = true
+fog_mode = 1
+fog_light_color = Color(0.0430788, 0.0511794, 0.0639149, 1)
+fog_density = 1.0
+fog_depth_curve = 0.659753
+fog_depth_begin = 4.0
+fog_depth_end = 15.0
+
+[sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_sy7nh"]
 
 [node name="TestLevel" type="Node3D" node_paths=PackedStringArray("player", "level_geometry")]
 script = ExtResource("1_dd1ob")
@@ -1353,3 +1367,11 @@ script = ExtResource("22_sy7nh")
 script = ExtResource("25_s5loo")
 _self = NodePath("..")
 metadata/_custom_type_script = "uid://6vnrccj8frlq"
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.804687, 0.403004, -0.435967, 0, 0.734323, 0.678801, 0.5937, -0.546222, 0.5909, 0.865872, 2.80495, 0)
+light_color = Color(1, 0.7535, 0.49, 1)
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_wymjw")
+camera_attributes = SubResource("CameraAttributesPractical_sy7nh")
