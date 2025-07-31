@@ -26,6 +26,22 @@ save_system = NodePath("../SaveSystem")
 
 [node name="SaveSystem" parent="." instance=ExtResource("2_n04bd")]
 
+[node name="ExplorationNotifications" type="CanvasLayer" parent="."]
+layer = 128
+script = ExtResource("8_7qmp0")
+_min_time_between_messages = 600.0
+
+[node name="NotificationsPanel" type="VBoxContainer" parent="ExplorationNotifications"]
+anchors_preset = -1
+anchor_left = 0.042
+anchor_top = 0.304
+anchor_right = 0.256
+anchor_bottom = 0.802
+mouse_filter = 2
+alignment = 2
+script = ExtResource("9_t2qw5")
+_tween_notifiction_duration = 0.5
+
 [node name="SubViewportContainer" type="SubViewportContainer" parent="."]
 layout_mode = 1
 anchors_preset = -1
@@ -33,10 +49,12 @@ anchor_right = 0.82
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 0
 stretch = true
 
 [node name="SubViewport" type="SubViewport" parent="SubViewportContainer"]
 handle_input_locally = false
+physics_object_picking = true
 canvas_cull_mask = 4293918751
 size = Vector2i(944, 648)
 render_target_update_mode = 4
@@ -62,18 +80,3 @@ visible = false
 script = ExtResource("7_hdcgk")
 battle = NodePath("../Battle Mode")
 metadata/_custom_type_script = "uid://dftf4h6eyrsio"
-
-[node name="ExplorationNotifications" type="CanvasLayer" parent="."]
-layer = 128
-script = ExtResource("8_7qmp0")
-_min_time_between_messages = 600.0
-
-[node name="NotificationsPanel" type="VBoxContainer" parent="ExplorationNotifications"]
-anchors_preset = -1
-anchor_left = 0.042
-anchor_top = 0.304
-anchor_right = 0.256
-anchor_bottom = 0.802
-alignment = 2
-script = ExtResource("9_t2qw5")
-_tween_notifiction_duration = 0.5

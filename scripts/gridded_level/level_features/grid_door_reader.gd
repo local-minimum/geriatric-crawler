@@ -135,7 +135,7 @@ func _on_static_body_3d_input_event(
 
         if mouse_event.pressed && mouse_event.button_index == MOUSE_BUTTON_LEFT:
             if door.lock_state == GridDoor.LockState.LOCKED:
-                print_debug("TODO make keys")
+                door.attempt_door_unlock()
             else:
                 door.toggle_door()
 

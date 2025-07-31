@@ -274,6 +274,10 @@ func toggle_door() -> void:
     else:
         close_door()
 
+func attempt_door_unlock() -> void:
+    # TODO: Implement keys
+    pass
+
 func needs_saving() -> bool:
     return true
 
