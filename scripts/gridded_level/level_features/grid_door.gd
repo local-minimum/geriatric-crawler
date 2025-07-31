@@ -276,7 +276,7 @@ func toggle_door() -> void:
 
 func attempt_door_unlock() -> void:
     # TODO: Implement keys
-    pass
+    NotificationsManager.warn("Door locked", "No matching key")
 
 func needs_saving() -> bool:
     return true

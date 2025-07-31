@@ -518,8 +518,10 @@ direction = 2
 transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -1.23292, 0, 0)
 _back_automation = 3
 _close_automation = 2
+_inital_lock_state = 0
 _door_face = 3
 block_traversal_anchor_sides = Array[int]([1, 2])
+_key_id = "masterkey"
 
 [node name="Node (4, 0, 1)" parent="LevelGeometry/Elevation 0" instance=ExtResource("4_myev5")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 0, 2.5)
