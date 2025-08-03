@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://ueqtmtn8vb0v"]
+[gd_scene load_steps=12 format=3 uid="uid://ueqtmtn8vb0v"]
 
 [ext_resource type="Script" uid="uid://crchgnovga7nc" path="res://scripts/ui/robot_inspection_ui.gd" id="1_j3vuf"]
 [ext_resource type="Texture2D" uid="uid://cgijt2to15yms" path="res://sprites/kenny game icons/cross.png" id="2_0f0fp"]
@@ -6,6 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://qvbyso8n7n8j" path="res://scenes/ui/robot_skill_level_ui.tscn" id="4_yfo5l"]
 [ext_resource type="Script" uid="uid://bkudjqfkkgxlw" path="res://scripts/ui/exploration_inventory_ui.gd" id="5_0f0fp"]
 [ext_resource type="Script" uid="uid://c55ba5lckbxlc" path="res://scripts/ui/chained_vboxes.gd" id="6_4hdtw"]
+[ext_resource type="Script" uid="uid://physen830gip" path="res://scripts/ui/exploration_keys_ui.gd" id="7_yfo5l"]
 
 [sub_resource type="Curve" id="Curve_7mycd"]
 _data = [Vector2(0, 0.0905457), 0.0, 0.0, 0, 0, Vector2(0.330494, 0.571257), 0.0, 0.0, 0, 0, Vector2(0.681431, 0.693384), 0.593166, 0.593166, 0, 0, Vector2(1, 0.914251), 0.00953312, 0.0, 0, 0]
@@ -24,7 +25,7 @@ curve_x = SubResource("Curve_7mycd")
 curve_y = SubResource("Curve_272bh")
 curve_z = SubResource("Curve_5vw27")
 
-[node name="Robot Inspection UI" type="CanvasLayer" node_paths=PackedStringArray("_name_label", "_model_label", "_health_label", "_credits_label", "_tab_bar", "_tabs", "_active_skills_parent", "_robot_skill_tree", "_exploration_inventory")]
+[node name="Robot Inspection UI" type="CanvasLayer" node_paths=PackedStringArray("_name_label", "_model_label", "_health_label", "_credits_label", "_tab_bar", "_tabs", "_active_skills_parent", "_robot_skill_tree", "_exploration_inventory", "_exploration_keys")]
 layer = 10
 script = ExtResource("1_j3vuf")
 _name_label = NodePath("MarginContainer/Main/Name & Status/Robot Name")
@@ -32,10 +33,11 @@ _model_label = NodePath("MarginContainer/Main/Name & Status/Robot Model")
 _health_label = NodePath("MarginContainer/Main/Name & Status/VBoxContainer/Robot Health")
 _credits_label = NodePath("MarginContainer/Main/Name & Status/VBoxContainer/Robot Credits")
 _tab_bar = NodePath("MarginContainer/Main/TabBar")
-_tabs = [NodePath("MarginContainer/Main/ActiveSkills"), NodePath("MarginContainer/Main/SkillTree"), NodePath("MarginContainer/Main/Inventory")]
+_tabs = [NodePath("MarginContainer/Main/ActiveSkills"), NodePath("MarginContainer/Main/SkillTree"), NodePath("MarginContainer/Main/Inventory"), NodePath("MarginContainer/Main/Keys")]
 _active_skills_parent = NodePath("MarginContainer/Main/ActiveSkills/MarginContainer/Main/Skills")
 _robot_skill_tree = NodePath("MarginContainer/Main/SkillTree")
 _exploration_inventory = NodePath("MarginContainer/Main/Inventory")
+_exploration_keys = NodePath("MarginContainer/Main/Keys")
 
 [node name="Background" type="TextureRect" parent="."]
 anchors_preset = 15
@@ -96,10 +98,11 @@ icon = ExtResource("2_0f0fp")
 layout_mode = 2
 current_tab = 0
 scrolling_enabled = false
-tab_count = 3
+tab_count = 4
 tab_0/title = "Abilities"
 tab_1/title = "Upgrades"
 tab_2/title = "Inventory"
+tab_3/title = "Keys"
 
 [node name="ActiveSkills" type="Control" parent="MarginContainer/Main"]
 visible = false
@@ -201,6 +204,7 @@ color = Color(0, 0, 0, 1)
 layout_mode = 2
 
 [node name="Inventory" type="Control" parent="MarginContainer/Main" node_paths=PackedStringArray("_chained_boxes")]
+visible = false
 layout_mode = 2
 size_flags_vertical = 3
 script = ExtResource("5_0f0fp")
@@ -259,6 +263,70 @@ size_flags_horizontal = 3
 theme_override_constants/separation = 8
 
 [node name="Column 3" type="VBoxContainer" parent="MarginContainer/Main/Inventory/MarginContainer/Main/Chained VBoxes"]
+clip_contents = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 8
+
+[node name="Keys" type="Control" parent="MarginContainer/Main" node_paths=PackedStringArray("_chained_boxes")]
+layout_mode = 2
+size_flags_vertical = 3
+script = ExtResource("7_yfo5l")
+_chained_boxes = NodePath("MarginContainer/Main/Chained VBoxes")
+
+[node name="Background" type="ColorRect" parent="MarginContainer/Main/Keys"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.430057, 0.430057, 0.430057, 0.486275)
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/Main/Keys"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 4
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 4
+theme_override_constants/margin_bottom = 4
+
+[node name="Main" type="VBoxContainer" parent="MarginContainer/Main/Keys/MarginContainer"]
+layout_mode = 2
+
+[node name="Panel Title" type="Label" parent="MarginContainer/Main/Keys/MarginContainer/Main"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 20
+text = "Keys"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Chained VBoxes" type="HBoxContainer" parent="MarginContainer/Main/Keys/MarginContainer/Main" node_paths=PackedStringArray("_boxes")]
+clip_contents = true
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 20
+script = ExtResource("6_4hdtw")
+_boxes = [NodePath("Column 1"), NodePath("Column 2"), NodePath("Column 3")]
+
+[node name="Column 1" type="VBoxContainer" parent="MarginContainer/Main/Keys/MarginContainer/Main/Chained VBoxes"]
+clip_contents = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 8
+
+[node name="Column 2" type="VBoxContainer" parent="MarginContainer/Main/Keys/MarginContainer/Main/Chained VBoxes"]
+clip_contents = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 8
+
+[node name="Column 3" type="VBoxContainer" parent="MarginContainer/Main/Keys/MarginContainer/Main/Chained VBoxes"]
 clip_contents = true
 layout_mode = 2
 size_flags_horizontal = 3

@@ -36,3 +36,6 @@ func load_from_save(data: Variant) -> void:
         @warning_ignore_start("unsafe_cast")
         _keys = (data as Dictionary[String, int]).duplicate()
         @warning_ignore_restore("unsafe_cast")
+
+func all() -> Dictionary[String, int]:
+    return _keys.duplicate()

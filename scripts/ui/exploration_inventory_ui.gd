@@ -4,9 +4,6 @@ class_name ExplorationInventoryUI
 @export
 var _chained_boxes: ChainedVBoxes
 
-@export
-var rows_per_column: int = 8
-
 var _previous_labels: Array[Control]
 
 func list_inventory() -> void:
