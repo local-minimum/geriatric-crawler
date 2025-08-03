@@ -9,6 +9,8 @@ signal on_battle_end()
 
 const LEVEL_GROUP: String = "battle-mode"
 
+static var instance: BattleMode
+
 @export
 var animator: AnimationPlayer
 
@@ -58,6 +60,7 @@ func _init() -> void:
 var _inited: bool
 
 func _ready() -> void:
+    instance = self
     if battle_hand.on_hand_drawn.connect(_after_deal) != OK:
         push_error("Failed to connect callback to hand dealt")
     if battle_hand.slots.on_update_slotted.connect(_handle_update_slotted):

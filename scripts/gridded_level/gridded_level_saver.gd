@@ -83,6 +83,9 @@ func get_initial_save_state() -> Dictionary:
 ## Load part of save that holds this particular level
 func load_from_save(save_data: Dictionary) -> void:
     for persistable: Node in get_tree().get_nodes_in_group(persistant_group):
+        if level.grid_entities.has(persistable):
+            level.grid_entities.erase(persistable)
+
         persistable.queue_free()
 
     var player_node: GridPlayer = null

@@ -241,7 +241,7 @@ text = "Save"
 
 [node name="Load Button" type="Button" parent="DebugMenu/MarginContainer/VBoxContainer/Save_Load"]
 layout_mode = 2
-mouse_filter = 2
+mouse_filter = 1
 text = "Load"
 
 [connection signal="pressed" from="OpenMenuButton/Margin/OpenMenuButton" to="." method="_on_show_setting_menu"]

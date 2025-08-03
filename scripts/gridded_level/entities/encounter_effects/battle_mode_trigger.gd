@@ -70,7 +70,7 @@ func invoke(triggering_encounter: GridEncounter, player: GridEntity) -> bool:
 
     level = triggering_encounter.get_level()
     level.paused = true
-    level.battle_mode.enter_battle(self, level.player.robot)
+    BattleMode.instance.enter_battle(self, level.player.robot)
     return true
 
 func complete() -> void:

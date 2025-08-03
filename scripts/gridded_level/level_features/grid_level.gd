@@ -28,9 +28,6 @@ var grid_entities: Array[GridEntity]
 @export
 var level_geometry: Node3D
 
-@export
-var battle_mode: BattleMode
-
 var paused: bool:
     set(value):
         paused = value

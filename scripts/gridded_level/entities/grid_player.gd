@@ -19,6 +19,9 @@ var repeat_move_delay: float = 100
 @export
 var robot: Robot
 
+@export
+var key_ring: KeyRing
+
 var override_wall_walking: bool:
     set(value):
         override_wall_walking = value
@@ -144,6 +147,7 @@ func _process(_delta: float) -> void:
 
 
 const _ROBOT_KEY: String = "robot"
+const _KEY_RING_KEY: String = "keys"
 
 func save() -> Dictionary:
     return {
@@ -152,6 +156,7 @@ func save() -> Dictionary:
         _COORDINATES_KEY: coordinates(),
         _DOWN_KEY: down,
         _ROBOT_KEY: robot.collect_save_data(),
+        _KEY_RING_KEY: key_ring.collect_save_data(),
     }
 
 func initial_state() -> Dictionary:
@@ -160,8 +165,11 @@ func initial_state() -> Dictionary:
         _LOOK_DIRECTION_KEY: look_direction,
         _DOWN_KEY: down,
         _ANCHOR_KEY: down,
+
         _COORDINATES_KEY: spawn_node.coordinates,
+
         _ROBOT_KEY: robot.collect_save_data(),
+        _KEY_RING_KEY: {},
     }
 
 func _valid_save_data(save_data: Dictionary) -> bool:
@@ -186,6 +194,9 @@ func load_from_save(level: GridLevel, save_data: Dictionary) -> void:
             push_warning("No save present for robot save on %s isn't a dictionary but %s" % [_ROBOT_KEY, robot_save])
     else:
         push_warning("Save lacks robot save on %s in %s" % [_ROBOT_KEY, save_data])
+
+    var key_ring_save: Dictionary = DictionaryUtils.safe_getd(save_data, _KEY_RING_KEY, {})
+    key_ring.load_from_save(key_ring_save)
 
     var coords: Vector3i = save_data[_COORDINATES_KEY]
     var node: GridNode = level.get_grid_node(coords)

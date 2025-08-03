@@ -23,7 +23,7 @@ var _alive: bool = true
 func _ready() -> void:
     _sync_player_transportation_mode()
 
-    var battle_mode: BattleMode = _player.get_level().battle_mode
+    var battle_mode: BattleMode = BattleMode.instance
     var battle_player: BattlePlayer = battle_mode.battle_player if battle_mode != null else null
     if battle_player != null:
         battle_player.use_robot(self)
@@ -134,8 +134,11 @@ func load_from_save(data: Dictionary) -> void:
 
     _sync_player_transportation_mode()
 
-    var battle_player: BattlePlayer = _player.get_level().battle_mode.battle_player
-    battle_player.use_robot(self)
+    var battle_player: BattlePlayer = BattleMode.instance.battle_player if BattleMode.instance != null else null
+    if battle_player != null:
+        battle_player.use_robot(self)
+    else:
+        push_warning("Cannot configure battle robot for battle since there's none in scene")
 
     on_robot_loaded.emit(self)
 

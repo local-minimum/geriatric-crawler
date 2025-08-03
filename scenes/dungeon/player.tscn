@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://bfoog3fb4v5ij"]
+[gd_scene load_steps=12 format=3 uid="uid://bfoog3fb4v5ij"]
 
 [ext_resource type="Script" uid="uid://uuoluocfjbjd" path="res://scripts/gridded_level/entities/grid_player.gd" id="1_edujd"]
 [ext_resource type="Script" uid="uid://b8a6yvndcxtpa" path="res://scripts/gridded_level/transportation_mode.gd" id="2_vrljn"]
@@ -6,6 +6,7 @@
 [ext_resource type="Script" uid="uid://meibvvwp8mvg" path="res://scripts/gridded_level/entities/movement_planner.gd" id="4_se4x3"]
 [ext_resource type="Script" uid="uid://bsao4ssvb051r" path="res://scripts/robot.gd" id="5_se4x3"]
 [ext_resource type="Resource" uid="uid://1ifcryeo70to" path="res://resources/base-robot.tres" id="6_2f68n"]
+[ext_resource type="Script" uid="uid://b0betmw3bm0tf" path="res://scripts/gridded_level/key_ring.gd" id="7_nvxe3"]
 
 [sub_resource type="Resource" id="Resource_2f68n"]
 script = ExtResource("2_vrljn")
@@ -24,11 +25,12 @@ height = 1.0
 [sub_resource type="BoxMesh" id="BoxMesh_vsvsq"]
 size = Vector3(0.3, 0.2, 0.2)
 
-[node name="Player" type="Node3D" node_paths=PackedStringArray("camera", "robot", "planner") groups=["Persistant"]]
+[node name="Player" type="Node3D" node_paths=PackedStringArray("camera", "robot", "key_ring", "planner") groups=["Persistant"]]
 script = ExtResource("1_edujd")
 camera = NodePath("Camera3D")
 persist_repeat_moves = true
 robot = NodePath("Robot")
+key_ring = NodePath("KeyRing")
 transportation_abilities = SubResource("Resource_2f68n")
 transportation_mode = SubResource("Resource_nvxe3")
 can_jump_off_walls = true
@@ -69,3 +71,7 @@ _player = NodePath("..")
 model = ExtResource("6_2f68n")
 given_name = "Robbie"
 metadata/_custom_type_script = "uid://bsao4ssvb051r"
+
+[node name="KeyRing" type="Node" parent="."]
+script = ExtResource("7_nvxe3")
+metadata/_custom_type_script = "uid://b0betmw3bm0tf"
