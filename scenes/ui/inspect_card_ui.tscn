@@ -1,0 +1,18 @@
+[gd_scene load_steps=3 format=3 uid="uid://cqjsp3st20mql"]
+
+[ext_resource type="Script" uid="uid://vo7yyswbkdi3" path="res://scripts/ui/inspect_battle_card_ui.gd" id="1_jjmwh"]
+[ext_resource type="PackedScene" uid="uid://s73lghpvdp2r" path="res://scenes/battle_card.tscn" id="2_jpugq"]
+
+[node name="Inspect Card UI" type="VBoxContainer" node_paths=PackedStringArray("card", "label")]
+script = ExtResource("1_jjmwh")
+card = NodePath("BattleCard")
+label = NodePath("Label")
+
+[node name="BattleCard" parent="." instance=ExtResource("2_jpugq")]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 2
+size_flags_vertical = 10
+text = "1 Card"
+horizontal_alignment = 1

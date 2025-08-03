@@ -54,8 +54,6 @@ static var _hovered: BattleCard:
 
             _hovered = value
 
-
-
 @export
 var suite_icon: TextureRect
 

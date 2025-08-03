@@ -23,6 +23,9 @@ var _tabs: Array[Control]
 var _active_skills_parent: Control
 
 @export
+var _inspect_deck: InspectBattleDeckUI
+
+@export
 var _robot_skill_tree: RobotSkillTreeUI
 
 @export
@@ -48,6 +51,8 @@ func inspect(robot: Robot, battle_player: BattlePlayer, credits: int) -> void:
     visible = true
 
     _sync_active_abilities(robot)
+
+    _inspect_deck.list_cards(robot.get_deck())
 
     _exploration_inventory.list_inventory()
     _exploration_keys.list_keys(robot.keys())
