@@ -52,6 +52,9 @@ func _ready() -> void:
     if door.on_door_state_chaged.connect(_sync_reader_display) != OK:
         print_debug("%s could not connect to door state changes" % self)
 
+    if door.get_level().on_level_loaded.connect(_sync_reader_display) != OK:
+        push_error("Could not connect level loaded")
+
     _sync_reader_display.call_deferred()
 
 func _get_locked_texture() -> Texture:
