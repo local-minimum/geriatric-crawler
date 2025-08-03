@@ -64,6 +64,9 @@ static func get_card_by_id(category: CardCategory, card_id: String, enemy_id: St
 @export
 var id: String
 
+func base_id() -> String:
+    return id.substr(0, id.rfind("-"))
+
 @export
 var name: String
 

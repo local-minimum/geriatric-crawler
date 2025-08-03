@@ -15,13 +15,18 @@ func list_cards(all_cards: Array[BattleCardData]) -> void:
         prev_card.queue_free()
     _prev_cards.clear()
 
-    for data: BattleCardData in cards:
+    var keys: Array[BattleCardData] = cards.keys()
+    keys.sort_custom(
+        func (a: BattleCardData, b: BattleCardData) -> bool:
+            return a.name <= b.name && a.rank <= b.rank
+    )
+
+    for data: BattleCardData in keys:
         var card: InspectBattleCardUI = _inspect_card_resource.instantiate()
         card.sync(data, cards[data])
 
         _prev_cards.append(card)
         cards_root.add_child(card)
-
 
 func _count_cards(all_cards: Array[BattleCardData]) -> Dictionary[BattleCardData, int]:
     var counts: Dictionary[String, int] = {}

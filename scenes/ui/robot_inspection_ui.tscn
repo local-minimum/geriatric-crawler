@@ -189,6 +189,9 @@ vertical_alignment = 1
 [node name="CardsContainer" type="HFlowContainer" parent="MarginContainer/Main/Cards/MarginContainer/Main"]
 layout_mode = 2
 size_flags_vertical = 3
+theme_override_constants/h_separation = 8
+alignment = 1
+last_wrap_alignment = 1
 
 [node name="SkillTree" type="Control" parent="MarginContainer/Main" node_paths=PackedStringArray("_levels")]
 visible = false
