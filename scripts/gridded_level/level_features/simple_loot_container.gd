@@ -12,6 +12,8 @@ var _mesh: MeshInstance3D
 @export
 var _open_tex: Texture
 
+var _looting: bool
+
 func _ready() -> void:
     var mat: Material = _mesh.get_active_material(0)
     if mat.get_reference_count() > 1:
@@ -35,23 +37,31 @@ func trigger(entity: GridEntity, movement: Movement.MovementType) -> void:
 
 
 func _handle_loooting(entity: GridEntity) -> void:
+    if _looting:
+        return
+
+    _looting = true
+
     # TODO: Do fancy stuff!
     await get_tree().create_timer(0.5).timeout
     _set_open_graphics()
     await get_tree().create_timer(0.2).timeout
 
-    var key_ring: KeyRing = get_level().player.key_ring
 
+    _looted = Inventory.active_inventory.add_many_to_inventory(_contents)
+
+
+    var key_ring: KeyRing = get_level().player.key_ring
     for id: String in _contents:
         if KeyRing.is_key(id):
             var amount: int = ceili(_contents[id])
             if amount > 0:
                 key_ring.gain(id, amount)
 
-    _looted = Inventory.active_inventory.add_many_to_inventory(_contents)
-
     if entity.on_move_end.is_connected(_handle_loooting):
         entity.on_move_end.disconnect(_handle_loooting)
+
+    _looting = false
 
 func collect_save_data() -> Dictionary:
     return {}
