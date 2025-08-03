@@ -129,4 +129,4 @@ func load_from_save(save_data: Dictionary) -> void:
     else:
         push_warning("No events on level")
 
-    print_debug("Level %s loaded" % get_level_name())
+    level.emit_loaded = true

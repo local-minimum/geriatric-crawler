@@ -45,6 +45,12 @@ func _ready() -> void:
     var skill_level: int = exploration_ui.level.player.robot.get_skill_level(RobotAbility.SKILL_SONAR)
     sonar_root.visible = skill_level > 0
     sonar_label.text = "SNR-100 Mk %s" % IntUtils.to_roman(skill_level)
+    if exploration_ui.level.on_level_loaded.connect(_reset_sonar) != OK:
+        push_error("Failed to connect sonar ui to level loaded")
+        _reset_sonar()
+
+func _reset_sonar() -> void:
+    _astar_lookup.clear()
     _astar = AStar3D.new()
     _populate_astar.call_deferred()
 

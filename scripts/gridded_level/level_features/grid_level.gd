@@ -4,6 +4,7 @@ class_name GridLevel
 static var active_level: GridLevel
 
 signal on_change_player
+signal on_level_loaded
 
 const LEVEL_GROUP: String = "grid-level"
 const UNKNOWN_LEVEL_ID: String = "--unknown--"
@@ -41,7 +42,10 @@ var _nodes: Dictionary[Vector3i, GridNode] = {}
 func _init() -> void:
     add_to_group(LEVEL_GROUP)
 
+var emit_loaded: bool = true
+
 func _ready() -> void:
+    emit_loaded = true
     active_level = self
 
     _sync_nodes()
@@ -103,6 +107,12 @@ func sync_node(node: GridNode) -> void:
     _nodes[node.coordinates] = node
 
     node.position = node_position_from_coordinates(self, node.coordinates)
+
+func _process(_delta: float) -> void:
+    if emit_loaded:
+        emit_loaded = false
+        print_debug("Level %s loaded" % level_id)
+        on_level_loaded.emit()
 
 static func find_level_parent(current: Node, inclusive: bool = true) ->  GridLevel:
     if inclusive && current is GridLevel:
