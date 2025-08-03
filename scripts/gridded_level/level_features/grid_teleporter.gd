@@ -63,6 +63,7 @@ func blocks_entry_translation(
     _from: GridNode,
     _move_direction: CardinalDirections.CardinalDirection,
     _to_side: CardinalDirections.CardinalDirection,
+    _silent: bool = false,
 ) -> bool:
     return false
 

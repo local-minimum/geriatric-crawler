@@ -21,6 +21,7 @@ func blocks_entry_translation(
     _from: GridNode,
     move_direction: CardinalDirections.CardinalDirection,
     _to_side: CardinalDirections.CardinalDirection,
+    _silent: bool = false,
 ) -> bool:
     return CardinalDirections.invert(move_direction) == door_face && (
         door.lock_state != GridDoor.LockState.OPEN ||

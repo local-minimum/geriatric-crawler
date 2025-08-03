@@ -54,6 +54,7 @@ func _entry_blocking_events(
     from: GridNode,
     move_direction: CardinalDirections.CardinalDirection,
     wanted_anchor: CardinalDirections.CardinalDirection,
+    silent: bool = false,
 ) -> bool:
     _init_events()
     return _events.any(
@@ -63,6 +64,7 @@ func _entry_blocking_events(
                 from,
                 move_direction,
                 wanted_anchor,
+                silent,
             )
     )
 
@@ -209,9 +211,11 @@ func may_enter(
     anchor_direction: CardinalDirections.CardinalDirection,
     ignore_require_anchor: bool = false,
     force_respect_illuory: bool = false,
+    silent: bool = false,
 ) -> bool:
-    if _entry_blocking_events(entity, from, move_direction, anchor_direction):
-        print_debug("Cannot enter moving %s because of events" % CardinalDirections.name(move_direction))
+    if _entry_blocking_events(entity, from, move_direction, anchor_direction, silent):
+        if !silent:
+            print_debug("Cannot enter moving %s because of events" % CardinalDirections.name(move_direction))
         return false
 
     var entry_direction: CardinalDirections.CardinalDirection = CardinalDirections.invert(move_direction)
@@ -222,22 +226,29 @@ func may_enter(
     if entry_requires_anchor && !ignore_require_anchor && !(entity.falling() && move_direction == CardinalDirections.CardinalDirection.DOWN):
         var down_anchor: GridAnchor = get_grid_anchor(anchor_direction)
         if down_anchor == null || !down_anchor.can_anchor(entity):
-            if down_anchor == null:
+            if !silent && down_anchor == null:
                 print_debug("Refused entry anchor in %s missing" % CardinalDirections.name(move_direction))
-            else:
+            elif !silent:
                 print_debug("Refused entry, %s can't be anchored to" % entry_anchor.name)
             return false
 
     if entry_anchor != null && !entry_anchor.pass_through_on_refuse:
-        print_debug("Cannot enter %s becuase it has an anchor %s of %s blocking (%s)" % [
-            name, entry_anchor.name, entry_anchor.get_parent().name, CardinalDirections.name(entry_direction)])
+        if !silent:
+            print_debug("Cannot enter %s becuase it has an anchor %s of %s blocking (%s)" % [
+                name, entry_anchor.name, entry_anchor.get_parent().name, CardinalDirections.name(entry_direction)])
         return false
 
     return true
 
-func may_exit(entity: GridEntity, move_direction: CardinalDirections.CardinalDirection, force_respect_illuory: bool = false) -> bool:
+func may_exit(
+    entity: GridEntity,
+    move_direction: CardinalDirections.CardinalDirection,
+    force_respect_illuory: bool = false,
+    silent: bool = false,
+) -> bool:
     if _exit_blocking_events(move_direction):
-        print_debug("Cannot exit %s moving %s because of events" % [name, CardinalDirections.name(move_direction)])
+        if !silent:
+            print_debug("Cannot exit %s moving %s because of events" % [name, CardinalDirections.name(move_direction)])
         return false
 
     # TODO: Regulate if some entity may treat illusory sides and blockers
@@ -246,16 +257,17 @@ func may_exit(entity: GridEntity, move_direction: CardinalDirections.CardinalDir
     if anchor == null:
         return true
 
-    print_debug("%s is at %s" % [entity.name, entity.coordinates()])
-
     if anchor.can_anchor(entity):
-        print_debug("Cannot exit %s from %s because we could anchor on %s" % [CardinalDirections.name(move_direction), name, anchor.name])
+        if !silent:
+            print_debug("Cannot exit %s from %s because we could anchor on %s" % [CardinalDirections.name(move_direction), name, anchor.name])
         return false
 
     if anchor.pass_through_on_refuse:
         return true
 
-    print_debug("Cannot exit %s from %s because anchor %s" % [CardinalDirections.name(move_direction), name, anchor.name])
+    if !silent:
+        print_debug("Cannot exit %s from %s because anchor %s" % [CardinalDirections.name(move_direction), name, anchor.name])
+
     return false
 
 func may_transit(

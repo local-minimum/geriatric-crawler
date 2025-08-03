@@ -135,6 +135,7 @@ func blocks_entry_translation(
     _from: GridNode,
     move_direction: CardinalDirections.CardinalDirection,
     _to_side: CardinalDirections.CardinalDirection,
+    _silent: bool = false,
 ) -> bool:
     return CardinalDirections.invert(move_direction) == _door_face && (
         lock_state != LockState.OPEN || block_traversal_anchor_sides.has(entity.get_grid_anchor_direction())

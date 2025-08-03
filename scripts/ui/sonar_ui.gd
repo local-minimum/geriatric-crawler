@@ -57,10 +57,10 @@ func _populate_astar() -> void:
         var id: int = _get_or_add_astar_id(coords)
 
         for direction: CardinalDirections.CardinalDirection in CardinalDirections.ALL_DIRECTIONS:
-            if g_node.may_exit(player, direction):
+            if g_node.may_exit(player, direction, false, true):
                 var neighbour_coords: Vector3i = CardinalDirections.translate(coords, direction)
                 var neighbour: GridNode = level.get_grid_node(neighbour_coords)
-                if neighbour == null || !neighbour.may_enter(player, g_node, direction, CardinalDirections.CardinalDirection.NONE, true):
+                if neighbour == null || !neighbour.may_enter(player, g_node, direction, CardinalDirections.CardinalDirection.NONE, true, false, true):
                     continue
 
                 var neighbour_id: int = _get_or_add_astar_id(neighbour_coords)

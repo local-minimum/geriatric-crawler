@@ -46,14 +46,17 @@ func blocks_entry_translation(
     _from: GridNode,
     move_direction: CardinalDirections.CardinalDirection,
     to_side: CardinalDirections.CardinalDirection,
+    silent: bool = false,
 ) -> bool:
     if _blocks_sides.has(to_side):
-        print_debug("Event %s blocks entry to side %s" % [name, CardinalDirections.name(to_side)])
+        if !silent:
+            print_debug("Event %s blocks entry to side %s" % [name, CardinalDirections.name(to_side)])
         return true
 
     var entry_from: CardinalDirections.CardinalDirection = CardinalDirections.invert(move_direction)
     if _blocks_sides.has(entry_from):
-        print_debug("Event %s blocks entry from %s" % [name, CardinalDirections.name(entry_from)])
+        if !silent:
+            print_debug("Event %s blocks entry from %s" % [name, CardinalDirections.name(entry_from)])
         return true
 
     return false
