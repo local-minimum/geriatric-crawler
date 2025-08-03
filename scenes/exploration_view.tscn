@@ -1,0 +1,31 @@
+[gd_scene load_steps=5 format=3 uid="uid://eoj51yv61yas"]
+
+[ext_resource type="Script" uid="uid://fb4jcprwlx4s" path="res://scripts/gridded_level/exploration_view.gd" id="1_lcagy"]
+[ext_resource type="PackedScene" uid="uid://dwqcwbgj8p6q0" path="res://scenes/dungeon/test_level.tscn" id="1_u78tq"]
+
+[sub_resource type="Environment" id="Environment_udkd3"]
+background_mode = 1
+background_color = Color(0.361575, 0.361575, 0.361575, 1)
+ambient_light_color = Color(0.101241, 0.101241, 0.101241, 1)
+fog_enabled = true
+fog_mode = 1
+fog_light_color = Color(0.0430788, 0.0511794, 0.0639149, 1)
+fog_density = 1.0
+fog_depth_curve = 0.659753
+fog_depth_begin = 4.0
+fog_depth_end = 15.0
+
+[sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_u78tq"]
+
+[node name="Exploration View" type="Node3D"]
+script = ExtResource("1_lcagy")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.804687, 0.403004, -0.435967, 0, 0.734323, 0.678801, 0.5937, -0.546222, 0.5909, 0.865872, 2.80495, 0)
+light_color = Color(1, 0.7535, 0.49, 1)
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_udkd3")
+camera_attributes = SubResource("CameraAttributesPractical_u78tq")
+
+[node name="TestLevel" parent="." instance=ExtResource("1_u78tq")]

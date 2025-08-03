@@ -1,6 +1,9 @@
 extends Node
 
 @export
+var exploration_view: ExplorationView
+
+@export
 var menu_base: Control
 
 @export
@@ -43,9 +46,6 @@ var ceiling_walking: CheckButton
 var jump_off: CheckButton
 
 @export
-var level: GridLevel
-
-@export
 var save_system: SaveSystem
 
 var inited: bool
@@ -58,11 +58,23 @@ func _on_hide_setting_menu() -> void:
     menu_base.hide()
     menu_button.show()
 
-func _init() -> void:
+var level: GridLevel
+func _ready() -> void:
     _on_hide_setting_menu.call_deferred()
+
+    level = GridLevel.active_level
+    if exploration_view.on_change_level.connect(_handle_new_level) != OK:
+        push_error("Failed to connect level switching")
+
     _sync.call_deferred()
 
+func _handle_new_level(_old: GridLevel, new: GridLevel) -> void:
+    level = new
+    _sync()
+
 func _sync() -> void:
+    if level == null:
+        return
     queue_moves.button_pressed = level.player.queue_moves
     replays.button_pressed = level.player.allow_replays
     replays_replace.button_pressed = !level.player.persist_repeat_moves

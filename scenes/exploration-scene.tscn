@@ -2,8 +2,8 @@
 
 [ext_resource type="PackedScene" uid="uid://dx6ngxriyyq7l" path="res://scenes/ui/ui_debug_settings.tscn" id="1_6lmoa"]
 [ext_resource type="PackedScene" uid="uid://xqedv5aeal6n" path="res://scenes/exploration_save_system.tscn" id="2_n04bd"]
-[ext_resource type="PackedScene" uid="uid://dwqcwbgj8p6q0" path="res://scenes/dungeon/test_level.tscn" id="3_08vpu"]
 [ext_resource type="PackedScene" uid="uid://d3iceirfj21qw" path="res://scenes/ui/exploration_ui.tscn" id="4_kbxam"]
+[ext_resource type="PackedScene" uid="uid://eoj51yv61yas" path="res://scenes/exploration_view.tscn" id="5_6lmoa"]
 [ext_resource type="PackedScene" uid="uid://sx8om7lfql6j" path="res://scenes/battle_mode.tscn" id="5_47t46"]
 [ext_resource type="PackedScene" uid="uid://ueqtmtn8vb0v" path="res://scenes/ui/robot_inspection_ui.tscn" id="6_w7kg7"]
 [ext_resource type="Script" uid="uid://dftf4h6eyrsio" path="res://scripts/inventory.gd" id="7_hdcgk"]
@@ -20,8 +20,8 @@ grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="DebugSettingsUI" parent="." node_paths=PackedStringArray("level", "save_system") instance=ExtResource("1_6lmoa")]
-level = NodePath("../SubViewportContainer/SubViewport/TestLevel")
+[node name="DebugSettingsUI" parent="." node_paths=PackedStringArray("exploration_view", "save_system") instance=ExtResource("1_6lmoa")]
+exploration_view = NodePath("../SubViewportContainer/SubViewport/Exploration View")
 save_system = NodePath("../SaveSystem")
 
 [node name="SaveSystem" parent="." instance=ExtResource("2_n04bd")]
@@ -59,15 +59,14 @@ canvas_cull_mask = 4293918751
 size = Vector2i(944, 648)
 render_target_update_mode = 4
 
-[node name="TestLevel" parent="SubViewportContainer/SubViewport" node_paths=PackedStringArray("battle_mode") instance=ExtResource("3_08vpu")]
-battle_mode = NodePath("../../../Battle Mode")
+[node name="Exploration View" parent="SubViewportContainer/SubViewport" instance=ExtResource("5_6lmoa")]
 
-[node name="Exploration UI" parent="." node_paths=PackedStringArray("level", "battle", "inspect_robot_ui") instance=ExtResource("4_kbxam")]
+[node name="Exploration UI" parent="." node_paths=PackedStringArray("exploration_view", "battle", "inspect_robot_ui") instance=ExtResource("4_kbxam")]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.82
 offset_left = 0.0
-level = NodePath("../SubViewportContainer/SubViewport/TestLevel")
+exploration_view = NodePath("../SubViewportContainer/SubViewport/Exploration View")
 battle = NodePath("../Battle Mode")
 inspect_robot_ui = NodePath("../Robot Inspection UI")
 

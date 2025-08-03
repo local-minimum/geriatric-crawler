@@ -2,13 +2,27 @@ extends Panel
 class_name  ExplorationUI
 
 @export
-var level: GridLevel
+var exploration_view: ExplorationView
+
+var level: GridLevel:
+    get():
+        if level == null:
+            level = GridLevel.active_level
+        return level
 
 @export
 var battle: BattleMode
 
 @export
 var inspect_robot_ui: RobotInspectionUI
+
+func _ready() -> void:
+    level = GridLevel.active_level
+    if exploration_view.on_change_level.connect(_handle_new_level) != OK:
+        push_error("Failed to connect level change")
+
+func _handle_new_level(_old: GridLevel, new: GridLevel) -> void:
+    level = new
 
 func _on_turn_left_pressed() -> void:
     if !level.player.attempt_movement(Movement.MovementType.TURN_COUNTER_CLOCKWISE):
