@@ -26,7 +26,6 @@ var effect: Node3D
 var rotation_speed: float = 1
 
 func _ready() -> void:
-    super._ready()
     if effect != null:
         if exit == null:
             effect.visible = false

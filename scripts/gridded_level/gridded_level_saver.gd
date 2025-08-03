@@ -111,24 +111,22 @@ func load_from_save(save_data: Dictionary) -> void:
                 else:
                     push_warning("Encounter '%s' not present in save" % [encounter.encounter_id])
     else:
-        push_warning("Level has no encounters save data")
+        push_warning("Level has encounters save data is in wrong format %s is %s" % [encounters_data, type_string(typeof(encounters_data))])
 
     var events_save: Dictionary = DictionaryUtils.safe_getd(save_data, _EVENTS_KEY, {}, false)
     if !events_save.is_empty():
-        if events_save is Dictionary[String, Variant]:
-            for event_node: Node in get_tree().get_nodes_in_group(GridEvent.GRID_EVENT_GROUP):
-                if event_node is GridEvent:
-                    var event: GridEvent = event_node
-                    if !event.needs_saving():
-                        continue
-
-                    if events_save.has(event.save_key()):
-                        var event_save: Variant = events_save[event.save_key()]
-                        if event_save is Dictionary:
-                            @warning_ignore_start("unsafe_cast")
-                            event.load_save_data(event_save as Dictionary)
-                            @warning_ignore_restore("unsafe_cast")
-                    else:
-                        push_warning("Event '%s' not present in save" % event.save_key())
+        for event_node: Node in get_tree().get_nodes_in_group(GridEvent.GRID_EVENT_GROUP):
+            if event_node is GridEvent:
+                var event: GridEvent = event_node
+                if events_save.has(event.save_key()):
+                    var event_save: Variant = events_save[event.save_key()]
+                    if event_save is Dictionary:
+                        @warning_ignore_start("unsafe_cast")
+                        event.load_save_data(event_save as Dictionary)
+                        @warning_ignore_restore("unsafe_cast")
+                elif event.needs_saving():
+                    push_warning("Event '%s' not present in save" % event.save_key())
+    else:
+        push_warning("No events on level")
 
     print_debug("Level %s loaded" % get_level_name())

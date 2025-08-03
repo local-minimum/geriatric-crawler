@@ -4,20 +4,17 @@ class_name GridNodeFeature
 signal on_change_node(feature: GridNodeFeature)
 signal on_change_anchor(feature: GridNodeFeature)
 
-var _node: GridNode
+var _node: GridNode:
+    get():
+        if _node == null && !_inited:
+            _node = GridNode.find_node_parent(self)
+            _inited = true
+
+        return _node
+
 var _anchor: GridAnchor
 
 var _inited: bool
-
-func _ready() -> void:
-    _init_feature()
-
-func _init_feature() -> void:
-    if _inited:
-        return
-
-    _node = GridNode.find_node_parent(self)
-    _inited = true
 
 func get_level() -> GridLevel:
     if _node != null:
@@ -26,8 +23,6 @@ func get_level() -> GridLevel:
     return GridLevel.find_level_parent(self, false)
 
 func get_grid_node() -> GridNode:
-    _init_feature()
-
     if _anchor != null:
         return _anchor.get_grid_node()
 
@@ -47,7 +42,6 @@ func set_grid_node(node: GridNode, _deferred: bool = false) -> void:
     on_change_node.emit(self)
 
 func get_grid_anchor() -> GridAnchor:
-    _init_feature()
     return _anchor
 
 func get_grid_anchor_direction() -> CardinalDirections.CardinalDirection:

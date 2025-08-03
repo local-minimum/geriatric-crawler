@@ -46,7 +46,7 @@ func _ready() -> void:
     sonar_root.visible = skill_level > 0
     sonar_label.text = "SNR-100 Mk %s" % IntUtils.to_roman(skill_level)
     _astar = AStar3D.new()
-    _populate_astar()
+    _populate_astar.call_deferred()
 
 func _populate_astar() -> void:
     var level: GridLevel = exploration_ui.level

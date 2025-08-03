@@ -17,7 +17,6 @@ var _local_anchor_position: Vector3
 
 func _ready() -> void:
     _local_anchor_position = position
-    super._ready()
 
     var level: GridLevel = get_level()
     if level != null:

@@ -58,7 +58,6 @@ var _consumes_key: bool
 var lock_state: LockState
 
 func _ready() -> void:
-    super._ready()
     lock_state = _inital_lock_state
     if lock_state == LockState.OPEN:
         animator.play(_opened_animation)
@@ -324,10 +323,12 @@ func _deserialize_lockstate(state: int) -> LockState:
             return _inital_lock_state
 
 func load_save_data(data: Dictionary) -> void:
+    print_debug("Door %s loads from %s" % [self, data])
     _triggered = DictionaryUtils.safe_getb(data, _TRIGGERED_KEY)
     var lock_state_int: int = DictionaryUtils.safe_geti(data, _LOCK_STATE_KEY)
     lock_state = _deserialize_lockstate(lock_state_int)
 
+    print_debug("Door %s loads with state %s" % [self, lock_state_name(lock_state)])
     if lock_state == LockState.OPEN:
         animator.play(_opened_animation)
     else:
