@@ -1,4 +1,4 @@
-[gd_scene load_steps=42 format=3 uid="uid://dwqcwbgj8p6q0"]
+[gd_scene load_steps=43 format=3 uid="uid://dwqcwbgj8p6q0"]
 
 [ext_resource type="Script" uid="uid://dqe42q7uub84r" path="res://scripts/gridded_level/level_features/grid_level.gd" id="1_dd1ob"]
 [ext_resource type="PackedScene" uid="uid://bfoog3fb4v5ij" path="res://scenes/dungeon/player.tscn" id="3_m6mav"]
@@ -31,8 +31,9 @@
 [ext_resource type="Script" uid="uid://dtq2v31avcen2" path="res://scripts/card_battle/battle_brain.gd" id="22_rcxcv"]
 [ext_resource type="Script" uid="uid://qbk2psf0rmnw" path="res://scripts/card_battle/battle_strategy.gd" id="22_sy7nh"]
 [ext_resource type="Script" uid="uid://6vnrccj8frlq" path="res://scripts/card_battle/battle_enemy_target_system.gd" id="25_s5loo"]
+[ext_resource type="Script" uid="uid://bl72bpxm44td8" path="res://scripts/key_master.gd" id="32_wymjw"]
 
-[sub_resource type="Resource" id="Resource_sn1co"]
+[sub_resource type="Resource" id="Resource_sy7nh"]
 resource_local_to_scene = true
 script = ExtResource("4_840jk")
 mode = 61
@@ -82,7 +83,7 @@ process_mode = 3
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0145968, -0.00857759, 0.00070858)
 spawn_node = NodePath("../LevelGeometry/Elevation 0/Node (0, 0, 1)")
 look_direction = 1
-transportation_abilities = SubResource("Resource_sn1co")
+transportation_abilities = SubResource("Resource_sy7nh")
 transportation_mode = SubResource("Resource_pgxau")
 
 [node name="LevelGeometry" type="Node3D" parent="."]
@@ -504,9 +505,10 @@ direction = 2
 transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -1.23292, 0, 0)
 _back_automation = 3
 _close_automation = 2
+_inital_lock_state = 0
 _door_face = 3
 block_traversal_anchor_sides = Array[int]([1, 2])
-_key_id = "masterkey"
+key_id = "purple"
 
 [node name="Node (4, 0, 1)" parent="LevelGeometry/Elevation 0" instance=ExtResource("4_myev5")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 0, 2.5)
@@ -1210,8 +1212,8 @@ script = ExtResource("8_j1mj1")
 _contents = Dictionary[String, float]({
 "Carbide Polymere": 30.0,
 "Fullerene Clusters": 0.2,
-"Sn": 15.0,
-"Ti": 8.0
+"KEY-purple": 1.0,
+"Sn": 15.0
 })
 _mesh = NodePath("MeshInstance3D")
 _open_tex = ExtResource("9_7gan6")
@@ -1354,3 +1356,10 @@ script = ExtResource("22_sy7nh")
 script = ExtResource("25_s5loo")
 _self = NodePath("..")
 metadata/_custom_type_script = "uid://6vnrccj8frlq"
+
+[node name="KeyMaster" type="Node" parent="."]
+script = ExtResource("32_wymjw")
+_key_descriptions = Dictionary[String, String]({
+"purple": "Purple key"
+})
+metadata/_custom_type_script = "uid://bl72bpxm44td8"

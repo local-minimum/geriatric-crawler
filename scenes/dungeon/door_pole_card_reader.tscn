@@ -12,14 +12,17 @@
 [sub_resource type="BoxShape3D" id="BoxShape3D_h2uq7"]
 size = Vector3(0.303833, 0.385254, 0.237427)
 
-[node name="door-pole-card-reader" node_paths=PackedStringArray("mesh") instance=ExtResource("1_cwvrh")]
+[node name="door-pole-card-reader" node_paths=PackedStringArray("mesh", "collision_shape") instance=ExtResource("1_cwvrh")]
 script = ExtResource("2_iqnlb")
 mesh = NodePath("DoorReader")
+collision_shape = NodePath("StaticBody3D/CollisionShape3D")
 automatic_door_tex = ExtResource("3_t0i7i")
 walk_into_door_tex = ExtResource("4_h2uq7")
 no_entry_door_tex = ExtResource("5_livh6")
 click_to_open_tex = ExtResource("6_1s630")
-locked_door_tex = ExtResource("7_m0ngr")
+locked_door_tex_model1 = ExtResource("7_m0ngr")
+locked_door_tex_model2 = ExtResource("7_m0ngr")
+locked_door_tex_model3 = ExtResource("7_m0ngr")
 open_door_tex = ExtResource("8_h2uq7")
 emission_intensity = 4.0
 

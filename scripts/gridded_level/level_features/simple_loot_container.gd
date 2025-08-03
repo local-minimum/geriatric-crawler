@@ -40,6 +40,14 @@ func _handle_loooting(entity: GridEntity) -> void:
     _set_open_graphics()
     await get_tree().create_timer(0.2).timeout
 
+    var key_ring: KeyRing = get_level().player.key_ring
+
+    for id: String in _contents:
+        if KeyRing.is_key(id):
+            var amount: int = ceili(_contents[id])
+            if amount > 0:
+                key_ring.gain(id, amount)
+
     _looted = Inventory.active_inventory.add_many_to_inventory(_contents)
 
     if entity.on_move_end.is_connected(_handle_loooting):

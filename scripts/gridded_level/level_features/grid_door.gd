@@ -48,9 +48,12 @@ var _closed_animation: String = "Closed"
 @export
 var block_traversal_anchor_sides: Array[CardinalDirections.CardinalDirection]
 
-## If door is locked, this identifies what key unlocks it
+## If door is locked, this identifies what key unlocks it, omit the universal key-prefix
 @export
-var _key_id: String
+var key_id: String
+
+@export
+var _consumes_key: bool
 
 var lock_state: LockState
 
@@ -275,8 +278,26 @@ func toggle_door() -> void:
         close_door()
 
 func attempt_door_unlock() -> void:
-    # TODO: Implement keys
-    NotificationsManager.warn("Door locked", "No matching key")
+    if lock_state != LockState.LOCKED:
+        return
+
+    var key_ring: KeyRing = get_level().player.key_ring
+    if key_ring == null || !key_ring.has_key(key_id):
+        NotificationsManager.warn("Door locked", "Missing %s" % KeyMaster.instance.get_description(key_id))
+        return
+
+    if _consumes_key:
+        if key_ring.consume_key(key_id):
+            NotificationsManager.important("Door unlocked", "Lost %s" % KeyMaster.instance.get_description(key_id))
+        else:
+            NotificationsManager.warn("Door locked", "Could not unlock with %s" % KeyMaster.instance.get_description(key_id))
+            return
+    else:
+        NotificationsManager.info("Door unlocked", "Used %s" % KeyMaster.instance.get_description(key_id))
+
+    lock_state = LockState.CLOSED
+    on_door_state_chaged.emit()
+    open_door()
 
 func needs_saving() -> bool:
     return true

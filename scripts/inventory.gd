@@ -112,6 +112,9 @@ func add_many_to_inventory(items: Dictionary[String, float]) -> bool:
         return false
 
     for id: String in items:
+        if KeyRing.is_key(id):
+           continue
+
         if !add_to_inventory(id, items[id]):
             return false
 

@@ -1,6 +1,11 @@
 extends Node
 class_name KeyRing
 
+const KEY_PREFIX: String = "KEY-"
+
+static func is_key(id: String) -> bool:
+    return id.begins_with(KEY_PREFIX)
+
 var _keys: Dictionary[String, int]
 
 func has_key(key: String) -> bool:
@@ -13,10 +18,15 @@ func consume_key(key: String) -> bool:
     return false
 
 func gain(key: String, amount: int = 1) -> void:
+    if key.begins_with(KeyRing.KEY_PREFIX):
+        key = key.substr(KeyRing.KEY_PREFIX.length())
+
     if _keys.has(key):
         _keys[key] += amount
+        NotificationsManager.info("Gained %s key%s" % [amount, "" if amount == 0 else "s"], KeyMaster.instance.get_description(key))
     else:
         _keys[key] = amount
+        NotificationsManager.important("New key", KeyMaster.instance.get_description(key))
 
 func collect_save_data() -> Dictionary[String, int]:
     return _keys.duplicate()

@@ -29,7 +29,13 @@ var no_entry_door_tex: Texture
 var click_to_open_tex: Texture
 
 @export
-var locked_door_tex: Texture
+var locked_door_tex_model1: Texture
+
+@export
+var locked_door_tex_model2: Texture
+
+@export
+var locked_door_tex_model3: Texture
 
 @export
 var open_door_tex: Texture
@@ -48,6 +54,16 @@ func _ready() -> void:
 
     _sync_reader_display.call_deferred()
 
+func _get_locked_texture() -> Texture:
+    var key: String = door.key_id
+    match KeyMaster.instance.get_key_model_id(key):
+        1: return locked_door_tex_model1
+        2: return locked_door_tex_model2
+        3: return locked_door_tex_model3
+        _:
+            push_warning("Key %s has model id %s which we don't know how to draw" % [key, KeyMaster.instance.get_key_model_id(key)])
+            return locked_door_tex_model1
+
 func _get_needed_texture() -> Texture:
     match door.get_opening_automation(self):
         GridDoor.OpenAutomation.NONE:
@@ -61,14 +77,14 @@ func _get_needed_texture() -> Texture:
             _check_click = true
             match door.lock_state:
                 GridDoor.LockState.LOCKED:
-                    return locked_door_tex
+                    return _get_locked_texture()
                 _:
                     return walk_into_door_tex
         GridDoor.OpenAutomation.PROXIMITY:
             match door.lock_state:
                 GridDoor.LockState.LOCKED:
                     _check_click = true
-                    return locked_door_tex
+                    return _get_locked_texture()
                 _:
                     _check_click = false
                     return automatic_door_tex
@@ -76,7 +92,7 @@ func _get_needed_texture() -> Texture:
             _check_click = true
             match door.lock_state:
                 GridDoor.LockState.LOCKED:
-                    return locked_door_tex
+                    return _get_locked_texture()
                 _:
                     return click_to_open_tex
 
