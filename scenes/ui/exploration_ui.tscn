@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://d3iceirfj21qw"]
+[gd_scene load_steps=14 format=3 uid="uid://d3iceirfj21qw"]
 
 [ext_resource type="Script" uid="uid://dng6kx20nqasv" path="res://scripts/ui/exploration_ui.gd" id="1_jvesw"]
 [ext_resource type="Texture2D" uid="uid://37t534r3ua0p" path="res://sprites/kenny game icons/open-xflipped.png" id="2_m3jmt"]
@@ -11,6 +11,7 @@
 [ext_resource type="Texture2D" uid="uid://davhidpjbpjq2" path="res://sprites/kenny game icons/open.png" id="4_eifl5"]
 [ext_resource type="Texture2D" uid="uid://bowjve07f2wq0" path="res://sprites/kenny game icons/arrowLeft.png" id="5_4stpx"]
 [ext_resource type="Texture2D" uid="uid://c02to5i50bgby" path="res://sprites/kenny game icons/arrowDown.png" id="6_2458l"]
+[ext_resource type="Script" uid="uid://ylartknudqvd" path="res://scripts/ui/isometric_map_ui.gd" id="6_ld1f6"]
 [ext_resource type="Texture2D" uid="uid://bm8p8oa78pasu" path="res://sprites/kenny game icons/arrowRight.png" id="7_ld1f6"]
 
 [node name="Exploration UI" type="Panel"]
@@ -99,12 +100,12 @@ theme_override_colors/font_color = Color(1, 1, 1, 0.443137)
 theme_override_font_sizes/font_size = 6
 text = "S100 Mk II"
 
-[node name="SimpleMapModule" type="ColorRect" parent="MarginContainer/VBoxContainer" node_paths=PackedStringArray("_simple_map_ui", "_mapping_area")]
+[node name="SimpleMapModule" type="ColorRect" parent="MarginContainer/VBoxContainer" node_paths=PackedStringArray("_2d_map_ui", "_mapping_area")]
 custom_minimum_size = Vector2(0, 150)
 layout_mode = 2
 color = Color(0.207843, 0.0862745, 0.105882, 1)
 script = ExtResource("3_2458l")
-_simple_map_ui = NodePath("Padding/Control/MapDrawArea")
+_2d_map_ui = NodePath("Padding/Control/2D Map")
 _mapping_area = NodePath(".")
 
 [node name="Padding" type="MarginContainer" parent="MarginContainer/VBoxContainer/SimpleMapModule"]
@@ -122,7 +123,7 @@ theme_override_constants/margin_bottom = 2
 [node name="Control" type="Control" parent="MarginContainer/VBoxContainer/SimpleMapModule/Padding"]
 layout_mode = 2
 
-[node name="MapDrawArea" type="Control" parent="MarginContainer/VBoxContainer/SimpleMapModule/Padding/Control" node_paths=PackedStringArray("exploration_ui")]
+[node name="2D Map" type="Control" parent="MarginContainer/VBoxContainer/SimpleMapModule/Padding/Control" node_paths=PackedStringArray("exploration_ui")]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -135,6 +136,18 @@ ground_color = Color(0.227982, 0.37, 0.1887, 0.843137)
 no_floor_color = Color(0.04416, 0.06, 0.0402, 0.937255)
 exploration_ui = NodePath("../../../../../..")
 metadata/_custom_type_script = "uid://ccd5c8wiv7kia"
+
+[node name="3D Map" type="Control" parent="MarginContainer/VBoxContainer/SimpleMapModule/Padding/Control"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("6_ld1f6")
+floor_color = Color(0.72, 0.396, 0.396, 0.917647)
+other_side_color = Color(0.420611, 0.668393, 0.861456, 0.682353)
+metadata/_custom_type_script = "uid://ylartknudqvd"
 
 [node name="CompassModule" parent="MarginContainer/VBoxContainer" node_paths=PackedStringArray("exploration_ui") instance=ExtResource("3_eifl5")]
 layout_mode = 2

@@ -22,6 +22,21 @@ func get_level() -> GridLevel:
 
     return level
 
+enum NodeSideState { NONE, SOLID, ILLUSORY }
+func has_side(direction: CardinalDirections.CardinalDirection) -> NodeSideState:
+    if _sides.has(direction):
+        return NodeSideState.ILLUSORY if _sides[direction].illosory else NodeSideState.SOLID
+
+    var neighbour_node: GridNode = neighbour(direction)
+    if neighbour_node == null:
+        return NodeSideState.NONE
+
+    var inverted: CardinalDirections.CardinalDirection = CardinalDirections.invert(direction)
+    if neighbour_node._sides.has(inverted):
+        return NodeSideState.ILLUSORY if neighbour_node._sides[inverted].illosory else NodeSideState.SOLID
+
+    return NodeSideState.NONE
+
 func _is_illusory_side(direction: CardinalDirections.CardinalDirection) -> bool:
     return _sides.has(direction) && _sides[direction].illosory
 

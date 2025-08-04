@@ -80,6 +80,9 @@ func _draw() -> void:
                 continue
 
             var node: GridNode = level.get_grid_node(game_coords)
+            if node == null:
+                continue
+
             var color: Color = ground_color if node != null && node.get_grid_anchor(_player.down) != null else no_floor_color
             var rect: Rect2 = Rect2(
                 Vector2(

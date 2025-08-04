@@ -57,3 +57,6 @@ static func primary_direction(v: Vector3i) -> Vector3i:
 
 static func all_dimensions_smaller(a: Vector3, b: Vector3) -> bool:
     return a.x < b.x && a.y < b.y && a.z < b.z
+
+static func is_negative_cardinal_axis(a: Vector3) -> bool:
+    return a.x < 0 || a.y < 0 || a.z < 0

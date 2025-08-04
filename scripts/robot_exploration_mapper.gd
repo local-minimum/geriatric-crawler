@@ -7,10 +7,18 @@ static var active_mapper: RobotExplorationMapper
 var _memory_size: int = 100
 
 @export
-var _simple_map_ui: SimpleMapUI
+var _2d_map_ui: SimpleMapUI
+
+@export
+var _3d_map_ui: IsometricMapUI
 
 @export
 var _mapping_area: Control
+
+var prefer_2d: bool:
+    set(value):
+        prefer_2d = value
+        _update_map()
 
 var _level: GridLevel
 var _player: GridPlayer
@@ -72,14 +80,29 @@ func _handle_move_end(entity: GridEntity) -> void:
         coords = CardinalDirections.translate(coords, _player.look_direction)
         _enter_new_coordinates(coords)
 
-    var skill_level: int = _player.robot.get_skill_level(RobotAbility.SKILL_MAPPING)
-    _mapping_area.visible = skill_level > 1
+    _update_map()
 
-    if skill_level == 2:
-        _simple_map_ui.visible = true
-        _simple_map_ui.trigger_redraw(_player, _seen)
+func _update_map() -> void:
+    var skill_level: int = _player.robot.get_skill_level(RobotAbility.SKILL_MAPPING)
+
+    if skill_level == 2 || skill_level > 2 && prefer_2d:
+        _mapping_area.visible = true
+
+        _3d_map_ui.visible = false
+
+        _2d_map_ui.visible = true
+        _2d_map_ui.trigger_redraw(_player, _seen)
+    elif skill_level > 2:
+        _mapping_area.visible = true
+
+        _2d_map_ui.visible = false
+
+        _3d_map_ui.visible = true
+        _3d_map_ui.trigger_redraw(_player, _seen)
     else:
-        _simple_map_ui.visible = false
+        _mapping_area.visible = false
+        _2d_map_ui.visible = false
+        _3d_map_ui.visible = false
 
 func _enter_new_coordinates(coords: Vector3i) -> void:
     if !_seen.has(coords):
