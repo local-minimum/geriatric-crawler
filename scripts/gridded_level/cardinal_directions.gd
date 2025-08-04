@@ -444,20 +444,20 @@ static func translate(coordinates: Vector3i, direction: CardinalDirection, repea
 
 static func vectori_axis_value(coordinates: Vector3i, direction: CardinalDirection) -> int:
     match direction:
-        CardinalDirection.UP: return coordinates.z
-        CardinalDirection.DOWN: return coordinates.z
-        CardinalDirection.NORTH: return coordinates.y
-        CardinalDirection.SOUTH: return coordinates.y
+        CardinalDirection.UP: return coordinates.y
+        CardinalDirection.DOWN: return coordinates.y
+        CardinalDirection.NORTH: return coordinates.z
+        CardinalDirection.SOUTH: return coordinates.z
         CardinalDirection.WEST: return coordinates.x
         CardinalDirection.EAST: return coordinates.x
         _: return 0
 
 static func vector_axis_value(coordinates: Vector3, direction: CardinalDirection) -> float:
     match direction:
-        CardinalDirection.UP: return coordinates.z
-        CardinalDirection.DOWN: return coordinates.z
-        CardinalDirection.NORTH: return coordinates.y
-        CardinalDirection.SOUTH: return coordinates.y
+        CardinalDirection.UP: return coordinates.y
+        CardinalDirection.DOWN: return coordinates.y
+        CardinalDirection.NORTH: return coordinates.z
+        CardinalDirection.SOUTH: return coordinates.z
         CardinalDirection.WEST: return coordinates.x
         CardinalDirection.EAST: return coordinates.x
         _: return 0

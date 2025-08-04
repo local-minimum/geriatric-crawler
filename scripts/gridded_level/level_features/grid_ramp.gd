@@ -44,6 +44,9 @@ var animation_mode: AnimationMode = AnimationMode.Ramp
 @export
 var stair_steps: int = 7
 
+@export
+var shift_points_on_stairs: float = 0.1
+
 var _transporting_entities: Array[GridEntity]
 
 var translations: Tween
@@ -63,6 +66,10 @@ func trigger(entity: GridEntity, movement: Movement.MovementType) -> void:
     var down_anchor: GridAnchor = get_grid_node().get_grid_anchor(down)
     var lower_point: Vector3 = down_anchor.get_edge_position(lower_exit_direction) + get_level().node_size * CardinalDirections.direction_to_look_vector(lower_exit_direction) * lower_overshoot
     var upper_point: Vector3 = down_anchor.get_edge_position(upper_exit_direction) + get_level().node_size * CardinalDirections.direction_to_look_vector(up_direction)
+    if animation_mode == AnimationMode.Stairs:
+        var offset: Vector3 = get_level().node_size * CardinalDirections.direction_to_look_vector(lower_exit_direction) * shift_points_on_stairs
+        lower_point += offset
+        upper_point += offset
 
     var exit_anchor: GridAnchor
 
@@ -113,7 +120,7 @@ func trigger(entity: GridEntity, movement: Movement.MovementType) -> void:
             || !get_grid_node().may_exit(entity, up_direction)
             || !exit_node.may_enter(entity, get_grid_node(), upper_exit_direction, down)
         ):
-            _refuse_animation(translations, entity, lower_point, animation_duration * lower_duration_fraction)
+            _animate_refuse(entity, lower_point, animation_duration * lower_duration_fraction)
             rotations.kill()
             return
 
@@ -180,7 +187,7 @@ func trigger(entity: GridEntity, movement: Movement.MovementType) -> void:
             || !exit_node.may_enter(entity, get_grid_node(), upper_exit_direction, down)
             || intermediate != null && !intermediate.may_transit(entity, get_grid_node(), up_direction, upper_exit_direction)
         ):
-            _refuse_animation(translations, entity, lower_point, animation_duration * lower_duration_fraction)
+            _animate_refuse(entity, lower_point, animation_duration * lower_duration_fraction)
             rotations.kill()
             return
 
@@ -195,7 +202,7 @@ func trigger(entity: GridEntity, movement: Movement.MovementType) -> void:
             var step_duration: float = animation_duration * ramp_duration_fraction / stair_steps
             for idx: int in range(stair_steps):
                 var target: Vector3 = lerp(lower_point, upper_point, (1.0 + idx) / stair_steps)
-                translations.tween_property(entity, "global_position:%s" % upaxis_name, CardinalDirections.vector_axis_value(target, up_direction), step_duration).set_trans(Tween.TRANS_QUART)
+                translations.tween_property(entity, "global_position:%s" % upaxis_name, CardinalDirections.vector_axis_value(target, up_direction), step_duration).set_trans(Tween.TRANS_QUART).set_ease(Tween.EASE_OUT)
                 translations.parallel().tween_property(entity, "global_position:%s" % directionaxis_name, CardinalDirections.vector_axis_value(target, upper_exit_direction), step_duration).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
         translations.tween_property(entity, "global_position", exit_anchor.global_position, animation_duration * ramp_upper_duration_fraction)
 
@@ -241,7 +248,7 @@ func trigger(entity: GridEntity, movement: Movement.MovementType) -> void:
             || !get_grid_node().may_exit(entity, up_direction)
             || !exit_node.may_enter(entity, get_grid_node(), lower_exit_direction, down)
         ):
-            _refuse_animation(translations, entity, lower_point, animation_duration * lower_duration_fraction)
+            _animate_refuse(entity, lower_point, animation_duration * lower_duration_fraction)
             rotations.kill()
             return
 
@@ -302,7 +309,7 @@ func trigger(entity: GridEntity, movement: Movement.MovementType) -> void:
 
     translations.play()
 
-func _refuse_animation(translations: Tween, entity: GridEntity, refuse_point: Vector3, step_duration: float) -> void:
+func _animate_refuse(entity: GridEntity, refuse_point: Vector3, step_duration: float) -> void:
     @warning_ignore_start("return_value_discarded")
     translations.tween_property(entity, "global_position", refuse_point, step_duration)
     translations.tween_property(entity, "global_position", entity.global_position, step_duration)
