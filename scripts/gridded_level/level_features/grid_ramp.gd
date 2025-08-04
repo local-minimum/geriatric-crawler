@@ -36,7 +36,18 @@ var ramp_upper_duration_fraction: float = 0.15
 @export_range(0, 1)
 var pivot_duration_fraction: float = 0.05
 
+enum AnimationMode { Ramp, Stairs }
+
+@export
+var animation_mode: AnimationMode = AnimationMode.Ramp
+
+@export
+var stair_steps: int = 7
+
 var _transporting_entities: Array[GridEntity]
+
+var translations: Tween
+var rotations: Tween
 
 func trigger(entity: GridEntity, movement: Movement.MovementType) -> void:
     # TODO: Support inner corner wedges
@@ -55,8 +66,13 @@ func trigger(entity: GridEntity, movement: Movement.MovementType) -> void:
 
     var exit_anchor: GridAnchor
 
-    var translations: Tween = get_tree().create_tween()
-    var rotations: Tween = get_tree().create_tween()
+    if translations != null:
+        translations.kill()
+    translations = get_tree().create_tween()
+
+    if rotations != null:
+        rotations.kill()
+    rotations = get_tree().create_tween()
 
     var update_rotation: Callable = QuaternionUtils.create_tween_rotation_method(entity)
 
@@ -104,7 +120,20 @@ func trigger(entity: GridEntity, movement: Movement.MovementType) -> void:
         # TODO: Easings and such
         @warning_ignore_start("return_value_discarded")
         translations.tween_property(entity, "global_position", mid_point, animation_duration * lower_duration_fraction)
-        translations.tween_property(entity, "global_position", lower_point, animation_duration * ramp_duration_fraction)
+        if animation_mode == AnimationMode.Ramp:
+            translations.tween_property(entity, "global_position", lower_point, animation_duration * ramp_duration_fraction)
+        else:
+            var upaxis_name: String = CardinalDirections.direction_to_axis_parameter_name(up_direction)
+            var directionaxis_name: String = CardinalDirections.direction_to_axis_parameter_name(lower_exit_direction)
+            @warning_ignore_start("integer_division")
+            var steps: int = stair_steps / 2
+            @warning_ignore_restore("integer_division")
+            var step_duration: float = animation_duration * ramp_duration_fraction / steps
+            for idx: int in range(steps):
+                var target: Vector3 = lerp(mid_point, lower_point, (1.0 + idx) / steps)
+                translations.tween_property(entity, "global_position:%s" % upaxis_name, CardinalDirections.vector_axis_value(target, up_direction), step_duration).set_trans(Tween.TRANS_BACK)
+                translations.parallel().tween_property(entity, "global_position:%s" % directionaxis_name, CardinalDirections.vector_axis_value(target, lower_exit_direction), step_duration).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+
         translations.tween_property(entity, "global_position", exit_anchor.global_position, animation_duration * ramp_upper_duration_fraction)
 
         rotations.tween_method(
@@ -113,19 +142,22 @@ func trigger(entity: GridEntity, movement: Movement.MovementType) -> void:
             upper_entry_rotation,
             animation_duration * (lower_duration_fraction - 0.5 * pivot_duration_fraction),
         )
-        rotations.tween_method(
-            update_rotation,
-            lower_exit_rotation,
-            ramp_rotation,
-            animation_duration * pivot_duration_fraction
-        )
-        rotations.tween_method(rotation_pause, 0.0, 1.0, animation_duration * (ramp_duration_fraction - pivot_duration_fraction))
-        rotations.tween_method(
-            update_rotation,
-            ramp_rotation,
-            lower_exit_direction,
-            animation_duration * pivot_duration_fraction
-        )
+
+        if animation_mode == AnimationMode.Ramp:
+            rotations.tween_method(
+                update_rotation,
+                lower_exit_rotation,
+                ramp_rotation,
+                animation_duration * pivot_duration_fraction
+            )
+            rotations.tween_method(rotation_pause, 0.0, 1.0, animation_duration * (ramp_duration_fraction - pivot_duration_fraction))
+            rotations.tween_method(
+                update_rotation,
+                ramp_rotation,
+                lower_exit_direction,
+                animation_duration * pivot_duration_fraction
+            )
+
         @warning_ignore_restore("return_value_discarded")
     elif entity.coordinates() == CardinalDirections.translate(coordinates(), lower_exit_direction):
         print_debug("Going up")
@@ -155,7 +187,16 @@ func trigger(entity: GridEntity, movement: Movement.MovementType) -> void:
         # TODO: Easings and such
         @warning_ignore_start("return_value_discarded")
         translations.tween_property(entity, "global_position", lower_point, animation_duration * lower_duration_fraction)
-        translations.tween_property(entity, "global_position", upper_point, animation_duration * ramp_duration_fraction)
+        if animation_mode == AnimationMode.Ramp:
+            translations.tween_property(entity, "global_position", upper_point, animation_duration * ramp_duration_fraction)
+        else:
+            var upaxis_name: String = CardinalDirections.direction_to_axis_parameter_name(up_direction)
+            var directionaxis_name: String = CardinalDirections.direction_to_axis_parameter_name(upper_exit_direction)
+            var step_duration: float = animation_duration * ramp_duration_fraction / stair_steps
+            for idx: int in range(stair_steps):
+                var target: Vector3 = lerp(lower_point, upper_point, (1.0 + idx) / stair_steps)
+                translations.tween_property(entity, "global_position:%s" % upaxis_name, CardinalDirections.vector_axis_value(target, up_direction), step_duration).set_trans(Tween.TRANS_QUART)
+                translations.parallel().tween_property(entity, "global_position:%s" % directionaxis_name, CardinalDirections.vector_axis_value(target, upper_exit_direction), step_duration).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
         translations.tween_property(entity, "global_position", exit_anchor.global_position, animation_duration * ramp_upper_duration_fraction)
 
         rotations.tween_method(
@@ -164,19 +205,21 @@ func trigger(entity: GridEntity, movement: Movement.MovementType) -> void:
             lower_entry_rotation,
             animation_duration * (lower_duration_fraction - 0.5 * pivot_duration_fraction),
         )
-        rotations.tween_method(
-            update_rotation,
-            lower_entry_rotation,
-            ramp_rotation,
-            animation_duration * pivot_duration_fraction
-        )
-        rotations.tween_method(rotation_pause, 0.0, 1.0, animation_duration * (ramp_duration_fraction - pivot_duration_fraction))
-        rotations.tween_method(
-            update_rotation,
-            ramp_rotation,
-            upper_exit_rotation,
-            animation_duration * pivot_duration_fraction
-        )
+
+        if animation_mode == AnimationMode.Ramp:
+            rotations.tween_method(
+                update_rotation,
+                lower_entry_rotation,
+                ramp_rotation,
+                animation_duration * pivot_duration_fraction
+            )
+            rotations.tween_method(rotation_pause, 0.0, 1.0, animation_duration * (ramp_duration_fraction - pivot_duration_fraction))
+            rotations.tween_method(
+                update_rotation,
+                ramp_rotation,
+                upper_exit_rotation,
+                animation_duration * pivot_duration_fraction
+            )
         @warning_ignore_restore("return_value_discarded")
 
         exit_direction = upper_exit_direction
@@ -196,7 +239,7 @@ func trigger(entity: GridEntity, movement: Movement.MovementType) -> void:
             exit_anchor == null
             || exit_node == null
             || !get_grid_node().may_exit(entity, up_direction)
-            || !exit_node.may_enter(entity, get_grid_node(), upper_exit_direction, down)
+            || !exit_node.may_enter(entity, get_grid_node(), lower_exit_direction, down)
         ):
             _refuse_animation(translations, entity, lower_point, animation_duration * lower_duration_fraction)
             rotations.kill()
@@ -205,7 +248,16 @@ func trigger(entity: GridEntity, movement: Movement.MovementType) -> void:
         # TODO: Easings and such
         @warning_ignore_start("return_value_discarded")
         translations.tween_property(entity, "global_position", upper_point, animation_duration * ramp_upper_duration_fraction)
-        translations.tween_property(entity, "global_position", lower_point, animation_duration * ramp_duration_fraction * 0.5)
+        if animation_mode == AnimationMode.Ramp:
+            translations.tween_property(entity, "global_position", lower_point, animation_duration * ramp_duration_fraction * 0.5)
+        else:
+            var upaxis_name: String = CardinalDirections.direction_to_axis_parameter_name(up_direction)
+            var directionaxis_name: String = CardinalDirections.direction_to_axis_parameter_name(lower_exit_direction)
+            var step_duration: float = animation_duration * ramp_duration_fraction / stair_steps
+            for idx: int in range(stair_steps):
+                var target: Vector3 = lerp(upper_point, lower_point, (1.0 + idx) / stair_steps)
+                translations.tween_property(entity, "global_position:%s" % upaxis_name, CardinalDirections.vector_axis_value(target, up_direction), step_duration).set_trans(Tween.TRANS_BACK)
+                translations.parallel().tween_property(entity, "global_position:%s" % directionaxis_name, CardinalDirections.vector_axis_value(target, lower_exit_direction), step_duration).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
         translations.tween_property(entity, "global_position", exit_anchor.global_position, animation_duration * lower_duration_fraction)
 
         rotations.tween_method(
@@ -214,19 +266,20 @@ func trigger(entity: GridEntity, movement: Movement.MovementType) -> void:
             upper_entry_rotation,
             animation_duration * (lower_duration_fraction - 0.5 * pivot_duration_fraction),
         )
-        rotations.tween_method(
-            update_rotation,
-            upper_entry_rotation,
-            ramp_rotation,
-            animation_duration * pivot_duration_fraction
-        )
-        rotations.tween_method(rotation_pause, 0.0, 1.0, animation_duration * (ramp_duration_fraction - pivot_duration_fraction) * 0.5)
-        rotations.tween_method(
-            update_rotation,
-            ramp_rotation,
-            lower_exit_rotation,
-            animation_duration * pivot_duration_fraction
-        )
+        if animation_mode == AnimationMode.Ramp:
+            rotations.tween_method(
+                update_rotation,
+                upper_entry_rotation,
+                ramp_rotation,
+                animation_duration * pivot_duration_fraction
+            )
+            rotations.tween_method(rotation_pause, 0.0, 1.0, animation_duration * (ramp_duration_fraction - pivot_duration_fraction) * 0.5)
+            rotations.tween_method(
+                update_rotation,
+                ramp_rotation,
+                lower_exit_rotation,
+                animation_duration * pivot_duration_fraction
+            )
         @warning_ignore_restore("return_value_discarded")
 
     @warning_ignore_start("return_value_discarded")
@@ -280,6 +333,7 @@ func blocks_entry_translation(
         var player: GridPlayer = entity
         if player.robot.get_skill_level(RobotAbility.SKILL_CLIMBING) < climbing_requirement:
             if !silent:
+                NotificationsManager.warn("Inaccessible", "You lack sufficient climbing skill")
                 print_debug("Entry to ramp blocked by too low climbing-skill")
             return true
 

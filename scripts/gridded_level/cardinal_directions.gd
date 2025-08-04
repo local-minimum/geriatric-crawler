@@ -286,6 +286,19 @@ static func direction_to_axis(direction: CardinalDirection) -> Vector3:
             print_stack()
             return Vector3.ZERO
 
+static func direction_to_axis_parameter_name(direction: CardinalDirection) -> String:
+    match  direction:
+        CardinalDirection.UP: return "y"
+        CardinalDirection.DOWN: return "y"
+        CardinalDirection.WEST: return "x"
+        CardinalDirection.EAST: return "x"
+        CardinalDirection.NORTH: return "z"
+        CardinalDirection.SOUTH: return "z"
+        _:
+            push_error("Invalid direction: %" % direction)
+            print_stack()
+            return ""
+
 static func direction_to_planar_rotation(direction: CardinalDirection) -> Quaternion:
     match direction:
         CardinalDirection.NORTH: return Quaternion.IDENTITY
@@ -439,4 +452,13 @@ static func vectori_axis_value(coordinates: Vector3i, direction: CardinalDirecti
         CardinalDirection.EAST: return coordinates.x
         _: return 0
 
+static func vector_axis_value(coordinates: Vector3, direction: CardinalDirection) -> float:
+    match direction:
+        CardinalDirection.UP: return coordinates.z
+        CardinalDirection.DOWN: return coordinates.z
+        CardinalDirection.NORTH: return coordinates.y
+        CardinalDirection.SOUTH: return coordinates.y
+        CardinalDirection.WEST: return coordinates.x
+        CardinalDirection.EAST: return coordinates.x
+        _: return 0
 #endregion Operate on Other

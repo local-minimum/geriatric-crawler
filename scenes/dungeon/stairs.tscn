@@ -1,0 +1,23 @@
+[gd_scene load_steps=3 format=3 uid="uid://cd55qnu3gk7he"]
+
+[ext_resource type="Script" uid="uid://b8ewgty4lcw6y" path="res://scripts/gridded_level/level_features/grid_ramp.gd" id="1_y13gc"]
+[ext_resource type="PackedScene" uid="uid://5e0kekaq3dlp" path="res://models/stairs.fbx" id="2_y13gc"]
+
+[node name="Stairs" type="Node3D"]
+script = ExtResource("1_y13gc")
+climbing_requirement = 1
+upper_exit_direction = 4
+lower_exit_direction = 3
+lower_overshoot = 0.1
+animation_duration = 1.25
+lower_duration_fraction = 0.25
+ramp_upper_duration_fraction = 0.25
+pivot_duration_fraction = 0.1
+animation_mode = 1
+stair_steps = 8
+_trigger_sides = Array[int]([6, 4])
+_blocks_sides = Array[int]([1, 2])
+metadata/_custom_type_script = "uid://b8ewgty4lcw6y"
+
+[node name="Stairs Model" parent="." instance=ExtResource("2_y13gc")]
+transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, 0.01, 0.105, 0)
