@@ -60,3 +60,11 @@ static func all_dimensions_smaller(a: Vector3, b: Vector3) -> bool:
 
 static func is_negative_cardinal_axis(a: Vector3) -> bool:
     return a.x < 0 || a.y < 0 || a.z < 0
+
+static func flip_sign_first_non_null(a: Vector3i) -> Vector3i:
+    if a.x != 0:
+        return Vector3i(-a.x, a.y, a.z)
+    elif a.y != 0:
+        return Vector3i(a.x, -a.y, a.z)
+
+    return Vector3i(a.x, a.y, -a.z)

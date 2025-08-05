@@ -100,12 +100,13 @@ theme_override_colors/font_color = Color(1, 1, 1, 0.443137)
 theme_override_font_sizes/font_size = 6
 text = "S100 Mk II"
 
-[node name="SimpleMapModule" type="ColorRect" parent="MarginContainer/VBoxContainer" node_paths=PackedStringArray("_2d_map_ui", "_mapping_area")]
+[node name="SimpleMapModule" type="ColorRect" parent="MarginContainer/VBoxContainer" node_paths=PackedStringArray("_2d_map_ui", "_3d_map_ui", "_mapping_area")]
 custom_minimum_size = Vector2(0, 150)
 layout_mode = 2
 color = Color(0.207843, 0.0862745, 0.105882, 1)
 script = ExtResource("3_2458l")
 _2d_map_ui = NodePath("Padding/Control/2D Map")
+_3d_map_ui = NodePath("Padding/Control/3D Map")
 _mapping_area = NodePath(".")
 
 [node name="Padding" type="MarginContainer" parent="MarginContainer/VBoxContainer/SimpleMapModule"]
@@ -124,6 +125,7 @@ theme_override_constants/margin_bottom = 2
 layout_mode = 2
 
 [node name="2D Map" type="Control" parent="MarginContainer/VBoxContainer/SimpleMapModule/Padding/Control" node_paths=PackedStringArray("exploration_ui")]
+clip_contents = true
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -138,6 +140,7 @@ exploration_ui = NodePath("../../../../../..")
 metadata/_custom_type_script = "uid://ccd5c8wiv7kia"
 
 [node name="3D Map" type="Control" parent="MarginContainer/VBoxContainer/SimpleMapModule/Padding/Control"]
+clip_contents = true
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -145,8 +148,12 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("6_ld1f6")
+draw_box_half = Vector3i(8, 1, 8)
+camera_direction = Vector3(2, 3, 3)
 floor_color = Color(0.72, 0.396, 0.396, 0.917647)
+illusion_color = Color(0.4807, 0.2415, 0.69, 0.886275)
 other_side_color = Color(0.420611, 0.668393, 0.861456, 0.682353)
+plane_to_canvas_scale = 26.139
 metadata/_custom_type_script = "uid://ylartknudqvd"
 
 [node name="CompassModule" parent="MarginContainer/VBoxContainer" node_paths=PackedStringArray("exploration_ui") instance=ExtResource("3_eifl5")]
