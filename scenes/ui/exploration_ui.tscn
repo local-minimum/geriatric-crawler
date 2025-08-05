@@ -148,12 +148,12 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("6_ld1f6")
-draw_box_half = Vector3i(8, 1, 8)
+draw_box_half = Vector3i(7, 1, 7)
 camera_direction = Vector3(2, 3, 3)
 floor_color = Color(0.72, 0.396, 0.396, 0.917647)
 illusion_color = Color(0.4807, 0.2415, 0.69, 0.886275)
 other_side_color = Color(0.420611, 0.668393, 0.861456, 0.682353)
-plane_to_canvas_scale = 26.139
+plane_to_canvas_scale = 30.0
 metadata/_custom_type_script = "uid://ylartknudqvd"
 
 [node name="CompassModule" parent="MarginContainer/VBoxContainer" node_paths=PackedStringArray("exploration_ui") instance=ExtResource("3_eifl5")]
