@@ -64,10 +64,10 @@ func trigger(entity: GridEntity, movement: Movement.MovementType) -> void:
     entity.clear_queue()
     var down: CardinalDirections.CardinalDirection = CardinalDirections.invert(up_direction)
     var down_anchor: GridAnchor = get_grid_node().get_grid_anchor(down)
-    var lower_point: Vector3 = down_anchor.get_edge_position(lower_exit_direction) + get_level().node_size * CardinalDirections.direction_to_look_vector(lower_exit_direction) * lower_overshoot
-    var upper_point: Vector3 = down_anchor.get_edge_position(upper_exit_direction) + get_level().node_size * CardinalDirections.direction_to_look_vector(up_direction)
+    var lower_point: Vector3 = down_anchor.get_edge_position(lower_exit_direction) + get_level().node_size * CardinalDirections.direction_to_vector(lower_exit_direction) * lower_overshoot
+    var upper_point: Vector3 = down_anchor.get_edge_position(upper_exit_direction) + get_level().node_size * CardinalDirections.direction_to_vector(up_direction)
     if animation_mode == AnimationMode.Stairs:
-        var offset: Vector3 = get_level().node_size * CardinalDirections.direction_to_look_vector(lower_exit_direction) * shift_points_on_stairs
+        var offset: Vector3 = get_level().node_size * CardinalDirections.direction_to_vector(lower_exit_direction) * shift_points_on_stairs
         lower_point += offset
         upper_point += offset
 
@@ -87,10 +87,10 @@ func trigger(entity: GridEntity, movement: Movement.MovementType) -> void:
         pass
 
     var ramp_look_going_up_direction: Vector3 = (upper_point - lower_point).normalized()
-    var ramp_plane_ortho: Vector3 = CardinalDirections.direction_to_look_vector(CardinalDirections.yaw_ccw(upper_exit_direction, down)[0])
+    var ramp_plane_ortho: Vector3 = CardinalDirections.direction_to_vector(CardinalDirections.yaw_ccw(upper_exit_direction, down)[0])
 
     var ramp_normal_direction: Vector3 = ramp_look_going_up_direction.cross(ramp_plane_ortho)
-    if ramp_normal_direction.dot(CardinalDirections.direction_to_look_vector(up_direction)) < 0:
+    if ramp_normal_direction.dot(CardinalDirections.direction_to_vector(up_direction)) < 0:
         ramp_normal_direction *= -1
 
     var exit_direction: CardinalDirections.CardinalDirection = lower_exit_direction

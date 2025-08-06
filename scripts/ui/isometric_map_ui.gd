@@ -34,6 +34,9 @@ var elevation_difference_alpha_factor: float = 0.8
 @export_range(0, 200)
 var to_canvas_scaling: float = 30
 
+@export_range(0, 1)
+var line_width: float = 0.05
+
 func trigger_redraw(player: GridPlayer, seens_coordinates: Array[Vector3i]) -> void:
     _player = player
     _seen = seens_coordinates
@@ -48,19 +51,35 @@ func _draw() -> void:
 
     var level: GridLevel = _player.get_level()
 
-    var node_half_size: Vector3 = Vector3.ONE * 0.5
+    var node_half_size: Vector3 = Vector3.ONE * 0.47
 
     var player_coordinates: Vector3i = _player.coordinates()
-    var player_up: Vector3i = CardinalDirections.direction_to_vector(CardinalDirections.invert(_player.down))
+    var player_up: Vector3i = CardinalDirections.direction_to_vectori(CardinalDirections.invert(_player.down))
 
     var elevation_plane: Vector3i = CardinalDirections.direction_to_ortho_plane(_player.down)
     if VectorUtils.is_negative_cardinal_axis(player_up):
         elevation_plane *= -1
 
-    var sign_flipped_plane: Vector3i = VectorUtils.flip_sign_first_non_null(elevation_plane)
+    var primary: Vector3i = Vector3i.ZERO
+    if elevation_plane.x != 0:
+        primary.x = elevation_plane.x
+    elif elevation_plane.y != 0:
+        primary.y = elevation_plane.y
+    else:
+        primary.z = elevation_plane.z
 
-    # var draw_function: Callable = _create_orthographic_draw_function(player_coordinates, player_up)
-    var draw_function: Callable = _create_isometric_draw_function(player_coordinates, player_up)
+    var secondary: Vector3i = Vector3i.ZERO
+    if primary.x != 0:
+        if elevation_plane.y != 0:
+            secondary.y = elevation_plane.y
+        else:
+            secondary.z = elevation_plane.z
+    else:
+        secondary.z = elevation_plane.z
+
+
+    # var draw_function: Callable = _create_orthographic_draw_function(player_coordinates, player_up, primary, secondary)
+    var draw_function: Callable = _create_isometric_draw_function(player_coordinates, player_up, primary, secondary)
 
     # print_debug("Redrawing isometric map with player at %s onto plane %s" % [center, cam_plane])
 
@@ -70,23 +89,8 @@ func _draw() -> void:
         # print_debug("Drawing elevation %s" % elevation_center)
 
         for primary_offset: int in range(-draw_box_half.x, draw_box_half.x + 1):
-            var primary: Vector3i = Vector3i.ZERO
-            if elevation_plane.x != 0:
-                primary.x = elevation_plane.x
-            elif elevation_plane.y != 0:
-                primary.y = elevation_plane.y
-            else:
-                primary.z = elevation_plane.z
 
             for secondary_offset: int in range(-draw_box_half.z, draw_box_half.z +1):
-                var secondary: Vector3i = Vector3i.ZERO
-                if primary.x != 0:
-                    if elevation_plane.y != 0:
-                        secondary.y = elevation_plane.y
-                    else:
-                        secondary.z = elevation_plane.z
-                else:
-                    secondary.z = elevation_plane.z
 
                 var coords: Vector3i = elevation_center + primary * primary_offset + secondary * secondary_offset
 
@@ -97,45 +101,60 @@ func _draw() -> void:
                 if node == null:
                     continue
                 # Determine side type / color
-                var color: Color
                 var alpha_factor: float = elevation_difference_alpha_factor ** abs(elevation_offset) if elevation_offset != 0 else 1
-                match node.has_side(_player.down):
-                    GridNode.NodeSideState.SOLID:
-                        color = floor_color
-                        color.a *= alpha_factor
-                    GridNode.NodeSideState.ILLUSORY:
-                        if _seen.has(CardinalDirections.translate(coords, _player.down)):
-                            color = illusion_color
-                        else:
-                            color = floor_color
+
+                for direction: CardinalDirections.CardinalDirection in CardinalDirections.ALL_DIRECTIONS:
+                    var is_down: bool = direction == _player.down
+                    var color: Color
+                    match node.has_side(direction):
+                        GridNode.NodeSideState.SOLID:
+                            var n_coords: Vector3i = CardinalDirections.direction_to_vectori(direction) + coords
+                            if _seen.has(n_coords):
+                                var up_node: GridNode = level.get_grid_node(n_coords)
+                                if n_coords != null && up_node.has_side(CardinalDirections.invert(direction)) == GridNode.NodeSideState.SOLID:
+                                    continue
+                            color = floor_color if is_down else other_side_color
                             color.a *= alpha_factor
-                    _:
-                        continue
+                        GridNode.NodeSideState.ILLUSORY:
+                            if _seen.has(CardinalDirections.translate(coords, direction)):
+                                color = illusion_color
+                            else:
+                                color = floor_color if is_down else other_side_color
+                                color.a *= alpha_factor
+                        _:
+                            continue
 
-                # 1. Get corners
-                var side_center: Vector3 = coords as Vector3 + (-player_up as Vector3) * node_half_size
-                var corners: PackedVector3Array = [
-                    side_center + (elevation_plane as Vector3) * node_half_size,
-                    side_center + (sign_flipped_plane as Vector3) * node_half_size,
-                    side_center + (elevation_plane as Vector3) * -node_half_size,
-                    side_center + (sign_flipped_plane as Vector3) * -node_half_size,
-                ]
-
-                draw_function.call(corners, color)
+                    # 1. Get corners
+                    var side_center: Vector3 = coords as Vector3 + CardinalDirections.direction_to_vector(direction) * node_half_size
+                    var side_plane: Vector3i = CardinalDirections.direction_to_ortho_plane(direction)
+                    var sign_flipped_plane: Vector3i = VectorUtils.flip_sign_first_non_null(side_plane)
+                    draw_function.call(
+                        [
+                            side_center + (side_plane as Vector3) * node_half_size,
+                            side_center + (sign_flipped_plane as Vector3) * node_half_size,
+                            side_center + (side_plane as Vector3) * -node_half_size,
+                            side_center + (sign_flipped_plane as Vector3) * -node_half_size,
+                        ],
+                        color,
+                        !is_down,
+                    )
 
                 if coords == player_coordinates:
-                    var center: Vector3 = player_coordinates as Vector3 + CardinalDirections.direction_to_look_vector(_player.down) * 0.25
-                    var look: Vector3 = CardinalDirections.direction_to_look_vector(_player.look_direction) * 0.45
-                    var side: Vector3 = CardinalDirections.direction_to_look_vector(CardinalDirections.yaw_cw(_player.look_direction, _player.down)[0]) * 0.2
-                    corners = [
-                        center + look,
-                        center - look + side,
-                        center - look - side,
-                    ]
+                    var center: Vector3 = player_coordinates as Vector3 + player_up * -0.25
+                    var look: Vector3 = CardinalDirections.direction_to_vector(_player.look_direction) * 0.45
+                    var side: Vector3 = CardinalDirections.direction_to_vector(CardinalDirections.yaw_cw(_player.look_direction, _player.down)[0]) * 0.2
 
-                    draw_function.call(corners, player_color)
+                    draw_function.call(
+                        [
+                            center + look,
+                            center - look + side,
+                            center - look - side,
+                        ],
+                        player_color,
+                        false,
+                    )
 
-func _create_isometric_draw_function(player_coordinates: Vector3i, player_up: Vector3i) -> Callable:
+func _create_isometric_draw_function(player_coordinates: Vector3, player_up: Vector3, primary: Vector3, secondary: Vector3) -> Callable:
     var area_center: Vector2 = get_rect().get_center()
 
     var iso_x_scale: float = 1
@@ -143,20 +162,25 @@ func _create_isometric_draw_function(player_coordinates: Vector3i, player_up: Ve
     var iso_z_to_x_scale: float = -0.4
     var iso_z_to_y_scale: float = 0.5
 
-    return func(corners: PackedVector3Array, color: Color) -> void:
+    var coords_transform: Callable = func (coords: Vector3) -> Vector3:
+        var transformed: Vector3 = Vector3(coords.dot(primary), coords.dot(player_up), coords.dot(secondary))
+        return transformed
+
+    return func(corners: PackedVector3Array, color: Color, outline: bool) -> void:
         var points: PackedVector2Array = []
         @warning_ignore_start("return_value_discarded")
         points.resize(corners.size())
         @warning_ignore_restore("return_value_discarded")
 
         for idx: int in range(corners.size()):
-            var offset: Vector3 = corners[idx] - (player_coordinates as Vector3)
+            var offset: Vector3 = coords_transform.call(corners[idx] - player_coordinates)
+
             points[idx] = Vector2(
                 area_center.x + (offset.x * iso_x_scale + offset.z * iso_z_to_x_scale) * to_canvas_scaling,
                 area_center.y + (offset.y * iso_y_scale + offset.z * iso_z_to_y_scale) * to_canvas_scaling,
             )
 
-        _draw_shape(points, color)
+        _draw_shape(points, color, outline)
 
 func _create_orthographic_draw_function(player_coordinates: Vector3i, player_up: Vector3i) -> Callable:
     var cam_plane: Plane = _calculate_virtual_camera_plane()
@@ -168,7 +192,7 @@ func _create_orthographic_draw_function(player_coordinates: Vector3i, player_up:
     var area: Rect2 = get_rect()
     var area_center: Vector2 = area.get_center()
 
-    return func(corners: PackedVector3Array, color: Color) -> void:
+    return func(corners: PackedVector3Array, color: Color, outline: bool) -> void:
         if !_handle_clipping_update_corners(corners, cam_plane):
             return
 
@@ -192,10 +216,12 @@ func _create_orthographic_draw_function(player_coordinates: Vector3i, player_up:
 
             points[idx] = area_center + offset
 
-        _draw_shape(points, color)
+        _draw_shape(points, color, outline)
 
-func _draw_shape(points: PackedVector2Array, color: Color) -> void:
-    if points.size() > 4:
+func _draw_shape(points: PackedVector2Array, color: Color, outline: bool) -> void:
+    if outline:
+        draw_polyline(points, color, line_width * to_canvas_scaling)
+    elif points.size() > 4:
         # print_debug("Drawing %s -> %s polygon %s" % [corners, points, coords])
         draw_polygon(points, [color])
     else:
@@ -300,7 +326,7 @@ func _handle_clipping_update_corners(corners: PackedVector3Array, cam_plane: Pla
 
 func _calculate_virtual_camera_plane() -> Plane:
     var center: Vector3 = _player.coordinates()
-    var up_offset: Vector3 = CardinalDirections.direction_to_look_vector(CardinalDirections.invert(_player.down))
+    var up_offset: Vector3 = CardinalDirections.direction_to_vector(CardinalDirections.invert(_player.down))
     var offset_plane: Vector3 = CardinalDirections.direction_to_ortho_plane(_player.down)
     if VectorUtils.is_negative_cardinal_axis(up_offset):
         offset_plane *= -1

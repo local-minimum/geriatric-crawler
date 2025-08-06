@@ -74,12 +74,13 @@ func illusory_sides() -> Array[GridNodeSide]:
 
     return illusions
 
-func get_grid_node(coordinates: Vector3i) -> GridNode:
+func get_grid_node(coordinates: Vector3i, warn_missing: bool = false) -> GridNode:
     if _nodes.has(coordinates):
         return _nodes[coordinates]
 
-    push_warning("No node at %s" % coordinates)
-    print_stack()
+    if warn_missing:
+        push_warning("No node at %s" % coordinates)
+        print_stack()
 
     return null
 

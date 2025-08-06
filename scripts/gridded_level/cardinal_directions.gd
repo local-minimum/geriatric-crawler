@@ -91,8 +91,8 @@ static func yaw_ccw(look_direction: CardinalDirection, down: CardinalDirection) 
         print_stack()
         return [look_direction, down]
 
-    var v_direction: Vector3i = direction_to_vector(look_direction)
-    var v_up: Vector3i = direction_to_vector(invert(down))
+    var v_direction: Vector3i = direction_to_vectori(look_direction)
+    var v_up: Vector3i = direction_to_vectori(invert(down))
     var result: Vector3i = VectorUtils.rotate_ccw(v_direction, v_up)
     return [vector_to_direction(result), down]
 
@@ -102,8 +102,8 @@ static func yaw_cw(look_direction: CardinalDirection, down: CardinalDirection) -
         print_stack()
         return [look_direction, down]
 
-    var v_direction: Vector3i = direction_to_vector(look_direction)
-    var v_up: Vector3i = direction_to_vector(invert(down))
+    var v_direction: Vector3i = direction_to_vectori(look_direction)
+    var v_up: Vector3i = direction_to_vectori(invert(down))
     var result: Vector3i = VectorUtils.rotate_cw(v_direction, v_up)
     return [vector_to_direction(result), down]
 
@@ -129,8 +129,8 @@ static func roll_ccw(look_direction: CardinalDirection, down: CardinalDirection)
         print_stack()
         return [look_direction, down]
 
-    var v_direction_as_up: Vector3i = direction_to_vector(look_direction)
-    var v_down: Vector3i = direction_to_vector(down)
+    var v_direction_as_up: Vector3i = direction_to_vectori(look_direction)
+    var v_down: Vector3i = direction_to_vectori(down)
     var result: Vector3i = VectorUtils.rotate_ccw(v_down, v_direction_as_up)
     return [look_direction, vector_to_direction(result)]
 
@@ -140,8 +140,8 @@ static func roll_cw(look_direction: CardinalDirection, down: CardinalDirection) 
         print_stack()
         return [look_direction, down]
 
-    var v_direction_as_up: Vector3i = direction_to_vector(look_direction)
-    var v_down: Vector3i = direction_to_vector(down)
+    var v_direction_as_up: Vector3i = direction_to_vectori(look_direction)
+    var v_down: Vector3i = direction_to_vectori(down)
     var result: Vector3i = VectorUtils.rotate_cw(v_down, v_direction_as_up)
     return [look_direction, vector_to_direction(result)]
 
@@ -230,7 +230,7 @@ static func orthogonal_axis(first: CardinalDirection, second: CardinalDirection)
 
 #region To Other
 
-static func direction_to_vector(direction: CardinalDirection) -> Vector3i:
+static func direction_to_vectori(direction: CardinalDirection) -> Vector3i:
     match direction:
         CardinalDirection.NONE: return Vector3i.ZERO
         CardinalDirection.NORTH: return Vector3i.FORWARD
@@ -244,7 +244,7 @@ static func direction_to_vector(direction: CardinalDirection) -> Vector3i:
             print_stack()
             return Vector3i.ZERO
 
-static func direction_to_look_vector(direction: CardinalDirection) -> Vector3:
+static func direction_to_vector(direction: CardinalDirection) -> Vector3:
     match direction:
         CardinalDirection.NONE: return Vector3.ZERO
         CardinalDirection.NORTH: return Vector3.FORWARD
@@ -440,7 +440,7 @@ static func name(direction: CardinalDirection) -> String:
 #region Operate on Other
 
 static func translate(coordinates: Vector3i, direction: CardinalDirection, repeats: int = 1) -> Vector3i:
-    return coordinates + direction_to_vector(direction) * repeats
+    return coordinates + direction_to_vectori(direction) * repeats
 
 static func vectori_axis_value(coordinates: Vector3i, direction: CardinalDirection) -> int:
     match direction:

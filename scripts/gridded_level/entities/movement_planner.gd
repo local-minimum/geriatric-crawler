@@ -85,8 +85,8 @@ func rotate_entity(
         target_look_direction = CardinalDirections.yaw_ccw(entity.look_direction, entity.down)[0]
 
     var final_rotation: Transform3D = Transform3D.IDENTITY.looking_at(
-        Vector3(CardinalDirections.direction_to_vector(target_look_direction)),
-        Vector3(CardinalDirections.direction_to_vector(up)),
+        Vector3(CardinalDirections.direction_to_vectori(target_look_direction)),
+        Vector3(CardinalDirections.direction_to_vectori(up)),
         )
 
     var tween: Tween = entity.create_tween()
@@ -287,8 +287,8 @@ func _handle_node_transition(
                 var end_down: CardinalDirections.CardinalDirection = CardinalDirections.CardinalDirection.DOWN
 
                 var final_rotation: Transform3D = Transform3D.IDENTITY.looking_at(
-                    Vector3(CardinalDirections.direction_to_vector(end_look_direction)),
-                    Vector3(CardinalDirections.direction_to_vector(CardinalDirections.CardinalDirection.UP)))
+                    Vector3(CardinalDirections.direction_to_vectori(end_look_direction)),
+                    Vector3(CardinalDirections.direction_to_vectori(CardinalDirections.CardinalDirection.UP)))
 
                 events = target.triggering_events(
                     entity,

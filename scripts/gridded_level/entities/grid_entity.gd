@@ -294,6 +294,6 @@ func orient() -> void:
         return
 
     look_at(
-        global_position + Vector3(CardinalDirections.direction_to_vector(look_direction)),
-        CardinalDirections.direction_to_vector(CardinalDirections.invert(down)),
+        global_position + Vector3(CardinalDirections.direction_to_vectori(look_direction)),
+        CardinalDirections.direction_to_vectori(CardinalDirections.invert(down)),
     )

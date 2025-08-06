@@ -25,6 +25,7 @@ func get_level() -> GridLevel:
 enum NodeSideState { NONE, SOLID, ILLUSORY }
 func has_side(direction: CardinalDirections.CardinalDirection) -> NodeSideState:
     if _sides.has(direction):
+        # print_debug("Node %s has side %s" % [coordinates, CardinalDirections.name(direction)])
         return NodeSideState.ILLUSORY if _sides[direction].illosory else NodeSideState.SOLID
 
     var neighbour_node: GridNode = neighbour(direction)
@@ -33,6 +34,7 @@ func has_side(direction: CardinalDirections.CardinalDirection) -> NodeSideState:
 
     var inverted: CardinalDirections.CardinalDirection = CardinalDirections.invert(direction)
     if neighbour_node._sides.has(inverted):
+        # print_debug("Node %s has side %s from neighbour %s" % [coordinates, CardinalDirections.name(direction), neighbour_node])
         return NodeSideState.ILLUSORY if neighbour_node._sides[inverted].illosory else NodeSideState.SOLID
 
     return NodeSideState.NONE
@@ -214,10 +216,7 @@ func neighbour(direction: CardinalDirections.CardinalDirection) -> GridNode:
 
     var neighbour_coords: Vector3i = CardinalDirections.translate(coordinates, direction)
 
-    if _level.has_grid_node(neighbour_coords):
-        return _level.get_grid_node(neighbour_coords)
-
-    return null
+    return _level.get_grid_node(neighbour_coords)
 
 func may_enter(
     entity: GridEntity,

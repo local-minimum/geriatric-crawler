@@ -149,4 +149,4 @@ func _process(delta: float) -> void:
     if effect == null || !effect.visible || !_teleporting.is_empty():
         return
 
-    effect.global_rotation += CardinalDirections.direction_to_look_vector(anchor_direction) * delta * rotation_speed
+    effect.global_rotation += CardinalDirections.direction_to_vector(anchor_direction) * delta * rotation_speed

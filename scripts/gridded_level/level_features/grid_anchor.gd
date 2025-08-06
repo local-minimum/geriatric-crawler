@@ -65,7 +65,7 @@ func get_edge_position(edge_direction: CardinalDirections.CardinalDirection, loc
         print_stack()
         return global_position
 
-    var offset: Vector3 = node.get_level().node_size * 0.5 * Vector3(CardinalDirections.direction_to_vector(edge_direction))
+    var offset: Vector3 = node.get_level().node_size * 0.5 * Vector3(CardinalDirections.direction_to_vectori(edge_direction))
 
     if local:
         return offset

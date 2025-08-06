@@ -310,7 +310,7 @@ func _undo_auto_dig_node(coordinates: Vector3i) -> void:
 func _sync_viewport_camera() -> void:
     if _follow_cam:
         var position = GridLevel.node_position_from_coordinates(panel.level, panel.coordinates)
-        var target = position + CardinalDirections.direction_to_look_vector(look_direction)
+        var target = position + CardinalDirections.direction_to_vector(look_direction)
         var cam_position: Vector3 = position + CardinalDirections.direction_to_planar_rotation(look_direction) * _cam_offset
 
         # TODO: Figure out how to know which viewport to update
@@ -324,7 +324,7 @@ func _draw_debug_arrow() -> void:
     _remove_debug_arrow()
 
     var center: Vector3 = GridLevel.node_center(panel.level, panel.coordinates)
-    var target: Vector3 = center + CardinalDirections.direction_to_look_vector(look_direction) * 0.75
+    var target: Vector3 = center + CardinalDirections.direction_to_vector(look_direction) * 0.75
 
     _debug_arrow_mesh = DebugDraw.arrow(
         panel.level,
