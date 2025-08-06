@@ -154,7 +154,7 @@ floor_color = Color(0.72, 0.396, 0.396, 0.917647)
 illusion_color = Color(0.4807, 0.2415, 0.69, 0.886275)
 other_side_color = Color(0.420611, 0.668393, 0.861456, 0.682353)
 player_color = Color(0.95, 0.95, 0.95, 0.94902)
-elevation_difference_alpha_factor = 0.65
+elevation_difference_alpha_factor = 0.5
 to_canvas_scaling = 27.468
 metadata/_custom_type_script = "uid://ylartknudqvd"
 
