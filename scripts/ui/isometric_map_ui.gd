@@ -37,66 +37,52 @@ func trigger_redraw(player: GridPlayer, seens_coordinates: Array[Vector3i]) -> v
 
     queue_redraw()
 
+var cam_position: Vector3
+
 func _draw() -> void:
     if _player == null:
         return
 
     var level: GridLevel = _player.get_level()
 
-    var cam_plane: Plane = _calculate_virtual_camera_plane()
-    var cam_position: Vector3 = cam_plane.get_center()
-
     var node_half_size: Vector3 = Vector3.ONE * 0.5
 
-    var center: Vector3i = _player.coordinates()
-    var up: Vector3i = CardinalDirections.direction_to_vector(CardinalDirections.invert(_player.down))
+    var player_coordinates: Vector3i = _player.coordinates()
+    var player_up: Vector3i = CardinalDirections.direction_to_vector(CardinalDirections.invert(_player.down))
 
-    # We need plane up and plane right which can be done with some pitching and yawing the vector to the player
-    var cam_plane_up: Vector3 = cam_plane.project(center + up).normalized()
-    var cam_plane_right: Vector3 = cam_plane.normal.cross(cam_plane_up)
+    var elevation_plane: Vector3i = CardinalDirections.direction_to_ortho_plane(_player.down)
+    if VectorUtils.is_negative_cardinal_axis(player_up):
+        elevation_plane *= -1
 
-    var plane: Vector3i = CardinalDirections.direction_to_ortho_plane(_player.down)
-    if VectorUtils.is_negative_cardinal_axis(up):
-        plane *= -1
+    var sign_flipped_plane: Vector3i = VectorUtils.flip_sign_first_non_null(elevation_plane)
 
-    var sign_flipped_plane: Vector3i = VectorUtils.flip_sign_first_non_null(plane)
-
-    var area: Rect2 = get_rect()
-    var area_center: Vector2 = area.get_center()
-
-    var get_canvas_point: Callable = func(plane_position: Vector3) -> Vector2:
-        var offset: Vector2 = Vector2(
-            cam_plane_right.dot(plane_position - cam_position),
-            cam_plane_up.dot(plane_position - cam_position))
-
-        offset *= plane_to_canvas_scale
-        return area_center + offset
+    var draw_function: Callable = _create_orthographic_draw_function(player_coordinates, player_up)
 
     # print_debug("Redrawing isometric map with player at %s onto plane %s" % [center, cam_plane])
 
     for elevation_offset: int in range(-draw_box_half.y, draw_box_half.y + 1):
-        var elevation_center: Vector3i = center + up * elevation_offset
+        var elevation_center: Vector3i = player_coordinates + player_up * elevation_offset
 
         # print_debug("Drawing elevation %s" % elevation_center)
 
         for primary_offset: int in range(-draw_box_half.x, draw_box_half.x + 1):
             var primary: Vector3i = Vector3i.ZERO
-            if plane.x != 0:
-                primary.x = plane.x
-            elif plane.y != 0:
-                primary.y = plane.y
+            if elevation_plane.x != 0:
+                primary.x = elevation_plane.x
+            elif elevation_plane.y != 0:
+                primary.y = elevation_plane.y
             else:
-                primary.z = plane.z
+                primary.z = elevation_plane.z
 
             for secondary_offset: int in range(-draw_box_half.z, draw_box_half.z +1):
                 var secondary: Vector3i = Vector3i.ZERO
                 if primary.x != 0:
-                    if plane.y != 0:
-                        secondary.y = plane.y
+                    if elevation_plane.y != 0:
+                        secondary.y = elevation_plane.y
                     else:
-                        secondary.z = plane.z
+                        secondary.z = elevation_plane.z
                 else:
-                    secondary.z = plane.z
+                    secondary.z = elevation_plane.z
 
                 var coords: Vector3i = elevation_center + primary * primary_offset + secondary * secondary_offset
 
@@ -123,130 +109,153 @@ func _draw() -> void:
                         continue
 
                 # 1. Get corners
-                var side_center: Vector3 = (coords as Vector3) + (-up as Vector3) * node_half_size
+                var side_center: Vector3 = (coords as Vector3) + (-player_up as Vector3) * node_half_size
                 var corners: PackedVector3Array = [
-                    side_center + (plane as Vector3) * node_half_size,
+                    side_center + (elevation_plane as Vector3) * node_half_size,
                     side_center + (sign_flipped_plane as Vector3) * node_half_size,
-                    side_center + (plane as Vector3) * -node_half_size,
+                    side_center + (elevation_plane as Vector3) * -node_half_size,
                     side_center + (sign_flipped_plane as Vector3) * -node_half_size,
                 ]
-                # 2. Check all positive side
-                var over: Array[bool] = [
-                    cam_plane.is_point_over(corners[0]),
-                    cam_plane.is_point_over(corners[1]),
-                    cam_plane.is_point_over(corners[2]),
-                    cam_plane.is_point_over(corners[3]),
-                ]
 
-                # print_debug("%s floor has corners %s which are %s" % [coords, corners, over])
+                draw_function.call(corners, color)
 
-                var n_over: int = 0
-                for is_over: bool in over:
-                    if is_over:
-                        n_over += 1
 
-                # 2a. If none skip
-                if n_over == 0:
-                    continue
+func _create_orthographic_draw_function(player_coordinates: Vector3i, player_up: Vector3i) -> Callable:
+    var cam_plane: Plane = _calculate_virtual_camera_plane()
+    print_debug("%s vs %s d=%s" % [cam_position, cam_plane.get_center(), cam_position.distance_to(player_coordinates)])
+    # We need plane up and plane right which can be done with some pitching and yawing the vector to the player
+    var cam_plane_up: Vector3 = cam_plane.project(player_coordinates + player_up).normalized()
 
-                # 2b. If one draw a triangle
-                elif n_over == 1:
-                    var pt: Vector3
-                    var r1_target: Vector3
-                    var r2_target: Vector3
-                    if over[0]:
-                        pt = corners[0]
-                        r1_target = corners[1]
-                        r2_target = corners[3]
-                    elif over[1]:
-                        pt = corners[1]
-                        r1_target = corners[2]
-                        r2_target = corners[0]
-                    elif over[2]:
-                        pt = corners[2]
-                        r1_target = corners[3]
-                        r2_target = corners[1]
-                    else:
-                        pt = corners[3]
-                        r1_target = corners[0]
-                        r2_target = corners[2]
+    var cam_plane_right: Vector3 = cam_plane.normal.cross(cam_plane_up)
+    var area: Rect2 = get_rect()
+    var area_center: Vector2 = area.get_center()
 
-                    corners = [
-                        pt,
-                        cam_plane.intersects_ray(pt, r1_target),
-                        cam_plane.intersects_ray(pt, r2_target),
-                    ]
+    return func(corners: PackedVector3Array, color: Color) -> void:
+        if !_handle_clipping_update_corners(corners, cam_plane):
+            return
 
-                # 2c. If two draw a reduced rect
-                elif n_over == 2:
-                    if !over[0]:
-                        if !over[1]:
-                            corners[0] = cam_plane.intersects_ray(corners[0], corners[3] - corners[0])
-                            corners[1] = cam_plane.intersects_ray(corners[1], corners[2] - corners[1])
-                        # 3 must be below too
-                        else:
-                            corners[0] = cam_plane.intersects_ray(corners[0], corners[1] - corners[0])
-                            corners[3] = cam_plane.intersects_ray(corners[3], corners[2] - corners[3])
-                    # Since we are over on 0 must not be over on 2
-                    elif !over[1]:
-                        corners[1] = cam_plane.intersects_ray(corners[0], corners[1] - corners[0])
-                        corners[2] = cam_plane.intersects_ray(corners[2], corners[3] - corners[2])
-                    # can only be 2 and 3 below now
-                    else:
-                        corners[2] = cam_plane.intersects_ray(corners[2], corners[1] - corners[2])
-                        corners[3] = cam_plane.intersects_ray(corners[3], corners[0] - corners[3])
+        var points: PackedVector2Array = []
+        @warning_ignore_start("return_value_discarded")
+        points.resize(corners.size())
+        @warning_ignore_restore("return_value_discarded")
 
-                # 2e If not do intersections and draw polygon
-                elif n_over == 3:
-                    if !over[0]:
-                        var pt1: Vector3 = cam_plane.intersects_ray(corners[0], corners[3] - corners[0])
-                        var pt2: Vector3 = cam_plane.intersects_ray(corners[0], corners[1] - corners[0])
-                        corners = [pt2, corners[1], corners[2], corners[3], pt1]
-                    elif !over[1]:
-                        var pt1: Vector3 = cam_plane.intersects_ray(corners[1], corners[0] - corners[1])
-                        var pt2: Vector3 = cam_plane.intersects_ray(corners[1], corners[2] - corners[1])
-                        corners = [corners[0], pt1, pt2, corners[2], corners[3]]
-                    elif !over[2]:
-                        var pt1: Vector3 = cam_plane.intersects_ray(corners[2], corners[1] - corners[2])
-                        var pt2: Vector3 = cam_plane.intersects_ray(corners[2], corners[3] - corners[2])
-                        corners = [corners[0], corners[1], pt1, pt2, corners[3]]
-                    else:
-                        var pt1: Vector3 = cam_plane.intersects_ray(corners[3], corners[2] - corners[3])
-                        var pt2: Vector3 = cam_plane.intersects_ray(corners[3], corners[0] - corners[3])
-                        corners = [corners[0], corners[1], corners[3], pt1, pt2]
+        for idx: int in range(corners.size()):
+            # 3. Calculate plane 3D positions
+            # print_debug("projecting %s -> %s" % [corners[idx], cam_plane.project(corners[idx])])
 
-                var points_valid: bool = true
-                var points: PackedVector2Array = []
-                @warning_ignore_start("return_value_discarded")
-                points.resize(corners.size())
-                @warning_ignore_restore("return_value_discarded")
+            corners[idx] = cam_plane.project(corners[idx])
 
-                for idx: int in range(corners.size()):
-                    # 3. Calculate plane 3D positions
-                    # print_debug("projecting %s -> %s" % [corners[idx], cam_plane.project(corners[idx])])
+            # 4. Scale plane positions to canvas positions
+            var offset: Vector2 = Vector2(
+                cam_plane_right.dot(corners[idx] - cam_position),
+                -cam_plane_up.dot(corners[idx] - cam_position))
 
-                    corners[idx] = cam_plane.project(corners[idx])
+            offset *= plane_to_canvas_scale
 
-                    # 4. Scale plane positions to canvas positions
-                    var point: Variant = get_canvas_point.call(corners[idx])
-                    if point is Vector2:
-                        points[idx] = point
-                    else:
-                        push_error("Failed to append point %s of %s" % [corners[idx], coords])
-                        points_valid = false
-                        break
+            points[idx] = area_center + offset
 
-                if !points_valid:
-                    push_error("Failed to draw %s" % coords)
-                    continue
+        # 5. Draw shape
+        if points.size() > 4:
+            # print_debug("Drawing %s -> %s polygon %s" % [corners, points, coords])
+            draw_polygon(points, [color])
+        else:
+            # print_debug("Drawing %s -> %s primitive %s" % [corners, points, coords])
+            draw_primitive(points, [color], [Vector2.ZERO])
 
-                # 5. Draw shape
-                if points.size() > 4:
-                    # print_debug("Drawing %s -> %s polygon %s" % [corners, points, coords])
-                    draw_polygon(points, [color])
-                else:
-                    # print_debug("Drawing %s -> %s primitive %s" % [corners, points, coords])
-                    draw_primitive(points, [color], [Vector2.ZERO])
+
+func _handle_clipping_update_corners(corners: PackedVector3Array, cam_plane: Plane) -> bool:
+    # 2. Check all positive side
+    var over: Array[bool] = [
+        cam_plane.is_point_over(corners[0]),
+        cam_plane.is_point_over(corners[1]),
+        cam_plane.is_point_over(corners[2]),
+        cam_plane.is_point_over(corners[3]),
+    ]
+
+    # print_debug("%s floor has corners %s which are %s" % [coords, corners, over])
+    var n_over: int = 0
+    for is_over: bool in over:
+        if is_over:
+            n_over += 1
+
+    # 2a. If none skip
+    if n_over == 0:
+        return false
+
+    # 2b. If one draw a triangle
+    elif n_over == 1:
+        var pt: Vector3
+        var r1_target: Vector3
+        var r2_target: Vector3
+        if over[0]:
+            pt = corners[0]
+            r1_target = corners[1]
+            r2_target = corners[3]
+        elif over[1]:
+            pt = corners[1]
+            r1_target = corners[2]
+            r2_target = corners[0]
+        elif over[2]:
+            pt = corners[2]
+            r1_target = corners[3]
+            r2_target = corners[1]
+        else:
+            pt = corners[3]
+            r1_target = corners[0]
+            r2_target = corners[2]
+
+
+        if corners.resize(3) != 3:
+            return false
+
+        corners[0] = pt
+        corners[1] = cam_plane.intersects_ray(pt, r1_target)
+        corners[2] = cam_plane.intersects_ray(pt, r2_target)
+
+    # 2c. If two draw a reduced rect
+    elif n_over == 2:
+        if !over[0]:
+            if !over[1]:
+                corners[0] = cam_plane.intersects_ray(corners[0], corners[3] - corners[0])
+                corners[1] = cam_plane.intersects_ray(corners[1], corners[2] - corners[1])
+            # 3 must be below too
+            else:
+                corners[0] = cam_plane.intersects_ray(corners[0], corners[1] - corners[0])
+                corners[3] = cam_plane.intersects_ray(corners[3], corners[2] - corners[3])
+        # Since we are over on 0 must not be over on 2
+        elif !over[1]:
+            corners[1] = cam_plane.intersects_ray(corners[0], corners[1] - corners[0])
+            corners[2] = cam_plane.intersects_ray(corners[2], corners[3] - corners[2])
+        # can only be 2 and 3 below now
+        else:
+            corners[2] = cam_plane.intersects_ray(corners[2], corners[1] - corners[2])
+            corners[3] = cam_plane.intersects_ray(corners[3], corners[0] - corners[3])
+
+    # 2e If not do intersections and draw polygon
+    elif n_over == 3:
+        var c2: Vector3 = corners[2]
+        var c3: Vector3 = corners[3]
+
+        if corners.resize(5) != 5:
+            return false
+
+        if !over[0]:
+            corners[0] = cam_plane.intersects_ray(corners[0], corners[1] - corners[0])
+            corners[5] = cam_plane.intersects_ray(corners[0], corners[3] - corners[0])
+        elif !over[1]:
+            corners[1] = cam_plane.intersects_ray(corners[1], corners[0] - corners[1])
+            corners[2] = cam_plane.intersects_ray(corners[1], corners[2] - corners[1])
+            corners[3] = c2
+            corners[4] = c3
+        elif !over[2]:
+            corners[2] = cam_plane.intersects_ray(corners[2], corners[1] - corners[2])
+            corners[3] = cam_plane.intersects_ray(corners[2], corners[3] - corners[2])
+            corners[4] = c3
+        else:
+            corners[3] = cam_plane.intersects_ray(corners[3], corners[2] - corners[3])
+            corners[4] = cam_plane.intersects_ray(corners[3], corners[0] - corners[3])
+
+    return true
 
 
 func _calculate_virtual_camera_plane() -> Plane:
@@ -268,9 +277,9 @@ func _calculate_virtual_camera_plane() -> Plane:
         offset_plane.y *= camera_direction.x
         offset_plane.z *= camera_direction.z
 
-    var offset: Vector3 = up_offset + offset_plane
+    var offset: Vector3 = (up_offset + offset_plane).normalized()
 
-    var cam_position: Vector3 = center + offset.normalized() * view_distance
+    cam_position  = center + offset * view_distance
     var cam_look_direction: Vector3 = center - cam_position
 
     print_debug("Plane construction from pos %s and normal %s" % [cam_position, cam_look_direction.normalized()])
