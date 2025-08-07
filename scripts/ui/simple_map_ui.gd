@@ -27,10 +27,12 @@ var wanted_rows: int = 8
 
 var _player: GridPlayer
 var _seen: Array[Vector3i]
+var _show_features: bool
 
-func trigger_redraw(player: GridPlayer, seens_coordinates: Array[Vector3i]) -> void:
+func trigger_redraw(player: GridPlayer, seens_coordinates: Array[Vector3i], show_features: bool) -> void:
     _player = player
     _seen = seens_coordinates
+    _show_features = show_features
 
     queue_redraw()
 

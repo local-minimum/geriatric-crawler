@@ -107,14 +107,14 @@ func _update_map() -> void:
         _3d_map_ui.visible = false
 
         _2d_map_ui.visible = true
-        _2d_map_ui.trigger_redraw(_player, _seen)
+        _2d_map_ui.trigger_redraw(_player, _seen, skill_level >= 4)
     elif skill_level > 2:
         _mapping_area.visible = true
 
         _2d_map_ui.visible = false
 
         _3d_map_ui.visible = true
-        _3d_map_ui.trigger_redraw(_player, _seen)
+        _3d_map_ui.trigger_redraw(_player, _seen, skill_level >= 4)
     else:
         _mapping_area.visible = false
         _2d_map_ui.visible = false

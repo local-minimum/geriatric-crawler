@@ -61,6 +61,17 @@ func get_teleporter(direction: CardinalDirections.CardinalDirection) -> GridTele
 
     return _teleporters.get(direction)
 
+var _ramps_inited: bool
+var _ramps: Dictionary[CardinalDirections.CardinalDirection, GridRamp]
+func get_ramp(direction: CardinalDirections.CardinalDirection) -> GridRamp:
+    if !_ramps_inited:
+        _ramps_inited = true
+        for ramp: GridRamp in find_children("", "GridRamp"):
+            _ramps[CardinalDirections.invert(ramp.up_direction)] = ramp
+            _ramps[ramp.upper_exit_direction] = ramp
+
+    return _ramps.get(direction)
+
 enum NodeSideState { NONE, SOLID, ILLUSORY, DOOR }
 func has_side(direction: CardinalDirections.CardinalDirection) -> NodeSideState:
     _init_doors()

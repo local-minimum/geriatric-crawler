@@ -43,9 +43,12 @@ var to_canvas_scaling: float = 30
 @export_range(0, 1)
 var line_width: float = 0.05
 
-func trigger_redraw(player: GridPlayer, seens_coordinates: Array[Vector3i]) -> void:
+var _show_features: bool
+
+func trigger_redraw(player: GridPlayer, seens_coordinates: Array[Vector3i], show_features: bool) -> void:
     _player = player
     _seen = seens_coordinates
+    _show_features = show_features
 
     queue_redraw()
 
@@ -84,6 +87,7 @@ func _draw() -> void:
         secondary.z = elevation_plane.z
 
     var _drawn_doors: Array[GridDoor] = []
+    var _drawn_ramps: Array[GridRamp] = []
 
     # var draw_function: Callable = _create_orthographic_draw_function(player_coordinates, player_up, primary, secondary)
     var draw_function: Callable = _create_isometric_draw_function(player_coordinates, player_up, primary, secondary)
@@ -129,7 +133,6 @@ func _draw() -> void:
                 # Determine side type / color
                 var alpha_factor: float = elevation_difference_alpha_factor ** abs(elevation_offset) if elevation_offset != 0 else 1
 
-
                 for direction: CardinalDirections.CardinalDirection in all_directions:
                     var draw_filled: bool = direction == _player.down
                     var color: Color
@@ -138,64 +141,105 @@ func _draw() -> void:
                     var side_plane: Vector3i = CardinalDirections.direction_to_ortho_plane(direction)
                     var sign_flipped_plane: Vector3i = VectorUtils.flip_sign_first_non_null(side_plane)
 
+                    if _show_features:
+                        var ramp: GridRamp = node.get_ramp(direction)
+                        if ramp != null:
+                            if _drawn_ramps.has(ramp):
+                                continue
+
+                            _drawn_ramps.append(ramp)
+
+                            var ortho: CardinalDirections.CardinalDirection = CardinalDirections.orthogonal_axis(ramp.up_direction, ramp.upper_exit_direction)
+                            var upper_edge: Vector3 = (
+                                coords as Vector3 +
+                                CardinalDirections.direction_to_vector(ramp.up_direction) * node_half_size +
+                                CardinalDirections.direction_to_vector(ramp.upper_exit_direction) * node_half_size
+                            )
+                            var lower_edge: Vector3 = (
+                                coords as Vector3 -
+                                CardinalDirections.direction_to_vector(ramp.up_direction) * node_half_size +
+                                CardinalDirections.direction_to_vector(ramp.lower_exit_direction) * node_half_size
+                            )
+                            var orth_half_dist: Vector3 = CardinalDirections.direction_to_vector(ortho) * node_half_size
+
+                            color = feature_color
+                            color.a *= alpha_factor
+
+                            draw_function.call(
+                                [
+                                    upper_edge - orth_half_dist,
+                                    upper_edge + orth_half_dist,
+                                    lower_edge + orth_half_dist,
+                                    lower_edge - orth_half_dist,
+                                ],
+                                color,
+                                false,
+                                outline_factor,
+                            )
+
                     match node.has_side(direction):
                         GridNode.NodeSideState.DOOR:
                             color = feature_color
                             color.a *= alpha_factor
                             draw_filled = false
 
-                            var door: GridDoor = node.get_door(direction)
-                            if _drawn_doors.has(door):
-                                continue
-                            _drawn_doors.append(door)
+                            if _show_features:
+                                var door: GridDoor = node.get_door(direction)
+                                if door != null:
+                                    if _drawn_doors.has(door):
+                                        continue
+                                    _drawn_doors.append(door)
+                                else:
+                                    # We should not be able to get here
+                                    continue
 
-                            var draw_outline: bool = door.lock_state == GridDoor.LockState.OPEN
-                            var door_shape: PackedVector3Array = []
+                                var draw_outline: bool = door.lock_state == GridDoor.LockState.OPEN
+                                var door_shape: PackedVector3Array = []
 
-                            if (
-                                door.door_down == CardinalDirections.CardinalDirection.NONE ||
-                                CardinalDirections.is_parallell(direction, door.door_down)
-                            ):
-                                # Door's down is indicating no orientaion
-                                const door_size_scale: float = 0.7
-                                door_shape = [
-                                    side_center + (side_plane as Vector3) * node_half_size * door_size_scale,
-                                    side_center + (sign_flipped_plane as Vector3) * node_half_size * door_size_scale,
-                                    side_center + (side_plane as Vector3) * -node_half_size * door_size_scale,
-                                    side_center + (sign_flipped_plane as Vector3) * -node_half_size * door_size_scale,
-                                ]
-                            else:
-                                const top_adjustment: float = 0.2
-                                const lateral_shrink: float = 0.3
-                                var lateral_dir: CardinalDirections.CardinalDirection = CardinalDirections.orthogonal_axis(
-                                    door.get_side(),
-                                    door.door_down,
+                                if (
+                                    door.door_down == CardinalDirections.CardinalDirection.NONE ||
+                                    CardinalDirections.is_parallell(direction, door.door_down)
+                                ):
+                                    # Door's down is indicating no orientaion
+                                    const door_size_scale: float = 0.7
+                                    door_shape = [
+                                        side_center + (side_plane as Vector3) * node_half_size * door_size_scale,
+                                        side_center + (sign_flipped_plane as Vector3) * node_half_size * door_size_scale,
+                                        side_center + (side_plane as Vector3) * -node_half_size * door_size_scale,
+                                        side_center + (sign_flipped_plane as Vector3) * -node_half_size * door_size_scale,
+                                    ]
+                                else:
+                                    const top_adjustment: float = 0.2
+                                    const lateral_shrink: float = 0.3
+                                    var lateral_dir: CardinalDirections.CardinalDirection = CardinalDirections.orthogonal_axis(
+                                        door.get_side(),
+                                        door.door_down,
+                                    )
+                                    var half_size: Vector3 = CardinalDirections.scale_axis(node_half_size, lateral_dir, 1 - 2 * lateral_shrink)
+
+                                    var door_up: CardinalDirections.CardinalDirection = CardinalDirections.invert(door.door_down)
+                                    door_shape = [
+                                        side_center + CardinalDirections.scale_aligned_direction(side_plane, door_up, top_adjustment) * half_size,
+                                        side_center + CardinalDirections.scale_aligned_direction(sign_flipped_plane, door_up, top_adjustment) * half_size,
+                                        side_center + CardinalDirections.scale_aligned_direction(-side_plane, door_up, top_adjustment) * half_size,
+                                        side_center + CardinalDirections.scale_aligned_direction(-sign_flipped_plane, door_up, top_adjustment) * half_size,
+                                    ]
+
+                                if draw_outline:
+                                    door_shape = [
+                                        door_shape[0],
+                                        door_shape[1],
+                                        door_shape[2],
+                                        door_shape[3],
+                                        door_shape[0],
+                                    ]
+
+                                draw_function.call(
+                                    door_shape,
+                                    color,
+                                    draw_outline,
+                                    outline_factor,
                                 )
-                                var half_size: Vector3 = CardinalDirections.scale_axis(node_half_size, lateral_dir, 1 - 2 * lateral_shrink)
-
-                                var door_up: CardinalDirections.CardinalDirection = CardinalDirections.invert(door.door_down)
-                                door_shape = [
-                                    side_center + CardinalDirections.scale_aligned_direction(side_plane, door_up, top_adjustment) * half_size,
-                                    side_center + CardinalDirections.scale_aligned_direction(sign_flipped_plane, door_up, top_adjustment) * half_size,
-                                    side_center + CardinalDirections.scale_aligned_direction(-side_plane, door_up, top_adjustment) * half_size,
-                                    side_center + CardinalDirections.scale_aligned_direction(-sign_flipped_plane, door_up, top_adjustment) * half_size,
-                                ]
-
-                            if draw_outline:
-                                door_shape = [
-                                    door_shape[0],
-                                    door_shape[1],
-                                    door_shape[2],
-                                    door_shape[3],
-                                    door_shape[0],
-                                ]
-
-                            draw_function.call(
-                                door_shape,
-                                color,
-                                draw_outline,
-                                outline_factor,
-                            )
 
                         GridNode.NodeSideState.SOLID:
                             var n_coords: Vector3i = CardinalDirections.direction_to_vectori(direction) + coords
@@ -238,25 +282,26 @@ func _draw() -> void:
                         outline_factor,
                     )
 
-                    var teleporter: GridTeleporter = node.get_teleporter(direction)
-                    if teleporter:
-                        var offset: Vector3 = (side_plane as Vector3) * node_half_size * 0.35
-                        var up: Vector3 = CardinalDirections.direction_to_vector(direction)
+                    if _show_features:
+                        var teleporter: GridTeleporter = node.get_teleporter(direction)
+                        if teleporter:
+                            var offset: Vector3 = (side_plane as Vector3) * node_half_size * 0.35
+                            var up: Vector3 = CardinalDirections.direction_to_vector(direction)
 
-                        color = feature_color
-                        color.a *= alpha_factor
+                            color = feature_color
+                            color.a *= alpha_factor
 
-                        draw_function.call(
-                            [
-                                side_center + offset,
-                                side_center + offset.rotated(up, 2 * PI * 1 / 5),
-                                side_center + offset.rotated(up, 2 * PI * 2 / 5),
-                                side_center + offset.rotated(up, 2 * PI * 3 / 5),
-                                side_center + offset.rotated(up, 2 * PI * 4 / 5),
-                            ],
-                            color,
-                            false,
-                            )
+                            draw_function.call(
+                                [
+                                    side_center + offset,
+                                    side_center + offset.rotated(up, 2 * PI * 1 / 5),
+                                    side_center + offset.rotated(up, 2 * PI * 2 / 5),
+                                    side_center + offset.rotated(up, 2 * PI * 3 / 5),
+                                    side_center + offset.rotated(up, 2 * PI * 4 / 5),
+                                ],
+                                color,
+                                false,
+                                )
 
                 if coords == player_coordinates:
                     var center: Vector3 = player_coordinates as Vector3 + player_up * -0.25
