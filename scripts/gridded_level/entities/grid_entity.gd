@@ -297,3 +297,17 @@ func orient() -> void:
         global_position + Vector3(CardinalDirections.direction_to_vectori(look_direction)),
         CardinalDirections.direction_to_vectori(CardinalDirections.invert(down)),
     )
+
+static func find_entity_parent(current: Node, inclusive: bool = true) ->  GridEntity:
+    if inclusive && current is GridEntity:
+        return current as GridEntity
+
+    var parent: Node = current.get_parent()
+
+    if parent == null:
+        return null
+
+    if parent is GridEntity:
+        return parent as GridEntity
+
+    return find_entity_parent(parent, false)

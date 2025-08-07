@@ -42,6 +42,25 @@ static func vector_to_direction(vector: Vector3i) -> CardinalDirection:
             print_stack()
             return CardinalDirection.NONE
 
+static func principal_direction(vector: Vector3) -> CardinalDirection:
+    var avec: Vector3 = vector.abs()
+    if avec.x == avec.y && avec.y == avec.z:
+        match randi_range(0, 2):
+            0:
+                return CardinalDirection.EAST if vector.x > 0 else CardinalDirection.WEST
+            1:
+                return CardinalDirection.UP if vector.y > 0 else CardinalDirection.DOWN
+            2:
+                return CardinalDirection.NORTH if vector.z > 0 else CardinalDirection.SOUTH
+    elif avec.x > avec.y:
+        if avec.x > avec.z || randf() >= 0.5:
+            return CardinalDirection.EAST if vector.x > 0 else CardinalDirection.WEST
+        return CardinalDirection.NORTH if vector.z > 0 else CardinalDirection.SOUTH
+    elif avec.y > avec.z:
+        return CardinalDirection.UP if vector.y > 0 else CardinalDirection.DOWN
+
+    return CardinalDirection.NORTH if vector.z > 0 else CardinalDirection.SOUTH
+
 static func node_planar_rotation_to_direction(node: Node3D) -> CardinalDirection:
     var y_rotation: int = roundi(node.global_rotation_degrees.y / 90) * 90
     y_rotation = posmod(y_rotation, 360)

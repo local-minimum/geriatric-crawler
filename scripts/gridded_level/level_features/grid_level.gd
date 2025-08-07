@@ -74,6 +74,15 @@ func illusory_sides() -> Array[GridNodeSide]:
 
     return illusions
 
+## Find the node which the position is inside if any.
+func get_grid_node_by_position(pos: Vector3) -> GridNode:
+    pos /= node_size
+    pos += 0.5 * node_size * (
+        CardinalDirections.direction_to_ortho_plane(CardinalDirections.CardinalDirection.UP) as Vector3
+    )
+    var coords: Vector3i = pos.floor() as Vector3i
+    return get_grid_node(coords)
+
 func get_grid_node(coordinates: Vector3i, warn_missing: bool = false) -> GridNode:
     if _nodes.has(coordinates):
         return _nodes[coordinates]
@@ -108,6 +117,13 @@ func sync_node(node: GridNode) -> void:
     _nodes[node.coordinates] = node
 
     node.position = node_position_from_coordinates(self, node.coordinates)
+
+func get_closest_grid_node_side_by_position(pos: Vector3) -> CardinalDirections.CardinalDirection:
+    pos -= (pos / node_size).floor() * node_size
+    # TODO: Check why this is negative offsetting, but it seems to work this way!
+    pos -= node_size.y * Vector3.UP * 0.5
+    # print_debug("%s -> %s" % [pos, CardinalDirections.name(CardinalDirections.principal_direction(pos))])
+    return CardinalDirections.principal_direction(pos)
 
 func _process(_delta: float) -> void:
     if emit_loaded:
