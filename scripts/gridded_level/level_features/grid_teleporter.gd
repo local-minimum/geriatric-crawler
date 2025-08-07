@@ -1,6 +1,8 @@
 extends GridEvent
 class_name GridTeleporter
 
+signal on_arrive_entity(teleporter: GridTeleporter, entity: GridEntity)
+
 @export
 var exit: GridTeleporter
 
@@ -144,6 +146,7 @@ func _handle_teleport(entity: GridEntity) -> void:
     entity.sync_position()
     entity.clear_queue()
     entity.cinematic = false
+    on_arrive_entity.emit(exit, entity)
 
 func _process(delta: float) -> void:
     if effect == null || !effect.visible || !_teleporting.is_empty():

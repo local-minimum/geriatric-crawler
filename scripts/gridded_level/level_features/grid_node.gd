@@ -11,6 +11,7 @@ var level: GridLevel
 
 var _anchors: Dictionary[CardinalDirections.CardinalDirection, GridAnchor] = {}
 var _sides: Dictionary[CardinalDirections.CardinalDirection, GridNodeSide] = {}
+var _doors: Dictionary[CardinalDirections.CardinalDirection, GridDoor] = {}
 
 func _ready() -> void:
     if level == null:
@@ -22,8 +23,40 @@ func get_level() -> GridLevel:
 
     return level
 
-enum NodeSideState { NONE, SOLID, ILLUSORY }
+var _doors_inited: bool
+func _init_doors() -> void:
+    if _doors_inited:
+        return
+
+    _doors_inited = true
+    _doors.clear()
+    for door: GridDoor in find_children("", "GridDoor"):
+        _doors[door.get_side()] = door
+
+    for direction: CardinalDirections.CardinalDirection in CardinalDirections.ALL_DIRECTIONS:
+        if _doors.has(direction):
+            continue
+
+        var n: GridNode = neighbour(direction)
+        if n == null:
+            continue
+        n._init_doors()
+
+        var ndoor: GridDoor = n.get_door(CardinalDirections.invert(direction))
+        if ndoor != null:
+            _doors[direction] = ndoor
+
+
+func get_door(direction: CardinalDirections.CardinalDirection) -> GridDoor:
+    _init_doors()
+    return _doors.get(direction)
+
+enum NodeSideState { NONE, SOLID, ILLUSORY, DOOR }
 func has_side(direction: CardinalDirections.CardinalDirection) -> NodeSideState:
+    _init_doors()
+    if _doors.has(direction):
+        return NodeSideState.DOOR
+
     if _sides.has(direction):
         # print_debug("Node %s has side %s" % [coordinates, CardinalDirections.name(direction)])
         return NodeSideState.ILLUSORY if _sides[direction].illosory else NodeSideState.SOLID

@@ -32,6 +32,11 @@ var _inital_lock_state: LockState = LockState.CLOSED
 
 @export
 var _door_face: CardinalDirections.CardinalDirection
+func get_side() -> CardinalDirections.CardinalDirection:
+    return _door_face
+
+@export
+var door_down: CardinalDirections.CardinalDirection = CardinalDirections.CardinalDirection.DOWN
 
 @export
 var _open_animation: String = "Open"

@@ -59,8 +59,24 @@ func _setup() -> void:
     if _level.on_change_player.connect(_connect_new_player) != OK:
         push_error("Failed to connect new _player")
 
+    if _level.on_level_loaded.connect(_level_loaded) != OK:
+        push_error("Failed to connect level loaded")
+
     _connect_new_player()
     _handle_move_end(_player)
+
+func _level_loaded() -> void:
+    for door: GridDoor in _level.doors():
+        if door.on_door_state_chaged.connect(_update_map) != OK:
+            push_error("Failed to connect door state change")
+
+    for teleporter: GridTeleporter in _level.teleporters():
+        if teleporter.on_arrive_entity.connect(_handle_teleport) != OK:
+            push_error("FAiled to connect teleporter")
+
+func _handle_teleport(_teleporter: GridTeleporter, entity: GridEntity) -> void:
+    if entity == _player:
+        _handle_move_end(entity)
 
 func _connect_new_player() -> void:
     _player = _level.player

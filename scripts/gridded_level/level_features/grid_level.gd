@@ -74,6 +74,20 @@ func illusory_sides() -> Array[GridNodeSide]:
 
     return illusions
 
+var _doors: Array[GridDoor] = []
+func doors() -> Array[GridDoor]:
+    if _doors.is_empty():
+        for door: GridDoor in find_children("", "GridDoor"):
+            _doors.append(door)
+    return _doors
+
+var _teleporters: Array[GridTeleporter] = []
+func teleporters() -> Array[GridTeleporter]:
+    if _teleporters.is_empty():
+        for teleporter: GridTeleporter in find_children("", "GridTeleporter"):
+            _teleporters.append(teleporter)
+    return _teleporters
+
 ## Find the node which the position is inside if any.
 func get_grid_node_by_position(pos: Vector3) -> GridNode:
     pos /= node_size

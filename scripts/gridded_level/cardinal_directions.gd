@@ -461,6 +461,46 @@ static func name(direction: CardinalDirection) -> String:
 static func translate(coordinates: Vector3i, direction: CardinalDirection, repeats: int = 1) -> Vector3i:
     return coordinates + direction_to_vectori(direction) * repeats
 
+static func scale_axis(vector: Vector3, axis: CardinalDirection, scale: float) -> Vector3:
+    match axis:
+        CardinalDirection.UP: return Vector3(vector.x, vector.y * scale, vector.z)
+        CardinalDirection.DOWN: return Vector3(vector.x, vector.y * scale, vector.z)
+        CardinalDirection.NORTH: return Vector3(vector.x, vector.y, vector.z * scale)
+        CardinalDirection.SOUTH: return Vector3(vector.x, vector.y, vector.z * scale)
+        CardinalDirection.WEST: return Vector3(vector.x * scale, vector.y, vector.z)
+        CardinalDirection.EAST: return Vector3(vector.x * scale, vector.y, vector.z)
+        _: return vector
+
+## Scales the vector when sign of component equals direction
+static func scale_aligned_direction(vector: Vector3, direction: CardinalDirection, scale: float) -> Vector3:
+    match direction:
+        CardinalDirection.UP:
+            if vector.y > 0:
+                return Vector3(vector.x, vector.y * scale, vector.z)
+            return vector
+        CardinalDirection.DOWN:
+            if vector.y < 0:
+                return Vector3(vector.x, vector.y * scale, vector.z)
+            return vector
+        CardinalDirection.NORTH:
+            if vector.z < 0:
+                return Vector3(vector.x, vector.y, vector.z * scale)
+            return vector
+        CardinalDirection.SOUTH:
+            if vector.z > 0:
+                return Vector3(vector.x, vector.y, vector.z * scale)
+            return vector
+        CardinalDirection.WEST:
+            if vector.x < 0:
+                return Vector3(vector.x * scale, vector.y, vector.z)
+            return vector
+        CardinalDirection.EAST:
+            if vector.x > 0:
+                return Vector3(vector.x * scale, vector.y, vector.z)
+            return vector
+        _: return vector
+
+
 static func vectori_axis_value(coordinates: Vector3i, direction: CardinalDirection) -> int:
     match direction:
         CardinalDirection.UP: return coordinates.y
