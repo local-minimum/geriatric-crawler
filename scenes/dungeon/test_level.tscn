@@ -112,7 +112,6 @@ direction = 3
 [node name="Side UP" parent="LevelGeometry/Elevation 0/Node (0, 0, 0)" instance=ExtResource("8_72dvb")]
 
 [node name="Side DOWN" parent="LevelGeometry/Elevation 0/Node (0, 0, 0)" instance=ExtResource("9_4mxkc")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0229235, 0, 0.0546627)
 
 [node name="Node (0, 0, -1)" parent="LevelGeometry/Elevation 0" instance=ExtResource("4_myev5")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -2.5)

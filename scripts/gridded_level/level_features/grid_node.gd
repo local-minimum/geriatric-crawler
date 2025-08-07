@@ -51,6 +51,16 @@ func get_door(direction: CardinalDirections.CardinalDirection) -> GridDoor:
     _init_doors()
     return _doors.get(direction)
 
+var _teleporter_inited: bool
+var _teleporters: Dictionary[CardinalDirections.CardinalDirection, GridTeleporter]
+func get_teleporter(direction: CardinalDirections.CardinalDirection) -> GridTeleporter:
+    if !_teleporter_inited:
+        _teleporter_inited = true
+        for teleporter: GridTeleporter in find_children("", "GridTeleporter"):
+            _teleporters[teleporter.anchor_direction] = teleporter
+
+    return _teleporters.get(direction)
+
 enum NodeSideState { NONE, SOLID, ILLUSORY, DOOR }
 func has_side(direction: CardinalDirections.CardinalDirection) -> NodeSideState:
     _init_doors()

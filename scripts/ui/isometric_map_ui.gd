@@ -91,21 +91,21 @@ func _draw() -> void:
     var all_directions: Array[CardinalDirections.CardinalDirection] = []
     if static_up:
         all_directions = [
-            CardinalDirections.CardinalDirection.DOWN,
             CardinalDirections.CardinalDirection.NORTH,
-            CardinalDirections.CardinalDirection.UP,
             CardinalDirections.CardinalDirection.WEST,
+            CardinalDirections.CardinalDirection.DOWN,
+            CardinalDirections.CardinalDirection.UP,
             CardinalDirections.CardinalDirection.EAST,
             CardinalDirections.CardinalDirection.SOUTH,
         ]
     else:
         all_directions = [
-            _player.down,
-            CardinalDirections.vector_to_direction(primary),
-            CardinalDirections.invert(_player.down),
-            CardinalDirections.vector_to_direction(secondary),
             CardinalDirections.invert(CardinalDirections.vector_to_direction(secondary)),
             CardinalDirections.invert(CardinalDirections.vector_to_direction(primary)),
+            _player.down,
+            CardinalDirections.invert(_player.down),
+            CardinalDirections.vector_to_direction(primary),
+            CardinalDirections.vector_to_direction(secondary),
         ]
     # print_debug("Redrawing isometric map with player at %s onto plane %s" % [center, cam_plane])
 
@@ -231,13 +231,32 @@ func _draw() -> void:
                             sides[0],
                         ]
 
-                    # 1. Get corners
                     draw_function.call(
                         sides,
                         color,
                         !draw_filled,
                         outline_factor,
                     )
+
+                    var teleporter: GridTeleporter = node.get_teleporter(direction)
+                    if teleporter:
+                        var offset: Vector3 = (side_plane as Vector3) * node_half_size * 0.35
+                        var up: Vector3 = CardinalDirections.direction_to_vector(direction)
+
+                        color = feature_color
+                        color.a *= alpha_factor
+
+                        draw_function.call(
+                            [
+                                side_center + offset,
+                                side_center + offset.rotated(up, 2 * PI * 1 / 5),
+                                side_center + offset.rotated(up, 2 * PI * 2 / 5),
+                                side_center + offset.rotated(up, 2 * PI * 3 / 5),
+                                side_center + offset.rotated(up, 2 * PI * 4 / 5),
+                            ],
+                            color,
+                            false,
+                            )
 
                 if coords == player_coordinates:
                     var center: Vector3 = player_coordinates as Vector3 + player_up * -0.25
