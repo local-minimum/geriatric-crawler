@@ -163,7 +163,7 @@ illusion_color = Color(0.557333, 0.28, 0.8, 1)
 other_side_color = Color(0.8325, 0.9, 0.495, 0.286275)
 player_color = Color(0.95, 0.95, 0.95, 0.94902)
 feature_color = Color(0.168, 0.63, 0.126, 0.843137)
-elevation_difference_alpha_factor = 0.5
+elevation_difference_alpha_factor = 0.2
 line_width = 0.04
 metadata/_custom_type_script = "uid://ylartknudqvd"
 

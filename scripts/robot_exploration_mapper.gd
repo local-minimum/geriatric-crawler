@@ -18,6 +18,9 @@ var map_controls: MapControlsUI
 @export
 var _mapping_area: Control
 
+@export
+var _detect_area: bool = true
+
 var prefer_2d: bool:
     set(value):
         prefer_2d = value
@@ -95,9 +98,59 @@ func _handle_move_end(entity: GridEntity) -> void:
     var coords: Vector3i = entity.coordinates()
     _enter_new_coordinates(coords)
 
+    var level:GridLevel = _player.get_level()
+
+    var left: CardinalDirections.CardinalDirection = CardinalDirections.yaw_ccw(_player.look_direction, _player.down)[0]
+    var right: CardinalDirections.CardinalDirection = CardinalDirections.invert(left)
+
     if _player.get_grid_node().may_exit(_player, _player.look_direction, true):
         coords = CardinalDirections.translate(coords, _player.look_direction)
-        _enter_new_coordinates(coords)
+        var node: GridNode = level.get_grid_node(coords)
+
+        if node != null:
+            _enter_new_coordinates(coords)
+
+            if node.may_exit(_player, left, true):
+                var next_coords: Vector3i = CardinalDirections.translate(coords, left)
+
+                if level.has_grid_node(next_coords):
+                    _enter_new_coordinates(next_coords)
+
+            if node.may_exit(_player, right, true):
+                var next_coords: Vector3i = CardinalDirections.translate(coords, right)
+
+                if level.has_grid_node(next_coords):
+                    _enter_new_coordinates(next_coords)
+
+
+    if _detect_area:
+        if _player.get_grid_node().may_exit(_player, left, true):
+            coords = CardinalDirections.translate(_player.coordinates(), left)
+
+            var node: GridNode = level.get_grid_node(coords)
+
+            if node != null:
+                _enter_new_coordinates(coords)
+
+                if node.may_exit(_player, _player.look_direction, true):
+                    coords = CardinalDirections.translate(coords, _player.look_direction)
+
+                    if level.has_grid_node(coords):
+                        _enter_new_coordinates(coords)
+
+
+        if _player.get_grid_node().may_exit(_player, right, true):
+            coords = CardinalDirections.translate(_player.coordinates(), right)
+            var node: GridNode = level.get_grid_node(coords)
+
+            if node != null:
+                _enter_new_coordinates(coords)
+
+                if node.may_exit(_player, _player.look_direction, true):
+                    coords = CardinalDirections.translate(coords, _player.look_direction)
+
+                    if level.has_grid_node(coords):
+                        _enter_new_coordinates(coords)
 
     _update_map()
 
