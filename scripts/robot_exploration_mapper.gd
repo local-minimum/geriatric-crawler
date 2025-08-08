@@ -13,6 +13,9 @@ var _2d_map_ui: SimpleMapUI
 var _3d_map_ui: IsometricMapUI
 
 @export
+var map_controls: MapControlsUI
+
+@export
 var _mapping_area: Control
 
 var prefer_2d: bool:
@@ -101,6 +104,8 @@ func _handle_move_end(entity: GridEntity) -> void:
 func _update_map() -> void:
     var skill_level: int = _player.robot.get_skill_level(RobotAbility.SKILL_MAPPING)
 
+    map_controls.sync(self, skill_level, prefer_2d)
+
     if skill_level == 2 || skill_level > 2 && prefer_2d:
         _mapping_area.visible = true
 
@@ -129,3 +134,11 @@ func _enter_new_coordinates(coords: Vector3i) -> void:
             _last_seen_idx += 1
             _last_seen_idx %= mini(_memory_size, _seen.size())
             _seen[_last_seen_idx] = coords
+
+func zoom_in() -> void:
+    if !prefer_2d:
+        _3d_map_ui.zoom_in()
+
+func zoom_out() -> void:
+    if !prefer_2d:
+        _3d_map_ui.zoom_out()

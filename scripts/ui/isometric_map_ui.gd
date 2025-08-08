@@ -518,3 +518,11 @@ func _calculate_virtual_camera_plane() -> Plane:
         cam_look_direction.normalized(),
         cam_position,
     )
+
+func zoom_in() -> void:
+    to_canvas_scaling = clamp(to_canvas_scaling + 5, 5, 80)
+    queue_redraw()
+
+func zoom_out() -> void:
+    to_canvas_scaling = clamp(to_canvas_scaling - 5, 5, 80)
+    queue_redraw()

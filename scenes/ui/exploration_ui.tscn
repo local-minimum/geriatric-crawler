@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://d3iceirfj21qw"]
+[gd_scene load_steps=17 format=3 uid="uid://d3iceirfj21qw"]
 
 [ext_resource type="Script" uid="uid://dng6kx20nqasv" path="res://scripts/ui/exploration_ui.gd" id="1_jvesw"]
 [ext_resource type="Texture2D" uid="uid://37t534r3ua0p" path="res://sprites/kenny game icons/open-xflipped.png" id="2_m3jmt"]
@@ -13,6 +13,9 @@
 [ext_resource type="Texture2D" uid="uid://c02to5i50bgby" path="res://sprites/kenny game icons/arrowDown.png" id="6_2458l"]
 [ext_resource type="Script" uid="uid://ylartknudqvd" path="res://scripts/ui/isometric_map_ui.gd" id="6_ld1f6"]
 [ext_resource type="Texture2D" uid="uid://bm8p8oa78pasu" path="res://sprites/kenny game icons/arrowRight.png" id="7_ld1f6"]
+[ext_resource type="Texture2D" uid="uid://b0si5c0r424ag" path="res://sprites/kenny game icons/zoomOut.png" id="7_qy2fj"]
+[ext_resource type="Script" uid="uid://qh2fg4pg2vqk" path="res://scripts/ui/map_controls_ui.gd" id="7_wpqvq"]
+[ext_resource type="Texture2D" uid="uid://cn0wtlnus36b" path="res://sprites/kenny game icons/zoomIn.png" id="8_wpqvq"]
 
 [node name="Exploration UI" type="Panel"]
 anchors_preset = 15
@@ -100,13 +103,14 @@ theme_override_colors/font_color = Color(1, 1, 1, 0.443137)
 theme_override_font_sizes/font_size = 6
 text = "S100 Mk II"
 
-[node name="SimpleMapModule" type="ColorRect" parent="MarginContainer/VBoxContainer" node_paths=PackedStringArray("_2d_map_ui", "_3d_map_ui", "_mapping_area")]
+[node name="SimpleMapModule" type="ColorRect" parent="MarginContainer/VBoxContainer" node_paths=PackedStringArray("_2d_map_ui", "_3d_map_ui", "map_controls", "_mapping_area")]
 custom_minimum_size = Vector2(0, 150)
 layout_mode = 2
 color = Color(0.207843, 0.0862745, 0.105882, 1)
 script = ExtResource("3_2458l")
 _2d_map_ui = NodePath("Padding/Control/2D Map")
 _3d_map_ui = NodePath("Padding/Control/3D Map")
+map_controls = NodePath("Padding/Control/Map Controls")
 _mapping_area = NodePath(".")
 
 [node name="Padding" type="MarginContainer" parent="MarginContainer/VBoxContainer/SimpleMapModule"]
@@ -156,9 +160,51 @@ other_side_color = Color(0.8325, 0.9, 0.495, 0.286275)
 player_color = Color(0.95, 0.95, 0.95, 0.94902)
 feature_color = Color(0.168, 0.63, 0.126, 0.843137)
 elevation_difference_alpha_factor = 0.5
-to_canvas_scaling = 28.0
 line_width = 0.04
 metadata/_custom_type_script = "uid://ylartknudqvd"
+
+[node name="Map Controls" type="HBoxContainer" parent="MarginContainer/VBoxContainer/SimpleMapModule/Padding/Control" node_paths=PackedStringArray("mode_2d_button", "mode_3d_button", "zoom_in_button", "zoom_out_button")]
+custom_minimum_size = Vector2(0, 14)
+layout_direction = 3
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_constants/separation = 4
+script = ExtResource("7_wpqvq")
+mode_2d_button = NodePath("2D Map Button")
+mode_3d_button = NodePath("3D Map Button")
+zoom_in_button = NodePath("Zoom In Button")
+zoom_out_button = NodePath("Zoom Out Button")
+
+[node name="2D Map Button" type="Button" parent="MarginContainer/VBoxContainer/SimpleMapModule/Padding/Control/Map Controls"]
+custom_minimum_size = Vector2(20, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 8
+text = "2D"
+
+[node name="3D Map Button" type="Button" parent="MarginContainer/VBoxContainer/SimpleMapModule/Padding/Control/Map Controls"]
+custom_minimum_size = Vector2(20, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 8
+text = "3D"
+
+[node name="Zoom In Button" type="Button" parent="MarginContainer/VBoxContainer/SimpleMapModule/Padding/Control/Map Controls"]
+custom_minimum_size = Vector2(20, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 8
+icon = ExtResource("8_wpqvq")
+expand_icon = true
+
+[node name="Zoom Out Button" type="Button" parent="MarginContainer/VBoxContainer/SimpleMapModule/Padding/Control/Map Controls"]
+custom_minimum_size = Vector2(20, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 8
+icon = ExtResource("7_qy2fj")
+expand_icon = true
 
 [node name="CompassModule" parent="MarginContainer/VBoxContainer" node_paths=PackedStringArray("exploration_ui") instance=ExtResource("3_eifl5")]
 layout_mode = 2
@@ -217,6 +263,10 @@ icon = ExtResource("7_ld1f6")
 icon_alignment = 1
 expand_icon = true
 
+[connection signal="pressed" from="MarginContainer/VBoxContainer/SimpleMapModule/Padding/Control/Map Controls/2D Map Button" to="MarginContainer/VBoxContainer/SimpleMapModule/Padding/Control/Map Controls" method="_on_2d_map_button_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/SimpleMapModule/Padding/Control/Map Controls/3D Map Button" to="MarginContainer/VBoxContainer/SimpleMapModule/Padding/Control/Map Controls" method="_on_3d_map_button_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/SimpleMapModule/Padding/Control/Map Controls/Zoom In Button" to="MarginContainer/VBoxContainer/SimpleMapModule/Padding/Control/Map Controls" method="_on_zoom_in_button_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/SimpleMapModule/Padding/Control/Map Controls/Zoom Out Button" to="MarginContainer/VBoxContainer/SimpleMapModule/Padding/Control/Map Controls" method="_on_zoom_out_button_pressed"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/Exploration Movement Controls/Turn Left" to="." method="_on_turn_left_pressed"]
 [connection signal="button_down" from="MarginContainer/VBoxContainer/Exploration Movement Controls/Forward" to="." method="_on_forward_button_down"]
 [connection signal="button_up" from="MarginContainer/VBoxContainer/Exploration Movement Controls/Forward" to="." method="_on_forward_button_up"]
