@@ -177,14 +177,19 @@ func _draw() -> void:
                                 outline_factor,
                             )
 
+                            continue
+
+                    var draw_cross: bool = true
+
                     match node.has_side(direction):
                         GridNode.NodeSideState.DOOR:
-                            color = feature_color
-                            color.a *= alpha_factor
+                            var door: GridDoor = node.get_door(direction)
                             draw_filled = false
 
                             if _show_features:
-                                var door: GridDoor = node.get_door(direction)
+                                draw_cross = false
+                                color = feature_color
+                                color.a *= alpha_factor
                                 if door != null:
                                     if _drawn_doors.has(door):
                                         continue
@@ -240,13 +245,20 @@ func _draw() -> void:
                                     draw_outline,
                                     outline_factor,
                                 )
+                            elif door != null && door.lock_state == GridDoor.LockState.OPEN:
+                                continue
+                            else:
+                                color = floor_color if draw_filled else other_side_color
+                                color.a *= alpha_factor
 
                         GridNode.NodeSideState.SOLID:
-                            var n_coords: Vector3i = CardinalDirections.direction_to_vectori(direction) + coords
-                            if _seen.has(n_coords):
-                                var up_node: GridNode = level.get_grid_node(n_coords)
-                                if n_coords != null && up_node.has_side(CardinalDirections.invert(direction)) == GridNode.NodeSideState.SOLID:
-                                    continue
+                            # Lets not draw ceilings if we are about to draw floors
+                            if direction == CardinalDirections.invert(_player.down) && elevation_offset < draw_box_half.y:
+                                var n_coords: Vector3i = CardinalDirections.direction_to_vectori(direction) + coords
+                                if _seen.has(n_coords):
+                                    var up_node: GridNode = level.get_grid_node(n_coords)
+                                    if n_coords != null && up_node.has_side(CardinalDirections.invert(direction)) == GridNode.NodeSideState.SOLID:
+                                        continue
                             color = floor_color if draw_filled else other_side_color
                             color.a *= alpha_factor
                         GridNode.NodeSideState.ILLUSORY:
@@ -275,6 +287,21 @@ func _draw() -> void:
                             sides[0],
                         ]
 
+                        if draw_cross:
+                            draw_function.call(
+                                [sides[0], sides[2]],
+                                color,
+                                !draw_filled,
+                                outline_factor * 0.5,
+                            )
+
+                            draw_function.call(
+                                [sides[1], sides[3]],
+                                color,
+                                !draw_filled,
+                                outline_factor * 0.5,
+                            )
+
                     draw_function.call(
                         sides,
                         color,
@@ -284,7 +311,7 @@ func _draw() -> void:
 
                     if _show_features:
                         var teleporter: GridTeleporter = node.get_teleporter(direction)
-                        if teleporter:
+                        if teleporter != null:
                             var offset: Vector3 = (side_plane as Vector3) * node_half_size * 0.35
                             var up: Vector3 = CardinalDirections.direction_to_vector(direction)
 

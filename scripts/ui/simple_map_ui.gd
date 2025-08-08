@@ -110,7 +110,11 @@ func _draw() -> void:
                     color = illusion_color if seen_other_side else ground_color
                 GridNode.NodeSideState.DOOR:
                     var floor_door: GridDoor = node.get_door(_player.down)
-                    color = no_floor_color if floor_door == null || floor_door.lock_state == GridDoor.LockState.OPEN else feature_color
+                    var open: bool = floor_door == null || floor_door.lock_state == GridDoor.LockState.OPEN
+                    if _show_features:
+                        color = no_floor_color if open else feature_color
+                    else:
+                        color = no_floor_color if open else wall_color
                 _:
                     color = no_floor_color
 
@@ -238,7 +242,7 @@ func _draw() -> void:
                             draw_line(c1, c4, illusion_color if seen_other_side else wall_color, 2)
 
             var door: GridDoor = node.get_door(_player.down)
-            if door != null && door.lock_state == GridDoor.LockState.OPEN:
+            if door != null && door.lock_state == GridDoor.LockState.OPEN && _show_features:
                 draw_polyline(
                     [
                         c1.lerp(tile_center, 0.15),
