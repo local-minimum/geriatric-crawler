@@ -206,7 +206,10 @@ func _perform_auto_dig(dig_direction: CardinalDirections.CardinalDirection, igno
 
         if _auto_add_sides && may_wall:
             var side_resource: Resource = style.get_resource_from_direction(dir)
-            add_node_side(side_resource, level, target_node, neighbor, dir, _preserve_vertical)
+            if neighbor == null:
+                add_node_side(side_resource, level, target_node, dir, _preserve_vertical)
+            elif _preserve_vertical && !CardinalDirections.is_planar_cardinal(dir):
+                add_node_side(side_resource, level, target_node, dir, _preserve_vertical)
 
 func remove_node_side(
     node: GridNode,
@@ -226,21 +229,17 @@ func add_node_side(
     resource: Resource,
     level: GridLevel,
     node: GridNode,
-    neighbour: GridNode,
     side_direction: CardinalDirections.CardinalDirection,
     treat_elevation_as_separate: bool,
 ) -> void:
-    print_debug("%s %s %s with neighbour %s using %s" % [
+    print_debug("%s %s %s with using %s" % [
         node.name,
         CardinalDirections.name(side_direction),
         "Elevation separate" if treat_elevation_as_separate else "Elevation included",
-        neighbour,
         resource
     ])
     if node == null || resource == null:
-        return
-
-    if neighbour != null && (!treat_elevation_as_separate || CardinalDirections.is_planar_cardinal(side_direction)):
+        print_debug("Refused wall because lacking resouces or node")
         return
 
     var side = GridNodeSide.get_node_side(node, side_direction)

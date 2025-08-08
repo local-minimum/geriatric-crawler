@@ -108,27 +108,27 @@ func _sync_node_side_buttons(node: GridNode) -> void:
 
     var _ceiling: GridNodeSide = GridNodeSide.get_node_side(node, CardinalDirections.CardinalDirection.UP) if has_node else null
     _has_ceiling = _ceiling != null && _ceiling.anchor != null
-    if !_has_ceiling && ceiling_neighbour != null:
-        _ceiling = GridNodeSide.get_node_side(ceiling_neighbour, CardinalDirections.CardinalDirection.DOWN)
-        _has_ceiling = _ceiling != null && _ceiling.negative_anchor != null
+    #if !_has_ceiling && ceiling_neighbour != null:
+    #    _ceiling = GridNodeSide.get_node_side(ceiling_neighbour, CardinalDirections.CardinalDirection.DOWN)
+    #    _has_ceiling = _ceiling != null && _ceiling.negative_anchor != null
 
     add_ceiling_button.disabled = !_may_add_ceiling_style || _has_ceiling || !has_node
     remove_ceiling_button.disabled = !_has_ceiling
 
     var _floor: GridNodeSide = GridNodeSide.get_node_side(node, CardinalDirections.CardinalDirection.DOWN) if has_node else null
     _has_floor = _floor != null && _floor.anchor != null
-    if !_has_floor && floor_neighbour != null:
-        _floor = GridNodeSide.get_node_side(floor_neighbour, CardinalDirections.CardinalDirection.UP)
-        _has_floor = _floor != null && _floor.negative_anchor != null
+    # if !_has_floor && floor_neighbour != null:
+    #    _floor = GridNodeSide.get_node_side(floor_neighbour, CardinalDirections.CardinalDirection.UP)
+    #    _has_floor = _floor != null && _floor.negative_anchor != null
 
     add_floor_button.disabled = !_may_add_floor_style || _has_floor || !has_node
     remove_floor_button.disabled = !_has_floor
 
     var _wall: GridNodeSide = GridNodeSide.get_node_side(node, forward) if has_node else null
     _has_wall = _wall != null && _wall.anchor != null
-    if !_has_wall && wall_neighbour != null:
-        _wall = GridNodeSide.get_node_side(wall_neighbour, CardinalDirections.invert(forward))
-        _has_wall = _wall != null && _wall.negative_anchor != null
+    # if !_has_wall && wall_neighbour != null:
+    #    _wall = GridNodeSide.get_node_side(wall_neighbour, CardinalDirections.invert(forward))
+    #    _has_wall = _wall != null && _wall.negative_anchor != null
 
     add_wall_button.disabled = !_may_add_wall_style || _has_wall || !has_node
     remove_wall_button.disabled = !_has_wall
@@ -210,7 +210,6 @@ func _on_add_wall_in_front_pressed() -> void:
         style.get_wall_resource(),
         panel.level,
         node,
-        neighbor,
         panel.node_digger.look_direction,
         true,
     )
@@ -222,7 +221,6 @@ func _on_add_floor_pressed() -> void:
         style.get_floor_resource(),
         panel.level,
         node,
-        neighbor,
         CardinalDirections.CardinalDirection.DOWN,
         true,
     )
@@ -234,7 +232,6 @@ func _on_add_ceiling_pressed() -> void:
         style.get_ceiling_resource(),
         panel.level,
         node,
-        neighbor,
         CardinalDirections.CardinalDirection.UP,
         true,
     )
