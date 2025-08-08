@@ -11,6 +11,12 @@ var ground_color: Color
 var no_floor_color: Color
 
 @export
+var feature_color: Color
+
+@export
+var illusion_color: Color
+
+@export
 var exploration_ui: ExplorationUI
 
 @export
@@ -85,7 +91,18 @@ func _draw() -> void:
             if node == null:
                 continue
 
-            var color: Color = ground_color if node != null && node.get_grid_anchor(_player.down) != null else no_floor_color
+            var floor_state: GridNode.NodeSideState = node.has_side(_player.down) if node != null else GridNode.NodeSideState.NONE
+            var color: Color
+            match floor_state:
+                GridNode.NodeSideState.SOLID:
+                    color = ground_color
+                GridNode.NodeSideState.ILLUSORY:
+                    color = illusion_color
+                GridNode.NodeSideState.DOOR:
+                    color = feature_color
+                _:
+                    color = no_floor_color
+
             var rect: Rect2 = Rect2(
                 Vector2(
                     center.x + (col - center_coords_position.x) * cell_length + cell_padding,
@@ -95,6 +112,46 @@ func _draw() -> void:
             )
 
             draw_rect(rect, color, true)
+
+            if _show_features:
+                var c1: Vector2 = rect.position
+                var c2: Vector2 = rect.position + Vector2(cell.x, 0)
+                var c3: Vector2 = rect.position + cell
+                var c4: Vector2 = rect.position + Vector2(0, cell.y)
+
+                var ramp: GridRamp = node.get_ramp(_player.down)
+                var floor_below_ramp: bool = false
+                if floor_state == GridNode.NodeSideState.NONE:
+                    var down_neighbour: GridNode = level.get_grid_node(CardinalDirections.translate(game_coords, _player.down))
+                    if down_neighbour != null:
+                        ramp = down_neighbour.get_ramp(_player.down)
+                        floor_below_ramp = true
+
+                if ramp != null:
+                    if ramp.upper_exit_direction == _player.look_direction:
+                        draw_primitive(
+                            [c4, c1, c2] if floor_below_ramp else [c2, c4, c3],
+                            [feature_color],
+                            [Vector2.ZERO],
+                        )
+                    elif ramp.upper_exit_direction == CardinalDirections.invert(_player.look_direction):
+                        draw_primitive(
+                            [c2, c4, c3] if floor_below_ramp else [c4, c1, c2],
+                            [feature_color],
+                            [Vector2.ZERO],
+                        )
+                    elif ramp.upper_exit_direction == CardinalDirections.yaw_ccw(_player.look_direction, _player.down)[0]:
+                        draw_primitive(
+                            [c3, c4, c1] if floor_below_ramp else [c1, c3, c2],
+                            [feature_color],
+                            [Vector2.ZERO],
+                        )
+                    else:
+                        draw_primitive(
+                            [c1, c3, c2] if floor_below_ramp else [c3, c4, c1],
+                            [feature_color],
+                            [Vector2.ZERO],
+                        )
 
             if game_coords == _player.coordinates():
                 var player_marker_rect: Rect2 = RectUtils.shrink(rect, player_marker_padding, player_marker_padding, true)
