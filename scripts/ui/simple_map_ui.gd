@@ -153,6 +153,25 @@ func _draw() -> void:
                             [Vector2.ZERO],
                         )
 
+                var teleporter: GridTeleporter = node.get_teleporter(_player.down)
+                if teleporter != null:
+                    var offset: Vector2 = cell * 0.25
+                    var tile_center: Vector2 = rect.get_center()
+                    print_debug("Teleporter at %s with radius %s" % [tile_center, offset])
+
+                    draw_polyline(
+                        [
+                            tile_center + offset,
+                            tile_center + offset.rotated(-2 * PI * 1 / 5),
+                            tile_center + offset.rotated(-2 * PI * 2 / 5),
+                            tile_center + offset.rotated(-2 * PI * 3 / 5),
+                            tile_center + offset.rotated(-2 * PI * 4 / 5),
+                            tile_center + offset,
+                        ],
+                        feature_color,
+                        3,
+                    )
+
             if game_coords == _player.coordinates():
                 var player_marker_rect: Rect2 = RectUtils.shrink(rect, player_marker_padding, player_marker_padding, true)
                 var player_center: Vector2 = player_marker_rect.get_center()
