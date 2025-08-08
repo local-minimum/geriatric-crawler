@@ -101,13 +101,16 @@ func _draw() -> void:
 
             var floor_state: GridNode.NodeSideState = node.has_side(_player.down) if node != null else GridNode.NodeSideState.NONE
             var color: Color
+            var filled: bool = true
             match floor_state:
                 GridNode.NodeSideState.SOLID:
                     color = ground_color
                 GridNode.NodeSideState.ILLUSORY:
-                    color = illusion_color
+                    var seen_other_side: bool = _seen.has(CardinalDirections.translate(game_coords, _player.down))
+                    color = illusion_color if seen_other_side else ground_color
                 GridNode.NodeSideState.DOOR:
-                    color = feature_color
+                    var floor_door: GridDoor = node.get_door(_player.down)
+                    color = no_floor_color if floor_door == null || floor_door.lock_state == GridDoor.LockState.OPEN else feature_color
                 _:
                     color = no_floor_color
 
@@ -119,12 +122,13 @@ func _draw() -> void:
                 cell,
             )
 
-            draw_rect(rect, color, true)
+            draw_rect(rect, color, filled, 2)
 
             var c1: Vector2 = rect.position
             var c2: Vector2 = rect.position + Vector2(cell.x, 0)
             var c3: Vector2 = rect.position + cell
             var c4: Vector2 = rect.position + Vector2(0, cell.y)
+            var tile_center: Vector2 = rect.get_center()
 
             if _show_features:
 
@@ -165,7 +169,6 @@ func _draw() -> void:
                 var teleporter: GridTeleporter = node.get_teleporter(_player.down)
                 if teleporter != null:
                     var offset: Vector2 = cell * 0.25
-                    var tile_center: Vector2 = rect.get_center()
                     print_debug("Teleporter at %s with radius %s" % [tile_center, offset])
 
                     draw_polyline(
@@ -183,10 +186,10 @@ func _draw() -> void:
 
             for direction: CardinalDirections.CardinalDirection in map_directions:
                 if _show_features:
-                    var door: GridDoor = node.get_door(direction)
+                    var wall_door: GridDoor = node.get_door(direction)
 
-                    if door != null:
-                        var open: bool = door.lock_state == GridDoor.LockState.OPEN
+                    if wall_door != null:
+                        var open: bool = wall_door.lock_state == GridDoor.LockState.OPEN
                         const open_fraction: float = 0.15
                         if _player.look_direction == direction:
                             if open:
@@ -213,27 +216,40 @@ func _draw() -> void:
                             else:
                                 draw_line(c1, c4, feature_color, 2)
 
-                    else:
-                        match node.has_side(direction):
-                            GridNode.NodeSideState.SOLID:
-                                if _player.look_direction == direction:
-                                    draw_line(c1, c2, wall_color, 2)
-                                elif _player.look_direction == CardinalDirections.invert(direction):
-                                    draw_line(c3, c4, wall_color, 2)
-                                elif _player.look_direction == CardinalDirections.yaw_ccw(direction, _player.down)[0]:
-                                    draw_line(c2, c3, wall_color, 2)
-                                else:
-                                    draw_line(c1, c4, wall_color, 2)
-                            GridNode.NodeSideState.ILLUSORY:
-                                var seen_other_side: bool = _seen.has(CardinalDirections.translate(game_coords, direction))
-                                if _player.look_direction == direction:
-                                    draw_line(c1, c2, illusion_color if seen_other_side else wall_color, 2)
-                                elif _player.look_direction == CardinalDirections.invert(direction):
-                                    draw_line(c3, c4, illusion_color if seen_other_side else wall_color, 2)
-                                elif _player.look_direction == CardinalDirections.yaw_ccw(direction, _player.down)[0]:
-                                    draw_line(c2, c3, illusion_color if seen_other_side else wall_color, 2)
-                                else:
-                                    draw_line(c1, c4, illusion_color if seen_other_side else wall_color, 2)
+                match node.has_side(direction):
+                    GridNode.NodeSideState.SOLID:
+                        if _player.look_direction == direction:
+                            draw_line(c1, c2, wall_color, 2)
+                        elif _player.look_direction == CardinalDirections.invert(direction):
+                            draw_line(c3, c4, wall_color, 2)
+                        elif _player.look_direction == CardinalDirections.yaw_ccw(direction, _player.down)[0]:
+                            draw_line(c2, c3, wall_color, 2)
+                        else:
+                            draw_line(c1, c4, wall_color, 2)
+                    GridNode.NodeSideState.ILLUSORY:
+                        var seen_other_side: bool = _seen.has(CardinalDirections.translate(game_coords, direction))
+                        if _player.look_direction == direction:
+                            draw_line(c1, c2, illusion_color if seen_other_side else wall_color, 2)
+                        elif _player.look_direction == CardinalDirections.invert(direction):
+                            draw_line(c3, c4, illusion_color if seen_other_side else wall_color, 2)
+                        elif _player.look_direction == CardinalDirections.yaw_ccw(direction, _player.down)[0]:
+                            draw_line(c2, c3, illusion_color if seen_other_side else wall_color, 2)
+                        else:
+                            draw_line(c1, c4, illusion_color if seen_other_side else wall_color, 2)
+
+            var door: GridDoor = node.get_door(_player.down)
+            if door != null && door.lock_state == GridDoor.LockState.OPEN:
+                draw_polyline(
+                    [
+                        c1.lerp(tile_center, 0.15),
+                        c2.lerp(tile_center, 0.15),
+                        c3.lerp(tile_center, 0.15),
+                        c4.lerp(tile_center, 0.15),
+                        c1.lerp(tile_center, 0.15),
+                    ],
+                    feature_color,
+                    2,
+                )
 
             if game_coords == _player.coordinates():
                 var player_marker_rect: Rect2 = RectUtils.shrink(rect, player_marker_padding, player_marker_padding, true)
