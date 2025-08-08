@@ -113,4 +113,17 @@ func _draw() -> void:
                     player_center,
                 ], line_color, 1)
 
-    print_debug("Map redrawn")
+
+func zoom_in() -> void:
+    wanted_columns = clamp(wanted_columns - 1, 4, 20)
+    @warning_ignore_start("integer_division")
+    wanted_rows = wanted_columns * 8 / 10
+    print_debug("zoom in to: %s x %s" % [wanted_columns, wanted_rows])
+    queue_redraw()
+
+func zoom_out() -> void:
+    wanted_columns = clamp(wanted_columns + 1, 4, 20)
+    wanted_rows = wanted_columns * 8 / 10
+    print_debug("zoom out to: %s x %s" % [wanted_columns, wanted_rows])
+    @warning_ignore_restore("integer_division")
+    queue_redraw()

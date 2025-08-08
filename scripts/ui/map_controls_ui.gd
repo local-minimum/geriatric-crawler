@@ -20,11 +20,14 @@ func sync(exploration_mapper: RobotExplorationMapper, skill_level: int, prefer_2
     _mapper = exploration_mapper
 
     match skill_level:
+        2:
+            mode_2d_button.visible = false
+            mode_3d_button.visible = false
         3, 4:
             mode_2d_button.visible = !prefer_2d
             mode_3d_button.visible = prefer_2d
-            zoom_in_button.visible = !prefer_2d
-            zoom_out_button.visible = !prefer_2d
+            # zoom_in_button.visible = !prefer_2d
+            # zoom_out_button.visible = !prefer_2d
         _:
             visible = false
 

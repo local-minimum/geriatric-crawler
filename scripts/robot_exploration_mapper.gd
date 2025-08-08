@@ -136,9 +136,15 @@ func _enter_new_coordinates(coords: Vector3i) -> void:
             _seen[_last_seen_idx] = coords
 
 func zoom_in() -> void:
-    if !prefer_2d:
+    var only_2d: bool = _player.robot.get_skill_level(RobotAbility.SKILL_MAPPING) == 2
+    if prefer_2d || only_2d:
+        _2d_map_ui.zoom_in()
+    else:
         _3d_map_ui.zoom_in()
 
 func zoom_out() -> void:
-    if !prefer_2d:
+    var only_2d: bool = _player.robot.get_skill_level(RobotAbility.SKILL_MAPPING) == 2
+    if prefer_2d || only_2d:
+        _2d_map_ui.zoom_out()
+    else:
         _3d_map_ui.zoom_out()
