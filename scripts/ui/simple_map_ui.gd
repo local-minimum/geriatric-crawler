@@ -77,6 +77,8 @@ func _draw() -> void:
         var map_x: float = center.x + (col - center_coords_position.x) * cell_length
         draw_line(Vector2(map_x, map_y_min), Vector2(map_x, map_y_max), line_color, 1)
 
+    var map_directions: Array[CardinalDirections.CardinalDirection] = CardinalDirections.orthogonals(_player.down)
+
     for row: int in range(rows):
         for col: int in range(columns):
             var game_coords: Vector3i = CardinalDirections.translate(
@@ -113,11 +115,12 @@ func _draw() -> void:
 
             draw_rect(rect, color, true)
 
+            var c1: Vector2 = rect.position
+            var c2: Vector2 = rect.position + Vector2(cell.x, 0)
+            var c3: Vector2 = rect.position + cell
+            var c4: Vector2 = rect.position + Vector2(0, cell.y)
+
             if _show_features:
-                var c1: Vector2 = rect.position
-                var c2: Vector2 = rect.position + Vector2(cell.x, 0)
-                var c3: Vector2 = rect.position + cell
-                var c4: Vector2 = rect.position + Vector2(0, cell.y)
 
                 var ramp: GridRamp = node.get_ramp(_player.down)
                 var floor_below_ramp: bool = false
@@ -172,6 +175,37 @@ func _draw() -> void:
                         3,
                     )
 
+            for direction: CardinalDirections.CardinalDirection in map_directions:
+                if _show_features:
+                    var door: GridDoor = node.get_door(direction)
+
+                    if door != null:
+                        var open: bool = door.lock_state == GridDoor.LockState.OPEN
+                        const open_fraction: float = 0.15
+                        if _player.look_direction == direction:
+                            if open:
+                                draw_line(c1, c1.lerp(c2, open_fraction), feature_color, 2)
+                                draw_line(c2.lerp(c1, open_fraction), c2, feature_color, 2)
+                            else:
+                                draw_line(c1, c2, feature_color, 2)
+                        elif _player.look_direction == CardinalDirections.invert(direction):
+                            if open:
+                                draw_line(c3, c3.lerp(c4, open_fraction), feature_color, 2)
+                                draw_line(c4.lerp(c3, open_fraction), c4, feature_color, 2)
+                            else:
+                                draw_line(c3, c4, feature_color, 2)
+                        elif _player.look_direction == CardinalDirections.yaw_ccw(direction, _player.down)[0]:
+                            if open:
+                                draw_line(c2, c2.lerp(c3, open_fraction), feature_color, 2)
+                                draw_line(c3.lerp(c2, open_fraction), c3, feature_color, 2)
+                            else:
+                                draw_line(c2, c3, feature_color, 2)
+                        else:
+                            if open:
+                                draw_line(c1, c1.lerp(c4, open_fraction), feature_color, 2)
+                                draw_line(c4.lerp(c1, open_fraction), c4, feature_color, 2)
+                            else:
+                                draw_line(c1, c4, feature_color, 2)
             if game_coords == _player.coordinates():
                 var player_marker_rect: Rect2 = RectUtils.shrink(rect, player_marker_padding, player_marker_padding, true)
                 var player_center: Vector2 = player_marker_rect.get_center()
