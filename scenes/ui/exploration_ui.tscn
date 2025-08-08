@@ -138,10 +138,12 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("3_4stpx")
 line_color = Color(1, 1, 1, 0.345098)
+player_color = Color(0.95, 0.95, 0.95, 0.937255)
 ground_color = Color(0.482665, 0.262982, 0.0593273, 0.843137)
 no_floor_color = Color(0.04416, 0.06, 0.0402, 0.937255)
 feature_color = Color(0.379495, 0.71, 0.3621, 1)
 illusion_color = Color(0.622587, 0.3256, 0.74, 0.776471)
+wall_color = Color(0.82, 0.671717, 0.533, 0.937255)
 exploration_ui = NodePath("../../../../../..")
 metadata/_custom_type_script = "uid://ccd5c8wiv7kia"
 

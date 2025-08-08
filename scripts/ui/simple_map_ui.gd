@@ -5,6 +5,9 @@ class_name SimpleMapUI
 var line_color: Color
 
 @export
+var player_color: Color
+
+@export
 var ground_color: Color
 
 @export
@@ -15,6 +18,9 @@ var feature_color: Color
 
 @export
 var illusion_color: Color
+
+@export
+var wall_color: Color
 
 @export
 var exploration_ui: ExplorationUI
@@ -206,6 +212,29 @@ func _draw() -> void:
                                 draw_line(c4.lerp(c1, open_fraction), c4, feature_color, 2)
                             else:
                                 draw_line(c1, c4, feature_color, 2)
+
+                    else:
+                        match node.has_side(direction):
+                            GridNode.NodeSideState.SOLID:
+                                if _player.look_direction == direction:
+                                    draw_line(c1, c2, wall_color, 2)
+                                elif _player.look_direction == CardinalDirections.invert(direction):
+                                    draw_line(c3, c4, wall_color, 2)
+                                elif _player.look_direction == CardinalDirections.yaw_ccw(direction, _player.down)[0]:
+                                    draw_line(c2, c3, wall_color, 2)
+                                else:
+                                    draw_line(c1, c4, wall_color, 2)
+                            GridNode.NodeSideState.ILLUSORY:
+                                var seen_other_side: bool = _seen.has(CardinalDirections.translate(game_coords, direction))
+                                if _player.look_direction == direction:
+                                    draw_line(c1, c2, illusion_color if seen_other_side else wall_color, 2)
+                                elif _player.look_direction == CardinalDirections.invert(direction):
+                                    draw_line(c3, c4, illusion_color if seen_other_side else wall_color, 2)
+                                elif _player.look_direction == CardinalDirections.yaw_ccw(direction, _player.down)[0]:
+                                    draw_line(c2, c3, illusion_color if seen_other_side else wall_color, 2)
+                                else:
+                                    draw_line(c1, c4, illusion_color if seen_other_side else wall_color, 2)
+
             if game_coords == _player.coordinates():
                 var player_marker_rect: Rect2 = RectUtils.shrink(rect, player_marker_padding, player_marker_padding, true)
                 var player_center: Vector2 = player_marker_rect.get_center()
@@ -221,8 +250,7 @@ func _draw() -> void:
                     lower_right,
                     lower_left,
                     player_center,
-                ], line_color, 1)
-
+                ], player_color, 1)
 
 func zoom_in() -> void:
     wanted_columns = clamp(wanted_columns - 1, 4, 20)
