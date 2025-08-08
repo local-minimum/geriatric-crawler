@@ -70,6 +70,20 @@ func _ready() -> void:
 
     _ui.visible = false
     _inited = true
+    if GridLevel.active_level != null:
+        if GridLevel.active_level.on_level_loaded.connect(_handle_new_level) != OK:
+            push_error("Failed to connect level loaded")
+        if GridLevel.active_level.on_change_player.connect(_handle_new_player) != OK:
+            push_error("Failed to connect new player")
+
+
+func _handle_new_player() -> void:
+    _handle_new_level()
+
+func _handle_new_level() -> void:
+    if GridLevel.active_level.player != null:
+        robot = GridLevel.active_level.player.robot
+        battle_player.use_robot(robot)
 
 var _next_active_enemy: int
 var _player_initiative: int

@@ -20,6 +20,9 @@ func _ready() -> void:
     if _exploration_ui.level.on_change_player.connect(_handle_new_player) != OK:
         push_error("Failed to connect on new player")
 
+    if _exploration_ui.level.on_level_loaded.connect(_handle_new_level) != OK:
+        push_error("Failed to connect on new level")
+
     _connect_player(_exploration_ui.level.player, _exploration_ui.battle.battle_player)
 
 func _gui_input(event: InputEvent) -> void:
@@ -37,15 +40,24 @@ func _gui_input(event: InputEvent) -> void:
 func _click_robot() -> void:
     _exploration_ui.inspect_robot()
 
+func _handle_new_level() -> void:
+    if _exploration_ui.level != GridLevel.active_level:
+        _exploration_ui.level = GridLevel.active_level
+
+    _handle_new_player()
+
 func _handle_new_player() -> void:
     var grid_player: GridPlayer = _exploration_ui.level.player
+    if grid_player.robot.on_robot_complete_fight.is_connected(_handle_on_complete_fight):
+        return
+
     if grid_player.robot.on_robot_complete_fight.connect(_handle_on_complete_fight) != OK:
         push_error("Failed to connect on robot complete fight")
 
     if grid_player.robot.on_robot_loaded.connect(_handle_on_robot_loaded) != OK:
         push_error("Failed to connect on robot loaded")
 
-    _sync_robot(grid_player.robot, _exploration_ui.battle.battle_player)
+    _sync_robot.call_deferred(grid_player.robot, _exploration_ui.battle.battle_player)
 
 func _connect_player(grid_player: GridPlayer, battle_player: BattlePlayer, omit_connecting_robot: bool = false) -> void:
     if battle_player.on_heal.connect(_handle_on_heal) != OK:
@@ -59,7 +71,7 @@ func _connect_player(grid_player: GridPlayer, battle_player: BattlePlayer, omit_
         # sync robot also called from new player
         _handle_new_player()
     else:
-        _sync_robot(grid_player.robot, battle_player)
+        _sync_robot.call_deferred(grid_player.robot, battle_player)
 
 func _sync_robot(robot: Robot, battle_player: BattlePlayer) -> void:
     _name_label.text = robot.given_name
