@@ -114,10 +114,12 @@ func _update_position_and_rotation(interpolate: bool = true) -> void:
 
     if use_look_direction_for_rotation:
         if maintain_down:
-            global_rotation = CardinalDirections.direction_to_rotation(
-                CardinalDirections.invert(_calculate_down()),
-                level.player.look_direction,
-            ).get_euler()
+            var down: CardinalDirections.CardinalDirection = _calculate_down()
+            if !CardinalDirections.is_parallell(down, level.player.look_direction):
+                global_rotation = CardinalDirections.direction_to_rotation(
+                    CardinalDirections.invert(down),
+                    level.player.look_direction,
+                ).get_euler()
         else:
             global_basis = level.player.camera.global_transform.basis
     else:
