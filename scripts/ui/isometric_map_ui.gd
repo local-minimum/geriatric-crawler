@@ -64,6 +64,7 @@ func _draw() -> void:
 
     var player_coordinates: Vector3i = _player.coordinates()
     var player_up: Vector3i = CardinalDirections.direction_to_vectori(CardinalDirections.invert(_player.down))
+    var projection_down: Vector3 = CardinalDirections.direction_to_vector(CardinalDirections.CardinalDirection.DOWN if static_up else _player.down)
 
     var elevation_plane: Vector3i = CardinalDirections.direction_to_ortho_plane(_player.down)
     if VectorUtils.is_negative_cardinal_axis(player_up):
@@ -181,6 +182,9 @@ func _draw() -> void:
 
                     var draw_cross: bool = true
 
+                    var skip_draw_side: bool
+                    var check_ceiling_edge: bool
+
                     match node.has_side(direction):
                         GridNode.NodeSideState.DOOR:
                             var door: GridDoor = node.get_door(direction)
@@ -252,13 +256,9 @@ func _draw() -> void:
                                 color.a *= alpha_factor
 
                         GridNode.NodeSideState.SOLID:
-                            # Lets not draw ceilings if we are about to draw floors
-                            if direction == CardinalDirections.invert(_player.down) && elevation_offset < draw_box_half.y:
-                                var n_coords: Vector3i = CardinalDirections.direction_to_vectori(direction) + coords
-                                if _seen.has(n_coords):
-                                    var up_node: GridNode = level.get_grid_node(n_coords)
-                                    if n_coords != null && up_node.has_side(CardinalDirections.invert(direction)) == GridNode.NodeSideState.SOLID:
-                                        continue
+                            if direction == CardinalDirections.invert(_player.down):
+                                skip_draw_side = true
+
                             color = floor_color if draw_filled else other_side_color
                             color.a *= alpha_factor
                         GridNode.NodeSideState.ILLUSORY:
@@ -270,7 +270,11 @@ func _draw() -> void:
 
                             color.a *= alpha_factor
                         _:
-                            continue
+                            color = other_side_color
+                            color.a *= alpha_factor
+                            skip_draw_side = true
+                            if direction == CardinalDirections.invert(_player.down):
+                                check_ceiling_edge = true
 
                     var sides: PackedVector3Array = [
                         side_center + (side_plane as Vector3) * node_half_size,
@@ -278,36 +282,94 @@ func _draw() -> void:
                         side_center + (side_plane as Vector3) * -node_half_size,
                         side_center + (sign_flipped_plane as Vector3) * -node_half_size,
                     ]
-                    if !draw_filled:
-                        sides = [
-                            sides[0],
-                            sides[1],
-                            sides[2],
-                            sides[3],
-                            sides[0],
-                        ]
 
-                        if draw_cross:
-                            draw_function.call(
-                                [sides[0], sides[2]],
-                                color,
-                                !draw_filled,
-                                outline_factor * 0.5,
-                            )
+                    if check_ceiling_edge:
+                        outline_factor *= 2
 
-                            draw_function.call(
-                                [sides[1], sides[3]],
-                                color,
-                                !draw_filled,
-                                outline_factor * 0.5,
-                            )
+                        for ceiling_ortho: CardinalDirections.CardinalDirection in CardinalDirections.orthogonals(direction):
+                            if !node.may_exit(_player, ceiling_ortho, true, true):
+                                continue
 
-                    draw_function.call(
-                        sides,
-                        color,
-                        !draw_filled,
-                        outline_factor,
-                    )
+                            var neighbour: GridNode = level.get_grid_node(CardinalDirections.translate(coords, ceiling_ortho))
+                            if neighbour == null:
+                                continue
+
+                            if neighbour.has_side(direction) != GridNode.NodeSideState.NONE:
+                                var projection_dir: Vector3 = CardinalDirections.direction_to_vector(ceiling_ortho)
+                                var l0: float = projection_dir.dot(sides[0])
+                                var l1: float = projection_dir.dot(sides[1])
+                                var l2: float = projection_dir.dot(sides[2])
+                                if l0 > l1:
+                                    draw_function.call(
+                                        [sides[0], sides[3]],
+                                        color,
+                                        !draw_filled,
+                                        outline_factor,
+                                    )
+                                elif l1 > l2:
+                                    draw_function.call(
+                                        [sides[0], sides[1]],
+                                        color,
+                                        !draw_filled,
+                                        outline_factor,
+                                    )
+                                elif l2 > l0 && l1 == l2:
+                                    draw_function.call(
+                                        [sides[1], sides[2]],
+                                        color,
+                                        !draw_filled,
+                                        outline_factor,
+                                    )
+                                else:
+                                    draw_function.call(
+                                        [sides[2], sides[3]],
+                                        color,
+                                        !draw_filled,
+                                        outline_factor,
+                                    )
+
+
+                    elif !draw_filled:
+                        if CardinalDirections.is_parallell(direction, _player.down):
+                            if draw_cross && !skip_draw_side:
+                                draw_function.call(
+                                    [sides[0], sides[2]],
+                                    color,
+                                    !draw_filled,
+                                    outline_factor * 0.5,
+                                )
+
+                                draw_function.call(
+                                    [sides[1], sides[3]],
+                                    color,
+                                    !draw_filled,
+                                    outline_factor * 0.5,
+                                )
+
+                            sides = []
+                        else:
+                            var l0: float = projection_down.dot(sides[0])
+                            var l1: float = projection_down.dot(sides[1])
+                            var l2: float = projection_down.dot(sides[2])
+                            if l0 > l1:
+                                sides = [sides[0], sides[3]]
+                            elif l1 > l2:
+                                sides = [sides[0], sides[1]]
+                            elif l2 > l0 && l1 == l2:
+                                sides = [sides[1], sides[2]]
+                            else:
+                                sides = [sides[2], sides[3]]
+
+                            outline_factor *= 2
+
+
+                    if !skip_draw_side && sides.size() > 0:
+                        draw_function.call(
+                            sides,
+                            color,
+                            !draw_filled,
+                            outline_factor,
+                        )
 
                     if _show_features:
                         var teleporter: GridTeleporter = node.get_teleporter(direction)

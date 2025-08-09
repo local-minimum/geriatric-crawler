@@ -108,10 +108,12 @@ custom_minimum_size = Vector2(0, 150)
 layout_mode = 2
 color = Color(0.207843, 0.0862745, 0.105882, 1)
 script = ExtResource("3_2458l")
+_memory_size = null
 _2d_map_ui = NodePath("Padding/Control/2D Map")
 _3d_map_ui = NodePath("Padding/Control/3D Map")
 map_controls = NodePath("Padding/Control/Map Controls")
 _mapping_area = NodePath(".")
+_detect_area = null
 
 [node name="Padding" type="MarginContainer" parent="MarginContainer/VBoxContainer/SimpleMapModule"]
 layout_mode = 1
@@ -160,11 +162,11 @@ draw_box_half = Vector3i(7, 1, 7)
 camera_direction = Vector3(2, 5, 5)
 floor_color = Color(0.72, 0.396, 0.396, 0.917647)
 illusion_color = Color(0.557333, 0.28, 0.8, 1)
-other_side_color = Color(0.8325, 0.9, 0.495, 0.286275)
+other_side_color = Color(0.8325, 0.9, 0.495, 0.537255)
 player_color = Color(0.95, 0.95, 0.95, 0.94902)
 feature_color = Color(0.168, 0.63, 0.126, 0.843137)
 elevation_difference_alpha_factor = 0.2
-line_width = 0.04
+line_width = 0.07
 metadata/_custom_type_script = "uid://ylartknudqvd"
 
 [node name="Map Controls" type="HBoxContainer" parent="MarginContainer/VBoxContainer/SimpleMapModule/Padding/Control" node_paths=PackedStringArray("mode_2d_button", "mode_3d_button", "zoom_in_button", "zoom_out_button")]

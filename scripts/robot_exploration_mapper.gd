@@ -103,20 +103,20 @@ func _handle_move_end(entity: GridEntity) -> void:
     var left: CardinalDirections.CardinalDirection = CardinalDirections.yaw_ccw(_player.look_direction, _player.down)[0]
     var right: CardinalDirections.CardinalDirection = CardinalDirections.invert(left)
 
-    if _player.get_grid_node().may_exit(_player, _player.look_direction, true):
+    if _player.get_grid_node().may_exit(_player, _player.look_direction, true, true):
         coords = CardinalDirections.translate(coords, _player.look_direction)
         var node: GridNode = level.get_grid_node(coords)
 
         if node != null:
             _enter_new_coordinates(coords)
 
-            if node.may_exit(_player, left, true):
+            if node.may_exit(_player, left, true, true):
                 var next_coords: Vector3i = CardinalDirections.translate(coords, left)
 
                 if level.has_grid_node(next_coords):
                     _enter_new_coordinates(next_coords)
 
-            if node.may_exit(_player, right, true):
+            if node.may_exit(_player, right, true, true):
                 var next_coords: Vector3i = CardinalDirections.translate(coords, right)
 
                 if level.has_grid_node(next_coords):
@@ -124,7 +124,7 @@ func _handle_move_end(entity: GridEntity) -> void:
 
 
     if _detect_area:
-        if _player.get_grid_node().may_exit(_player, left, true):
+        if _player.get_grid_node().may_exit(_player, left, true, true):
             coords = CardinalDirections.translate(_player.coordinates(), left)
 
             var node: GridNode = level.get_grid_node(coords)
@@ -132,21 +132,21 @@ func _handle_move_end(entity: GridEntity) -> void:
             if node != null:
                 _enter_new_coordinates(coords)
 
-                if node.may_exit(_player, _player.look_direction, true):
+                if node.may_exit(_player, _player.look_direction, true, true):
                     coords = CardinalDirections.translate(coords, _player.look_direction)
 
                     if level.has_grid_node(coords):
                         _enter_new_coordinates(coords)
 
 
-        if _player.get_grid_node().may_exit(_player, right, true):
+        if _player.get_grid_node().may_exit(_player, right, true, true):
             coords = CardinalDirections.translate(_player.coordinates(), right)
             var node: GridNode = level.get_grid_node(coords)
 
             if node != null:
                 _enter_new_coordinates(coords)
 
-                if node.may_exit(_player, _player.look_direction, true):
+                if node.may_exit(_player, _player.look_direction, true, true):
                     coords = CardinalDirections.translate(coords, _player.look_direction)
 
                     if level.has_grid_node(coords):
