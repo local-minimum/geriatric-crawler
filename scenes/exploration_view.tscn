@@ -1,7 +1,8 @@
-[gd_scene load_steps=5 format=3 uid="uid://eoj51yv61yas"]
+[gd_scene load_steps=6 format=3 uid="uid://eoj51yv61yas"]
 
 [ext_resource type="Script" uid="uid://fb4jcprwlx4s" path="res://scripts/gridded_level/exploration_view.gd" id="1_lcagy"]
 [ext_resource type="PackedScene" uid="uid://dwqcwbgj8p6q0" path="res://scenes/dungeon/test_level.tscn" id="1_u78tq"]
+[ext_resource type="Script" uid="uid://b8eg248j7jnfr" path="res://scripts/ui/fader_ui.gd" id="3_tlp0i"]
 
 [sub_resource type="Environment" id="Environment_udkd3"]
 background_mode = 1
@@ -29,3 +30,16 @@ environment = SubResource("Environment_udkd3")
 camera_attributes = SubResource("CameraAttributesPractical_u78tq")
 
 [node name="TestLevel" parent="." instance=ExtResource("1_u78tq")]
+
+[node name="Fader" type="CanvasLayer" parent="." node_paths=PackedStringArray("color_rect")]
+script = ExtResource("3_tlp0i")
+color_rect = NodePath("FadeRect")
+solid_color = Color(0.15822, 0.0612, 0.18, 1)
+transparent_color = Color(0.51, 0.51, 0.51, 0)
+
+[node name="FadeRect" type="ColorRect" parent="Fader"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2

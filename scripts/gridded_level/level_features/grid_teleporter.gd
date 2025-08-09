@@ -119,34 +119,47 @@ func _show_effect(entity: GridEntity) -> void:
     ) != OK:
         push_warning("Could not disable teleportation effect after done")
 
+
 func _handle_teleport(entity: GridEntity) -> void:
+    await get_tree().create_timer(0.1).timeout
+
+    FaderUI.fade(
+        FaderUI.FadeTarget.EXPLORATION_VIEW,
+        func() -> void:
+            var exit_node: GridNode = exit.get_grid_node()
+            if exit_node == null:
+                entity.cinematic = false
+                push_error("Failed to teleport because there was no exit")
+                return
+
+            var exit_anchor: GridAnchor = exit_node.get_grid_anchor(exit.anchor_direction)
+            if exit_anchor != null:
+                entity.down = exit.anchor_direction
+                entity.set_grid_anchor(exit_anchor)
+            else:
+                entity.set_grid_node(exit_node)
+
+            if exit.look_direction != CardinalDirections.CardinalDirection.NONE:
+                entity.look_direction = exit.look_direction
+                entity.orient()
+
+            entity.sync_position()
+            entity.clear_queue()
+            ,
+        func () -> void:
+            entity.cinematic = false
+            _teleporting.erase(entity)
+            on_arrive_entity.emit(exit, entity)
+            ,
+        Color.ALICE_BLUE,
+    )
+
     print_debug("Handle teleport of %s from %s to %s" % [entity, coordinates(), "%s" % exit.coordinates() if exit != null else "Nowhere"])
-    _teleporting.erase(entity)
 
     if entity.on_move_end.is_connected(_handle_teleport):
         entity.on_move_end.disconnect(_handle_teleport)
 
-    var exit_node: GridNode = exit.get_grid_node()
-    if exit_node == null:
-        entity.cinematic = false
-        push_error("Failed to teleport because there was no exit")
-        return
 
-    var exit_anchor: GridAnchor = exit_node.get_grid_anchor(exit.anchor_direction)
-    if exit_anchor != null:
-        entity.down = exit.anchor_direction
-        entity.set_grid_anchor(exit_anchor)
-    else:
-        entity.set_grid_node(exit_node)
-
-    if exit.look_direction != CardinalDirections.CardinalDirection.NONE:
-        entity.look_direction = exit.look_direction
-        entity.orient()
-
-    entity.sync_position()
-    entity.clear_queue()
-    entity.cinematic = false
-    on_arrive_entity.emit(exit, entity)
 
 func _process(delta: float) -> void:
     if effect == null || !effect.visible || !_teleporting.is_empty():
