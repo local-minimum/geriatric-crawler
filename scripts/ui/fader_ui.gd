@@ -94,7 +94,7 @@ func _fade(on_midways: Variant = null, on_complete: Variant = null, override_col
                 ,
             0.0,
             1.0,
-            0.1,
+            faded_duration,
         )
 
 
