@@ -52,12 +52,6 @@ func _handle_update_orientation(
 
     visible = true
 
-    print_debug("Down %s -> %s, Look %s -> %s" % [
-        CardinalDirections.name(old_down),
-        CardinalDirections.name(down),
-        CardinalDirections.name(old_forward),
-        CardinalDirections.name(forward),
-    ])
     if down == old_down || old_down == CardinalDirections.CardinalDirection.NONE:
         if old_forward != CardinalDirections.CardinalDirection.NONE:
             _animate_yaw_rotation(down, old_forward, forward)

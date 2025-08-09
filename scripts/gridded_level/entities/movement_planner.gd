@@ -156,7 +156,7 @@ func _refuse_translation(
             entity.end_movement(movement))
     @warning_ignore_restore("return_value_discarded")
 
-    print_debug("Refusing translation movement")
+    print_debug("Refusing translation movement %s for %s" % [CardinalDirections.name(move_direction), entity])
 
 func _handle_landing(
     movement: Movement.MovementType,
@@ -211,7 +211,7 @@ func _handle_node_transition(
     move_direction: CardinalDirections.CardinalDirection,
     was_excotic_walk: bool,
 ) -> int:
-    if from.may_exit(entity, move_direction):
+    if from.may_exit(entity, move_direction, false, true):
         var target: GridNode = from.neighbour(move_direction)
         if target == null:
             print_debug("No tile in %s direction" % CardinalDirections.name(move_direction))
@@ -223,7 +223,7 @@ func _handle_node_transition(
             print_debug("Outer corner")
             return handled
 
-        if target.may_enter(entity, from, move_direction, entity.down):
+        if target.may_enter(entity, from, move_direction, entity.down, false, false, true):
 
             var neighbour_anchor: GridAnchor = target.get_grid_anchor(entity.down)
 
@@ -344,7 +344,7 @@ func _handle_outer_corner_transition(
     move_direction: CardinalDirections.CardinalDirection,
     intermediate: GridNode,
 ) -> int:
-    if anchor == null || !intermediate.may_transit(entity, from, move_direction, entity.down):
+    if anchor == null || !intermediate.may_transit(entity, from, move_direction, entity.down, true):
         # if anchor == null:
             # print_debug("Anchor is null")
         # else:
@@ -359,7 +359,7 @@ func _handle_outer_corner_transition(
         # print_debug("Target is null")
         return _UNHANDLED
 
-    if !target.may_enter(entity, intermediate, entity.down, updated_directions[1]):
+    if !target.may_enter(entity, intermediate, entity.down, updated_directions[1], false, false, true):
         # print_debug("We may not enter %s from %s" % [target.name, entity.down])
         if target._entry_blocking_events(entity, from, move_direction, entity.down):
             return _HANDLED_REFUSED

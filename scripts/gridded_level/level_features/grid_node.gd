@@ -343,8 +343,9 @@ func may_transit(
     from: GridNode,
     move_direction: CardinalDirections.CardinalDirection,
     exit_direction: CardinalDirections.CardinalDirection,
+    silent: bool = false,
 ) -> bool:
-    return may_enter(entity, from, move_direction, entity.down, true) && may_exit(entity, exit_direction)
+    return may_enter(entity, from, move_direction, entity.down, true, false, silent) && may_exit(entity, exit_direction, false, silent)
 
 static func find_node_parent(current: Node, inclusive: bool = true) ->  GridNode:
     if inclusive && current is GridNode:
