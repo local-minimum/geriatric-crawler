@@ -60,6 +60,9 @@ var key_id: String
 @export
 var _consumes_key: bool
 
+@export_range(1, 4)
+var _lock_bypass_required_level: int = 1
+
 var lock_state: LockState
 
 func _ready() -> void:
@@ -293,8 +296,20 @@ func attempt_door_unlock(puller: CameraPuller) -> void:
         NotificationsManager.warn("Door locked", "Missing %s" % KeyMaster.instance.get_description(key_id))
 
         if puller != null:
-            if player.robot.get_skill_level(RobotAbility.SKILL_BYPASS) > 1:
+            var skill_level: int = player.robot.get_skill_level(RobotAbility.SKILL_BYPASS)
+            if skill_level >= _lock_bypass_required_level:
                 puller.grab_player(player, _trigger_hacking_prompt)
+            elif skill_level > 0:
+                puller.grab_player(
+                    player,
+                    func () -> void:
+                        await get_tree().create_timer(0.2).timeout
+                        NotificationsManager.important("Lock bypass", "Insufficient level to attempt")
+                        await get_tree().create_timer(0.8).timeout
+                        puller.release_player(player)
+                        ,
+                )
+
         return
 
     if _consumes_key:
