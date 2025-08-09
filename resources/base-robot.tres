@@ -9,10 +9,10 @@
 [ext_resource type="Resource" uid="uid://53fx21fdmrcq" path="res://resources/robot_abilities/exploration/mapping-4.tres" id="6_a1hkw"]
 [ext_resource type="Resource" uid="uid://bb6ggj7saxcw8" path="res://resources/robot_abilities/exploration/climbing-1.tres" id="6_c4jpc"]
 [ext_resource type="Resource" uid="uid://8aoyvdht0msx" path="res://resources/robot_abilities/exploration/sonar-2.tres" id="6_e4jh0"]
+[ext_resource type="Resource" uid="uid://dpy5qucyu25fx" path="res://resources/robot_abilities/exploration/bypass-2.tres" id="7_c4jpc"]
 [ext_resource type="Resource" uid="uid://br0wnot24fw1b" path="res://resources/robot_abilities/battle/memory-1.tres" id="7_gfie8"]
 [ext_resource type="Resource" uid="uid://c2kaiyaateugc" path="res://resources/robot_abilities/battle/slots-2.tres" id="8_micf8"]
 [ext_resource type="Resource" uid="uid://duokj17pplsk" path="res://resources/robot_abilities/exploration/climbing-3.tres" id="9_2kcf8"]
-[ext_resource type="Resource" uid="uid://dpy5qucyu25fx" path="res://resources/robot_abilities/exploration/lock-picking-2.tres" id="10_hp843"]
 [ext_resource type="Script" uid="uid://cqlxwfe858g4h" path="res://scripts/card_battle/battle_card_data.gd" id="12_lew8e"]
 [ext_resource type="Resource" uid="uid://dcob2h4luvnbl" path="res://resources/player_cards/card_defrag_5.tres" id="13_e4jh0"]
 [ext_resource type="Resource" uid="uid://bc3f2625tdj67" path="res://resources/player_cards/card_defrag_70.tres" id="14_ta0qa"]
@@ -29,11 +29,11 @@
 script = ExtResource("2_je4nw")
 id = "base-robot"
 model_name = "B100"
-innate_abilities = Array[ExtResource("1_olfye")]([ExtResource("2_i2741"), ExtResource("3_lew8e"), ExtResource("6_e4jh0"), ExtResource("6_c4jpc"), ExtResource("6_a1hkw")])
+innate_abilities = Array[ExtResource("1_olfye")]([ExtResource("2_i2741"), ExtResource("3_lew8e"), ExtResource("6_e4jh0"), ExtResource("6_c4jpc"), ExtResource("6_a1hkw"), ExtResource("7_c4jpc")])
 level_1_options = Array[ExtResource("1_olfye")]([ExtResource("4_mno2y")])
 level_2_options = Array[ExtResource("1_olfye")]([ExtResource("5_3en2o"), ExtResource("6_e4jh0")])
 level_3_options = Array[ExtResource("1_olfye")]([ExtResource("7_gfie8"), ExtResource("8_micf8")])
-level_4_options = Array[ExtResource("1_olfye")]([ExtResource("9_2kcf8"), ExtResource("10_hp843")])
+level_4_options = Array[ExtResource("1_olfye")]([ExtResource("9_2kcf8"), ExtResource("7_c4jpc")])
 level_1_steps = 3
 level_2_steps = 4
 level_3_steps = 5

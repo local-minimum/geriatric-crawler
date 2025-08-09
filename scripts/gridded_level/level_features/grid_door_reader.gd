@@ -46,6 +46,9 @@ var emission_intensity: float = 3
 @export
 var max_click_distance: float = 1
 
+@export
+var camera_puller: CameraPuller
+
 var _check_click: bool
 
 func _ready() -> void:
@@ -123,9 +126,12 @@ var _showing_cursor_hand: bool
 
 func _get_in_range(event_position: Vector3) -> bool:
     var level: GridLevel = door.get_level()
-    return VectorUtils.all_dimensions_smaller(
-        (level.player.position - event_position).abs(),
-        level.node_size,
+    return (
+        !level.player.cinematic &&
+        VectorUtils.all_dimensions_smaller(
+            (level.player.position - event_position).abs(),
+            level.node_size,
+        )
     )
 
 func _on_static_body_3d_input_event(
@@ -154,7 +160,7 @@ func _on_static_body_3d_input_event(
 
         if mouse_event.pressed && mouse_event.button_index == MOUSE_BUTTON_LEFT:
             if door.lock_state == GridDoor.LockState.LOCKED:
-                door.attempt_door_unlock()
+                door.attempt_door_unlock(camera_puller)
             else:
                 door.toggle_door()
 

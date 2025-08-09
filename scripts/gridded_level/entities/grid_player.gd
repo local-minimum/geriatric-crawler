@@ -3,6 +3,8 @@ class_name GridPlayer
 
 @export
 var camera: Camera3D
+var camera_resting_position: Vector3
+var camera_resting_rotation: Quaternion
 
 @export
 var spawn_node: GridNode
@@ -50,6 +52,9 @@ var override_ceiling_walking: bool:
                 transportation_abilities.set_flag(TransportationMode.CEILING_WALKING)
 
 func _ready() -> void:
+    camera_resting_position = camera.position
+    camera_resting_rotation = camera.basis.get_rotation_quaternion()
+
     if spawn_node != null:
         var anchor: GridAnchor = spawn_node.get_grid_anchor(down)
         update_entity_anchorage(spawn_node, anchor, true)

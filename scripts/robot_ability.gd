@@ -16,6 +16,9 @@ const SKILL_MAPPING: String = "mapping"
 ## LVL 1: Detect enemies, LVL 2: Detect enemies & hidden objects
 const SKILL_SONAR: String = "sonar"
 
+## LVL 1: Minimum tools
+const SKILL_BYPASS: String = "bypass"
+
 enum AbilityType { Exploration, Battle, Other }
 
 ## Class id of the ability (doesn't include the level of the ability)

@@ -282,13 +282,19 @@ func toggle_door() -> void:
     else:
         close_door()
 
-func attempt_door_unlock() -> void:
+func attempt_door_unlock(puller: CameraPuller) -> void:
     if lock_state != LockState.LOCKED:
         return
 
-    var key_ring: KeyRing = get_level().player.key_ring
+    var player: GridPlayer = get_level().player
+
+    var key_ring: KeyRing = player.key_ring
     if key_ring == null || !key_ring.has_key(key_id):
         NotificationsManager.warn("Door locked", "Missing %s" % KeyMaster.instance.get_description(key_id))
+
+        if puller != null:
+            if player.robot.get_skill_level(RobotAbility.SKILL_BYPASS) > 1:
+                puller.grab_player(player, _trigger_hacking_prompt)
         return
 
     if _consumes_key:
@@ -303,6 +309,10 @@ func attempt_door_unlock() -> void:
     lock_state = LockState.CLOSED
     on_door_state_chaged.emit()
     open_door()
+
+func _trigger_hacking_prompt() -> void:
+    # TODO: Ask if they want to hack present their current tools and lock difficulty
+    pass
 
 func needs_saving() -> bool:
     return true
