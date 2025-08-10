@@ -495,7 +495,6 @@ _inital_lock_state = 0
 _door_face = 3
 block_traversal_anchor_sides = Array[int]([1, 2])
 key_id = "purple"
-_lock_bypass_required_level = 3
 
 [node name="Node (4, 0, 1)" parent="LevelGeometry/Elevation 0" instance=ExtResource("4_myev5")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 0, 2.5)

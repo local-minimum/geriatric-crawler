@@ -1,0 +1,103 @@
+[gd_scene load_steps=3 format=3 uid="uid://bb0220nki3rb5"]
+
+[ext_resource type="Script" uid="uid://bx14ue51xv4pc" path="res://scripts/ui/start_hacking_dialog.gd" id="1_6kgdf"]
+
+[sub_resource type="FontVariation" id="FontVariation_6lmoa"]
+variation_embolden = 1.26
+
+[node name="Start Hacking Dialog" type="ConfirmationDialog" node_paths=PackedStringArray("_difficulty", "_attempts", "_dangerous", "_worms_label", "_worms_count", "_bombs_label", "_bombs_count", "_proxies_label", "_proxies_count")]
+auto_translate_mode = 1
+title = "Card Reader"
+initial_position = 2
+size = Vector2i(425, 296)
+visible = true
+ok_button_text = "Hack"
+cancel_button_text = "Leave"
+script = ExtResource("1_6kgdf")
+_difficulty = NodePath("MarginContainer/VBoxContainer/Summary/Difficulty Value")
+_attempts = NodePath("MarginContainer/VBoxContainer/Summary/Attempts Value")
+_dangerous = NodePath("MarginContainer/VBoxContainer/Warning")
+_worms_label = NodePath("MarginContainer/VBoxContainer/Summary/Worms Label")
+_worms_count = NodePath("MarginContainer/VBoxContainer/Summary/Worms Count")
+_bombs_label = NodePath("MarginContainer/VBoxContainer/Summary/Bomb Label")
+_bombs_count = NodePath("MarginContainer/VBoxContainer/Summary/Bomb Count")
+_proxies_label = NodePath("MarginContainer/VBoxContainer/Summary/Proxies Label")
+_proxies_count = NodePath("MarginContainer/VBoxContainer/Summary/Proxies Count")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 417.0
+offset_bottom = 247.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/margin_bottom = 8
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Summary" type="GridContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+columns = 2
+
+[node name="Difficulty Label" type="Label" parent="MarginContainer/VBoxContainer/Summary"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Difficulty"
+
+[node name="Difficulty Value" type="Label" parent="MarginContainer/VBoxContainer/Summary"]
+layout_mode = 2
+text = "2"
+horizontal_alignment = 2
+
+[node name="Attempts Label" type="Label" parent="MarginContainer/VBoxContainer/Summary"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Attempts"
+
+[node name="Attempts Value" type="Label" parent="MarginContainer/VBoxContainer/Summary"]
+layout_mode = 2
+text = "3"
+horizontal_alignment = 2
+
+[node name="Worms Label" type="Label" parent="MarginContainer/VBoxContainer/Summary"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Worms"
+
+[node name="Worms Count" type="Label" parent="MarginContainer/VBoxContainer/Summary"]
+layout_mode = 2
+text = "1"
+horizontal_alignment = 2
+
+[node name="Bomb Label" type="Label" parent="MarginContainer/VBoxContainer/Summary"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Logical Bombs"
+
+[node name="Bomb Count" type="Label" parent="MarginContainer/VBoxContainer/Summary"]
+layout_mode = 2
+text = "0"
+horizontal_alignment = 2
+
+[node name="Proxies Label" type="Label" parent="MarginContainer/VBoxContainer/Summary"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Proxies"
+
+[node name="Proxies Count" type="Label" parent="MarginContainer/VBoxContainer/Summary"]
+layout_mode = 2
+text = "0"
+horizontal_alignment = 2
+
+[node name="Warning" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.800979, 0.323821, 0.294446, 1)
+theme_override_fonts/font = SubResource("FontVariation_6lmoa")
+text = "Failiure will have consequences"
+
+[connection signal="canceled" from="." to="." method="_on_canceled"]
+[connection signal="confirmed" from="." to="." method="_on_confirmed"]

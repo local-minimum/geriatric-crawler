@@ -63,6 +63,9 @@ var _consumes_key: bool
 @export_range(1, 4)
 var _lock_bypass_required_level: int = 1
 
+@export_range(1, 10)
+var _lock_difficulty: int = 2
+
 var lock_state: LockState
 
 func _ready() -> void:
@@ -298,7 +301,12 @@ func attempt_door_unlock(puller: CameraPuller) -> void:
         if puller != null:
             var skill_level: int = player.robot.get_skill_level(RobotAbility.SKILL_BYPASS)
             if skill_level >= _lock_bypass_required_level:
-                puller.grab_player(player, _trigger_hacking_prompt)
+                puller.grab_player(
+                    player,
+                    func () -> void:
+                        _trigger_hacking_prompt.call(puller)
+                        ,
+                )
             elif skill_level > 0:
                 puller.grab_player(
                     player,
@@ -325,9 +333,22 @@ func attempt_door_unlock(puller: CameraPuller) -> void:
     on_door_state_chaged.emit()
     open_door()
 
-func _trigger_hacking_prompt() -> void:
-    # TODO: Ask if they want to hack present their current tools and lock difficulty
-    pass
+func _trigger_hacking_prompt(puller: CameraPuller) -> void:
+    var player: GridPlayer = get_level().player
+
+    StartHackingDialog.show_dialog(
+        player.robot,
+        "Locked door",
+        _lock_difficulty,
+        true,
+        func () -> void:
+            NotificationsManager.info("Hacking", "Not worth the risk")
+            puller.release_player(player),
+        func () -> void:
+            # TODO: Play hacking game
+            pass
+
+    )
 
 func needs_saving() -> bool:
     return true

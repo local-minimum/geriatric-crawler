@@ -41,9 +41,14 @@ var battle: BattleMode
 var _inventory: Dictionary[String, float] = {}
 
 static func inventory_item_id_to_text(id: String) -> String:
+    if id.begins_with(StartHackingDialog.ITEM_HACKING_PREFIX):
+        return StartHackingDialog.item_id_to_text(id)
+
     return id
 
-static func inventory_item_id_to_unit(_id: String) -> String:
+static func inventory_item_id_to_unit(id: String) -> String:
+    if id.begins_with(StartHackingDialog.ITEM_HACKING_PREFIX):
+        return ""
     return "kg"
 
 static func credits_with_sign(amount: int) -> String:
@@ -84,6 +89,9 @@ class InventoryListing:
     func _init(p_id: String, p_amount: float) -> void:
         id = p_id
         amount = p_amount
+
+func get_item_count(id: String) -> float:
+    return _inventory.get(id, 0.0)
 
 func list_inventory() -> Array[InventoryListing]:
     var result: Array[InventoryListing]
