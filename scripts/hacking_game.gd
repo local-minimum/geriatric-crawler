@@ -136,7 +136,7 @@ func _create_solved_game_board() -> void:
         else:
             non_solution_letters[idx] = other_letters[randi_range(0, other_letters.size() - 1)]
 
-    _shuffle_packed_string_array(non_solution_letters)
+    ArrayUtils.shuffle_packed_string_array(non_solution_letters)
 
     var passphrase_row: int = randi_range(0, _height - 1)
     var passphrase_col: int = randi_range(0, _width - 1 - _passphrase.size())
@@ -162,11 +162,55 @@ func _create_solved_game_board() -> void:
     print_debug(_board)
 
 func _shuffle_game_board() -> void:
-    pass
+    for col: int in range(_width):
+        var steps: int = randi_range(-3, 3)
+        if steps == 0:
+            continue
 
-func _shuffle_packed_string_array(arr: PackedStringArray) -> void:
-    for from: int in range(arr.size() - 1, 0, -1):
-        var to: int = randi_range(0, from - 1)
-        var val: String = arr[to]
-        arr[to] = arr[from]
-        arr[from] = val
+        var original: Array[String]
+        for row: int in range(_height):
+            original.append(_board[row][col])
+
+        for row: int in range(_height):
+            var source: int = posmod(row - steps, _height)
+            _board[row][col] = original[source]
+
+    for row: int in range(_height):
+        var steps: int = randi_range(-5, 5)
+        if steps == 0:
+            continue
+
+        var original: Array[String]
+        for col: int in range(_width):
+            original.append(_board[row][col])
+
+        for col: int in range(_width):
+            var source: int = posmod(col - steps, _width)
+            _board[row][col] = original[source]
+
+    print_debug(_board)
+    print_debug(_board_solution_length())
+
+func _board_solution_length() -> int:
+    var max_length: int = 0
+    var in_word: bool = false
+    var current_length: int = 0
+
+    for row: int in range(_height):
+        for col: int in range(_width):
+            var letter: String = _board[row][col]
+            if !in_word:
+                if letter == _passphrase[0]:
+                    in_word = true
+                    current_length = 1
+            elif letter == _passphrase[current_length]:
+                current_length += 1
+                if current_length == _passphrase.size():
+                    return current_length
+            else:
+                in_word = false
+                current_length = 0
+
+            max_length = maxi(max_length, current_length)
+
+    return max_length

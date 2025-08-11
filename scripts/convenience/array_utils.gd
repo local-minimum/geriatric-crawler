@@ -49,3 +49,17 @@ static func maxi(arr: Array, pred: Callable, start_value: int = 0) -> int:
             return acc,
         start_value,
     )
+
+static func shuffle_array(arr: Array) -> void:
+    for from: int in range(arr.size() - 1, 0, -1):
+        var to: int = randi_range(0, from - 1)
+        var val: Variant = arr[to]
+        arr[to] = arr[from]
+        arr[from] = val
+
+static func shuffle_packed_string_array(arr: PackedStringArray) -> void:
+    for from: int in range(arr.size() - 1, 0, -1):
+        var to: int = randi_range(0, from - 1)
+        var val: String = arr[to]
+        arr[to] = arr[from]
+        arr[from] = val
