@@ -41,13 +41,13 @@ var battle: BattleMode
 var _inventory: Dictionary[String, float] = {}
 
 static func inventory_item_id_to_text(id: String) -> String:
-    if id.begins_with(StartHackingDialog.ITEM_HACKING_PREFIX):
-        return StartHackingDialog.item_id_to_text(id)
+    if id.begins_with(HackingGame.ITEM_HACKING_PREFIX):
+        return HackingGame.item_id_to_text(id)
 
     return id
 
 static func inventory_item_id_to_unit(id: String) -> String:
-    if id.begins_with(StartHackingDialog.ITEM_HACKING_PREFIX):
+    if id.begins_with(HackingGame.ITEM_HACKING_PREFIX):
         return ""
     return "kg"
 

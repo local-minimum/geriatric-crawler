@@ -67,7 +67,7 @@ var _lock_bypass_required_level: int = 1
 var _lock_difficulty: int = 2
 
 @export
-var _hacking_danger: StartHackingDialog.Danger
+var _hacking_danger: HackingGame.Danger
 
 var lock_state: LockState
 
@@ -339,18 +339,23 @@ func attempt_door_unlock(puller: CameraPuller) -> void:
 func _trigger_hacking_prompt(puller: CameraPuller) -> void:
     var player: GridPlayer = get_level().player
 
+    var attempts: int = HackingGame.calculate_attempts(player.robot, _lock_difficulty)
+
     StartHackingDialog.show_dialog(
-        player.robot,
         "Locked door",
         _lock_difficulty,
+        attempts,
         _hacking_danger,
         func () -> void:
             NotificationsManager.info("Hacking", "Not worth the risk")
             puller.release_player(player),
         func () -> void:
-            # TODO: Play hacking game
-            pass
-
+            HackingGame.start(
+                _lock_difficulty,
+                attempts,
+                func () -> void:
+                    puller.release_player(player),
+            )
     )
 
 func needs_saving() -> bool:

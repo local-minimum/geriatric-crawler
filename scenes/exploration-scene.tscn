@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://5mvkmlsl4h3x"]
+[gd_scene load_steps=13 format=3 uid="uid://5mvkmlsl4h3x"]
 
 [ext_resource type="PackedScene" uid="uid://dx6ngxriyyq7l" path="res://scenes/ui/ui_debug_settings.tscn" id="1_6lmoa"]
 [ext_resource type="PackedScene" uid="uid://xqedv5aeal6n" path="res://scenes/exploration_save_system.tscn" id="2_n04bd"]
@@ -10,6 +10,8 @@
 [ext_resource type="Script" uid="uid://cune3lm2ngiy1" path="res://scripts/ui/notifications/notifications_manager.gd" id="8_7qmp0"]
 [ext_resource type="Script" uid="uid://bkky4nqo47eiv" path="res://scripts/ui/notifications/notifications_panel_ui.gd" id="9_t2qw5"]
 [ext_resource type="PackedScene" uid="uid://bb0220nki3rb5" path="res://scenes/ui/start_hacking_dialog.tscn" id="10_n04bd"]
+[ext_resource type="Script" uid="uid://cv5l2ndd7kivb" path="res://scripts/hacking_game.gd" id="11_08vpu"]
+[ext_resource type="Script" uid="uid://c1foemx8gp3j6" path="res://scripts/ui/hacking_game_ui.gd" id="12_kbxam"]
 
 [node name="Exploration" type="Control"]
 layout_mode = 3
@@ -83,3 +85,21 @@ metadata/_custom_type_script = "uid://dftf4h6eyrsio"
 
 [node name="Start Hacking Dialog" parent="." instance=ExtResource("10_n04bd")]
 visible = false
+
+[node name="Hacking Game" type="Node" parent="."]
+script = ExtResource("11_08vpu")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="Hacking Game" node_paths=PackedStringArray("_game")]
+layer = 100
+script = ExtResource("12_kbxam")
+_game = NodePath("..")
+
+[node name="ColorRect" type="ColorRect" parent="Hacking Game/CanvasLayer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+color = Color(0.11, 0.11, 0.11, 0.945098)
