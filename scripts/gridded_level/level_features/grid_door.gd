@@ -66,6 +66,9 @@ var _lock_bypass_required_level: int = 1
 @export_range(1, 10)
 var _lock_difficulty: int = 2
 
+@export
+var _hacking_danger: StartHackingDialog.Danger
+
 var lock_state: LockState
 
 func _ready() -> void:
@@ -340,7 +343,7 @@ func _trigger_hacking_prompt(puller: CameraPuller) -> void:
         player.robot,
         "Locked door",
         _lock_difficulty,
-        true,
+        _hacking_danger,
         func () -> void:
             NotificationsManager.info("Hacking", "Not worth the risk")
             puller.release_player(player),

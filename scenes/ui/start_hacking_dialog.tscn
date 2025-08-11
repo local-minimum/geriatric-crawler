@@ -5,7 +5,7 @@
 [sub_resource type="FontVariation" id="FontVariation_6lmoa"]
 variation_embolden = 1.26
 
-[node name="Start Hacking Dialog" type="ConfirmationDialog" node_paths=PackedStringArray("_difficulty", "_attempts", "_dangerous", "_worms_label", "_worms_count", "_bombs_label", "_bombs_count", "_proxies_label", "_proxies_count")]
+[node name="Start Hacking Dialog" type="ConfirmationDialog" node_paths=PackedStringArray("_difficulty", "_attempts", "_dangerous", "_worms_label", "_worms_count", "_bombs_label", "_bombs_count", "_proxies_label", "_proxies_count", "_deploy_proxies_button")]
 auto_translate_mode = 1
 title = "Card Reader"
 initial_position = 2
@@ -17,12 +17,17 @@ script = ExtResource("1_6kgdf")
 _difficulty = NodePath("MarginContainer/VBoxContainer/Summary/Difficulty Value")
 _attempts = NodePath("MarginContainer/VBoxContainer/Summary/Attempts Value")
 _dangerous = NodePath("MarginContainer/VBoxContainer/Warning")
+_danger_low_color = Color(0.92, 0.812667, 0, 1)
+_danger_slight_color = Color(0.92, 0.567333, 0, 1)
+_danger_default_color = Color(0.92, 0.398667, 0, 1)
+_danger_severe_color = Color(0.92, 0.0613333, 0, 1)
 _worms_label = NodePath("MarginContainer/VBoxContainer/Summary/Worms Label")
 _worms_count = NodePath("MarginContainer/VBoxContainer/Summary/Worms Count")
 _bombs_label = NodePath("MarginContainer/VBoxContainer/Summary/Bomb Label")
 _bombs_count = NodePath("MarginContainer/VBoxContainer/Summary/Bomb Count")
 _proxies_label = NodePath("MarginContainer/VBoxContainer/Summary/Proxies Label")
 _proxies_count = NodePath("MarginContainer/VBoxContainer/Summary/Proxies Count")
+_deploy_proxies_button = NodePath("MarginContainer/VBoxContainer/Deploy Proxy Button")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 offset_left = 8.0
@@ -93,11 +98,17 @@ layout_mode = 2
 text = "0"
 horizontal_alignment = 2
 
+[node name="Deploy Proxy Button" type="Button" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Deploy proxy to lower risk of failure penalty"
+
 [node name="Warning" type="Label" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.800979, 0.323821, 0.294446, 1)
 theme_override_fonts/font = SubResource("FontVariation_6lmoa")
 text = "Failiure will have consequences"
+horizontal_alignment = 1
 
 [connection signal="canceled" from="." to="." method="_on_canceled"]
 [connection signal="confirmed" from="." to="." method="_on_confirmed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/Deploy Proxy Button" to="." method="_on_deploy_proxy_button_pressed"]
