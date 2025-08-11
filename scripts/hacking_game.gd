@@ -49,6 +49,9 @@ static func start(difficulty: int, attempts: int, on_complete: Callable) -> void
 
 signal on_change_attempts(attempts: int)
 
+@export
+var ui: HackingGameUI
+
 var _danger: Danger
 var _difficulty: int
 var _attempts: int:
@@ -59,9 +62,10 @@ var _attempts: int:
 var _on_complete: Callable
 var _alphabet: PackedStringArray
 var _passphrase: PackedStringArray
-var _board: Array[Array]
-var _width: int
-var _height: int
+
+var board: Array[Array]
+var width: int
+var height: int
 
 func _ready() -> void:
     _instance = self
@@ -78,6 +82,7 @@ func _start(difficulty: int, attempts: int, on_complete: Callable) -> void:
     _generate_passphrase()
     _create_solved_game_board()
     _shuffle_game_board()
+    ui.show_game()
 
 func _generate_alphabet() -> void:
     var n_letters: int = 8 + mini(_difficulty, 4) * 3
@@ -115,9 +120,9 @@ func _create_solved_game_board() -> void:
 
         other_letters.append(letter)
 
-    _width = 10 - mini(3, _difficulty)
-    _height = 5 if _difficulty < 4 else 4
-    var tiles: int = _width * _height
+    width = 10 - mini(3, _difficulty)
+    height = 5 if _difficulty < 4 else 4
+    var tiles: int = width * height
 
     var random_letters: int = tiles - _passphrase.size()
     var non_solution_letters: PackedStringArray
@@ -138,17 +143,17 @@ func _create_solved_game_board() -> void:
 
     ArrayUtils.shuffle_packed_string_array(non_solution_letters)
 
-    var passphrase_row: int = randi_range(0, _height - 1)
-    var passphrase_col: int = randi_range(0, _width - 1 - _passphrase.size())
+    var passphrase_row: int = randi_range(0, height - 1)
+    var passphrase_col: int = randi_range(0, width - 1 - _passphrase.size())
 
     var phrase_next: int = 0
     var non_solution_idx: int = 0
-    _board.clear()
-    for row: int in range(_height):
+    board.clear()
+    for row: int in range(height):
         var row_arr: Array = []
-        _board.append(row_arr)
+        board.append(row_arr)
 
-        for col: int in range(_width):
+        for col: int in range(width):
             if passphrase_row == row && passphrase_col == col:
                 row_arr.append(_passphrase[0])
                 phrase_next = _passphrase.size() - 1
@@ -159,46 +164,68 @@ func _create_solved_game_board() -> void:
                 row_arr.append(non_solution_letters[non_solution_idx])
                 non_solution_idx += 1
 
-    print_debug(_board)
+    # print_debug(board)
+
+func _shuffle_row(row: int, force: bool = false) -> void:
+    var steps: int = randi_range(-5, 5)
+    if steps == 0:
+        if force:
+            steps = randi_range(-5, 4)
+            if steps >= 0:
+                steps += 1
+        else:
+            return
+
+    var original: Array[String]
+    for col: int in range(width):
+        original.append(board[row][col])
+
+    for col: int in range(width):
+        var source: int = posmod(col - steps, width)
+        board[row][col] = original[source]
+
+func _shuffle_col(col: int, force: bool = false) -> void:
+    var steps: int = randi_range(-3, 3)
+    if steps == 0:
+        if force:
+            steps = randi_range(-5, 4)
+            if steps >= 0:
+                steps += 1
+        else:
+            return
+
+    var original: Array[String]
+    for row: int in range(height):
+        original.append(board[row][col])
+
+    for row: int in range(height):
+        var source: int = posmod(row - steps, height)
+        board[row][col] = original[source]
 
 func _shuffle_game_board() -> void:
-    for col: int in range(_width):
-        var steps: int = randi_range(-3, 3)
-        if steps == 0:
-            continue
+    for col: int in range(width):
+        _shuffle_col(col)
 
-        var original: Array[String]
-        for row: int in range(_height):
-            original.append(_board[row][col])
+    for row: int in range(height):
+        _shuffle_row(row)
 
-        for row: int in range(_height):
-            var source: int = posmod(row - steps, _height)
-            _board[row][col] = original[source]
+    for _idx: int in range(10):
+        if _board_solution_length() < _passphrase.size() - 2:
+            break
 
-    for row: int in range(_height):
-        var steps: int = randi_range(-5, 5)
-        if steps == 0:
-            continue
+        _shuffle_col(randi_range(0, width - 1), true)
+        _shuffle_row(randi_range(0, height - 1), true)
 
-        var original: Array[String]
-        for col: int in range(_width):
-            original.append(_board[row][col])
-
-        for col: int in range(_width):
-            var source: int = posmod(col - steps, _width)
-            _board[row][col] = original[source]
-
-    print_debug(_board)
-    print_debug(_board_solution_length())
+    # print_debug(board)
 
 func _board_solution_length() -> int:
     var max_length: int = 0
     var in_word: bool = false
     var current_length: int = 0
 
-    for row: int in range(_height):
-        for col: int in range(_width):
-            var letter: String = _board[row][col]
+    for row: int in range(height):
+        for col: int in range(width):
+            var letter: String = board[row][col]
             if !in_word:
                 if letter == _passphrase[0]:
                     in_word = true
