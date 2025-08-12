@@ -63,7 +63,12 @@ var _on_complete: Callable
 var _alphabet: PackedStringArray
 var _passphrase: PackedStringArray
 
-var board: Array[Array]
+var discovered_present: Array[String]
+var discovered_not_present: Array[String]
+
+var _board: Array[Array]
+var _statuses: Array[Array]
+
 var width: int
 var height: int
 
@@ -77,6 +82,9 @@ func _start(difficulty: int, attempts: int, on_complete: Callable) -> void:
     _difficulty = difficulty
     _attempts = attempts
     _on_complete = on_complete
+
+    discovered_present.clear()
+    discovered_not_present.clear()
 
     _generate_alphabet()
     _generate_passphrase()
@@ -148,10 +156,16 @@ func _create_solved_game_board() -> void:
 
     var phrase_next: int = 0
     var non_solution_idx: int = 0
-    board.clear()
+
+    _board.clear()
+    _statuses.clear()
+
     for row: int in range(height):
-        var row_arr: Array = []
-        board.append(row_arr)
+        var row_arr: Array[String] = []
+        var status_arr: Array[WordStatus] = []
+
+        _board.append(row_arr)
+        _statuses.append(status_arr)
 
         for col: int in range(width):
             if passphrase_row == row && passphrase_col == col:
@@ -164,7 +178,9 @@ func _create_solved_game_board() -> void:
                 row_arr.append(non_solution_letters[non_solution_idx])
                 non_solution_idx += 1
 
-    # print_debug(board)
+            status_arr.append(WordStatus.DEFAULT)
+
+    # print_debug(_board)
 
 func _shuffle_row(row: int, force: bool = false) -> void:
     var steps: int = randi_range(-5, 5)
@@ -176,13 +192,20 @@ func _shuffle_row(row: int, force: bool = false) -> void:
         else:
             return
 
+    shift_row(row, steps)
+
+func shift_row(row: int, steps: int) -> void:
     var original: Array[String]
+    var original_statuses: Array[WordStatus]
     for col: int in range(width):
-        original.append(board[row][col])
+        original.append(_board[row][col])
+        original_statuses.append(_statuses[row][col])
 
     for col: int in range(width):
         var source: int = posmod(col - steps, width)
-        board[row][col] = original[source]
+        _board[row][col] = original[source]
+        _statuses[row][col] = original_statuses[source]
+
 
 func _shuffle_col(col: int, force: bool = false) -> void:
     var steps: int = randi_range(-3, 3)
@@ -194,13 +217,19 @@ func _shuffle_col(col: int, force: bool = false) -> void:
         else:
             return
 
+    shift_col(col, steps)
+
+func shift_col(col: int, steps: int) -> void:
     var original: Array[String]
+    var original_statuses: Array[WordStatus]
     for row: int in range(height):
-        original.append(board[row][col])
+        original.append(_board[row][col])
+        original_statuses.append(_statuses[row][col])
 
     for row: int in range(height):
         var source: int = posmod(row - steps, height)
-        board[row][col] = original[source]
+        _board[row][col] = original[source]
+        _statuses[row][col] = original_statuses[source]
 
 func _shuffle_game_board() -> void:
     for col: int in range(width):
@@ -216,7 +245,7 @@ func _shuffle_game_board() -> void:
         _shuffle_col(randi_range(0, width - 1), true)
         _shuffle_row(randi_range(0, height - 1), true)
 
-    # print_debug(board)
+    # print_debug(_board)
 
 func _board_solution_length() -> int:
     var max_length: int = 0
@@ -225,7 +254,7 @@ func _board_solution_length() -> int:
 
     for row: int in range(height):
         for col: int in range(width):
-            var letter: String = board[row][col]
+            var letter: String = _board[row][col]
             if !in_word:
                 if letter == _passphrase[0]:
                     in_word = true
@@ -234,10 +263,79 @@ func _board_solution_length() -> int:
                 current_length += 1
                 if current_length == _passphrase.size():
                     return current_length
-            else:
+            elif _statuses[row][col] != WordStatus.DESTROYED:
                 in_word = false
                 current_length = 0
 
             max_length = maxi(max_length, current_length)
 
     return max_length
+
+func get_word(coords: Vector2i) -> String:
+    return _board[coords.y][coords.x]
+
+func is_discovered_present(coords: Vector2i) -> bool:
+    return discovered_present.has(_board[coords.y][coords.x])
+
+func is_discovered_not_present(coords: Vector2i) -> bool:
+    return discovered_not_present.has(_board[coords.y][coords.x])
+
+enum WordStatus { DEFAULT, DESTROYED, CORRECT, WRONG_POSITION }
+
+
+func get_word_status(coords: Vector2i) -> WordStatus:
+    return _statuses[coords.y][coords.x]
+
+func hack() -> void:
+    # TODO: Track best solution
+    # TODO: Track discovered words
+
+    var current_length: int = 0
+    var next_letter: String = _passphrase[0]
+
+    for row: int in range(height):
+        for col: int in range(width):
+            var status: WordStatus = _statuses[row][col]
+            if status == WordStatus.DESTROYED:
+                continue
+
+            var word: String = _board[row][col]
+
+            if word == next_letter:
+                _statuses[row][col] = WordStatus.CORRECT
+                if !discovered_present.has(word):
+                    discovered_present.append(word)
+
+                current_length += 1
+                if current_length >= _passphrase.size():
+                    current_length = 0
+
+            elif current_length > 0 && _in_wrong_pos(word, current_length + 1):
+                _statuses[row][col] = WordStatus.WRONG_POSITION
+                if !discovered_present.has(word):
+                    discovered_present.append(word)
+
+                current_length += 1
+                if current_length >= _passphrase.size():
+                    current_length = 0
+
+            else:
+                if current_length > 0:
+                    if !discovered_not_present.has(word):
+                        discovered_not_present.append(word)
+
+                _statuses[row][col] = WordStatus.DEFAULT
+                current_length = 0
+
+            next_letter = _passphrase[current_length]
+
+        current_length = 0
+        next_letter = _passphrase[current_length]
+
+    _attempts -= 1
+
+func _in_wrong_pos(word: String, from: int) -> bool:
+    for idx: int in range(from, _passphrase.size()):
+        if _passphrase[idx] == word:
+            return true
+    return false
