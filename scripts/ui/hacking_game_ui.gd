@@ -35,6 +35,9 @@ var _playing_field_outer_container: AspectRatioContainer
 var _playing_field_container: GridContainer
 
 @export
+var _playing_field_container_lower: GridContainer
+
+@export
 var destroyed_text_color: Color
 
 @export
@@ -58,6 +61,7 @@ var word_bg_tex_correct: Texture
 @export
 var word_bg_tex_wrong_place: Texture
 
+
 func _ready() -> void:
     hide()
 
@@ -70,6 +74,11 @@ func _handle_attempts_updated(_attempts: int) -> void:
 
 var _field_labels: Dictionary[Vector2i, Label]
 var _field_backgrounds: Dictionary[Vector2i, TextureRect]
+var _field_roots: Dictionary[Vector2i, Control]
+
+var _tween: Tween
+
+const SLIDE_TIME: float = 0.3
 
 func show_game() -> void:
     # Actual columns, one empty column inbetween each and then shifting buttons at the edges
@@ -78,87 +87,159 @@ func show_game() -> void:
 
     _playing_field_outer_container.ratio = columns as float / rows as float
     _playing_field_container.columns = columns
+    _playing_field_container_lower.columns = columns
 
     for child_idx: int in range(_playing_field_container.get_child_count()):
         _playing_field_container.get_child(child_idx).queue_free()
+    for child_idx: int in range(_playing_field_container_lower.get_child_count()):
+        _playing_field_container_lower.get_child(child_idx).queue_free()
 
     _field_labels.clear()
     _field_backgrounds.clear()
+    _field_roots.clear()
 
     var btn: Button
 
-    for full_col: int in range(columns):
-        if posmod(full_col, 2) == 0:
-            _playing_field_container.add_child(_get_spacer(outer_spacer_color))
+    for full_row: int in range(rows):
+        for full_col: int in range(columns):
+            if full_row == 0:
+                if posmod(full_col, 2) == 0:
+                    _playing_field_container_lower.add_child(_get_spacer(outer_spacer_color))
 
-        else:
-            btn = _get_shift_button("down", tex_down)
-            if btn.connect(
-                "pressed",
-                func () -> void:
-                    @warning_ignore_start("integer_division")
-                    _game.shift_col((full_col - 1) / 2, 1)
-                    @warning_ignore_restore("integer_division")
-                    _sync_board()
-                    ,
-            ) != OK:
-                push_error("failed to connect shift down callback")
+                else:
+                    btn = _get_shift_button("down", tex_down)
+                    if btn.connect(
+                        "pressed",
+                        func () -> void:
+                            if _tween != null && _tween.is_running():
+                                _tween.kill()
+                                _sync_board()
+
+                            @warning_ignore_start("integer_division")
+                            var col: int =  (full_col - 1) / 2
+                            @warning_ignore_restore("integer_division")
+
+                            _game.shift_col(col, 1)
+
+                            _tween = create_tween()
+                            _tween.set_parallel()
+                            for row: int in range(_game.height):
+                                var root: Control = _field_roots[Vector2i(col, row)]
+                                var distance: float = root.get_global_rect().size.y * 2
+                                _tween.tween_property(root, "global_position:y", root.global_position.y + distance, SLIDE_TIME)
+
+                            _tween.connect("finished", _sync_board)
+                            ,
+                    ) != OK:
+                        push_error("failed to connect shift down callback")
+            elif full_row == rows - 1:
+                if posmod(full_col, 2) == 0:
+                    _playing_field_container_lower.add_child(_get_spacer(outer_spacer_color))
+
+                else:
+                    btn = _get_shift_button("up", tex_up)
+                    if btn.connect(
+                        "pressed",
+                        func () -> void:
+                            if _tween != null && _tween.is_running():
+                                _tween.kill()
+                                _sync_board()
+
+                            @warning_ignore_start("integer_division")
+                            var col: int = (full_col - 1) / 2
+                            @warning_ignore_restore("integer_division")
+
+                            _game.shift_col(col, -1)
+
+                            _tween = create_tween()
+                            _tween.set_parallel()
+                            for row: int in range(_game.height):
+                                var root: Control = _field_roots[Vector2i(col, row)]
+                                var distance: float = root.get_global_rect().size.y * 2
+                                _tween.tween_property(root, "global_position:y", root.global_position.y - distance, SLIDE_TIME)
+
+                            _tween.connect("finished", _sync_board)
+                            ,
+                    ) != OK:
+                        push_error("failed to connect shift down callback")
+            else:
+                @warning_ignore_start("integer_division")
+                var row: int = (full_row - 1) / 2
+                @warning_ignore_restore("integer_division")
+
+                if full_col == 0:
+                    if posmod(full_row, 2) == 1:
+                        btn = _get_shift_button("right", tex_right)
+                        if btn.connect(
+                            "pressed",
+                            func () -> void:
+                                if _tween != null && _tween.is_running():
+                                    _tween.kill()
+                                    _sync_board()
+
+                                _game.shift_row(row, 1)
+
+                                _tween = create_tween()
+                                _tween.set_parallel()
+                                for idx: int in range(_game.width):
+                                    var root: Control = _field_roots[Vector2i(idx, row)]
+                                    var distance: float = root.get_global_rect().size.x * 2
+                                    _tween.tween_property(root, "global_position:x", root.global_position.x + distance, SLIDE_TIME)
+
+                                _tween.connect("finished", _sync_board)
+                                ,
+                        ) != OK:
+                            push_error("failed to connect shift right callback")
+                    else:
+                        _playing_field_container_lower.add_child(_get_spacer(outer_spacer_color))
+                elif full_col == columns - 1:
+                    if posmod(full_row, 2) == 1:
+                        btn = _get_shift_button("left", tex_left)
+                        if btn.connect(
+                            "pressed",
+                            func () -> void:
+                                if _tween != null && _tween.is_running():
+                                    _tween.kill()
+                                    _sync_board()
+
+
+                                _game.shift_row(row, -1)
+
+                                _tween = create_tween()
+                                _tween.set_parallel()
+                                for idx: int in range(_game.width):
+                                    var root: Control = _field_roots[Vector2i(idx, row)]
+                                    var distance: float = root.get_global_rect().size.x * 2
+                                    _tween.tween_property(root, "global_position:x", root.global_position.x - distance, SLIDE_TIME)
+
+                                _tween.connect("finished", _sync_board)
+                                ,
+                        ) != OK:
+                            push_error("failed to connect shift left callback")
+                    else:
+                        _playing_field_container_lower.add_child(_get_spacer(outer_spacer_color))
+                else:
+                    _playing_field_container_lower.add_child(_get_empty_container() if posmod(full_col, 2) == 1 && posmod(full_row, 2) == 1 else  _get_spacer(inner_spacer_color))
+
+    for full_col: int in range(columns):
+        _playing_field_container.add_child(_get_empty_container())
 
     for row: int in range(_game.height):
 
         for col: int in range(_game.width):
-            if col == 0:
-                btn = _get_shift_button("right", tex_right)
-                if btn.connect(
-                    "pressed",
-                    func () -> void:
-                        _game.shift_row(row, 1)
-                        _sync_board()
-                        ,
-                ) != OK:
-                    push_error("failed to connect shift right callback")
-
-            else:
-                _playing_field_container.add_child(_get_spacer(inner_spacer_color))
-
+            _playing_field_container.add_child(_get_empty_container())
             _create_and_add_code_place(row, col)
 
-        btn = _get_shift_button("left", tex_left)
-        if btn.connect(
-            "pressed",
-            func () -> void:
-                _game.shift_row(row, -1)
-                _sync_board()
-                ,
-        ) != OK:
-            push_error("failed to connect shift left callback")
+        _playing_field_container.add_child(_get_empty_container())
 
-        if row < _game.height - 1:
-            for full_col: int in range(columns):
-                _playing_field_container.add_child(_get_spacer(outer_spacer_color if full_col == 0 || full_col == columns - 1 else inner_spacer_color))
-
-    for full_col: int in range(columns):
-        if posmod(full_col, 2) == 0:
-            _playing_field_container.add_child(_get_spacer(outer_spacer_color))
-
-        else:
-            btn = _get_shift_button("up", tex_up)
-            if btn.connect(
-                "pressed",
-                func () -> void:
-                    @warning_ignore_start("integer_division")
-                    _game.shift_col((full_col - 1) / 2, -1)
-                    @warning_ignore_restore("integer_division")
-                    _sync_board()
-                    ,
-            ) != OK:
-                push_error("failed to connect shift down callback")
+        for full_col: int in range(columns):
+            _playing_field_container.add_child(_get_empty_container())
 
     _sync_board()
     show()
 
 func _create_and_add_code_place(row: int, col: int) -> void:
-    var container: Container = _get_shape_container()
+    var container: Container = _get_empty_container()
 
     var bg: TextureRect = TextureRect.new()
     bg.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
@@ -178,11 +259,13 @@ func _create_and_add_code_place(row: int, col: int) -> void:
     _playing_field_container.add_child(container)
 
     var coords: Vector2i = Vector2i(col, row)
+
     _field_labels[coords] = label
     _field_backgrounds[coords] = bg
+    _field_roots[coords] = container
 
 func _get_spacer(color: Color) -> Control:
-    var container: Container = _get_shape_container()
+    var container: Container = _get_empty_container()
     var rect: ColorRect = ColorRect.new()
     rect.color = color
     _size_playing_field_item(rect)
@@ -191,7 +274,7 @@ func _get_spacer(color: Color) -> Control:
     return container
 
 func _get_shift_button(direction: String, tex: Texture) -> Button:
-    var container: Container = _get_shape_container()
+    var container: Container = _get_empty_container()
     var btn: Button = Button.new()
     btn.icon = tex
     btn.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -200,13 +283,14 @@ func _get_shift_button(direction: String, tex: Texture) -> Button:
     _size_playing_field_item(btn)
 
     container.add_child(btn)
-    _playing_field_container.add_child(container)
+    _playing_field_container_lower.add_child(container)
     return btn
 
-func _get_shape_container() -> Control:
+func _get_empty_container() -> Control:
     var container: AspectRatioContainer = AspectRatioContainer.new()
     _size_playing_field_item(container)
     container.ratio = 1
+    container.mouse_filter = Control.MOUSE_FILTER_IGNORE
     return container
 
 func _size_playing_field_item(control: Control) -> void:

@@ -15,7 +15,7 @@
 script = ExtResource("1_5dcew")
 ui = NodePath("Hacking Game UI")
 
-[node name="Hacking Game UI" type="CanvasLayer" parent="." node_paths=PackedStringArray("_game", "_attempts_label", "_attempt_button", "_playing_field_outer_container", "_playing_field_container")]
+[node name="Hacking Game UI" type="CanvasLayer" parent="." node_paths=PackedStringArray("_game", "_attempts_label", "_attempt_button", "_playing_field_outer_container", "_playing_field_container", "_playing_field_container_lower")]
 layer = 100
 script = ExtResource("2_kelsw")
 _game = NodePath("..")
@@ -29,6 +29,7 @@ tex_left = ExtResource("5_5lwk8")
 tex_right = ExtResource("6_is8ts")
 _playing_field_outer_container = NodePath("HBoxContainer/Game Area/Playing Field Aspect Ratio")
 _playing_field_container = NodePath("HBoxContainer/Game Area/Playing Field Aspect Ratio/Playing Field")
+_playing_field_container_lower = NodePath("HBoxContainer/Game Area/Playing Field Aspect Ratio/Playing Field Lower")
 destroyed_text_color = Color(0.279967, 0.279967, 0.279967, 1)
 default_text_color = Color(0.87186, 0.87186, 0.87186, 1)
 discoverd_text_color = Color(0.438147, 0.580264, 0.996333, 1)
@@ -65,11 +66,18 @@ theme_override_constants/margin_right = 20
 theme_override_constants/margin_bottom = 20
 
 [node name="Playing Field Aspect Ratio" type="AspectRatioContainer" parent="Hacking Game UI/HBoxContainer/Game Area"]
+clip_contents = true
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_stretch_ratio = 3.0
 
+[node name="Playing Field Lower" type="GridContainer" parent="Hacking Game UI/HBoxContainer/Game Area/Playing Field Aspect Ratio"]
+clip_contents = true
+layout_mode = 2
+columns = 13
+
 [node name="Playing Field" type="GridContainer" parent="Hacking Game UI/HBoxContainer/Game Area/Playing Field Aspect Ratio"]
+clip_contents = true
 layout_mode = 2
 columns = 13
 
