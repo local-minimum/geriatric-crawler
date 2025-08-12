@@ -286,6 +286,8 @@ enum WordStatus { DEFAULT, DESTROYED, CORRECT, WRONG_POSITION }
 func get_word_status(coords: Vector2i) -> WordStatus:
     return _statuses[coords.y][coords.x]
 
+var _current_pass_try: Array[bool]
+
 func hack() -> void:
     # TODO: Track best solution
     # TODO: Track discovered words
@@ -294,6 +296,11 @@ func hack() -> void:
     var next_letter: String = _passphrase[0]
 
     for row: int in range(height):
+        _current_pass_try.clear()
+        @warning_ignore_start("return_value_discarded")
+        _current_pass_try.resize(_passphrase.size())
+        @warning_ignore_restore("return_value_discarded")
+
         for col: int in range(width):
             var status: WordStatus = _statuses[row][col]
             if status == WordStatus.DESTROYED:
@@ -302,15 +309,18 @@ func hack() -> void:
             var word: String = _board[row][col]
 
             if word == next_letter:
+                if _has_unsused_word_occurance(word):
+                    current_length += 1
+                    if current_length >= _passphrase.size():
+                        current_length = 0
+                else:
+                    current_length = 0
+
                 _statuses[row][col] = WordStatus.CORRECT
                 if !discovered_present.has(word):
                     discovered_present.append(word)
 
-                current_length += 1
-                if current_length >= _passphrase.size():
-                    current_length = 0
-
-            elif current_length > 0 && _in_wrong_pos(word, current_length + 1):
+            elif current_length > 0 && _has_unsused_word_occurance(word):
                 _statuses[row][col] = WordStatus.WRONG_POSITION
                 if !discovered_present.has(word):
                     discovered_present.append(word)
@@ -321,7 +331,7 @@ func hack() -> void:
 
             else:
                 if current_length > 0:
-                    if !discovered_not_present.has(word):
+                    if !discovered_present.has(word) && !discovered_not_present.has(word):
                         discovered_not_present.append(word)
 
                 _statuses[row][col] = WordStatus.DEFAULT
@@ -334,8 +344,18 @@ func hack() -> void:
 
     _attempts -= 1
 
-func _in_wrong_pos(word: String, from: int) -> bool:
-    for idx: int in range(from, _passphrase.size()):
+func _has_unsused_word_occurance(word: String) -> bool:
+    # TODO: This is wrong!
+    for idx: int in range(_passphrase.size()):
+        if _current_pass_try[idx]:
+            continue
         if _passphrase[idx] == word:
+            _current_pass_try[idx] = true
             return true
+
+    _current_pass_try.clear()
+    @warning_ignore_start("return_value_discarded")
+    _current_pass_try.resize(_passphrase.size())
+    @warning_ignore_restore("return_value_discarded")
+
     return false
