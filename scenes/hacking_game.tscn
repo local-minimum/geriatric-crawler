@@ -15,7 +15,7 @@
 script = ExtResource("1_5dcew")
 ui = NodePath("Hacking Game UI")
 
-[node name="Hacking Game UI" type="CanvasLayer" parent="." node_paths=PackedStringArray("_game", "_attempts_label", "_attempt_button", "_playing_field_outer_container", "_playing_field_container", "_playing_field_container_lower")]
+[node name="Hacking Game UI" type="CanvasLayer" parent="." node_paths=PackedStringArray("_game", "_attempts_label", "_attempt_button", "_playing_field_outer_container", "_playing_field_container", "_playing_field_container_lower", "attempt_history", "most_recent_attempt")]
 layer = 100
 script = ExtResource("2_kelsw")
 _game = NodePath("..")
@@ -38,6 +38,8 @@ word_bg_tex_default = ExtResource("7_5lwk8")
 word_bg_tex_destroyed = ExtResource("8_is8ts")
 word_bg_tex_correct = ExtResource("9_f2w7f")
 word_bg_tex_wrong_place = ExtResource("10_5yi84")
+attempt_history = NodePath("HBoxContainer/Controls/MarginContainer/VBoxContainer/Atempt History")
+most_recent_attempt = NodePath("HBoxContainer/Controls/MarginContainer/VBoxContainer/Most Recent Attempt")
 
 [node name="Background" type="ColorRect" parent="Hacking Game UI"]
 anchors_preset = 15
@@ -79,6 +81,7 @@ columns = 13
 [node name="Playing Field" type="GridContainer" parent="Hacking Game UI/HBoxContainer/Game Area/Playing Field Aspect Ratio"]
 clip_contents = true
 layout_mode = 2
+mouse_filter = 2
 columns = 13
 
 [node name="Controls" type="MarginContainer" parent="Hacking Game UI/HBoxContainer"]
@@ -122,9 +125,19 @@ horizontal_alignment = 2
 layout_mode = 2
 size_flags_vertical = 3
 
+[node name="Atempt History" type="VBoxContainer" parent="Hacking Game UI/HBoxContainer/Controls/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
 [node name="Label" type="Label" parent="Hacking Game UI/HBoxContainer/Controls/MarginContainer/VBoxContainer"]
 layout_mode = 2
 text = "Passcode"
+
+[node name="Most Recent Attempt" type="HBoxContainer" parent="Hacking Game UI/HBoxContainer/Controls/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Spacer2" type="Control" parent="Hacking Game UI/HBoxContainer/Controls/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 4)
+layout_mode = 2
 
 [node name="Hack Button" type="Button" parent="Hacking Game UI/HBoxContainer/Controls/MarginContainer/VBoxContainer"]
 layout_mode = 2

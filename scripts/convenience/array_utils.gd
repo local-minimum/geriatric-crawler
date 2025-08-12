@@ -63,3 +63,8 @@ static func shuffle_packed_string_array(arr: PackedStringArray) -> void:
         var val: String = arr[to]
         arr[to] = arr[from]
         arr[from] = val
+
+static func order_by(arr: Array, order_indexes: Array) -> void:
+    var copy: Array = arr.duplicate()
+    for idx: int in range(order_indexes.size()):
+        arr[idx] = copy[order_indexes[idx]]

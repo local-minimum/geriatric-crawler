@@ -48,6 +48,9 @@ static func start(difficulty: int, attempts: int, on_complete: Callable) -> void
     _instance._start(difficulty, attempts, on_complete)
 
 signal on_change_attempts(attempts: int)
+signal on_solve_game()
+signal on_fail_game()
+signal on_new_attempts(attempts: Array[Array], statuses: Array[Array])
 
 @export
 var ui: HackingGameUI
@@ -56,12 +59,16 @@ var _danger: Danger
 var _difficulty: int
 var _attempts: int:
     set(value):
-        _attempts = value
-        on_change_attempts.emit(value)
+        _attempts = maxi(value, 0)
+        on_change_attempts.emit(_attempts)
+        if _attempts == 0 && !_solved:
+            on_fail_game.emit()
 
 var _on_complete: Callable
 var _alphabet: PackedStringArray
 var _passphrase: PackedStringArray
+
+func get_passphrase_length() -> int: return _passphrase.size()
 
 var discovered_present: Array[String]
 var discovered_not_present: Array[String]
@@ -71,6 +78,7 @@ var _statuses: Array[Array]
 
 var width: int
 var height: int
+var _solved: bool
 
 func _ready() -> void:
     _instance = self
@@ -292,6 +300,11 @@ func hack() -> void:
     # TODO: Track best solution
     # TODO: Track discovered words
 
+    var attempts: Array[Array]
+    var statuses: Array[Array]
+    var attempt: Array[String]
+    var solution: Array[WordStatus]
+
     var current_length: int = 0
     var next_letter: String = _passphrase[0]
 
@@ -309,12 +322,24 @@ func hack() -> void:
             var word: String = _board[row][col]
 
             if word == next_letter:
-                if _has_unsused_word_occurance(word):
+                if current_length == 0:
+                    solution = [WordStatus.CORRECT]
+                    statuses.append(solution)
+                    attempt = [word]
+                    attempts.append(attempt)
+                    current_length += 1
+                elif _has_unsused_word_occurance(word):
+                    solution.append(WordStatus.CORRECT)
+                    attempt.append(word)
                     current_length += 1
                     if current_length >= _passphrase.size():
                         current_length = 0
                 else:
                     current_length = 0
+                    solution = [WordStatus.CORRECT]
+                    statuses.append(solution)
+                    attempt = [word]
+                    attempts.append(attempt)
 
                 _statuses[row][col] = WordStatus.CORRECT
                 if !discovered_present.has(word):
@@ -322,6 +347,8 @@ func hack() -> void:
 
             elif current_length > 0 && _has_unsused_word_occurance(word):
                 _statuses[row][col] = WordStatus.WRONG_POSITION
+                solution.append(WordStatus.WRONG_POSITION)
+                attempt.append(word)
                 if !discovered_present.has(word):
                     discovered_present.append(word)
 
@@ -343,9 +370,16 @@ func hack() -> void:
         next_letter = _passphrase[current_length]
 
     _attempts -= 1
+    var reduced_attempts: Array[Array]
+    var reduced_statuses: Array[Array]
+    _reduce_hacked_attempts(attempts, statuses, reduced_attempts, reduced_statuses)
+
+    on_new_attempts.emit(reduced_attempts, reduced_statuses)
+
+    if _solved:
+        on_solve_game.emit()
 
 func _has_unsused_word_occurance(word: String) -> bool:
-    # TODO: This is wrong!
     for idx: int in range(_passphrase.size()):
         if _current_pass_try[idx]:
             continue
@@ -359,3 +393,61 @@ func _has_unsused_word_occurance(word: String) -> bool:
     @warning_ignore_restore("return_value_discarded")
 
     return false
+
+func _reduce_hacked_attempts(attempts: Array[Array], statuses: Array[Array], reduced_attempts: Array[Array], reduced_statuses: Array[Array]) -> void:
+    if statuses.size() == 0:
+        return
+
+    print_debug(attempts)
+    print_debug(statuses)
+
+    var sort_order: Array = range(statuses.size())
+    sort_order.sort_custom(
+        func (a_idx: int, b_idx: int) -> bool:
+            var a: Array[WordStatus] = statuses[a_idx]
+            var b: Array[WordStatus] = statuses[b_idx]
+            if a.size() > b.size():
+                return true
+            elif a.size() == b.size():
+                return a.count(WordStatus.CORRECT) > b.count(WordStatus.CORRECT)
+
+            return false
+    )
+
+    ArrayUtils.order_by(attempts, sort_order)
+    ArrayUtils.order_by(statuses, sort_order)
+
+
+    print_debug(attempts)
+    print_debug(statuses)
+
+    for idx: int in range(attempts.size()):
+        var attempt: Array[String] = attempts[idx]
+        var status: Array[WordStatus] = statuses[idx]
+
+        if status.count(WordStatus.CORRECT) == _passphrase.size():
+            _solved = true
+            reduced_attempts.clear()
+            reduced_statuses.clear()
+            reduced_attempts.append(attempt)
+            reduced_statuses.append(status)
+            return
+
+        var has_better: bool = false
+        for better: Array[String] in reduced_attempts:
+            has_better = true
+            for idx2: int in range(status.size()):
+                if attempt[idx2] != better[idx2]:
+                    has_better = false
+                    break
+
+            if has_better:
+                break
+
+        if !has_better:
+            reduced_attempts.append(attempt)
+            reduced_statuses.append(status)
+
+
+    print_debug(reduced_attempts)
+    print_debug(reduced_statuses)
