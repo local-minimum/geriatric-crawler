@@ -192,9 +192,10 @@ func _setup_lower_field(columns: int, rows: int) -> void:
                                 var root: Control = _field_roots[Vector2i(col, row)]
                                 var distance: float = root.get_global_rect().size.y * 2
                                 _tween.tween_property(root, "global_position:y", root.global_position.y + distance, SLIDE_TIME)
-
-                            _tween.connect("finished", _sync_board)
                             @warning_ignore_restore("return_value_discarded")
+
+                            await get_tree().create_timer(SLIDE_TIME * 1.1).timeout
+                            _sync_board()
                             ,
                     ) != OK:
                         push_error("failed to connect shift down callback")
@@ -225,9 +226,10 @@ func _setup_lower_field(columns: int, rows: int) -> void:
                                 var root: Control = _field_roots[Vector2i(col, row)]
                                 var distance: float = root.get_global_rect().size.y * 2
                                 _tween.tween_property(root, "global_position:y", root.global_position.y - distance, SLIDE_TIME)
-
-                            _tween.connect("finished", _sync_board)
                             @warning_ignore_restore("return_value_discarded")
+
+                            await get_tree().create_timer(SLIDE_TIME * 1.1).timeout
+                            _sync_board()
                             ,
                     ) != OK:
                         push_error("failed to connect shift down callback")
@@ -256,9 +258,10 @@ func _setup_lower_field(columns: int, rows: int) -> void:
                                     var root: Control = _field_roots[Vector2i(idx, row)]
                                     var distance: float = root.get_global_rect().size.x * 2
                                     _tween.tween_property(root, "global_position:x", root.global_position.x + distance, SLIDE_TIME)
-
-                                _tween.connect("finished", _sync_board)
                                 @warning_ignore_restore("return_value_discarded")
+
+                                await get_tree().create_timer(SLIDE_TIME * 1.1).timeout
+                                _sync_board()
                                 ,
                         ) != OK:
                             push_error("failed to connect shift right callback")
@@ -285,9 +288,10 @@ func _setup_lower_field(columns: int, rows: int) -> void:
                                     var root: Control = _field_roots[Vector2i(idx, row)]
                                     var distance: float = root.get_global_rect().size.x * 2
                                     _tween.tween_property(root, "global_position:x", root.global_position.x - distance, SLIDE_TIME)
-
-                                _tween.connect("finished", _sync_board)
                                 @warning_ignore_restore("return_value_discarded")
+
+                                await get_tree().create_timer(SLIDE_TIME * 1.1).timeout
+                                _sync_board()
                                 ,
                         ) != OK:
                             push_error("failed to connect shift left callback")
@@ -385,6 +389,9 @@ func _size_playing_field_item(control: Control) -> void:
     control.size_flags_vertical = Control.SIZE_EXPAND_FILL
 
 func _sync_board() -> void:
+    if _tween != null && _tween.is_running():
+        _tween.kill()
+
     for coords: Vector2i in _field_labels:
         _field_labels[coords].text = _game.get_word(coords)
         var discovered: bool = _game.is_discovered_present(coords)
