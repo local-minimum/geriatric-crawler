@@ -108,6 +108,9 @@ func _ready() -> void:
     if _game.on_solve_game.connect(_handle_solve_game) != OK:
         push_error("Could not connect to hacking solved")
 
+    if _game.on_fail_game.connect(_handle_fail_game) != OK:
+        push_error("Could not connect to hacking failed")
+
     _bombs_label.text = HackingGame.item_id_to_text(HackingGame.ITEM_HACKING_BOMB)
     _worms_label.text = HackingGame.item_id_to_text(HackingGame.ITEM_HACKING_WORM)
 
@@ -138,13 +141,23 @@ func _handle_solve_game(solution_start: Vector2i) -> void:
         _field_labels[coords].visible = rect.has_point(coords)
         _field_backgrounds[coords].visible = rect.has_point(coords)
 
-    print_debug("Waiting for 1.5s")
     await get_tree().create_timer(1.5).timeout
 
-    print_debug("Ending hacking")
     hide()
     _game.end_game()
 
+func _handle_fail_game() -> void:
+    _disable_everything()
+
+    for coords: Vector2i in _field_roots:
+        _field_labels[coords].visible = false
+        _field_backgrounds[coords].visible = false
+        await get_tree().create_timer(0.01).timeout
+
+    await get_tree().create_timer(0.8).timeout
+
+    hide()
+    _game.end_game()
 
 func _disable_everything() -> void:
     toggle_shift_buttons(false)
@@ -430,18 +443,22 @@ func _create_and_add_code_place(row: int, col: int) -> void:
             _field_roots[coords] = container
 
             container.mouse_filter = Control.MOUSE_FILTER_PASS
-            container.connect(
+
+            if container.connect(
                 "mouse_entered",
                 func () -> void:
                     _on_hover_enter(coords)
                     ,
-            )
-            container.connect(
+            ) != OK:
+                push_error("Word at %s could not connect mouse enter" % coords)
+
+            if container.connect(
                 "mouse_exited",
                 func () -> void:
                     _on_hover_exit(coords)
                     ,
-            )
+            ) != OK:
+                push_error("Word at %s could not connect mouse exit" % coords)
     )
 
 var _hovering: bool

@@ -108,7 +108,12 @@ func end_game() -> void:
     if _solved:
         _on_complete_success.call()
     else:
+        _handle_punishment()
         _on_complete_fail.call()
+
+func _handle_punishment() -> void:
+    # TODO: Add punishments
+    pass
 
 func _generate_alphabet() -> void:
     var n_letters: int = 8 + mini(_difficulty, 4) * 3
@@ -494,6 +499,7 @@ func bomb_coords(coords: Array[Vector2i]) -> void:
                 discovered_present.append(word)
 
     if randi_range(0, 10) < found:
-        Inventory.active_inventory.add_to_inventory(HackingGame.ITEM_HACKING_BOMB, 1.0)
+        if !Inventory.active_inventory.add_to_inventory(HackingGame.ITEM_HACKING_BOMB, 1.0):
+            push_warning("Could not regain bomb")
 
     on_board_changed.emit()
