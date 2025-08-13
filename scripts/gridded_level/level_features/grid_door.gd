@@ -354,6 +354,9 @@ func _trigger_hacking_prompt(puller: CameraPuller) -> void:
                 _lock_difficulty,
                 attempts,
                 func () -> void:
+                    open_door()
+                    puller.release_player(player),
+                func () -> void:
                     puller.release_player(player),
             )
     )

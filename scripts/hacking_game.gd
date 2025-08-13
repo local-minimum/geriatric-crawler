@@ -44,8 +44,8 @@ static func calculate_attempts(robot: Robot, difficulty: int) -> int:
     var skill: int = robot.get_skill_level(RobotAbility.SKILL_BYPASS)
     return maxi(HackingGame.BASE_ATTEMPTS + skill - difficulty,  1)
 
-static func start(difficulty: int, attempts: int, on_complete: Callable) -> void:
-    _instance._start(difficulty, attempts, on_complete)
+static func start(difficulty: int, attempts: int, on_complete_success: Callable, on_complete_fail: Callable) -> void:
+    _instance._start(difficulty, attempts, on_complete_success, on_complete_fail)
 
 signal on_change_attempts(attempts: int)
 signal on_solve_game(solution_start: Vector2i)
@@ -65,7 +65,8 @@ var _attempts: int:
         if _attempts == 0 && !_solved:
             on_fail_game.emit()
 
-var _on_complete: Callable
+var _on_complete_success: Callable
+var _on_complete_fail: Callable
 var _alphabet: PackedStringArray
 var _passphrase: PackedStringArray
 
@@ -87,10 +88,12 @@ func _ready() -> void:
 func _handle_new_danger(danger: Danger) -> void:
     _danger = danger
 
-func _start(difficulty: int, attempts: int, on_complete: Callable) -> void:
+func _start(difficulty: int, attempts: int, on_complete_success: Callable, on_complete_fail: Callable) -> void:
+    _solved = false
     _difficulty = difficulty
     _attempts = attempts
-    _on_complete = on_complete
+    _on_complete_success = on_complete_success
+    _on_complete_fail = on_complete_fail
 
     discovered_present.clear()
     discovered_not_present.clear()
@@ -102,7 +105,10 @@ func _start(difficulty: int, attempts: int, on_complete: Callable) -> void:
     ui.show_game()
 
 func end_game() -> void:
-    _on_complete.call()
+    if _solved:
+        _on_complete_success.call()
+    else:
+        _on_complete_fail.call()
 
 func _generate_alphabet() -> void:
     var n_letters: int = 8 + mini(_difficulty, 4) * 3
