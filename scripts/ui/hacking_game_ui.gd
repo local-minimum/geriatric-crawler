@@ -91,6 +91,15 @@ var attempt_history: Container
 @export
 var most_recent_attempt: Container
 
+@export
+var worm_head_tex: Texture
+
+@export
+var worm_straight_tex: Texture
+
+@export
+var worm_angled_tex: Texture
+
 const DEPLOY_BOMB_TEXT: String = "Deploy Bomb"
 const CANCEL_BOMB_TEXT: String = "Abort Bomb Deployment"
 const DEPLOY_WORM_TEXT: String = "Deploy Worm"
@@ -225,6 +234,7 @@ var _field_labels: Dictionary[Vector2i, Label]
 var _field_backgrounds: Dictionary[Vector2i, TextureRect]
 var _field_roots: Dictionary[Vector2i, Control]
 var _shift_buttons: Array[Button]
+var _lower_field_backgrounds: Dictionary[Vector2i, TextureRect]
 
 var _tween: Tween
 
@@ -417,7 +427,17 @@ func _setup_lower_field(columns: int, rows: int) -> void:
                     else:
                         _playing_field_container_lower.add_child(_get_spacer(outer_spacer_color))
                 else:
-                    _playing_field_container_lower.add_child(_get_empty_container() if posmod(full_col, 2) == 1 && posmod(full_row, 2) == 1 else  _get_spacer(inner_spacer_color))
+                    var is_below_word: bool = posmod(full_col, 2) == 1 && posmod(full_row, 2) == 1
+                    _playing_field_container_lower.add_child(
+                        _get_texture_spacer(
+                            Color.TRANSPARENT if is_below_word else inner_spacer_color,
+                            func (t_rect: TextureRect) -> void:
+                                _lower_field_backgrounds[Vector2i(full_col, full_row)] = t_rect
+                                if !is_below_word:
+                                    pass
+                                ,
+                        )
+                    )
 
 func _setup_field(columns: int) -> void:
     for full_col: int in range(columns):
@@ -427,7 +447,7 @@ func _setup_field(columns: int) -> void:
 
         for col: int in range(_game.width):
             _playing_field_container.add_child(_get_empty_container())
-            _create_and_add_code_place(row, col)
+            _create_and_add_word_tile(row, col)
 
         _playing_field_container.add_child(_get_empty_container())
 
@@ -436,7 +456,7 @@ func _setup_field(columns: int) -> void:
 
     _sync_board()
 
-func _create_and_add_code_place(row: int, col: int) -> void:
+func _create_and_add_word_tile(row: int, col: int) -> void:
     var coords: Vector2i = Vector2i(col, row)
     _add_word_ui_to_container(
         _playing_field_container,
@@ -512,6 +532,17 @@ func _add_word_ui_to_container(parent: Container, word: String, parts_assignment
         (parts_assignment as Callable).call(label, bg, container)
         @warning_ignore_restore("unsafe_cast")
 
+func _get_texture_spacer(bg_color: Color, config_texturerect: Callable) -> Control:
+    var container: Container = _get_spacer(bg_color)
+    var t_rect: TextureRect = TextureRect.new()
+    _size_playing_field_item(t_rect)
+
+    config_texturerect.call(t_rect)
+    t_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+    t_rect.expand_mode = TextureRect.EXPAND_FIT_HEIGHT
+
+    container.add_child(t_rect)
+    return container
 
 func _get_spacer(color: Color) -> Control:
     var container: Container = _get_empty_container()
@@ -612,7 +643,9 @@ func _on_deploy_worm_pressed() -> void:
         _ready_worm()
 
 var _worming: bool
+var _worm_size: int = 1
 var _worming_direction: Vector2i
+var _worm: Array[Vector2i]
 var _bombing: bool
 
 func _cancel_bombing() -> void:
@@ -635,6 +668,8 @@ func _cancel_worm() -> void:
     _deploy_worm_button.text = DEPLOY_WORM_TEXT
     _worming_navigation_container.hide()
     _sync_inventory_actions()
+    _clear_drawn_worm()
+    _worm.clear()
 
 func _ready_worm() -> void:
     _worming = true
@@ -642,6 +677,15 @@ func _ready_worm() -> void:
     _deploy_worm_button.text = CANCEL_WORM_TEXT
     _deploy_bomb_button.disabled = true
     _worming_navigation_container.show()
+    _worming_direction = Vector2i.LEFT
+    _worm = [
+        Vector2i(
+            _game.width * 2  - 1,
+            _game.height / 2 * 2,
+        )
+    ]
+    _worm_size = 5
+    _draw_worm()
 
 func _on_worm_up_pressed() -> void:
     _worming_direction = Vector2i.UP
@@ -654,3 +698,23 @@ func _on_worm_down_pressed() -> void:
 
 func _on_worm_right_pressed() -> void:
     _worming_direction = Vector2i.RIGHT
+
+func _draw_worm() -> void:
+    var s: int = _worm.size()
+    for idx: int in range(s):
+        var coords: Vector2i = _worm[idx]
+        if !_lower_field_backgrounds.has(coords):
+            print_debug("%s not in %s" % [coords, _lower_field_backgrounds.keys()])
+            continue
+
+        if idx == 0:
+            _lower_field_backgrounds[coords].texture = worm_head_tex
+        else:
+            # TODO Deal with rotations and such
+            # TODO: Add worm tail
+            _lower_field_backgrounds[coords].texture = worm_straight_tex
+
+func _clear_drawn_worm() -> void:
+    for coords: Vector2i in _worm:
+        if _lower_field_backgrounds.has(coords):
+            _lower_field_backgrounds[coords].texture = null
