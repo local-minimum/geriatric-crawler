@@ -51,6 +51,7 @@ signal on_change_attempts(attempts: int)
 signal on_solve_game()
 signal on_fail_game()
 signal on_new_attempts(attempts: Array[Array], statuses: Array[Array])
+signal on_board_changed()
 
 @export
 var ui: HackingGameUI
@@ -279,6 +280,9 @@ func _board_solution_length() -> int:
 
     return max_length
 
+func has_coordinates(coords: Vector2i) -> bool:
+    return coords.y >= 0 && coords.y < height && coords.x >= 0 && coords.x < width
+
 func get_word(coords: Vector2i) -> String:
     return _board[coords.y][coords.x]
 
@@ -290,16 +294,12 @@ func is_discovered_not_present(coords: Vector2i) -> bool:
 
 enum WordStatus { DEFAULT, DESTROYED, CORRECT, WRONG_POSITION }
 
-
 func get_word_status(coords: Vector2i) -> WordStatus:
     return _statuses[coords.y][coords.x]
 
 var _current_pass_try: Array[bool]
 
 func hack() -> void:
-    # TODO: Track best solution
-    # TODO: Track discovered words
-
     var attempts: Array[Array]
     var statuses: Array[Array]
     var attempt: Array[String]
@@ -398,9 +398,6 @@ func _reduce_hacked_attempts(attempts: Array[Array], statuses: Array[Array], red
     if statuses.size() == 0:
         return
 
-    print_debug(attempts)
-    print_debug(statuses)
-
     var sort_order: Array = range(statuses.size())
     sort_order.sort_custom(
         func (a_idx: int, b_idx: int) -> bool:
@@ -416,10 +413,6 @@ func _reduce_hacked_attempts(attempts: Array[Array], statuses: Array[Array], red
 
     ArrayUtils.order_by(attempts, sort_order)
     ArrayUtils.order_by(statuses, sort_order)
-
-
-    print_debug(attempts)
-    print_debug(statuses)
 
     for idx: int in range(attempts.size()):
         var attempt: Array[String] = attempts[idx]
@@ -448,6 +441,45 @@ func _reduce_hacked_attempts(attempts: Array[Array], statuses: Array[Array], red
             reduced_attempts.append(attempt)
             reduced_statuses.append(status)
 
+const target_offsets: Array[Vector2i] = [
+    Vector2i.ZERO,
+    Vector2i.DOWN,
+    Vector2i.UP,
+    Vector2i.LEFT,
+    Vector2i.RIGHT,
+]
 
-    print_debug(reduced_attempts)
-    print_debug(reduced_statuses)
+func get_potential_bomb_target(center: Vector2i) -> Array[Vector2i]:
+    var targets: Array[Vector2i]
+    for offset: Vector2i in target_offsets:
+        var coords: Vector2i = center + offset
+        if !has_coordinates(coords):
+            continue
+
+        if get_word_status(coords) == WordStatus.DEFAULT:
+            targets.append(coords)
+
+    return targets
+
+func bomb_coords(coords: Array[Vector2i]) -> void:
+    if coords.size() == 0 || Inventory.active_inventory.remove_from_inventory(ITEM_HACKING_BOMB, 1.0) != 1.0:
+        return
+
+    var found: int = 0
+
+    for coord: Vector2i in coords:
+        var word: String = get_word(coord)
+        var not_in_phrase: bool = !_passphrase.has(word)
+        _statuses[coord.y][coord.x] = WordStatus.DESTROYED if not_in_phrase else WordStatus.WRONG_POSITION
+        if not_in_phrase:
+            if !discovered_not_present.has(word):
+                discovered_not_present.append(word)
+        else:
+            found += 1
+            if !discovered_present.has(word):
+                discovered_present.append(word)
+
+    if randi_range(0, 10) < found:
+        Inventory.active_inventory.add_to_inventory(HackingGame.ITEM_HACKING_BOMB, 1.0)
+
+    on_board_changed.emit()

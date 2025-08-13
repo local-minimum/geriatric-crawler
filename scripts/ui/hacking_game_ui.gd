@@ -11,6 +11,18 @@ var _attempts_label: Label
 var _attempt_button: Button
 
 @export
+var _bombs_counter: Label
+
+@export
+var _deploy_bomb_button: Button
+
+@export
+var _worms_counter: Label
+
+@export
+var _deploy_worm_button: Button
+
+@export
 var outer_spacer_color: Color
 
 @export
@@ -50,6 +62,9 @@ var discoverd_text_color: Color
 var discoverd_not_text_color: Color
 
 @export
+var target_text_color: Color = Color.HOT_PINK
+
+@export
 var word_bg_tex_default: Texture
 
 @export
@@ -67,6 +82,11 @@ var attempt_history: Container
 @export
 var most_recent_attempt: Container
 
+const DEPLOY_BOMB_TEXT: String = "Deploy Bomb"
+const CANCEL_BOMB_TEXT: String = "Abort Bomb Deployment"
+const DEPLOY_WORM_TEXT: String = "Deploy Worm"
+const CANCEL_WORM_TEXT: String = "Recall Worm"
+
 func _ready() -> void:
     hide()
 
@@ -75,6 +95,29 @@ func _ready() -> void:
 
     if _game.on_new_attempts.connect(_handle_new_attempts) != OK:
         push_error("Could not connect to new attempts")
+
+    if _game.on_board_changed.connect(_sync_board) != OK:
+        push_error("Could not connect to board changed")
+
+func _unhandled_input(event: InputEvent) -> void:
+    if !_bombing || !_hovering || event.is_echo():
+        return
+
+    if event is InputEventMouseButton:
+        var mouse: InputEventMouseButton = event
+        if mouse.button_index == MOUSE_BUTTON_LEFT && mouse.pressed:
+            _on_hover_exit(_hover_coordinates)
+            _game.bomb_coords(_marked_targets)
+            _cancel_bombing()
+            _sync_inventory_actions()
+
+    elif event is InputEventScreenTouch:
+        var touch: InputEventScreenTouch = event
+        if touch.pressed:
+            _on_hover_exit(_hover_coordinates)
+            _game.bomb_coords(_marked_targets)
+            _cancel_bombing()
+            _sync_inventory_actions()
 
 var _best_attempt: Array[String]
 var _best_attempt_statuses: Array[HackingGame.WordStatus]
@@ -117,8 +160,15 @@ func _handle_attempts_updated(attempts: int) -> void:
     _attempt_button.disabled = out_of_attempts
 
     if out_of_attempts:
-        for btn: Button in _shift_buttons:
-            btn.disabled = true
+        toggle_shift_buttons(true)
+
+func toggle_shift_buttons(disabled: bool) -> void:
+    for btn: Button in _shift_buttons:
+        btn.disabled = disabled
+
+func toggle_word_controls(interactable: bool) -> void:
+    for coords: Vector2i in _field_roots:
+        _field_roots[coords].mouse_default_cursor_shape = Control.CursorShape.CURSOR_POINTING_HAND if interactable else Control.CursorShape.CURSOR_ARROW
 
 var _field_labels: Dictionary[Vector2i, Label]
 var _field_backgrounds: Dictionary[Vector2i, TextureRect]
@@ -143,6 +193,7 @@ func show_game() -> void:
     _clear_container(most_recent_attempt)
     _clear_container(attempt_history)
 
+
     _field_labels.clear()
     _field_backgrounds.clear()
     _field_roots.clear()
@@ -151,6 +202,22 @@ func show_game() -> void:
     _setup_lower_field(columns, rows)
     _setup_field(columns)
     _setup_placeholder_passphrase()
+    _sync_inventory_actions()
+
+    show()
+
+func _sync_inventory_actions() -> void:
+    var inventory: Inventory = Inventory.active_inventory
+    var bombs: int = roundi(inventory.get_item_count(HackingGame.ITEM_HACKING_BOMB))
+    var worms: int = roundi(inventory.get_item_count(HackingGame.ITEM_HACKING_WORM))
+
+    _bombs_counter.text = "%03d" % bombs
+    _deploy_bomb_button.text = DEPLOY_BOMB_TEXT
+    _deploy_bomb_button.disabled = bombs == 0
+
+    _worms_counter.text = "%03d" % worms
+    _deploy_worm_button.text = DEPLOY_WORM_TEXT
+    _deploy_worm_button.disabled = worms == 0
 
 func _setup_placeholder_passphrase() -> void:
     for _idx: int in range(_game.get_passphrase_length()):
@@ -316,7 +383,6 @@ func _setup_field(columns: int) -> void:
             _playing_field_container.add_child(_get_empty_container())
 
     _sync_board()
-    show()
 
 func _create_and_add_code_place(row: int, col: int) -> void:
     var coords: Vector2i = Vector2i(col, row)
@@ -327,7 +393,43 @@ func _create_and_add_code_place(row: int, col: int) -> void:
             _field_labels[coords] = label
             _field_backgrounds[coords] = bg
             _field_roots[coords] = container
+
+            container.mouse_filter = Control.MOUSE_FILTER_PASS
+            container.connect(
+                "mouse_entered",
+                func () -> void:
+                    _on_hover_enter(coords)
+                    ,
+            )
+            container.connect(
+                "mouse_exited",
+                func () -> void:
+                    _on_hover_exit(coords)
+                    ,
+            )
     )
+
+var _hovering: bool
+var _hover_coordinates: Vector2i
+var _marked_targets: Array[Vector2i]
+
+func _on_hover_enter(coords: Vector2i) -> void:
+    _hovering = true
+    _hover_coordinates = coords
+
+    if _bombing:
+        _marked_targets = _game.get_potential_bomb_target(coords)
+        for target: Vector2i in _marked_targets:
+            _field_labels[target].add_theme_color_override("font_color", target_text_color)
+
+func _on_hover_exit(coords: Vector2i) -> void:
+    if coords == _hover_coordinates:
+        _hovering = false
+        if _bombing:
+            for target: Vector2i in _marked_targets:
+                var discovered: bool = _game.is_discovered_present(target)
+                var not_present: bool = _game.is_discovered_not_present(target)
+                _field_labels[target].add_theme_color_override("font_color", _get_word_text_color(discovered, not_present))
 
 func _add_word_ui_to_container(parent: Container, word: String, parts_assignment: Variant = null) -> void:
     var container: Container = _get_empty_container()
@@ -440,3 +542,26 @@ func _on_hack_button_pressed() -> void:
 func _clear_container(container: Container) -> void:
     for child_idx: int in range(container.get_child_count()):
         container.get_child(child_idx).queue_free()
+
+func _on_deploy_bomb_pressed() -> void:
+    if _bombing:
+        _cancel_bombing()
+    else:
+        _ready_bombing()
+
+func _on_deploy_worm_pressed() -> void:
+    _deploy_worm_button.text = CANCEL_WORM_TEXT
+
+var _bombing: bool
+
+func _cancel_bombing() -> void:
+    _bombing = false
+    _deploy_bomb_button.text = DEPLOY_BOMB_TEXT
+    toggle_word_controls(false)
+    toggle_shift_buttons(false)
+
+func _ready_bombing() -> void:
+    _bombing = true
+    _deploy_bomb_button.text = CANCEL_BOMB_TEXT
+    toggle_shift_buttons(true)
+    toggle_word_controls(true)
