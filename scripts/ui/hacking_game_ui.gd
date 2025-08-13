@@ -11,10 +11,16 @@ var _attempts_label: Label
 var _attempt_button: Button
 
 @export
+var _bombs_label: Label
+
+@export
 var _bombs_counter: Label
 
 @export
 var _deploy_bomb_button: Button
+
+@export
+var _worms_label: Label
 
 @export
 var _worms_counter: Label
@@ -99,6 +105,12 @@ func _ready() -> void:
     if _game.on_board_changed.connect(_sync_board) != OK:
         push_error("Could not connect to board changed")
 
+    if _game.on_solve_game.connect(_handle_solve_game) != OK:
+        push_error("Could not connect to hacking solved")
+
+    _bombs_label.text = HackingGame.item_id_to_text(HackingGame.ITEM_HACKING_BOMB)
+    _worms_label.text = HackingGame.item_id_to_text(HackingGame.ITEM_HACKING_WORM)
+
 func _unhandled_input(event: InputEvent) -> void:
     if !_bombing || !_hovering || event.is_echo():
         return
@@ -118,6 +130,29 @@ func _unhandled_input(event: InputEvent) -> void:
             _game.bomb_coords(_marked_targets)
             _cancel_bombing()
             _sync_inventory_actions()
+
+func _handle_solve_game(solution_start: Vector2i) -> void:
+    _disable_everything()
+    var rect: Rect2i = Rect2i(solution_start, Vector2i( _game.get_passphrase_length(), 1))
+    for coords: Vector2i in _field_roots:
+        _field_labels[coords].visible = rect.has_point(coords)
+        _field_backgrounds[coords].visible = rect.has_point(coords)
+
+    print_debug("Waiting for 1.5s")
+    await get_tree().create_timer(1.5).timeout
+
+    print_debug("Ending hacking")
+    hide()
+    _game.end_game()
+
+
+func _disable_everything() -> void:
+    toggle_shift_buttons(false)
+    toggle_word_controls(false)
+    _attempt_button.disabled = true
+    _deploy_bomb_button.disabled = true
+    _deploy_worm_button.disabled = true
+
 
 var _best_attempt: Array[String]
 var _best_attempt_statuses: Array[HackingGame.WordStatus]

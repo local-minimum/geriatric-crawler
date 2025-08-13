@@ -48,7 +48,7 @@ static func start(difficulty: int, attempts: int, on_complete: Callable) -> void
     _instance._start(difficulty, attempts, on_complete)
 
 signal on_change_attempts(attempts: int)
-signal on_solve_game()
+signal on_solve_game(solution_start: Vector2i)
 signal on_fail_game()
 signal on_new_attempts(attempts: Array[Array], statuses: Array[Array])
 signal on_board_changed()
@@ -100,6 +100,9 @@ func _start(difficulty: int, attempts: int, on_complete: Callable) -> void:
     _create_solved_game_board()
     _shuffle_game_board()
     ui.show_game()
+
+func end_game() -> void:
+    _on_complete.call()
 
 func _generate_alphabet() -> void:
     var n_letters: int = 8 + mini(_difficulty, 4) * 3
@@ -256,6 +259,8 @@ func _shuffle_game_board() -> void:
 
     # print_debug(_board)
 
+var _longest_solution_start: Vector2i
+
 func _board_solution_length() -> int:
     var max_length: int = 0
     var in_word: bool = false
@@ -276,7 +281,9 @@ func _board_solution_length() -> int:
                 in_word = false
                 current_length = 0
 
-            max_length = maxi(max_length, current_length)
+            if current_length > max_length:
+                max_length = current_length
+                _longest_solution_start = Vector2i(col - current_length + 1, row)
 
     return max_length
 
@@ -377,7 +384,8 @@ func hack() -> void:
     on_new_attempts.emit(reduced_attempts, reduced_statuses)
 
     if _solved:
-        on_solve_game.emit()
+        print_debug(_board_solution_length())
+        on_solve_game.emit(_longest_solution_start)
 
 func _has_unsused_word_occurance(word: String) -> bool:
     for idx: int in range(_passphrase.size()):
