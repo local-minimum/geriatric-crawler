@@ -15,18 +15,19 @@
 script = ExtResource("1_5dcew")
 ui = NodePath("Hacking Game UI")
 
-[node name="Hacking Game UI" type="CanvasLayer" parent="." node_paths=PackedStringArray("_game", "_attempts_label", "_attempt_button", "_bombs_label", "_bombs_counter", "_deploy_bomb_button", "_worms_label", "_worms_counter", "_deploy_worm_button", "_playing_field_outer_container", "_playing_field_container", "_playing_field_container_lower", "attempt_history", "most_recent_attempt")]
+[node name="Hacking Game UI" type="CanvasLayer" parent="." node_paths=PackedStringArray("_game", "_attempts_label", "_attempt_button", "_bombs_label", "_bombs_counter", "_deploy_bomb_button", "_worms_label", "_worms_counter", "_deploy_worm_button", "_worming_navigation_container", "_playing_field_outer_container", "_playing_field_container", "_playing_field_container_lower", "attempt_history", "most_recent_attempt")]
 layer = 100
 script = ExtResource("2_kelsw")
 _game = NodePath("..")
-_attempts_label = NodePath("HBoxContainer/Controls/MarginContainer/VBoxContainer/GridContainer/Attempts Count")
+_attempts_label = NodePath("HBoxContainer/Controls/MarginContainer/VBoxContainer/Attempts and Tools/Attempts Count")
 _attempt_button = NodePath("HBoxContainer/Controls/MarginContainer/VBoxContainer/Hack Button")
-_bombs_label = NodePath("HBoxContainer/Controls/MarginContainer/VBoxContainer/GridContainer/Bombs Label")
-_bombs_counter = NodePath("HBoxContainer/Controls/MarginContainer/VBoxContainer/GridContainer/Bombs Count")
+_bombs_label = NodePath("HBoxContainer/Controls/MarginContainer/VBoxContainer/Attempts and Tools/Bombs Label")
+_bombs_counter = NodePath("HBoxContainer/Controls/MarginContainer/VBoxContainer/Attempts and Tools/Bombs Count")
 _deploy_bomb_button = NodePath("HBoxContainer/Controls/MarginContainer/VBoxContainer/Deploy Bomb")
-_worms_label = NodePath("HBoxContainer/Controls/MarginContainer/VBoxContainer/GridContainer/Worms Label")
-_worms_counter = NodePath("HBoxContainer/Controls/MarginContainer/VBoxContainer/GridContainer/Worms Counter")
+_worms_label = NodePath("HBoxContainer/Controls/MarginContainer/VBoxContainer/Attempts and Tools/Worms Label")
+_worms_counter = NodePath("HBoxContainer/Controls/MarginContainer/VBoxContainer/Attempts and Tools/Worms Counter")
 _deploy_worm_button = NodePath("HBoxContainer/Controls/MarginContainer/VBoxContainer/Deploy Worm")
+_worming_navigation_container = NodePath("HBoxContainer/Controls/MarginContainer/VBoxContainer/Worm Navigaion Controls")
 outer_spacer_color = Color(0.0936694, 0.0936694, 0.0936694, 1)
 inner_spacer_color = Color(0.241156, 0.241156, 0.241156, 1)
 tex_up = ExtResource("3_8rbb1")
@@ -113,36 +114,36 @@ theme_override_constants/margin_bottom = 4
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="GridContainer" type="GridContainer" parent="Hacking Game UI/HBoxContainer/Controls/MarginContainer/VBoxContainer"]
+[node name="Attempts and Tools" type="GridContainer" parent="Hacking Game UI/HBoxContainer/Controls/MarginContainer/VBoxContainer"]
 layout_mode = 2
 columns = 2
 
-[node name="Attempts Label" type="Label" parent="Hacking Game UI/HBoxContainer/Controls/MarginContainer/VBoxContainer/GridContainer"]
+[node name="Attempts Label" type="Label" parent="Hacking Game UI/HBoxContainer/Controls/MarginContainer/VBoxContainer/Attempts and Tools"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Attempts Remaining"
 
-[node name="Attempts Count" type="Label" parent="Hacking Game UI/HBoxContainer/Controls/MarginContainer/VBoxContainer/GridContainer"]
+[node name="Attempts Count" type="Label" parent="Hacking Game UI/HBoxContainer/Controls/MarginContainer/VBoxContainer/Attempts and Tools"]
 layout_mode = 2
 text = "0"
 horizontal_alignment = 2
 
-[node name="Bombs Label" type="Label" parent="Hacking Game UI/HBoxContainer/Controls/MarginContainer/VBoxContainer/GridContainer"]
+[node name="Bombs Label" type="Label" parent="Hacking Game UI/HBoxContainer/Controls/MarginContainer/VBoxContainer/Attempts and Tools"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Bombs"
 
-[node name="Bombs Count" type="Label" parent="Hacking Game UI/HBoxContainer/Controls/MarginContainer/VBoxContainer/GridContainer"]
+[node name="Bombs Count" type="Label" parent="Hacking Game UI/HBoxContainer/Controls/MarginContainer/VBoxContainer/Attempts and Tools"]
 layout_mode = 2
 text = "0"
 horizontal_alignment = 2
 
-[node name="Worms Label" type="Label" parent="Hacking Game UI/HBoxContainer/Controls/MarginContainer/VBoxContainer/GridContainer"]
+[node name="Worms Label" type="Label" parent="Hacking Game UI/HBoxContainer/Controls/MarginContainer/VBoxContainer/Attempts and Tools"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Worms"
 
-[node name="Worms Counter" type="Label" parent="Hacking Game UI/HBoxContainer/Controls/MarginContainer/VBoxContainer/GridContainer"]
+[node name="Worms Counter" type="Label" parent="Hacking Game UI/HBoxContainer/Controls/MarginContainer/VBoxContainer/Attempts and Tools"]
 layout_mode = 2
 text = "0"
 horizontal_alignment = 2
@@ -154,6 +155,55 @@ text = "Deploy Bomb"
 [node name="Deploy Worm" type="Button" parent="Hacking Game UI/HBoxContainer/Controls/MarginContainer/VBoxContainer"]
 layout_mode = 2
 text = "Deploy Worm"
+
+[node name="Spacer3" type="Control" parent="Hacking Game UI/HBoxContainer/Controls/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 4)
+layout_mode = 2
+
+[node name="Worm Navigaion Controls" type="GridContainer" parent="Hacking Game UI/HBoxContainer/Controls/MarginContainer/VBoxContainer"]
+clip_contents = true
+layout_mode = 2
+columns = 3
+
+[node name="Spacer" type="ColorRect" parent="Hacking Game UI/HBoxContainer/Controls/MarginContainer/VBoxContainer/Worm Navigaion Controls"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+color = Color(1, 1, 1, 0)
+
+[node name="Worm Up" type="Button" parent="Hacking Game UI/HBoxContainer/Controls/MarginContainer/VBoxContainer/Worm Navigaion Controls"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+icon = ExtResource("3_8rbb1")
+icon_alignment = 1
+
+[node name="Spacer2" type="ColorRect" parent="Hacking Game UI/HBoxContainer/Controls/MarginContainer/VBoxContainer/Worm Navigaion Controls"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+color = Color(1, 1, 1, 0)
+
+[node name="Worm Left" type="Button" parent="Hacking Game UI/HBoxContainer/Controls/MarginContainer/VBoxContainer/Worm Navigaion Controls"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+icon = ExtResource("5_5lwk8")
+icon_alignment = 1
+
+[node name="Worm Down" type="Button" parent="Hacking Game UI/HBoxContainer/Controls/MarginContainer/VBoxContainer/Worm Navigaion Controls"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+icon = ExtResource("4_8tddg")
+icon_alignment = 1
+
+[node name="Worm Right" type="Button" parent="Hacking Game UI/HBoxContainer/Controls/MarginContainer/VBoxContainer/Worm Navigaion Controls"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+icon = ExtResource("6_is8ts")
+icon_alignment = 1
 
 [node name="Spacer" type="Control" parent="Hacking Game UI/HBoxContainer/Controls/MarginContainer/VBoxContainer"]
 layout_mode = 2
@@ -179,4 +229,8 @@ text = "Hack!"
 
 [connection signal="pressed" from="Hacking Game UI/HBoxContainer/Controls/MarginContainer/VBoxContainer/Deploy Bomb" to="Hacking Game UI" method="_on_deploy_bomb_pressed"]
 [connection signal="pressed" from="Hacking Game UI/HBoxContainer/Controls/MarginContainer/VBoxContainer/Deploy Worm" to="Hacking Game UI" method="_on_deploy_worm_pressed"]
+[connection signal="pressed" from="Hacking Game UI/HBoxContainer/Controls/MarginContainer/VBoxContainer/Worm Navigaion Controls/Worm Up" to="Hacking Game UI" method="_on_worm_up_pressed"]
+[connection signal="pressed" from="Hacking Game UI/HBoxContainer/Controls/MarginContainer/VBoxContainer/Worm Navigaion Controls/Worm Left" to="Hacking Game UI" method="_on_worm_left_pressed"]
+[connection signal="pressed" from="Hacking Game UI/HBoxContainer/Controls/MarginContainer/VBoxContainer/Worm Navigaion Controls/Worm Down" to="Hacking Game UI" method="_on_worm_down_pressed"]
+[connection signal="pressed" from="Hacking Game UI/HBoxContainer/Controls/MarginContainer/VBoxContainer/Worm Navigaion Controls/Worm Right" to="Hacking Game UI" method="_on_worm_right_pressed"]
 [connection signal="pressed" from="Hacking Game UI/HBoxContainer/Controls/MarginContainer/VBoxContainer/Hack Button" to="Hacking Game UI" method="_on_hack_button_pressed"]

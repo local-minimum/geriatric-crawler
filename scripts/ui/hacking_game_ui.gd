@@ -29,6 +29,9 @@ var _worms_counter: Label
 var _deploy_worm_button: Button
 
 @export
+var _worming_navigation_container: Control
+
+@export
 var outer_spacer_color: Color
 
 @export
@@ -235,6 +238,7 @@ func show_game() -> void:
     _playing_field_outer_container.ratio = columns as float / rows as float
     _playing_field_container.columns = columns
     _playing_field_container_lower.columns = columns
+    _worming_navigation_container.hide()
 
     _clear_container(_playing_field_container_lower)
     _clear_container(_playing_field_container)
@@ -602,8 +606,13 @@ func _on_deploy_bomb_pressed() -> void:
         _ready_bombing()
 
 func _on_deploy_worm_pressed() -> void:
-    _deploy_worm_button.text = CANCEL_WORM_TEXT
+    if _worming:
+        _cancel_worm()
+    else:
+        _ready_worm()
 
+var _worming: bool
+var _worming_direction: Vector2i
 var _bombing: bool
 
 func _cancel_bombing() -> void:
@@ -611,9 +620,37 @@ func _cancel_bombing() -> void:
     _deploy_bomb_button.text = DEPLOY_BOMB_TEXT
     toggle_word_controls(false)
     toggle_shift_buttons(false)
+    _sync_inventory_actions()
 
 func _ready_bombing() -> void:
     _bombing = true
     _deploy_bomb_button.text = CANCEL_BOMB_TEXT
     toggle_shift_buttons(true)
     toggle_word_controls(true)
+    _deploy_worm_button.disabled = true
+
+func _cancel_worm() -> void:
+    _worming = false
+    toggle_shift_buttons(false)
+    _deploy_worm_button.text = DEPLOY_WORM_TEXT
+    _worming_navigation_container.hide()
+    _sync_inventory_actions()
+
+func _ready_worm() -> void:
+    _worming = true
+    toggle_shift_buttons(true)
+    _deploy_worm_button.text = CANCEL_WORM_TEXT
+    _deploy_bomb_button.disabled = true
+    _worming_navigation_container.show()
+
+func _on_worm_up_pressed() -> void:
+    _worming_direction = Vector2i.UP
+
+func _on_worm_left_pressed() -> void:
+    _worming_direction = Vector2i.LEFT
+
+func _on_worm_down_pressed() -> void:
+    _worming_direction = Vector2i.DOWN
+
+func _on_worm_right_pressed() -> void:
+    _worming_direction = Vector2i.RIGHT

@@ -130,7 +130,8 @@ _contents = Dictionary[String, float]({
 "Sn": 15.0,
 "Thermal Paste": 1.0,
 "Ti": 8.0,
-"hacking-bombs": 2.0
+"hacking-bombs": 2.0,
+"hacking-worms": 1.0
 })
 _mesh = NodePath("MeshInstance3D")
 _open_tex = ExtResource("9_7gan6")
