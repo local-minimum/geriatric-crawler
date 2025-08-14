@@ -97,6 +97,17 @@ layout_mode = 2
 mouse_filter = 2
 columns = 13
 
+[node name="Worm Count Down" type="Label" parent="Hacking Game UI/HBoxContainer/Game Area/Playing Field Aspect Ratio"]
+layout_mode = 2
+size_flags_vertical = 1
+theme_override_colors/font_color = Color(0.77, 0.77, 0.77, 0.905882)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 0.494118)
+theme_override_constants/outline_size = 10
+theme_override_font_sizes/font_size = 144
+text = "3"
+horizontal_alignment = 1
+vertical_alignment = 1
+
 [node name="Controls" type="MarginContainer" parent="Hacking Game UI/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3

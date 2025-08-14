@@ -678,12 +678,14 @@ func _ready_worm() -> void:
     _deploy_bomb_button.disabled = true
     _worming_navigation_container.show()
     _worming_direction = Vector2i.LEFT
+    @warning_ignore_start("integer_division")
     _worm = [
         Vector2i(
             _game.width * 2  - 1,
             _game.height / 2 * 2,
         )
     ]
+    @warning_ignore_restore("integer_division")
     _worm_size = 5
     _draw_worm()
 

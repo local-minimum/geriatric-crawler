@@ -102,7 +102,7 @@ func list_inventory() -> Array[InventoryListing]:
 
     return result
 
-func add_to_inventory(id: String, amount: float) -> bool:
+func add_to_inventory(id: String, amount: float, notify: bool = true) -> bool:
     if amount <= 0:
         return false
 
@@ -112,10 +112,11 @@ func add_to_inventory(id: String, amount: float) -> bool:
         _inventory[id] = amount
 
     on_add_to_inventory.emit(id, amount, _inventory[id])
-    NotificationsManager.info("Gained", "%10.2f %s [b]%s[/b]" % [amount, inventory_item_id_to_unit(id) , inventory_item_id_to_text(id)], 5000)
+    if notify:
+        NotificationsManager.info("Gained", "%10.2f %s [b]%s[/b]" % [amount, inventory_item_id_to_unit(id) , inventory_item_id_to_text(id)], 5000)
     return true
 
-func add_many_to_inventory(items: Dictionary[String, float]) -> bool:
+func add_many_to_inventory(items: Dictionary[String, float], notify: bool = false) -> bool:
     if items.values().any(FloatUtils.negative):
         return false
 
@@ -123,12 +124,12 @@ func add_many_to_inventory(items: Dictionary[String, float]) -> bool:
         if KeyRing.is_key(id):
            continue
 
-        if !add_to_inventory(id, items[id]):
+        if !add_to_inventory(id, items[id], notify):
             return false
 
     return true
 
-func remove_from_inventory(id: String, amount: float, accept_less: bool = false) -> float:
+func remove_from_inventory(id: String, amount: float, accept_less: bool = false, notify: bool = true) -> float:
     if !_inventory.has(id) || amount <= 0:
         return 0
 
@@ -140,18 +141,19 @@ func remove_from_inventory(id: String, amount: float, accept_less: bool = false)
 
     _inventory[id] = total - withdraw
     on_remove_from_inventory.emit(id, withdraw, _inventory[id])
-    NotificationsManager.info("Lost", "%4.3f %s [b]%s[/b]" % [amount, inventory_item_id_to_unit(id), inventory_item_id_to_text(id)], 5000)
+    if notify:
+        NotificationsManager.info("Lost", "%4.3f %s [b]%s[/b]" % [amount, inventory_item_id_to_unit(id), inventory_item_id_to_text(id)], 5000)
 
     return withdraw
 
-func remove_many_from_inventory(items: Dictionary[String, float]) -> bool:
+func remove_many_from_inventory(items: Dictionary[String, float], notify: bool = true) -> bool:
     for id: String in items:
         if !_inventory.has(id) || _inventory[id] < items[id] || items[id] <= 0:
             return false
 
     for id: String in items:
         @warning_ignore_start("return_value_discarded")
-        remove_from_inventory(id, items[id])
+        remove_from_inventory(id, items[id], false, notify)
         @warning_ignore_restore("return_value_discarded")
 
     return true

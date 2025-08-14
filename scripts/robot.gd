@@ -80,6 +80,13 @@ func get_skill_level(skill: String) -> int:
         func (item: RobotAbility) -> int: return item.skill_level,
     )
 
+func get_active_skill_level(skill: String) -> RobotAbility:
+    var lvl: int = get_skill_level(skill)
+    return ArrayUtils.first(
+        get_active_abilities(),
+        func (ability: RobotAbility) -> bool: return ability.id == skill && lvl == ability.skill_level,
+    )
+
 func obtain_upgrade(reward_full_id: String) -> void:
     var reward: RobotAbility = model.find_skill(reward_full_id)
     if reward == null:

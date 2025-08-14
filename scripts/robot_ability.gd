@@ -16,8 +16,11 @@ const SKILL_MAPPING: String = "mapping"
 ## LVL 1: Detect enemies, LVL 2: Detect enemies & hidden objects
 const SKILL_SONAR: String = "sonar"
 
-## LVL 1: Minimum tools
+## LVL 1-4: Increasing proficiency
 const SKILL_BYPASS: String = "bypass"
+
+## LVL 1: Minimum tools
+const SKILL_HACKING_BOMBS: String = "hacking-bombs"
 
 enum AbilityType { Exploration, Battle, Other }
 

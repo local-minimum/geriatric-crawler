@@ -351,6 +351,7 @@ func _trigger_hacking_prompt(puller: CameraPuller) -> void:
             puller.release_player(player),
         func () -> void:
             HackingGame.start(
+                player.robot,
                 _lock_difficulty,
                 attempts,
                 func () -> void:

@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="RobotAbility" load_steps=2 format=3 uid="uid://diq4gpouenl62"]
+
+[ext_resource type="Script" uid="uid://0qri7op4mfno" path="res://scripts/robot_ability.gd" id="1_srjsh"]
+
+[resource]
+script = ExtResource("1_srjsh")
+id = "hacking-bombs"
+skill_level = 1
+skill_name = "Advanced Logical Bombs"
+ability_type = 0
+description = "Slight chance of refunding used bombs"
+metadata/_custom_type_script = "uid://0qri7op4mfno"

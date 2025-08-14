@@ -68,3 +68,10 @@ static func order_by(arr: Array, order_indexes: Array) -> void:
     var copy: Array = arr.duplicate()
     for idx: int in range(order_indexes.size()):
         arr[idx] = copy[order_indexes[idx]]
+
+static func first(arr: Array, predicate: Callable) -> Variant:
+    for item: Variant in arr:
+        if predicate.call(item):
+            return item
+
+    return null

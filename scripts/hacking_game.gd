@@ -44,8 +44,8 @@ static func calculate_attempts(robot: Robot, difficulty: int) -> int:
     var skill: int = robot.get_skill_level(RobotAbility.SKILL_BYPASS)
     return maxi(HackingGame.BASE_ATTEMPTS + skill - difficulty,  1)
 
-static func start(difficulty: int, attempts: int, on_complete_success: Callable, on_complete_fail: Callable) -> void:
-    _instance._start(difficulty, attempts, on_complete_success, on_complete_fail)
+static func start(robot: Robot, difficulty: int, attempts: int, on_complete_success: Callable, on_complete_fail: Callable) -> void:
+    _instance._start(robot, difficulty, attempts, on_complete_success, on_complete_fail)
 
 signal on_change_attempts(attempts: int)
 signal on_solve_game(solution_start: Vector2i)
@@ -81,6 +81,7 @@ var _statuses: Array[Array]
 var width: int
 var height: int
 var _solved: bool
+var _robot: Robot
 
 func _ready() -> void:
     _instance = self
@@ -88,7 +89,8 @@ func _ready() -> void:
 func _handle_new_danger(danger: Danger) -> void:
     _danger = danger
 
-func _start(difficulty: int, attempts: int, on_complete_success: Callable, on_complete_fail: Callable) -> void:
+func _start(robot: Robot, difficulty: int, attempts: int, on_complete_success: Callable, on_complete_fail: Callable) -> void:
+    _robot = robot
     _solved = false
     _difficulty = difficulty
     _attempts = attempts
@@ -481,7 +483,7 @@ func get_potential_bomb_target(center: Vector2i) -> Array[Vector2i]:
     return targets
 
 func bomb_coords(coords: Array[Vector2i]) -> void:
-    if coords.size() == 0 || Inventory.active_inventory.remove_from_inventory(ITEM_HACKING_BOMB, 1.0) != 1.0:
+    if coords.size() == 0 || Inventory.active_inventory.remove_from_inventory(ITEM_HACKING_BOMB, 1.0, false, false) != 1.0:
         return
 
     var found: int = 0
@@ -498,8 +500,13 @@ func bomb_coords(coords: Array[Vector2i]) -> void:
             if !discovered_present.has(word):
                 discovered_present.append(word)
 
-    if randi_range(0, 10) < found:
-        if !Inventory.active_inventory.add_to_inventory(HackingGame.ITEM_HACKING_BOMB, 1.0):
-            push_warning("Could not regain bomb")
+    var skill: RobotAbility = _robot.get_active_skill_level(RobotAbility.SKILL_HACKING_BOMBS)
+
+    if skill != null && skill.skill_level > 0:
+        if randi_range(0, 10) < found:
+            if !Inventory.active_inventory.add_to_inventory(HackingGame.ITEM_HACKING_BOMB, 1.0, false):
+                push_warning("Could not regain bomb")
+            else:
+                NotificationsManager.important(skill.skill_name, "Bomb refunded")
 
     on_board_changed.emit()
