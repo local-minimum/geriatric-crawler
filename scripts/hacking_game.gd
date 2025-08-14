@@ -510,3 +510,7 @@ func bomb_coords(coords: Array[Vector2i]) -> void:
                 NotificationsManager.important(skill.skill_name, "Bomb refunded")
 
     on_board_changed.emit()
+
+
+func use_worm() -> bool:
+    return Inventory.active_inventory.remove_from_inventory(ITEM_HACKING_WORM, 1.0, false, false) == 1.0

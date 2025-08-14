@@ -32,6 +32,9 @@ var _deploy_worm_button: Button
 var _worming_navigation_container: Control
 
 @export
+var _worming_countdown: Label
+
+@export
 var outer_spacer_color: Color
 
 @export
@@ -146,6 +149,43 @@ func _unhandled_input(event: InputEvent) -> void:
             _cancel_bombing()
             _sync_inventory_actions()
 
+const WORM_TICK_FREQ: int = 500
+
+func _process(_delta: float) -> void:
+    if _worm_moving && Time.get_ticks_msec() > _worm_next_tick:
+        var new_head: Vector2i = _worm[0] + _worming_direction
+        if !_lower_field_backgrounds.has(new_head):
+            _kill_worm()
+            return
+
+        _move_worm_head(new_head)
+        _worm_next_tick = Time.get_ticks_msec() + WORM_TICK_FREQ
+
+func _move_worm_head(coords: Vector2i) -> void:
+    _worm.push_front(coords)
+    while _worm.size() > _worm_size:
+        _lower_field_backgrounds[_worm[_worm.size() - 1]].texture = null
+        _worm.pop_back()
+
+    _draw_worm()
+
+func _kill_worm() -> void:
+    _worm_moving = false
+    _worming = false
+
+    for size: int in range(_worm.size(), 0, -1):
+        if size > 0:
+            _lower_field_backgrounds[_worm[size - 1]].texture = null
+        _worm.pop_back()
+        _draw_worm()
+
+        print_debug("Worm %s %s" % [size, _worm])
+
+        await get_tree().create_timer(WORM_TICK_FREQ / 1000.0).timeout
+
+    _cancel_worm()
+    print_debug("Worm dead")
+
 func _handle_solve_game(solution_start: Vector2i) -> void:
     _disable_everything()
     var rect: Rect2i = Rect2i(solution_start, Vector2i( _game.get_passphrase_length(), 1))
@@ -249,6 +289,7 @@ func show_game() -> void:
     _playing_field_container.columns = columns
     _playing_field_container_lower.columns = columns
     _worming_navigation_container.hide()
+    _worming_countdown.hide()
 
     _clear_container(_playing_field_container_lower)
     _clear_container(_playing_field_container)
@@ -643,6 +684,8 @@ func _on_deploy_worm_pressed() -> void:
         _ready_worm()
 
 var _worming: bool
+var _worm_moving: bool
+var _worm_next_tick: int
 var _worm_size: int = 1
 var _worming_direction: Vector2i
 var _worm: Array[Vector2i]
@@ -667,11 +710,14 @@ func _cancel_worm() -> void:
     toggle_shift_buttons(false)
     _deploy_worm_button.text = DEPLOY_WORM_TEXT
     _worming_navigation_container.hide()
+    _worming_countdown.hide()
+
     _sync_inventory_actions()
     _clear_drawn_worm()
     _worm.clear()
 
 func _ready_worm() -> void:
+    _worm_moving = false
     _worming = true
     toggle_shift_buttons(true)
     _deploy_worm_button.text = CANCEL_WORM_TEXT
@@ -688,6 +734,22 @@ func _ready_worm() -> void:
     @warning_ignore_restore("integer_division")
     _worm_size = 5
     _draw_worm()
+
+    _worming_countdown.show()
+    for i: int in range(3, 0, -1):
+        _worming_countdown.text = "%s" % i
+        await get_tree().create_timer(WORM_TICK_FREQ / 1000.0).timeout
+
+        if !_worming:
+            return
+
+    if _game.use_worm():
+        _deploy_worm_button.disabled = true
+        _worming_countdown.hide()
+        _worm_moving = true
+        _worm_next_tick = Time.get_ticks_msec()
+    else:
+        _cancel_worm()
 
 func _on_worm_up_pressed() -> void:
     _worming_direction = Vector2i.UP

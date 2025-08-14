@@ -18,7 +18,7 @@
 script = ExtResource("1_5dcew")
 ui = NodePath("Hacking Game UI")
 
-[node name="Hacking Game UI" type="CanvasLayer" parent="." node_paths=PackedStringArray("_game", "_attempts_label", "_attempt_button", "_bombs_label", "_bombs_counter", "_deploy_bomb_button", "_worms_label", "_worms_counter", "_deploy_worm_button", "_worming_navigation_container", "_playing_field_outer_container", "_playing_field_container", "_playing_field_container_lower", "attempt_history", "most_recent_attempt")]
+[node name="Hacking Game UI" type="CanvasLayer" parent="." node_paths=PackedStringArray("_game", "_attempts_label", "_attempt_button", "_bombs_label", "_bombs_counter", "_deploy_bomb_button", "_worms_label", "_worms_counter", "_deploy_worm_button", "_worming_navigation_container", "_worming_countdown", "_playing_field_outer_container", "_playing_field_container", "_playing_field_container_lower", "attempt_history", "most_recent_attempt")]
 layer = 100
 script = ExtResource("2_kelsw")
 _game = NodePath("..")
@@ -31,6 +31,7 @@ _worms_label = NodePath("HBoxContainer/Controls/MarginContainer/VBoxContainer/At
 _worms_counter = NodePath("HBoxContainer/Controls/MarginContainer/VBoxContainer/Attempts and Tools/Worms Counter")
 _deploy_worm_button = NodePath("HBoxContainer/Controls/MarginContainer/VBoxContainer/Deploy Worm")
 _worming_navigation_container = NodePath("HBoxContainer/Controls/MarginContainer/VBoxContainer/Worm Navigaion Controls")
+_worming_countdown = NodePath("HBoxContainer/Game Area/Playing Field Aspect Ratio/Worm Count Down")
 outer_spacer_color = Color(0.0936694, 0.0936694, 0.0936694, 1)
 inner_spacer_color = Color(0.241156, 0.241156, 0.241156, 1)
 tex_up = ExtResource("3_8rbb1")

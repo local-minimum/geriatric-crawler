@@ -116,7 +116,7 @@ func add_to_inventory(id: String, amount: float, notify: bool = true) -> bool:
         NotificationsManager.info("Gained", "%10.2f %s [b]%s[/b]" % [amount, inventory_item_id_to_unit(id) , inventory_item_id_to_text(id)], 5000)
     return true
 
-func add_many_to_inventory(items: Dictionary[String, float], notify: bool = false) -> bool:
+func add_many_to_inventory(items: Dictionary[String, float], notify: bool = true) -> bool:
     if items.values().any(FloatUtils.negative):
         return false
 
