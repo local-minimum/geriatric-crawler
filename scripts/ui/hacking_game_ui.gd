@@ -140,8 +140,26 @@ func _process(_delta: float) -> void:
 func _calculate_worm_speed() -> int:
     return maxi(WORM_MAX_SPEED, WORM_TICK_FREQ - worm_ticks * WORM_SPEEDUP)
 
+func _is_game_coords(coords: Vector2i) -> bool:
+    return posmod(coords.x, 2) == 1 && posmod(coords.y, 2) == 1
+
+func _translate_to_game_coords(coords: Vector2i) -> Vector2i:
+    @warning_ignore_start("integer_division")
+    return Vector2i(coords.x / 2, coords.y / 2)
+    @warning_ignore_restore("integer_division")
+
 func _move_worm_head(coords: Vector2i) -> void:
     _worm.push_front(coords)
+
+    if _is_game_coords(coords):
+        var eating: int = _game.worm_consume(_translate_to_game_coords(coords))
+        if eating < 0:
+            _kill_worm()
+            return
+        elif eating > 0:
+            _worm_size += eating
+
+
     while _worm.size() > _worm_size:
         var t_rect: TextureRect = _lower_field_backgrounds[_worm[_worm.size() - 1]]
         t_rect.texture = background_tex

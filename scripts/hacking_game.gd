@@ -53,8 +53,7 @@ signal on_fail_game()
 signal on_new_attempts(attempts: Array[Array], statuses: Array[Array])
 signal on_board_changed()
 
-@export
-var ui: HackingGameUI
+@export var ui: HackingGameUI
 
 var _danger: Danger
 var _difficulty: int
@@ -74,6 +73,7 @@ func get_passphrase_length() -> int: return _passphrase.size()
 
 var discovered_present: Array[String]
 var discovered_not_present: Array[String]
+var word_counts: Dictionary[String, int]
 
 var _board: Array[Array]
 var _statuses: Array[Array]
@@ -99,6 +99,7 @@ func _start(robot: Robot, difficulty: int, attempts: int, on_complete_success: C
 
     discovered_present.clear()
     discovered_not_present.clear()
+    word_counts.clear()
 
     _generate_alphabet()
     _generate_passphrase()
@@ -195,12 +196,25 @@ func _create_solved_game_board() -> void:
         for col: int in range(width):
             if passphrase_row == row && passphrase_col == col:
                 row_arr.append(_passphrase[0])
+                if word_counts.has(_passphrase[0]):
+                    word_counts[_passphrase[0]] += 1
+                else:
+                    word_counts[_passphrase[0]] = 1
                 phrase_next = _passphrase.size() - 1
             elif phrase_next > 0:
-                row_arr.append(_passphrase[_passphrase.size() - phrase_next])
+                var idx: int = _passphrase.size() - phrase_next
+                row_arr.append(_passphrase[idx])
+                if word_counts.has(_passphrase[idx]):
+                    word_counts[_passphrase[idx]] += 1
+                else:
+                    word_counts[_passphrase[idx]] = 1
                 phrase_next -= 1
             else:
                 row_arr.append(non_solution_letters[non_solution_idx])
+                if word_counts.has(non_solution_letters[non_solution_idx]):
+                    word_counts[non_solution_letters[non_solution_idx]] += 1
+                else:
+                    word_counts[non_solution_letters[non_solution_idx]] = 1
                 non_solution_idx += 1
 
             status_arr.append(WordStatus.DEFAULT)
@@ -515,5 +529,34 @@ func bomb_coords(coords: Array[Vector2i]) -> void:
 func use_worm() -> bool:
     return Inventory.active_inventory.remove_from_inventory(ITEM_HACKING_WORM, 1.0, false, false) == 1.0
 
-func worm_consume(coordinates: Vector2i) -> bool:
-    pass
+func worm_consume(coordinates: Vector2i) -> int:
+    if !has_coordinates(coordinates):
+        return -1
+
+    match get_word_status(coordinates):
+        WordStatus.DEFAULT:
+            var word: String = get_word(coordinates)
+            if _passphrase.has(word):
+                _statuses[coordinates.y][coordinates.x] = WordStatus.WRONG_POSITION
+
+                if !discovered_present.has(word):
+                    discovered_present.append(word)
+
+                on_board_changed.emit()
+                return -1
+
+            var n: int = 1
+            if !discovered_not_present.has(word):
+                discovered_not_present.append(word)
+                n += word_counts.get(word, 1) * 2
+
+            _statuses[coordinates.y][coordinates.x] = WordStatus.DESTROYED
+            on_board_changed.emit()
+            return n
+
+        WordStatus.DESTROYED:
+            return 0
+        WordStatus.WRONG_POSITION, WordStatus.CORRECT:
+            return -1
+
+    return -1
