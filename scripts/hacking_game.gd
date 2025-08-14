@@ -514,3 +514,6 @@ func bomb_coords(coords: Array[Vector2i]) -> void:
 
 func use_worm() -> bool:
     return Inventory.active_inventory.remove_from_inventory(ITEM_HACKING_WORM, 1.0, false, false) == 1.0
+
+func worm_consume(coordinates: Vector2i) -> bool:
+    pass

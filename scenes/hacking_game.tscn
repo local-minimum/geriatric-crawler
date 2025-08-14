@@ -1,8 +1,9 @@
-[gd_scene load_steps=16 format=3 uid="uid://02k0ubq0nlxn"]
+[gd_scene load_steps=17 format=3 uid="uid://02k0ubq0nlxn"]
 
 [ext_resource type="Script" uid="uid://cv5l2ndd7kivb" path="res://scripts/hacking_game.gd" id="1_5dcew"]
 [ext_resource type="Script" uid="uid://c1foemx8gp3j6" path="res://scripts/ui/hacking_game_ui.gd" id="2_kelsw"]
 [ext_resource type="Texture2D" uid="uid://cev0382nhv46i" path="res://sprites/kenny game icons/arrowUp.png" id="3_8rbb1"]
+[ext_resource type="Texture2D" uid="uid://vxb7v483i63b" path="res://sprites/buttons/hacking-worm-nothing.png" id="3_gdvd8"]
 [ext_resource type="Texture2D" uid="uid://c02to5i50bgby" path="res://sprites/kenny game icons/arrowDown.png" id="4_8tddg"]
 [ext_resource type="Texture2D" uid="uid://bowjve07f2wq0" path="res://sprites/kenny game icons/arrowLeft.png" id="5_5lwk8"]
 [ext_resource type="Texture2D" uid="uid://bm8p8oa78pasu" path="res://sprites/kenny game icons/arrowRight.png" id="6_is8ts"]
@@ -34,6 +35,7 @@ _worms_counter = NodePath("HBoxContainer/Controls/MarginContainer/VBoxContainer/
 _deploy_worm_button = NodePath("HBoxContainer/Controls/MarginContainer/VBoxContainer/Deploy Worm")
 _worming_navigation_container = NodePath("HBoxContainer/Controls/MarginContainer/VBoxContainer/Worm Navigaion Controls")
 _worming_countdown = NodePath("HBoxContainer/Game Area/Playing Field Aspect Ratio/Worm Count Down")
+background_tex = ExtResource("3_gdvd8")
 outer_spacer_color = Color(0.0936694, 0.0936694, 0.0936694, 1)
 inner_spacer_color = Color(0.241156, 0.241156, 0.241156, 1)
 tex_up = ExtResource("3_8rbb1")

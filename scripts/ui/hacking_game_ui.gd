@@ -1,113 +1,79 @@
 extends CanvasLayer
 class_name HackingGameUI
 
-@export
-var _game: HackingGame
+@export var _game: HackingGame
 
-@export
-var _attempts_label: Label
+@export var _attempts_label: Label
 
-@export
-var _attempt_button: Button
+@export var _attempt_button: Button
 
-@export
-var _bombs_label: Label
+@export var _bombs_label: Label
 
-@export
-var _bombs_counter: Label
+@export var _bombs_counter: Label
 
-@export
-var _deploy_bomb_button: Button
+@export var _deploy_bomb_button: Button
 
-@export
-var _worms_label: Label
+@export var _worms_label: Label
 
-@export
-var _worms_counter: Label
+@export var _worms_counter: Label
 
-@export
-var _deploy_worm_button: Button
+@export var _deploy_worm_button: Button
 
-@export
-var _worming_navigation_container: Control
+@export var _worming_navigation_container: Control
 
-@export
-var _worming_countdown: Label
+@export var _worming_countdown: Label
 
-@export
-var outer_spacer_color: Color
+@export var background_tex: Texture
 
-@export
-var inner_spacer_color: Color
+@export var outer_spacer_color: Color
 
-@export
-var tex_up: Texture
+@export var inner_spacer_color: Color
 
-@export
-var tex_down: Texture
+@export var tex_up: Texture
 
-@export
-var tex_left: Texture
+@export var tex_down: Texture
 
-@export
-var tex_right: Texture
+@export var tex_left: Texture
 
-@export
-var _playing_field_outer_container: AspectRatioContainer
+@export var tex_right: Texture
 
-@export
-var _playing_field_container: GridContainer
+@export var _playing_field_outer_container: AspectRatioContainer
 
-@export
-var _playing_field_container_lower: GridContainer
+@export var _playing_field_container: GridContainer
 
-@export
-var destroyed_text_color: Color
+@export var _playing_field_container_lower: GridContainer
 
-@export
-var default_text_color: Color
+@export var destroyed_text_color: Color
 
-@export
-var discoverd_text_color: Color
+@export var default_text_color: Color
 
-@export
-var discoverd_not_text_color: Color
+@export var discoverd_text_color: Color
 
-@export
-var target_text_color: Color = Color.HOT_PINK
+@export var discoverd_not_text_color: Color
 
-@export
-var word_bg_tex_default: Texture
+@export var target_text_color: Color = Color.HOT_PINK
 
-@export
-var word_bg_tex_destroyed: Texture
+@export var word_bg_tex_default: Texture
 
-@export
-var word_bg_tex_correct: Texture
+@export var word_bg_tex_destroyed: Texture
 
-@export
-var word_bg_tex_wrong_place: Texture
+@export var word_bg_tex_correct: Texture
 
-@export
-var attempt_history: Container
+@export var word_bg_tex_wrong_place: Texture
 
-@export
-var most_recent_attempt: Container
+@export var attempt_history: Container
 
-@export
-var worm_head_tex: Texture
+@export var most_recent_attempt: Container
 
-@export
-var worm_head_dead_tex: Texture
+@export var worm_head_tex: Texture
 
-@export
-var worm_straight_tex: Texture
+@export var worm_head_dead_tex: Texture
 
-@export
-var worm_angled_tex: Texture
+@export var worm_straight_tex: Texture
 
-@export
-var worm_tail_tex: Texture
+@export var worm_angled_tex: Texture
+
+@export var worm_tail_tex: Texture
 
 const DEPLOY_BOMB_TEXT: String = "Deploy Bomb"
 const CANCEL_BOMB_TEXT: String = "Abort Bomb Deployment"
@@ -178,7 +144,7 @@ func _move_worm_head(coords: Vector2i) -> void:
     _worm.push_front(coords)
     while _worm.size() > _worm_size:
         var t_rect: TextureRect = _lower_field_backgrounds[_worm[_worm.size() - 1]]
-        t_rect.texture = null
+        t_rect.texture = background_tex
         t_rect.rotation_degrees = 0
         _worm.pop_back()
 
@@ -192,7 +158,7 @@ func _kill_worm() -> void:
     for size: int in range(_worm.size(), 0, -1):
         if size > 0:
             var t_rect: TextureRect = _lower_field_backgrounds[_worm[size - 1]]
-            t_rect.texture = null
+            t_rect.texture = background_tex
             t_rect.rotation_degrees = 0
 
         _worm.pop_back()
@@ -491,6 +457,7 @@ func _setup_lower_field(columns: int, rows: int) -> void:
                             Color.TRANSPARENT if is_below_word else inner_spacer_color,
                             func (t_rect: TextureRect) -> void:
                                 _lower_field_backgrounds[Vector2i(full_col, full_row)] = t_rect
+                                t_rect.texture = background_tex
                                 if !is_below_word:
                                     pass
                                 ,

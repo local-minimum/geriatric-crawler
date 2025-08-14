@@ -4,44 +4,32 @@ class_name IsometricMapUI
 var _player: GridPlayer
 var _seen: Array[Vector3i]
 
-@export
-var draw_box_half: Vector3i = Vector3i(3, 1, 3)
+@export var draw_box_half: Vector3i = Vector3i(3, 1, 3)
 
-@export
-var view_distance: float = 5:
+@export var view_distance: float = 5:
     set(value):
         view_distance = value
         queue_redraw()
 
-@export
-var camera_direction: Vector3
+@export var camera_direction: Vector3
 
-@export
-var floor_color: Color
+@export var floor_color: Color
 
-@export
-var illusion_color: Color
+@export var illusion_color: Color
 
-@export
-var other_side_color: Color
+@export var other_side_color: Color
 
-@export
-var player_color: Color
+@export var player_color: Color
 
-@export
-var feature_color: Color
+@export var feature_color: Color
 
-@export
-var static_up: bool
+@export var static_up: bool
 
-@export_range(0, 1)
-var elevation_difference_alpha_factor: float = 0.8
+@export_range(0, 1) var elevation_difference_alpha_factor: float = 0.8
 
-@export_range(0, 200)
-var to_canvas_scaling: float = 30
+@export_range(0, 200) var to_canvas_scaling: float = 30
 
-@export_range(0, 1)
-var line_width: float = 0.05
+@export_range(0, 1) var line_width: float = 0.05
 
 var _show_features: bool
 
