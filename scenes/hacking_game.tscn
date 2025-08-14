@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://02k0ubq0nlxn"]
+[gd_scene load_steps=16 format=3 uid="uid://02k0ubq0nlxn"]
 
 [ext_resource type="Script" uid="uid://cv5l2ndd7kivb" path="res://scripts/hacking_game.gd" id="1_5dcew"]
 [ext_resource type="Script" uid="uid://c1foemx8gp3j6" path="res://scripts/ui/hacking_game_ui.gd" id="2_kelsw"]
@@ -12,7 +12,9 @@
 [ext_resource type="Texture2D" uid="uid://dftv1h45wlpju" path="res://sprites/buttons/hacking-wrongplace.png" id="10_5yi84"]
 [ext_resource type="Texture2D" uid="uid://bqcnbwg8m43m6" path="res://sprites/buttons/hacking-worm-head.png" id="11_5yi84"]
 [ext_resource type="Texture2D" uid="uid://cvjeepj4nvdhc" path="res://sprites/buttons/hacking-worm-straight.png" id="12_7o2ew"]
+[ext_resource type="Texture2D" uid="uid://chtr1lmmidrfs" path="res://sprites/buttons/hacking-worm-head-dead.png" id="12_l3q62"]
 [ext_resource type="Texture2D" uid="uid://btn342ecjinni" path="res://sprites/buttons/hacking-worm-angled.png" id="13_l3q62"]
+[ext_resource type="Texture2D" uid="uid://dejmkmccewb4n" path="res://sprites/buttons/hacking-worm-tail.png" id="14_7o2ew"]
 
 [node name="Hacking Game" type="Node" node_paths=PackedStringArray("ui")]
 script = ExtResource("1_5dcew")
@@ -52,8 +54,10 @@ word_bg_tex_wrong_place = ExtResource("10_5yi84")
 attempt_history = NodePath("HBoxContainer/Controls/MarginContainer/VBoxContainer/Atempt History")
 most_recent_attempt = NodePath("HBoxContainer/Controls/MarginContainer/VBoxContainer/Most Recent Attempt")
 worm_head_tex = ExtResource("11_5yi84")
+worm_head_dead_tex = ExtResource("12_l3q62")
 worm_straight_tex = ExtResource("12_7o2ew")
 worm_angled_tex = ExtResource("13_l3q62")
+worm_tail_tex = ExtResource("14_7o2ew")
 
 [node name="Background" type="ColorRect" parent="Hacking Game UI"]
 anchors_preset = 15
