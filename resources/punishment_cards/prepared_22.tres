@@ -1,0 +1,37 @@
+[gd_resource type="Resource" script_class="BattleCardData" load_steps=5 format=3 uid="uid://ba1yxsodqept7"]
+
+[ext_resource type="Script" uid="uid://b1hgbfym62rba" path="res://scripts/card_battle/battle_card_primary_effect.gd" id="1_cawwc"]
+[ext_resource type="Script" uid="uid://cqlxwfe858g4h" path="res://scripts/card_battle/battle_card_data.gd" id="2_7unab"]
+
+[sub_resource type="Resource" id="Resource_pq8jb"]
+script = ExtResource("1_cawwc")
+mode = 1
+target = 20
+min_effect = 4
+max_effect = 8
+effect_crit_base = 1
+crits_on_allies = true
+crits_on_enemies = true
+metadata/_custom_type_script = "uid://b1hgbfym62rba"
+
+[sub_resource type="Resource" id="Resource_0eco6"]
+script = ExtResource("1_cawwc")
+mode = 2
+target = 20
+min_effect = 2
+max_effect = 8
+effect_crit_base = 2
+crits_on_allies = true
+crits_on_enemies = true
+metadata/_custom_type_script = "uid://b1hgbfym62rba"
+
+[resource]
+script = ExtResource("2_7unab")
+id = "prepared"
+name = "Prepared"
+card_owner = 2
+rank = 22
+suit = 6
+primary_effects = Array[ExtResource("1_cawwc")]([SubResource("Resource_pq8jb"), SubResource("Resource_0eco6")])
+secondary_effects = Array[int]([2])
+metadata/_custom_type_script = "uid://cqlxwfe858g4h"

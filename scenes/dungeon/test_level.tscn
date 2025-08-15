@@ -1,4 +1,4 @@
-[gd_scene load_steps=44 format=3 uid="uid://dwqcwbgj8p6q0"]
+[gd_scene load_steps=55 format=3 uid="uid://dwqcwbgj8p6q0"]
 
 [ext_resource type="Script" uid="uid://dqe42q7uub84r" path="res://scripts/gridded_level/level_features/grid_level.gd" id="1_dd1ob"]
 [ext_resource type="PackedScene" uid="uid://bfoog3fb4v5ij" path="res://scenes/dungeon/player.tscn" id="3_m6mav"]
@@ -33,8 +33,19 @@
 [ext_resource type="Script" uid="uid://qbk2psf0rmnw" path="res://scripts/card_battle/battle_strategy.gd" id="22_sy7nh"]
 [ext_resource type="Script" uid="uid://6vnrccj8frlq" path="res://scripts/card_battle/battle_enemy_target_system.gd" id="25_s5loo"]
 [ext_resource type="Script" uid="uid://bl72bpxm44td8" path="res://scripts/key_master.gd" id="32_wymjw"]
+[ext_resource type="Script" uid="uid://bk8s8268riiuc" path="res://scripts/card_battle/punishment_deck.gd" id="34_dw5j8"]
+[ext_resource type="Resource" uid="uid://crnuafh88gx8a" path="res://resources/punishment_cards/alarm_1.tres" id="35_8b3qi"]
+[ext_resource type="Resource" uid="uid://dqrl7x4ecjyqx" path="res://resources/punishment_cards/alarm_11.tres" id="36_n7uqk"]
+[ext_resource type="Resource" uid="uid://nwxqceckw4tr" path="res://resources/punishment_cards/alarm_31.tres" id="37_lod2g"]
+[ext_resource type="Resource" uid="uid://by4xdck17bsal" path="res://resources/punishment_cards/alarm_51.tres" id="38_5d85i"]
+[ext_resource type="Resource" uid="uid://ctyg51kk8tgg4" path="res://resources/punishment_cards/alarm_71.tres" id="39_y5a4i"]
+[ext_resource type="Resource" uid="uid://ba1yxsodqept7" path="res://resources/punishment_cards/prepared_22.tres" id="40_c0fn3"]
+[ext_resource type="Resource" uid="uid://doopslgdl8hj2" path="res://resources/punishment_cards/prepared_32.tres" id="41_7crhe"]
+[ext_resource type="Resource" uid="uid://5qbqaeomm43n" path="res://resources/punishment_cards/prepared_82.tres" id="42_gbgif"]
+[ext_resource type="Resource" uid="uid://dva567754pdr" path="res://resources/punishment_cards/prepared_92.tres" id="43_24aia"]
+[ext_resource type="Resource" uid="uid://besdv604dohws" path="res://resources/punishment_cards/prepared_112.tres" id="44_yofnv"]
 
-[sub_resource type="Resource" id="Resource_sy7nh"]
+[sub_resource type="Resource" id="Resource_1yhmj"]
 resource_local_to_scene = true
 script = ExtResource("4_840jk")
 mode = 61
@@ -84,7 +95,7 @@ process_mode = 3
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0145968, -0.00857759, 0.00070858)
 spawn_node = NodePath("../LevelGeometry/Elevation 0/Node (0, 0, 1)")
 look_direction = 1
-transportation_abilities = SubResource("Resource_sy7nh")
+transportation_abilities = SubResource("Resource_1yhmj")
 transportation_mode = SubResource("Resource_pgxau")
 
 [node name="LevelGeometry" type="Node3D" parent="."]
@@ -1433,3 +1444,7 @@ _key_descriptions = Dictionary[String, String]({
 "purple": "Purple key"
 })
 metadata/_custom_type_script = "uid://bl72bpxm44td8"
+
+[node name="PunishmentDeck" type="Node" parent="."]
+script = ExtResource("34_dw5j8")
+_deck = Array[ExtResource("13_26eu7")]([ExtResource("35_8b3qi"), ExtResource("36_n7uqk"), ExtResource("37_lod2g"), ExtResource("38_5d85i"), ExtResource("39_y5a4i"), ExtResource("40_c0fn3"), ExtResource("41_7crhe"), ExtResource("42_gbgif"), ExtResource("43_24aia"), ExtResource("44_yofnv")])
