@@ -254,6 +254,7 @@ func _add_attempt_passphrase(root: Container, attempt: Array[String], statuses: 
         )
 
 func _handle_attempts_updated(attempts: int) -> void:
+    print_debug("Got new attempts %s" % attempts)
     _attempts_label.text = "%02d" % attempts
 
     var out_of_attempts: bool = attempts <= 0

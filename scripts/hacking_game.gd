@@ -184,6 +184,9 @@ func _create_solved_game_board() -> void:
 
         other_letters.append(letter)
 
+    if other_letters.is_empty():
+        other_letters.append_array(_alphabet)
+
     width = 10 - mini(3, _difficulty)
     height = 5 if _difficulty < 4 else 4
     var tiles: int = width * height

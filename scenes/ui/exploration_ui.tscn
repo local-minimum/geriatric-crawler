@@ -108,12 +108,10 @@ custom_minimum_size = Vector2(0, 150)
 layout_mode = 2
 color = Color(0.207843, 0.0862745, 0.105882, 1)
 script = ExtResource("3_2458l")
-_memory_size = null
 _2d_map_ui = NodePath("Padding/Control/2D Map")
 _3d_map_ui = NodePath("Padding/Control/3D Map")
 map_controls = NodePath("Padding/Control/Map Controls")
 _mapping_area = NodePath(".")
-_detect_area = null
 
 [node name="Padding" type="MarginContainer" parent="MarginContainer/VBoxContainer/SimpleMapModule"]
 layout_mode = 1

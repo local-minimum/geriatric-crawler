@@ -73,12 +73,12 @@ func _setup() -> void:
 
 func _level_loaded() -> void:
     for door: GridDoor in _level.doors():
-        if door.on_door_state_chaged.connect(_update_map) != OK:
+        if !door.on_door_state_chaged.is_connected(_update_map) && door.on_door_state_chaged.connect(_update_map) != OK:
             push_error("Failed to connect door state change")
 
     for teleporter: GridTeleporter in _level.teleporters():
-        if teleporter.on_arrive_entity.connect(_handle_teleport) != OK:
-            push_error("FAiled to connect teleporter")
+        if !teleporter.on_arrive_entity.is_connected(_handle_teleport) && teleporter.on_arrive_entity.connect(_handle_teleport) != OK:
+            push_error("Failed to connect teleporter")
 
 func _handle_teleport(_teleporter: GridTeleporter, entity: GridEntity) -> void:
     if entity == _player:

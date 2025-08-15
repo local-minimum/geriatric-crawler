@@ -341,8 +341,8 @@ func _trigger_hacking_prompt(puller: CameraPuller) -> void:
 
             HackingGame.start(
                 player.robot,
-                attempts,
                 _lock_difficulty,
+                attempts,
                 _hacking_alphabet,
                 _hacking_passphrase,
                 func () -> void:
@@ -389,7 +389,7 @@ func _deserialize_lockstate(state: int) -> LockState:
 func load_save_data(data: Dictionary) -> void:
     print_debug("Door %s loads from %s" % [self, data])
     _triggered = DictionaryUtils.safe_getb(data, _TRIGGERED_KEY)
-    _hacking_alphabet = DictionaryUtils.safe_get_packed_string_array(data, _HACKING_PASSPHRASE_KEY)
+    _hacking_alphabet = DictionaryUtils.safe_get_packed_string_array(data, _HACKING_ALPHABET_KEY)
     _hacking_passphrase = DictionaryUtils.safe_get_packed_string_array(data, _HACKING_PASSPHRASE_KEY)
 
     var lock_state_int: int = DictionaryUtils.safe_geti(data, _LOCK_STATE_KEY)
