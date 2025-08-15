@@ -7,7 +7,16 @@ const SUIT_METAL: int = 2
 const SUIT_DATA: int = 4
 
 const ALL_SUITES: Array[int] = [SUIT_ELECTRICITY, SUIT_METAL, SUIT_DATA]
-enum CardCategory {Player, Enemy}
+enum CardCategory {Player, Enemy, Punishment}
+
+enum SecondaryEffect {
+    ## There must be matching suit on both sides to not break crit
+    SuitedUp,
+    ## Keeping crit multiplies it by x2, breaking causes negative crit
+    Accelerated,
+    ## Cannot break crit multipliers
+    Solid,
+}
 
 static var _ALL_CARD: Dictionary[String, Dictionary] = {}
 
@@ -28,6 +37,8 @@ static func _card_category_path(category: CardCategory, enemy_id: String = "") -
                 return "res://resources/enemy_cards/%s" % enemy_id
 
             return "res://resources/enemy_cards"
+        CardCategory.Punishment:
+            return "res://resources/punishment_cards"
         _: return "res://resources/other_cards"
 
 static func _load_cards_cateogry(category: CardCategory, enemy_id: String = "") -> void:
@@ -124,13 +135,6 @@ var icon: Texture
 @export
 var primary_effects: Array[BattleCardPrimaryEffect] = []
 
-enum SecondaryEffect {
-    ## There must be matching suit on both sides to not break crit
-    SuitedUp,
-    ## Keeping crit multiplies it by x2, breaking causes negative crit
-    Accelerated,
-}
-
 @export
 var secondary_effects: Array[SecondaryEffect] = []
 
@@ -152,6 +156,7 @@ static func secondary_effect_name(effect: SecondaryEffect) -> String:
     match effect:
         SecondaryEffect.SuitedUp: return "Suited Up"
         SecondaryEffect.Accelerated: return "Accelerated"
+        SecondaryEffect.Solid: return "Solid"
         _:
             push_error("%s doesn't have a name" % effect)
             print_stack()
@@ -161,6 +166,7 @@ static func secondary_effect_tooltip(effect: SecondaryEffect) -> String:
     match effect:
         SecondaryEffect.SuitedUp: return "Must be matching suits on both sides to not break bonus"
         SecondaryEffect.Accelerated: return "Keeping crit duplicates bonus, breaking causes negative bonus"
+        SecondaryEffect.Solid: return "Crit multiplier cannot break due to this card"
         _:
             push_error("%s doesn't have a name" % effect)
             print_stack()

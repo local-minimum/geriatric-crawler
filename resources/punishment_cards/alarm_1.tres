@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="BattleCardData" load_steps=4 format=3 uid="uid://crnuafh88gx8a"]
+
+[ext_resource type="Script" uid="uid://b1hgbfym62rba" path="res://scripts/card_battle/battle_card_primary_effect.gd" id="1_1wvdc"]
+[ext_resource type="Script" uid="uid://cqlxwfe858g4h" path="res://scripts/card_battle/battle_card_data.gd" id="2_xmjqq"]
+
+[sub_resource type="Resource" id="Resource_1wvdc"]
+script = ExtResource("1_1wvdc")
+mode = 0
+target = 65
+min_effect = 2
+max_effect = 4
+effect_crit_base = 0
+crits_on_allies = false
+crits_on_enemies = true
+metadata/_custom_type_script = "uid://b1hgbfym62rba"
+
+[resource]
+script = ExtResource("2_xmjqq")
+id = "alarm"
+name = "Alarm"
+card_owner = 2
+rank = 1
+suit = 5
+primary_effects = Array[ExtResource("1_1wvdc")]([SubResource("Resource_1wvdc")])
+secondary_effects = Array[int]([2])
+metadata/_custom_type_script = "uid://cqlxwfe858g4h"
