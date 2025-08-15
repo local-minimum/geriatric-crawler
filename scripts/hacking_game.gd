@@ -44,8 +44,24 @@ static func calculate_attempts(robot: Robot, difficulty: int) -> int:
     var skill: int = robot.get_skill_level(RobotAbility.SKILL_BYPASS)
     return maxi(HackingGame.BASE_ATTEMPTS + skill - difficulty,  1)
 
-static func start(robot: Robot, difficulty: int, attempts: int, on_complete_success: Callable, on_complete_fail: Callable) -> void:
-    _instance._start(robot, difficulty, attempts, on_complete_success, on_complete_fail)
+static func start(
+    robot: Robot,
+    difficulty: int,
+    attempts: int,
+    alphabet: PackedStringArray,
+    passphrase: PackedStringArray,
+    on_complete_success: Callable,
+    on_complete_fail: Callable,
+) -> void:
+    _instance._start(
+        robot,
+        difficulty,
+        attempts,
+        alphabet,
+        passphrase,
+        on_complete_success,
+        on_complete_fail,
+    )
 
 signal on_change_attempts(attempts: int)
 signal on_solve_game(solution_start: Vector2i)
@@ -57,11 +73,11 @@ signal on_board_changed()
 
 var _danger: Danger
 var _difficulty: int
-var _attempts: int:
+var attempts_remaining: int:
     set(value):
-        _attempts = maxi(value, 0)
-        on_change_attempts.emit(_attempts)
-        if _attempts == 0 && !_solved:
+        attempts_remaining = maxi(value, 0)
+        on_change_attempts.emit(attempts_remaining)
+        if attempts_remaining == 0 && !_solved:
             on_fail_game.emit()
 
 var _on_complete_success: Callable
@@ -89,11 +105,22 @@ func _ready() -> void:
 func _handle_new_danger(danger: Danger) -> void:
     _danger = danger
 
-func _start(robot: Robot, difficulty: int, attempts: int, on_complete_success: Callable, on_complete_fail: Callable) -> void:
+func _start(
+    robot: Robot,
+    difficulty: int,
+    attempts: int,
+    alphabet: PackedStringArray,
+    passphrase: PackedStringArray,
+    on_complete_success: Callable,
+    on_complete_fail: Callable,
+) -> void:
     _robot = robot
     _solved = false
     _difficulty = difficulty
-    _attempts = attempts
+    attempts_remaining = attempts
+    _alphabet = alphabet
+    _passphrase = passphrase
+
     _on_complete_success = on_complete_success
     _on_complete_fail = on_complete_fail
 
@@ -101,8 +128,6 @@ func _start(robot: Robot, difficulty: int, attempts: int, on_complete_success: C
     discovered_not_present.clear()
     word_counts.clear()
 
-    _generate_alphabet()
-    _generate_passphrase()
     _create_solved_game_board()
     _shuffle_game_board()
     ui.show_game()
@@ -118,13 +143,14 @@ func _handle_punishment() -> void:
     # TODO: Add punishments
     pass
 
-func _generate_alphabet() -> void:
-    var n_letters: int = 8 + mini(_difficulty, 4) * 3
+static func generate_alphabet(difficulty: int) -> PackedStringArray:
+    var alphabet: PackedStringArray
+    var n_letters: int = 8 + mini(difficulty, 4) * 3
     var letters: PackedInt32Array
 
     @warning_ignore_start("return_value_discarded")
     letters.resize(n_letters)
-    _alphabet.resize(n_letters)
+    alphabet.resize(n_letters)
     @warning_ignore_restore("return_value_discarded")
 
     for idx: int in range(n_letters):
@@ -133,18 +159,22 @@ func _generate_alphabet() -> void:
             value = randi_range(0, 255)
 
         letters[idx] = value
-        _alphabet[idx] = "%02X" % value
+        alphabet[idx] = "%02X" % value
 
-func _generate_passphrase() -> void:
-    var n_letters: int = 3 + mini(3, _difficulty)
+    return alphabet
+
+static func generate_passphrase(difficulty: int, alphabet: PackedStringArray) -> PackedStringArray:
+    var passphrase: PackedStringArray
+    var n_letters: int = 3 + mini(3, difficulty)
     @warning_ignore_start("return_value_discarded")
-    _passphrase.resize(n_letters)
+    passphrase.resize(n_letters)
     @warning_ignore_restore("return_value_discarded")
 
     for idx: int in range(n_letters):
-        _passphrase[idx] = _alphabet[randi_range(0, _alphabet.size() - 1)]
+        passphrase[idx] = alphabet[randi_range(0, alphabet.size() - 1)]
 
-    print_debug("Passphrase is %s" % _passphrase)
+    # print_debug("Passphrase is %s" % passphrase)
+    return passphrase
 
 func _create_solved_game_board() -> void:
     var other_letters: Array[String]
@@ -403,7 +433,7 @@ func hack() -> void:
         current_length = 0
         next_letter = _passphrase[current_length]
 
-    _attempts -= 1
+    attempts_remaining -= 1
     var reduced_attempts: Array[Array]
     var reduced_statuses: Array[Array]
     _reduce_hacked_attempts(attempts, statuses, reduced_attempts, reduced_statuses)
@@ -429,7 +459,12 @@ func _has_unsused_word_occurance(word: String) -> bool:
 
     return false
 
-func _reduce_hacked_attempts(attempts: Array[Array], statuses: Array[Array], reduced_attempts: Array[Array], reduced_statuses: Array[Array]) -> void:
+func _reduce_hacked_attempts(
+    attempts: Array[Array],
+    statuses: Array[Array],
+    reduced_attempts: Array[Array],
+    reduced_statuses: Array[Array],
+) -> void:
     if statuses.size() == 0:
         return
 

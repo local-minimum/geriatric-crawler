@@ -78,7 +78,7 @@ func _tween_in_message(from_x_offset: float, duration: float) -> void:
     _tween.tween_property(self, "scale", Vector2.ONE, scale_fade_time).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
     _tween.parallel().tween_property(self, "modulate:a", 1.0, scale_fade_time)
 
-    print_debug("ease from %s" % from_x_offset)
+    # print_debug("ease from %s" % from_x_offset)
     _tween.parallel().tween_property(self, "position:x", original_pos.x, duration).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
     @warning_ignore_restore("return_value_discarded")
 

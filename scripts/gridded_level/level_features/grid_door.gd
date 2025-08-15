@@ -3,8 +3,7 @@ class_name GridDoor
 
 signal on_door_state_chaged()
 
-@export
-var animator: AnimationPlayer
+@export var animator: AnimationPlayer
 
 enum OpenAutomation { NONE, WALK_INTO, PROXIMITY, INTERACT }
 enum CloseAutomation { NONE, END_WALK, PROXIMITY }
@@ -18,58 +17,46 @@ static func lock_state_name(state: LockState) -> String:
         _:
             return "--UNKNOWN--"
 
-@export
-var _automation: OpenAutomation
+@export var _automation: OpenAutomation
 
-@export
-var _back_automation: OpenAutomation
+@export var _back_automation: OpenAutomation
 
-@export
-var _close_automation: CloseAutomation
+@export var _close_automation: CloseAutomation
 
-@export
-var _inital_lock_state: LockState = LockState.CLOSED
+@export var _inital_lock_state: LockState = LockState.CLOSED
 
-@export
-var _door_face: CardinalDirections.CardinalDirection
+@export var _door_face: CardinalDirections.CardinalDirection
+
 func get_side() -> CardinalDirections.CardinalDirection:
     return _door_face
 
-@export
-var door_down: CardinalDirections.CardinalDirection = CardinalDirections.CardinalDirection.DOWN
+@export var door_down: CardinalDirections.CardinalDirection = CardinalDirections.CardinalDirection.DOWN
 
-@export
-var _open_animation: String = "Open"
+@export var _open_animation: String = "Open"
 
-@export
-var _close_animation: String = "Close"
+@export var _close_animation: String = "Close"
 
-@export
-var _opened_animation: String = "Opened"
+@export var _opened_animation: String = "Opened"
 
-@export
-var _closed_animation: String = "Closed"
+@export var _closed_animation: String = "Closed"
 
 @export
 var block_traversal_anchor_sides: Array[CardinalDirections.CardinalDirection]
 
 ## If door is locked, this identifies what key unlocks it, omit the universal key-prefix
-@export
-var key_id: String
+@export var key_id: String
 
-@export
-var _consumes_key: bool
+@export var _consumes_key: bool
 
-@export_range(1, 4)
-var _lock_bypass_required_level: int = 1
+@export_range(1, 4) var _lock_bypass_required_level: int = 1
 
-@export_range(1, 10)
-var _lock_difficulty: int = 2
+@export_range(1, 10) var _lock_difficulty: int = 2
 
-@export
-var _hacking_danger: HackingGame.Danger
+@export var _hacking_danger: HackingGame.Danger
 
 var lock_state: LockState
+var _hacking_alphabet: PackedStringArray
+var _hacking_passphrase: PackedStringArray
 
 func _ready() -> void:
     lock_state = _inital_lock_state
@@ -350,10 +337,14 @@ func _trigger_hacking_prompt(puller: CameraPuller) -> void:
             NotificationsManager.info("Hacking", "Not worth the risk")
             puller.release_player(player),
         func () -> void:
+            _generate_hacking_parameters_if_needed(_lock_difficulty)
+
             HackingGame.start(
                 player.robot,
-                _lock_difficulty,
                 attempts,
+                _lock_difficulty,
+                _hacking_alphabet,
+                _hacking_passphrase,
                 func () -> void:
                     open_door()
                     puller.release_player(player),
@@ -361,6 +352,11 @@ func _trigger_hacking_prompt(puller: CameraPuller) -> void:
                     puller.release_player(player),
             )
     )
+
+func _generate_hacking_parameters_if_needed(difficulty: int) -> void:
+    if _hacking_alphabet.size() == 0 || _hacking_passphrase.size() == 0:
+        _hacking_alphabet = HackingGame.generate_alphabet(difficulty)
+        _hacking_passphrase = HackingGame.generate_passphrase(difficulty, _hacking_alphabet)
 
 func needs_saving() -> bool:
     return true
@@ -370,11 +366,15 @@ func save_key() -> String:
 
 const _LOCK_STATE_KEY: String = "lock"
 const _TRIGGERED_KEY: String = "triggered"
+const _HACKING_ALPHABET_KEY: String = "hacking-alphabet"
+const _HACKING_PASSPHRASE_KEY: String = "hacking-passkey"
 
 func collect_save_data() -> Dictionary:
     return {
         _LOCK_STATE_KEY: lock_state,
         _TRIGGERED_KEY: _triggered,
+        _HACKING_ALPHABET_KEY: _hacking_alphabet,
+        _HACKING_PASSPHRASE_KEY: _hacking_passphrase
     }
 
 func _deserialize_lockstate(state: int) -> LockState:
@@ -389,6 +389,9 @@ func _deserialize_lockstate(state: int) -> LockState:
 func load_save_data(data: Dictionary) -> void:
     print_debug("Door %s loads from %s" % [self, data])
     _triggered = DictionaryUtils.safe_getb(data, _TRIGGERED_KEY)
+    _hacking_alphabet = DictionaryUtils.safe_get_packed_string_array(data, _HACKING_PASSPHRASE_KEY)
+    _hacking_passphrase = DictionaryUtils.safe_get_packed_string_array(data, _HACKING_PASSPHRASE_KEY)
+
     var lock_state_int: int = DictionaryUtils.safe_geti(data, _LOCK_STATE_KEY)
     lock_state = _deserialize_lockstate(lock_state_int)
 

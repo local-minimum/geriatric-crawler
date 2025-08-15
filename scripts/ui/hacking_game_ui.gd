@@ -261,6 +261,8 @@ func _handle_attempts_updated(attempts: int) -> void:
     _attempt_button.disabled = out_of_attempts
 
     if out_of_attempts:
+        _deploy_worm_button.disabled = true
+        _deploy_bomb_button.disabled = true
         toggle_shift_buttons(true)
 
 func toggle_shift_buttons(disabled: bool) -> void:
@@ -699,6 +701,7 @@ func _cancel_bombing() -> void:
     toggle_word_controls(false)
     toggle_shift_buttons(false)
     _sync_inventory_actions()
+    _handle_attempts_updated(_game.attempts_remaining)
 
 func _ready_bombing() -> void:
     _bombing = true
@@ -716,6 +719,8 @@ func _cancel_worm() -> void:
     _worming_countdown.hide()
 
     _sync_inventory_actions()
+    _handle_attempts_updated(_game.attempts_remaining)
+
     _clear_drawn_worm()
     _worm.clear()
 

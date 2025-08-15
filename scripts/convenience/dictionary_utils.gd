@@ -65,3 +65,14 @@ static func safe_getd(dict: Dictionary, key: String, default: Dictionary = {}, w
         push_warning("Dictionary %s lacks key %s" % [dict, key])
 
     return default
+
+static func safe_get_packed_string_array(dict: Dictionary, key: String, default: PackedStringArray = [], warn: bool = true) -> PackedStringArray:
+    if dict.has(key):
+        if dict[key] is PackedStringArray:
+            return dict[key]
+        elif warn:
+            push_warning("Dictionary %s has %s on key %s, expected a PackedStringArray" % [dict, dict[key], key])
+    elif warn:
+        push_warning("Dictionary %s lacks key %s" % [dict, key])
+
+    return default
