@@ -220,6 +220,7 @@ func _disable_everything() -> void:
     _deploy_worm_button.disabled = true
 
 
+var _attempts: Array[String]
 var _best_attempt: Array[String]
 var _best_attempt_statuses: Array[HackingGame.WordStatus]
 
@@ -227,21 +228,25 @@ func _handle_new_attempts(attempts: Array[Array], statuses: Array[Array]) -> voi
     if attempts.size() == 0:
         return
 
-    if _best_attempt.size() > 0:
+    # We should always show best attempt on current board so best attempt from previous should move to history if novel
+    if _best_attempt.size() > 0 && !_attempts.has("".join(_best_attempt)):
         var hbox: HBoxContainer = HBoxContainer.new()
         attempt_history.add_child(hbox)
+        _attempts.append("".join(_best_attempt))
         _add_attempt_passphrase(hbox, _best_attempt, _best_attempt_statuses)
 
     _clear_container(most_recent_attempt)
     for idx: int in range(attempts.size()):
+        var phrase: String = "".join(attempts[idx])
         if idx == 0:
             _add_attempt_passphrase(most_recent_attempt, attempts[idx], statuses[idx])
             _best_attempt = attempts[idx]
             _best_attempt_statuses = statuses[idx]
-        else:
+        elif !_attempts.has(phrase):
             var hbox: HBoxContainer = HBoxContainer.new()
             attempt_history.add_child(hbox)
             _add_attempt_passphrase(hbox, attempts[idx], statuses[idx])
+            _attempts.append(phrase)
 
 func _add_attempt_passphrase(root: Container, attempt: Array[String], statuses: Array[HackingGame.WordStatus]) -> void:
     for idx: int in range(_game.get_passphrase_length()):
@@ -300,11 +305,13 @@ func show_game() -> void:
     _clear_container(most_recent_attempt)
     _clear_container(attempt_history)
 
-
     _field_labels.clear()
     _field_backgrounds.clear()
     _field_roots.clear()
     _shift_buttons.clear()
+    _attempts.clear()
+    _best_attempt.clear()
+    _best_attempt_statuses.clear()
 
     _setup_lower_field(columns, rows)
     _setup_field(columns)

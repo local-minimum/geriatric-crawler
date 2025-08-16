@@ -523,6 +523,15 @@ func _has_unsused_word_occurance(word: String) -> bool:
 
     return false
 
+static func _status_scoring(count: float, status: WordStatus) -> float:
+    match status:
+        WordStatus.CORRECT:
+            return count + 1.0
+        WordStatus.WRONG_POSITION:
+            return count + 0.7
+        _:
+            return count
+
 func _reduce_hacked_solutions(
     attempts: Array[Array],
     statuses: Array[Array],
@@ -533,6 +542,8 @@ func _reduce_hacked_solutions(
         return
 
     var sort_order: Array = range(statuses.size())
+
+
     sort_order.sort_custom(
         func (a_idx: int, b_idx: int) -> bool:
             var a: Array[WordStatus] = statuses[a_idx]
@@ -540,8 +551,8 @@ func _reduce_hacked_solutions(
             if a.size() > b.size():
                 return true
             elif a.size() == b.size():
-                var na: int = a.reduce(func (count: int, status: WordStatus) -> int: return count if status == WordStatus.DEFAULT else count + 1, 0)
-                var nb: int = b.reduce(func (count: int, status: WordStatus) -> int: return count if status == WordStatus.DEFAULT else count + 1, 0)
+                var na: float = a.reduce(_status_scoring, 0.0)
+                var nb: int = b.reduce(_status_scoring, 0.0)
                 return na > nb
 
             return false
