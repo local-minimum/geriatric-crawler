@@ -1,9 +1,17 @@
 extends Node
 class_name PunishmentDeck
 
+static var instance: PunishmentDeck
+
 @export var _deck: Array[BattleCardData]
 
 var _given_out_cards: Array[BattleCardData] = []
+
+func _ready() -> void:
+    instance = self
+
+func has(card: BattleCardData) -> bool:
+    return _deck.has(card)
 
 func get_random_card() -> BattleCardData:
     var _remaining: Array[BattleCardData] = _deck.filter(func (card: BattleCardData) -> bool: return !_given_out_cards.has(card))
@@ -15,6 +23,11 @@ func get_random_card() -> BattleCardData:
 
 
     return selected
+
+func return_card_id(id: String) -> void:
+    var idx: int = _given_out_cards.find_custom(func (card: BattleCardData) -> bool: return card.id == id)
+    if idx >= 0:
+        _given_out_cards.erase(_given_out_cards[idx])
 
 func return_card(card: BattleCardData) -> void:
     _given_out_cards.erase(card)

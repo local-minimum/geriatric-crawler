@@ -94,6 +94,18 @@ func obtain_upgrade(reward_full_id: String) -> void:
 func gain_card(card: BattleCardData) -> void:
     _obtained_cards.append(card)
 
+func remove_one_punishment_card() -> BattleCardData:
+    var idx: int = _obtained_cards.find_custom(func (card: BattleCardData) -> bool: return PunishmentDeck.instance.has(card))
+    if idx >= 0:
+        var card: BattleCardData = _obtained_cards[idx]
+        _obtained_cards.erase(card)
+        return card
+    return null
+
+func remove_all_punishment_cards() -> void:
+    while remove_one_punishment_card() != null:
+        pass
+
 const _NAME_KEY: String = "name"
 const _FIGHTS_KEY: String = "fights"
 const _ABILITIES_KEY: String = "abilites"

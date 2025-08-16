@@ -282,6 +282,10 @@ func clean_up_round() -> void:
 
 func clean_up_battle() -> void:
     super.clean_up_battle()
+    var card: BattleCardData = _robot.remove_one_punishment_card()
+    if card != null:
+        NotificationsManager.important("Inspiration", "Lost punishment card \"%s\"" % card.name)
+        PunishmentDeck.instance.return_card(card)
 
 func collect_save_data() -> Dictionary:
     var data: Dictionary = super.collect_save_data()

@@ -384,6 +384,7 @@ func _clean_up_round(exit_battle_cleanup: bool = false) -> void:
             enemy.on_end_turn.disconnect(_next_agent_turn)
             enemy.on_death.disconnect(_handle_enemy_death)
             enemy.clean_up_battle()
+
             return false
     )
 

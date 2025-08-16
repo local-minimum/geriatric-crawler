@@ -173,6 +173,12 @@ func clean_up_battle() -> void:
     super.clean_up_battle()
     _health = max_health
 
+    var gained_cards: Array[String] = deck.get_gained_card_ids()
+    deck.restore_start_deck()
+
+    for card_id: String in gained_cards:
+        PunishmentDeck.instance.return_card_id(card_id)
+
 func collect_save_data() -> Dictionary:
     var data: Dictionary = super.collect_save_data()
     data.merge({
