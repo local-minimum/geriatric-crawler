@@ -77,6 +77,7 @@ func prepare_hand() -> void:
 func play_actions(
     allies: Array[BattleEntity],
     enemies: Array[BattleEntity],
+    __hand: Array[BattleCardData] = [],
 ) -> void:
     _halted = false
     var previous: BattleCardData = null
@@ -102,8 +103,8 @@ func play_actions(
 
         var next: BattleCardData = _slotted[idx + 1] if idx < _slotted.size() - 1 else null
 
-        suit_bonus = get_suit_bonus(card, suit_bonus, _suit_bonus_step_size, previous, next, idx == 0)
-        rank_bonus = get_rank_bonus(card, rank_bonus, _rank_bonus_step_size, previous, rank_direction, next, idx == 0, _suit_bonus_on_descending)
+        suit_bonus = get_suit_bonus(card, suit_bonus, _suit_bonus_step_size, previous, next, idx == 0, _hand)
+        rank_bonus = get_rank_bonus(card, rank_bonus, _rank_bonus_step_size, previous, rank_direction, next, idx == 0, _suit_bonus_on_descending, _hand)
 
         if previous != null:
             rank_direction = signi(card.rank - previous.rank)

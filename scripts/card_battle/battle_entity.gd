@@ -21,11 +21,9 @@ var _health: int = -1:
         print_debug("%s health %s -> %s" % [name, _health, value])
         _health = value
 
-@export
-var max_health: int = 20
+@export var max_health: int = 20
 
-@export
-var sprite: Texture
+@export var sprite: Texture
 
 func _ready() -> void:
     if _health < 0:
@@ -92,6 +90,18 @@ func heal(amount: int) -> void:
 
     on_heal.emit(self, amount - (raw_new - _health), _health, overshoot)
 
+func _get_imposing_effects(
+    hand: Array[BattleCardData],
+) -> Array[BattleCardData.SecondaryEffect]:
+    var imposing_effects: Array[BattleCardData.SecondaryEffect]
+    for hand_card: BattleCardData in hand:
+        if hand_card.secondary_effects.has(BattleCardData.SecondaryEffect.IMPOSING):
+            for effect: BattleCardData.SecondaryEffect in hand_card.secondary_effects:
+                if effect != BattleCardData.SecondaryEffect.IMPOSING && !imposing_effects.has(effect):
+                    imposing_effects.append(effect)
+
+    return imposing_effects
+
 func get_rank_bonus(
     card: BattleCardData,
     rank_bonus: int,
@@ -101,7 +111,13 @@ func get_rank_bonus(
     _next_card: BattleCardData,
     first_card: bool,
     allow_descending: bool,
+    hand: Array[BattleCardData],
 ) -> int:
+    var imposing_effects: Array[BattleCardData.SecondaryEffect] = _get_imposing_effects(hand)
+
+    if imposing_effects.has(BattleCardData.SecondaryEffect.BREAKING):
+        return -step_size
+
     if prev_card == null:
         return rank_bonus if first_card else 0
 
@@ -117,12 +133,14 @@ func get_suit_bonus(
     prev_card: BattleCardData,
     next_card: BattleCardData,
     first_card: bool,
+    hand: Array[BattleCardData],
 ) -> int:
     var suited_rule: bool = false
 
-    var solid: bool = card.secondary_effects.has(BattleCardData.SecondaryEffect.Solid)
+    var solid: bool = card.secondary_effects.has(BattleCardData.SecondaryEffect.SOLID)
+    var imposing_effects: Array[BattleCardData.SecondaryEffect] = _get_imposing_effects(hand)
 
-    if card.secondary_effects.has(BattleCardData.SecondaryEffect.Accelerated):
+    if imposing_effects.has(BattleCardData.SecondaryEffect.ACCELERATED) || card.secondary_effects.has(BattleCardData.SecondaryEffect.ACCELERATED):
         if card.has_identical_suit(prev_card):
             suit_bonus = max(suit_bonus + 1, step_size * 2)
             suited_rule = true
@@ -130,13 +148,17 @@ func get_suit_bonus(
             suit_bonus = -step_size
             suited_rule = true
 
-    if card.secondary_effects.has(BattleCardData.SecondaryEffect.SuitedUp):
+    if imposing_effects.has(BattleCardData.SecondaryEffect.SUITED_UP) || card.secondary_effects.has(BattleCardData.SecondaryEffect.SUITED_UP):
         if card.has_suit_intersection(prev_card) && card.has_suit_intersection(next_card):
             suit_bonus += step_size
             suited_rule = true
         elif !solid:
             suit_bonus = 0
             suited_rule = true
+
+    if imposing_effects.has(BattleCardData.SecondaryEffect.BREAKING) || card.secondary_effects.has(BattleCardData.SecondaryEffect.BREAKING):
+        suit_bonus = -step_size
+        suited_rule = true
 
     if !suited_rule && (!first_card || prev_card != null):
         if card.has_suit_intersection(prev_card):
@@ -149,6 +171,7 @@ func get_suit_bonus(
 func play_actions(
     _allies: Array[BattleEntity],
     _enemies: Array[BattleEntity],
+    _hand: Array[BattleCardData] = [],
 ) -> void:
     pass
 

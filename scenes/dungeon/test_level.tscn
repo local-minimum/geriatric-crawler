@@ -45,7 +45,7 @@
 [ext_resource type="Resource" uid="uid://dva567754pdr" path="res://resources/punishment_cards/prepared_92.tres" id="43_24aia"]
 [ext_resource type="Resource" uid="uid://besdv604dohws" path="res://resources/punishment_cards/prepared_112.tres" id="44_yofnv"]
 
-[sub_resource type="Resource" id="Resource_1yhmj"]
+[sub_resource type="Resource" id="Resource_8b3qi"]
 resource_local_to_scene = true
 script = ExtResource("4_840jk")
 mode = 61
@@ -95,7 +95,7 @@ process_mode = 3
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0145968, -0.00857759, 0.00070858)
 spawn_node = NodePath("../LevelGeometry/Elevation 0/Node (0, 0, 1)")
 look_direction = 1
-transportation_abilities = SubResource("Resource_1yhmj")
+transportation_abilities = SubResource("Resource_8b3qi")
 transportation_mode = SubResource("Resource_pgxau")
 
 [node name="LevelGeometry" type="Node3D" parent="."]

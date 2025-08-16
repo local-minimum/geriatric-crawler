@@ -245,11 +245,12 @@ func _handle_update_slotted(cards: Array[BattleCard]) -> void:
     var idx: int = 0
     var suit_skill_step: int = get_suit_bonus_step()
     var rank_skill_step: int = get_rank_bonus_step()
+    var hand_cards: Array[BattleCardData] = battle_hand.cards_in_hand()
 
     for card: BattleCard in slotted_cards:
         var next_card: BattleCardData = slotted_cards[idx + 1].data if idx + 1 < slotted_cards.size() else null
-        acc_suit_bonus = battle_player.get_suit_bonus(card.data, acc_suit_bonus, suit_skill_step, prev_card, next_card, idx == 0)
-        acc_rank_bonus = battle_player.get_rank_bonus(card.data, acc_rank_bonus, rank_skill_step, prev_card, current_rank_direction, next_card, idx == 0, get_rank_bonus_allow_descending())
+        acc_suit_bonus = battle_player.get_suit_bonus(card.data, acc_suit_bonus, suit_skill_step, prev_card, next_card, idx == 0, hand_cards)
+        acc_rank_bonus = battle_player.get_rank_bonus(card.data, acc_rank_bonus, rank_skill_step, prev_card, current_rank_direction, next_card, idx == 0, get_rank_bonus_allow_descending(), hand_cards)
 
         if prev_card != null:
             current_rank_direction = signi(card.data.rank - prev_card.rank)
@@ -317,7 +318,7 @@ func _pass_action_turn() -> bool:
 
     if _player_initiative >= enemy_initiative:
         await get_tree().create_timer(next_entity_timeout).timeout
-        battle_player.play_actions(player_party, enemies)
+        battle_player.play_actions(player_party, enemies, battle_hand.cards_in_hand())
         _player_initiative = -1
         return true
 

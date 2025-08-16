@@ -6,17 +6,13 @@ signal on_slots_shown
 signal on_update_slotted(cards: Array[BattleCard])
 signal on_end_slotting
 
-@export
-var _slot_rects: Array[Control] = []
+@export var _slot_rects: Array[Control] = []
 
-@export
-var _max_y_delta: float = 80
+@export var _max_y_delta: float = 80
 
-@export
-var _lower_position_offset: float = 300
+@export var _lower_position_offset: float = 300
 
-@export
-var _done_slotting_cards_button: Button
+@export var _done_slotting_cards_button: Button
 
 var _origin: Vector2
 

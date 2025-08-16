@@ -15,15 +15,14 @@ signal on_after_execute_card()
 
 const _ID_KEY: String = "id"
 
-@export
-var character_id: String = "main"
+@export var character_id: String = "main"
 
-@export
-var _slots: BattleCardSlots
+@export var _slots: BattleCardSlots
 
 func play_actions(
     allies: Array[BattleEntity],
     enemies: Array[BattleEntity],
+    hand: Array[BattleCardData] = [],
 ) -> void:
     _halted = false
     on_start_turn.emit(self)
@@ -34,9 +33,11 @@ func play_actions(
 
     _allies = allies
     _enemies = enemies
+    _hand = hand
 
     _execute_next_card()
 
+var _hand: Array[BattleCardData]
 var _allies: Array[BattleEntity]
 var _enemies: Array[BattleEntity]
 var _active_card_index: int
@@ -80,6 +81,7 @@ func _execute_next_card() -> void:
         battle.previous_card if battle != null else null,
         next.data if next != null else null,
         _active_card_index == 0,
+        _hand,
     )
 
     rank_bonus = get_rank_bonus(
@@ -91,6 +93,7 @@ func _execute_next_card() -> void:
         next.data if next != null else null,
         _active_card_index == 0,
         battle.get_rank_bonus_allow_descending(),
+        _hand,
     )
 
 

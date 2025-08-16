@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="BattleCardData" load_steps=3 format=3 uid="uid://bm3cpmpqe3u6h"]
+
+[ext_resource type="Script" uid="uid://b1hgbfym62rba" path="res://scripts/card_battle/battle_card_primary_effect.gd" id="1_7htkm"]
+[ext_resource type="Script" uid="uid://cqlxwfe858g4h" path="res://scripts/card_battle/battle_card_data.gd" id="2_gda0o"]
+
+[resource]
+script = ExtResource("2_gda0o")
+id = "insecurities"
+name = "Insecurities"
+card_owner = 0
+rank = 999
+suit = 0
+primary_effects = Array[ExtResource("1_7htkm")]([])
+secondary_effects = Array[int]([2])
+metadata/_custom_type_script = "uid://cqlxwfe858g4h"

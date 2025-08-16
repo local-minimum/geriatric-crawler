@@ -11,11 +11,15 @@ enum CardCategory {Player, Enemy, Punishment}
 
 enum SecondaryEffect {
     ## There must be matching suit on both sides to not break crit
-    SuitedUp,
+    SUITED_UP,
     ## Keeping crit multiplies it by x2, breaking causes negative crit
-    Accelerated,
+    ACCELERATED,
     ## Cannot break crit multipliers
-    Solid,
+    SOLID,
+    ## Forces crit multipliers to be reset
+    BREAKING,
+    ## Secondary effects trigger while card is held in hand
+    IMPOSING,
 }
 
 static var _ALL_CARD: Dictionary[String, Dictionary] = {}
@@ -154,9 +158,11 @@ func secondary_effect_tooltips() -> Array[String]:
 
 static func secondary_effect_name(effect: SecondaryEffect) -> String:
     match effect:
-        SecondaryEffect.SuitedUp: return "Suited Up"
-        SecondaryEffect.Accelerated: return "Accelerated"
-        SecondaryEffect.Solid: return "Solid"
+        SecondaryEffect.SUITED_UP: return "Suited Up"
+        SecondaryEffect.ACCELERATED: return "Accelerated"
+        SecondaryEffect.SOLID: return "Solid"
+        SecondaryEffect.BREAKING: return "Breaking"
+        SecondaryEffect.IMPOSING: return "Imposing"
         _:
             push_error("%s doesn't have a name" % effect)
             print_stack()
@@ -164,9 +170,11 @@ static func secondary_effect_name(effect: SecondaryEffect) -> String:
 
 static func secondary_effect_tooltip(effect: SecondaryEffect) -> String:
     match effect:
-        SecondaryEffect.SuitedUp: return "Must be matching suits on both sides to not break bonus"
-        SecondaryEffect.Accelerated: return "Keeping crit duplicates bonus, breaking causes negative bonus"
-        SecondaryEffect.Solid: return "Crit multiplier cannot break due to this card"
+        SecondaryEffect.SUITED_UP: return "Must be matching suits on both sides to not break bonus"
+        SecondaryEffect.ACCELERATED: return "Keeping crit duplicates bonus, breaking causes negative bonus"
+        SecondaryEffect.SOLID: return "Crit multiplier cannot break due to this card"
+        SecondaryEffect.BREAKING: return "Forces crit multiplier to be set to negative"
+        SecondaryEffect.IMPOSING: return "Secondary effects also trigger while card is in hand"
         _:
             push_error("%s doesn't have a name" % effect)
             print_stack()

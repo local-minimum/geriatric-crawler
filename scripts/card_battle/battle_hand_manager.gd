@@ -5,23 +5,17 @@ signal on_hand_drawn
 signal on_hand_actions_complete
 signal on_hand_debug(msg: String)
 
-@export
-var _target_controls: Array[Control]
+@export var _target_controls: Array[Control]
 
-@export
-var _draw_time: float = 0.3
+@export var _draw_time: float = 0.3
 
-@export
-var _draw_delta: float = 0.2
+@export var _draw_delta: float = 0.2
 
-@export
-var _draw_origin: Control
+@export var _draw_origin: Control
 
-@export
-var slots: BattleCardSlots
+@export var slots: BattleCardSlots
 
-@export
-var min_card_places: int = 5
+@export var min_card_places: int = 5
 
 var hand: Array[BattleCard] = []
 var _connected_cards: Array[BattleCard] = []
@@ -42,8 +36,13 @@ func _ready() -> void:
     clear_hand()
     @warning_ignore_restore("return_value_discarded")
 
-func cards_in_hand() -> int:
-    return hand.size()
+func cards_in_hand() -> Array[BattleCardData]:
+    var cards: Array[BattleCardData] = []
+
+    for card: BattleCard in hand:
+        cards.append(card.data)
+
+    return cards
 
 #region INTERACTIVITY
 func _handle_end_slotting() -> void:
