@@ -333,9 +333,13 @@ func _trigger_hacking_prompt(puller: CameraPuller) -> void:
         _lock_difficulty,
         attempts,
         _hacking_danger,
+        func (danger: HackingGame.Danger) -> void:
+            _hacking_danger = danger
+            ,
         func () -> void:
             NotificationsManager.info("Hacking", "Not worth the risk")
-            puller.release_player(player),
+            puller.release_player(player)
+            ,
         func () -> void:
             _generate_hacking_parameters_if_needed(_lock_difficulty)
 
@@ -349,7 +353,32 @@ func _trigger_hacking_prompt(puller: CameraPuller) -> void:
                     open_door()
                     puller.release_player(player),
                 func () -> void:
-                    puller.release_player(player),
+                    var robot: Robot = player.robot
+                    var enemies: Array[BattleEnemy] = get_level().alive_enemies()
+                    var punishments: PunishmentDeck = get_level().punishments
+                    for _idx: int in range(HackingGame.danger_to_drawn_cards_count(_hacking_danger)):
+                        var card: BattleCardData = punishments.get_random_card()
+                        if card == null:
+                            break
+
+                        match card.card_owner:
+                            BattleCardData.Owner.SELF:
+                                robot.gain_card(card)
+                                NotificationsManager.important("Punishment", "Gained card \"%s\"" % card.name)
+                            BattleCardData.Owner.ENEMY:
+                                if enemies.is_empty():
+                                    push_warning("No enemy is alive, returning card %s" % card.name)
+                                    punishments.return_card(card)
+                                else:
+                                    var enemy: BattleEnemy = enemies[randi_range(0, enemies.size() - 1)]
+                                    enemy.deck.gain_card(card)
+                                    NotificationsManager.important("Punishment", "An enemy gained card \"%s\"" % card.name)
+
+                            BattleCardData.Owner.ALLY:
+                                push_warning("We don't know how to give a punishment to an ally yet, returning card %s" % card.name)
+                                punishments.return_card(card)
+                    puller.release_player(player)
+                    ,
             )
     )
 

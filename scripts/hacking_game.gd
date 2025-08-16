@@ -38,6 +38,32 @@ static func decrease_danger(danger: Danger) -> Danger:
             push_error("Danger %s not handled" % danger)
             return Danger.DEFAULT
 
+static func danger_to_drawn_cards_count(danger: Danger) -> int:
+    match danger:
+        Danger.LOW:
+            return 0 if randf() < 0.85 else 1
+        Danger.SLIGHT:
+            return 0 if randf() < 0.5 else 1
+        Danger.DEFAULT:
+            var v: float = randf()
+            if v < 0.05:
+                return 2
+            elif v < 0.9:
+                return 1
+            else:
+                return 0
+        Danger.SEVERE:
+            var v: float = randf()
+            if v < 0.1:
+                return 1
+            elif v < 0.8:
+                return 2
+            else:
+                return 3
+        _:
+            push_error("Danger %s not handled" % danger)
+            return 1
+
 static var _instance: HackingGame
 
 static func calculate_attempts(robot: Robot, difficulty: int) -> int:

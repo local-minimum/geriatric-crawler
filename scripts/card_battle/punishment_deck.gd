@@ -5,8 +5,6 @@ class_name PunishmentDeck
 
 var _given_out_cards: Array[BattleCardData] = []
 
-# TODO: Get back cards when entities dies
-
 func get_random_card() -> BattleCardData:
     var _remaining: Array[BattleCardData] = _deck.filter(func (card: BattleCardData) -> bool: return !_given_out_cards.has(card))
     if _remaining.is_empty():

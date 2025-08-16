@@ -3,8 +3,7 @@ class_name BattleModeTrigger
 
 var level: GridLevel
 
-@export
-var enemies: Array[BattleEnemy]
+@export var enemies: Array[BattleEnemy]
 
 func prepare(_encounter: GridEncounter) -> void:
     var focus: BattleEnemy = get_highest_scoring_live_enemy()

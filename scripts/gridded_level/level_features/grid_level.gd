@@ -85,6 +85,24 @@ func teleporters() -> Array[GridTeleporter]:
             _teleporters.append(teleporter)
     return _teleporters
 
+func alive_enemies() -> Array[BattleEnemy]:
+    var enemies: Array[BattleEnemy]
+
+    for entity: GridEntity in grid_entities:
+        if entity is GridEncounter:
+            var encounter: GridEncounter = entity
+            if !encounter.can_trigger():
+                continue
+
+            if encounter.effect is BattleModeTrigger:
+                var battle_trigger: BattleModeTrigger = encounter.effect
+
+                for enemy: BattleEnemy in battle_trigger.enemies:
+                    if enemy.is_alive():
+                        enemies.append(enemy)
+
+    return enemies
+
 ## Find the node which the position is inside if any.
 func get_grid_node_by_position(pos: Vector3) -> GridNode:
     pos /= node_size

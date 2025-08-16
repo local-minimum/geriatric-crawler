@@ -3,61 +3,46 @@ class_name  StartHackingDialog
 
 static var _instance: StartHackingDialog
 
+@export var _difficulty: Label
 
-signal on_change_danger(danger: HackingGame.Danger)
+@export var _attempts: Label
 
-@export
-var _difficulty: Label
+@export var _dangerous: Label
 
-@export
-var _attempts: Label
+@export var _danger_low_color: Color
 
-@export
-var _dangerous: Label
+@export var _danger_slight_color: Color
 
-@export
-var _danger_low_color: Color
+@export var _danger_default_color: Color
 
-@export
-var _danger_slight_color: Color
+@export var _danger_severe_color: Color
 
-@export
-var _danger_default_color: Color
+@export var _worms_label: Label
 
-@export
-var _danger_severe_color: Color
+@export var _worms_count: Label
 
-@export
-var _worms_label: Label
+@export var _bombs_label: Label
 
-@export
-var _worms_count: Label
+@export var _bombs_count: Label
 
-@export
-var _bombs_label: Label
+@export var _proxies_label: Label
 
-@export
-var _bombs_count: Label
+@export var _proxies_count: Label
 
-@export
-var _proxies_label: Label
-
-@export
-var _proxies_count: Label
-
-@export
-var _deploy_proxies_button: Button
+@export var _deploy_proxies_button: Button
 
 var _on_abort: Callable
 var _on_hack: Callable
 
 var _danger: HackingGame.Danger
+var _on_change_danger: Callable
 
 static func show_dialog(
     dialog_title: String,
     difficulty: int,
     attempts: int,
     danger: HackingGame.Danger,
+    on_change_danger: Callable,
     on_abort: Callable,
     on_hack: Callable,
 ) -> void:
@@ -70,6 +55,7 @@ static func show_dialog(
 
     _instance._on_abort = on_abort
     _instance._on_hack = on_hack
+    _instance._on_change_danger = on_change_danger
 
     _instance.show()
 
@@ -110,7 +96,6 @@ func _sync() -> void:
 
     _dangerous.text = HackingGame.danger_to_text(_danger)
     _dangerous.add_theme_color_override("font_color", danger_to_color(_danger))
-    on_change_danger.emit(_danger)
 
 func _on_canceled() -> void:
     hide()
@@ -128,7 +113,7 @@ func _on_deploy_proxy_button_pressed() -> void:
         return
 
     _danger = HackingGame.decrease_danger(_danger)
-    on_change_danger.emit(_danger)
+    _on_change_danger.call(_danger)
     _sync()
 
     NotificationsManager.info("Proxy", "Successfully deployed")

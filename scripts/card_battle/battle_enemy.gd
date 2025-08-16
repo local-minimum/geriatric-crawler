@@ -7,46 +7,36 @@ signal on_play_card(card: BattleCardData, suit_bonus: int, rank_bonus: int, paus
 static var _VARIANT_KEY: String = "variant"
 static var _LEVEL_KEY: String = "level"
 
+## This should be a unique ID within each battle mode trigger / group of enemies
+@export var id: String
+
 ## This is the variant ID of the enemy character in the blob, e.g. "space-slug". It shouldn't be unique. But if there are variants like "space-slug-lvl2" it should be named as such
-@export
-var variant_id: String
+@export var variant_id: String
 
 ## Human readable / display name
-@export
-var variant_name: String
+@export var variant_name: String
 
-@export
-var level: int
+@export var level: int
 
-@export
-var difficulty: int = 0
+@export var difficulty: int = 0
 
-@export
-var carried_credits: int = 0
+@export var carried_credits: int = 0
 
-@export
-var hand_size: int = 3
+@export var hand_size: int = 3
 
-@export
-var play_slots: int = 1
+@export var play_slots: int = 1
 
-@export
-var deck: BattleDeck
+@export var deck: EnemyBattleDeck
 
-@export
-var brain: BattleBrain
+@export var brain: BattleBrain
 
-@export
-var _target_system: BattleEnemyTargetSystem
+@export var _target_system: BattleEnemyTargetSystem
 
-@export
-var _rank_bonus_step_size: int = 1
+@export var _rank_bonus_step_size: int = 1
 
-@export
-var _suit_bonus_step_size: int = 0
+@export var _suit_bonus_step_size: int = 0
 
-@export
-var _suit_bonus_on_descending: bool
+@export var _suit_bonus_on_descending: bool
 
 var _hand: Array[BattleCardData]
 var _slotted: Array[BattleCardData]

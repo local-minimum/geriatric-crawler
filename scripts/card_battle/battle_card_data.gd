@@ -24,21 +24,21 @@ enum SecondaryEffect {
 
 static var _ALL_CARD: Dictionary[String, Dictionary] = {}
 
-static func _card_category_name(category: CardCategory, enemy_id: String = "") -> String:
+static func _card_category_name(category: CardCategory, enemy_variant_id: String = "") -> String:
     match category:
         CardCategory.Player: return "player"
         CardCategory.Enemy:
-            if enemy_id != "":
-                return "enemy-%s" % enemy_id
+            if enemy_variant_id != "":
+                return "enemy-%s" % enemy_variant_id
             return "enemy"
         _: return "unknown"
 
-static func _card_category_path(category: CardCategory, enemy_id: String = "") -> String:
+static func _card_category_path(category: CardCategory, enemy_variant_id: String = "") -> String:
     match category:
         CardCategory.Player: return "res://resources/player_cards"
         CardCategory.Enemy:
-            if enemy_id != "" && !enemy_id.contains("/") && !enemy_id.contains("."):
-                return "res://resources/enemy_cards/%s" % enemy_id
+            if enemy_variant_id != "" && !enemy_variant_id.contains("/") && !enemy_variant_id.contains("."):
+                return "res://resources/enemy_cards/%s_cards" % enemy_variant_id
 
             return "res://resources/enemy_cards"
         CardCategory.Punishment:
@@ -76,25 +76,33 @@ static func get_card_by_id(category: CardCategory, card_id: String, enemy_id: St
 
     return null
 
-@export
-var id: String
+@export var id: String
 
 func base_id() -> String:
     return id.substr(0, id.rfind("-"))
 
-@export
-var name: String
+@export var name: String
 
-enum Owner { Self, Ally, Enemy }
+enum Owner { SELF, ALLY, ENEMY }
 
-@export
-var card_owner: Owner
+static func name_owner(owner: Owner) -> String:
+    match owner:
+        Owner.SELF:
+            return "Self/Player"
+        Owner.ALLY:
+            return "Ally"
+        Owner.ENEMY:
+            return "Enemy"
+        _:
+            push_error("Owner %s not handled" % owner)
+            return "Unknown (%s)" % owner
 
-@export
-var rank: int
 
-@export_flags("Electricity", "Metal", "Data")
-var suit: int = 0
+@export var card_owner: Owner
+
+@export var rank: int
+
+@export_flags("Electricity", "Metal", "Data") var suit: int = 0
 
 func suits() -> Array[int]:
     var flags: Array[int] = []
@@ -133,14 +141,11 @@ static func suit_name(suit_flag: int) -> String:
             print_stack()
             return ""
 
-@export
-var icon: Texture
+@export var icon: Texture
 
-@export
-var primary_effects: Array[BattleCardPrimaryEffect] = []
+@export var primary_effects: Array[BattleCardPrimaryEffect] = []
 
-@export
-var secondary_effects: Array[SecondaryEffect] = []
+@export var secondary_effects: Array[SecondaryEffect] = []
 
 func secondary_effect_names() -> Array[String]:
     var names: Array[String] = []

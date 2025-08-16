@@ -1345,6 +1345,7 @@ metadata/_custom_type_script = "uid://b3kob7bivk342"
 
 [node name="Target Dummy AI" type="Node" parent="Encounters/Target Dummy Blob/Battle Trigger" node_paths=PackedStringArray("deck", "brain", "_target_system")]
 script = ExtResource("11_fxt0s")
+id = "first"
 variant_id = "target-dummy"
 variant_name = "Target Dummy"
 level = 1
@@ -1394,6 +1395,7 @@ metadata/_custom_type_script = "uid://b3kob7bivk342"
 
 [node name="Target Dummy AI" type="Node" parent="Encounters/Multi Encounter Repeat/Repeat Battle Trigger" node_paths=PackedStringArray("deck", "brain", "_target_system")]
 script = ExtResource("11_fxt0s")
+id = "first"
 variant_id = "target-dummy"
 variant_name = "Target Dummy"
 level = 1
@@ -1420,6 +1422,7 @@ metadata/_custom_type_script = "uid://6vnrccj8frlq"
 
 [node name="Target Dummy AI (2)" type="Node" parent="Encounters/Multi Encounter Repeat/Repeat Battle Trigger" node_paths=PackedStringArray("deck", "brain", "_target_system")]
 script = ExtResource("11_fxt0s")
+id = "second"
 variant_id = "target-dummy"
 variant_name = "Target Dummy"
 level = 1

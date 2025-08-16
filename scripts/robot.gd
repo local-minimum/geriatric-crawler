@@ -5,14 +5,11 @@ signal on_robot_death(robot: Robot)
 signal on_robot_complete_fight(robot: Robot)
 signal on_robot_loaded(robot: Robot)
 
-@export
-var _player: GridPlayer
+@export var _player: GridPlayer
 
-@export
-var model: RobotModel
+@export var model: RobotModel
 
-@export
-var given_name: String
+@export var given_name: String
 
 var _obtained_cards: Array[BattleCardData]
 var _obtained_upgrades: Array[RobotAbility]
@@ -94,6 +91,8 @@ func obtain_upgrade(reward_full_id: String) -> void:
     else:
         _obtained_upgrades.append(reward)
 
+func gain_card(card: BattleCardData) -> void:
+    _obtained_cards.append(card)
 
 const _NAME_KEY: String = "name"
 const _FIGHTS_KEY: String = "fights"
@@ -130,17 +129,23 @@ func load_from_save(data: Dictionary) -> void:
 
     _obtained_cards.clear()
 
-    for card_id: Variant in DictionaryUtils.safe_geta(data, _OBTAINED_CARDS_KEY):
-        if card_id is String:
-            @warning_ignore_start("unsafe_call_argument")
+    for id: Variant in DictionaryUtils.safe_geta(data, _OBTAINED_CARDS_KEY):
+        if id is String:
+            var card_id: String = id
             var card: BattleCardData = BattleCardData.get_card_by_id(BattleCardData.CardCategory.Player, card_id)
-            @warning_ignore_restore("unsafe_call_argument")
             if card == null:
-                push_warning("%s couldn't be found among player cards" % card_id)
+                card = BattleCardData.get_card_by_id(BattleCardData.CardCategory.Punishment, card_id)
+                if card == null:
+                    push_warning("%s couldn't be found among player or punishment cards" % card_id)
+                elif card.card_owner != BattleCardData.Owner.SELF:
+                    push_warning("%s is not a player card but %s" % [card_id, BattleCardData.name_owner(card.card_owner)])
+                else:
+                    _obtained_cards.append(card)
+
             else:
                 _obtained_cards.append(card)
         else:
-            push_warning("%s is not a string value (expected on %s in %s)" % [card_id, _OBTAINED_CARDS_KEY, data])
+            push_warning("%s is not a string value (expected on %s in %s)" % [id, _OBTAINED_CARDS_KEY, data])
 
     _sync_player_transportation_mode()
 
