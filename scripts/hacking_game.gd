@@ -156,6 +156,9 @@ func _start(
 
     _create_solved_game_board()
     _shuffle_game_board()
+
+    print_debug("Hacking: passphrase is %s" % passphrase)
+
     ui.show_game()
 
 func end_game() -> void:
@@ -394,12 +397,20 @@ var _current_pass_try: Array[bool]
 
 func hack() -> void:
     var attempts: Array[Array]
-    var statuses: Array[Array]
+    var solutions: Array[Array]
     var attempt: Array[String]
     var solution: Array[WordStatus]
+    var word_locations: Array[int]
 
-    var current_length: int = 0
-    var next_letter: String = _passphrase[0]
+    var part_counts: Dictionary[String, int]
+
+    var passphrase_length: int = _passphrase.size()
+
+    for part: String in _passphrase:
+        if part_counts.has(part):
+            part_counts[part] += 1
+        else:
+            part_counts[part] = 1
 
     for row: int in range(height):
         _current_pass_try.clear()
@@ -407,65 +418,89 @@ func hack() -> void:
         _current_pass_try.resize(_passphrase.size())
         @warning_ignore_restore("return_value_discarded")
 
-        for col: int in range(width):
-            var status: WordStatus = _statuses[row][col]
-            if status == WordStatus.DESTROYED:
+        var base_col: int = -1
+        while base_col < width - 1:
+            base_col += 1
+
+            solution = []
+            word_locations.clear()
+            var parts: Dictionary[String, int] = part_counts.duplicate()
+
+            var first_correct: bool
+
+            for first_pass_idx: int in range(passphrase_length):
+                var col: int = base_col + first_pass_idx
+                if col >= width:
+                    break
+
+                var status: WordStatus = _statuses[row][col]
+                while status == WordStatus.DESTROYED:
+                    base_col += 1
+                    col = base_col + first_pass_idx
+                    if col >= width:
+                        break
+                    status = _statuses[row][col]
+
+                if col >= width:
+                    break
+
+                var word: String = _board[row][col]
+                word_locations.append(col)
+
+                if word == _passphrase[first_pass_idx]:
+                    if first_pass_idx == 0:
+                        first_correct = true
+                    solution.append(WordStatus.CORRECT)
+                    parts[word] -= 1
+                elif !first_correct:
+                    break
+                else:
+                    solution.append(WordStatus.DEFAULT)
+
+            if !first_correct:
+                _statuses[row][base_col] = WordStatus.DEFAULT
                 continue
 
-            var word: String = _board[row][col]
+            print_debug("Hacking: locs %s solution %s" % [word_locations, solution])
 
-            if word == next_letter:
-                if current_length == 0:
-                    solution = [WordStatus.CORRECT]
-                    statuses.append(solution)
-                    attempt = [word]
-                    attempts.append(attempt)
-                    current_length += 1
-                elif _has_unsused_word_occurance(word):
-                    solution.append(WordStatus.CORRECT)
-                    attempt.append(word)
-                    current_length += 1
-                    if current_length >= _passphrase.size():
-                        current_length = 0
+            var idx: int = -1
+
+            for col: int in word_locations:
+                idx += 1
+
+                if solution[idx] == WordStatus.CORRECT:
+                    _statuses[row][col] = WordStatus.CORRECT
+                    base_col = col
+                    continue
+
+                var word: String = _board[row][col]
+                if parts.get(word, 0) > 0:
+                    _statuses[row][col] = WordStatus.WRONG_POSITION
+                    solution[idx] = WordStatus.WRONG_POSITION
+
+                    parts[word] -= 1
+                    base_col = col
                 else:
-                    current_length = 0
-                    solution = [WordStatus.CORRECT]
-                    statuses.append(solution)
-                    attempt = [word]
-                    attempts.append(attempt)
+                    word_locations = word_locations.slice(0, word_locations.find(col))
+                    solution = solution.slice(0, word_locations.size())
+                    break
 
-                _statuses[row][col] = WordStatus.CORRECT
-                if !discovered_present.has(word):
-                    discovered_present.append(word)
+            attempt = []
 
-            elif current_length > 0 && _has_unsused_word_occurance(word):
-                _statuses[row][col] = WordStatus.WRONG_POSITION
-                solution.append(WordStatus.WRONG_POSITION)
-                attempt.append(word)
-                if !discovered_present.has(word):
-                    discovered_present.append(word)
+            for phrase_idx: int in range(passphrase_length):
+                if phrase_idx < solution.size():
+                    attempt.append(_board[row][word_locations[phrase_idx]])
+                else:
+                    attempt.append("??")
+                    solution.append(WordStatus.DEFAULT)
 
-                current_length += 1
-                if current_length >= _passphrase.size():
-                    current_length = 0
-
-            else:
-                if current_length > 0:
-                    if !discovered_present.has(word) && !discovered_not_present.has(word):
-                        discovered_not_present.append(word)
-
-                _statuses[row][col] = WordStatus.DEFAULT
-                current_length = 0
-
-            next_letter = _passphrase[current_length]
-
-        current_length = 0
-        next_letter = _passphrase[current_length]
+            solutions.append(solution)
+            attempts.append(attempt)
 
     attempts_remaining -= 1
     var reduced_attempts: Array[Array]
     var reduced_statuses: Array[Array]
-    _reduce_hacked_attempts(attempts, statuses, reduced_attempts, reduced_statuses)
+    _reduce_hacked_solutions(attempts, solutions, reduced_attempts, reduced_statuses)
 
     on_new_attempts.emit(reduced_attempts, reduced_statuses)
 
@@ -488,7 +523,7 @@ func _has_unsused_word_occurance(word: String) -> bool:
 
     return false
 
-func _reduce_hacked_attempts(
+func _reduce_hacked_solutions(
     attempts: Array[Array],
     statuses: Array[Array],
     reduced_attempts: Array[Array],
@@ -505,7 +540,9 @@ func _reduce_hacked_attempts(
             if a.size() > b.size():
                 return true
             elif a.size() == b.size():
-                return a.count(WordStatus.CORRECT) > b.count(WordStatus.CORRECT)
+                var na: int = a.reduce(func (count: int, status: WordStatus) -> int: return count if status == WordStatus.DEFAULT else count + 1, 0)
+                var nb: int = b.reduce(func (count: int, status: WordStatus) -> int: return count if status == WordStatus.DEFAULT else count + 1, 0)
+                return na > nb
 
             return false
     )
