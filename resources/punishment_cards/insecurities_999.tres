@@ -11,5 +11,5 @@ card_owner = 0
 rank = 999
 suit = 0
 primary_effects = Array[ExtResource("1_7htkm")]([])
-secondary_effects = Array[int]([2])
+secondary_effects = Array[int]([4, 3])
 metadata/_custom_type_script = "uid://cqlxwfe858g4h"

@@ -9,25 +9,22 @@ signal on_level_loaded
 const LEVEL_GROUP: String = "grid-level"
 const UNKNOWN_LEVEL_ID: String = "--unknown--"
 
-@export
-var level_id: String = UNKNOWN_LEVEL_ID
+@export var level_id: String = UNKNOWN_LEVEL_ID
 
-@export
-var node_size: Vector3 = Vector3(3, 3, 3)
+@export var node_size: Vector3 = Vector3(3, 3, 3)
 
-@export
-var node_spacing: Vector3 = Vector3.ZERO
+@export var node_spacing: Vector3 = Vector3.ZERO
 
-@export
-var player: GridPlayer:
+@export var player: GridPlayer:
     set(value):
         player = value
         on_change_player.emit()
 
 var grid_entities: Array[GridEntity]
 
-@export
-var level_geometry: Node3D
+@export var level_geometry: Node3D
+
+@export var punishments: PunishmentDeck
 
 var paused: bool:
     set(value):

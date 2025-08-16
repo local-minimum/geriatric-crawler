@@ -1,4 +1,4 @@
-[gd_scene load_steps=55 format=3 uid="uid://dwqcwbgj8p6q0"]
+[gd_scene load_steps=60 format=3 uid="uid://dwqcwbgj8p6q0"]
 
 [ext_resource type="Script" uid="uid://dqe42q7uub84r" path="res://scripts/gridded_level/level_features/grid_level.gd" id="1_dd1ob"]
 [ext_resource type="PackedScene" uid="uid://bfoog3fb4v5ij" path="res://scenes/dungeon/player.tscn" id="3_m6mav"]
@@ -44,6 +44,11 @@
 [ext_resource type="Resource" uid="uid://5qbqaeomm43n" path="res://resources/punishment_cards/prepared_82.tres" id="42_gbgif"]
 [ext_resource type="Resource" uid="uid://dva567754pdr" path="res://resources/punishment_cards/prepared_92.tres" id="43_24aia"]
 [ext_resource type="Resource" uid="uid://besdv604dohws" path="res://resources/punishment_cards/prepared_112.tres" id="44_yofnv"]
+[ext_resource type="Resource" uid="uid://1pw2cjx0jp1e" path="res://resources/punishment_cards/insecurities_919.tres" id="45_c0fn3"]
+[ext_resource type="Resource" uid="uid://dq318esh2htw2" path="res://resources/punishment_cards/insecurities_939.tres" id="46_7crhe"]
+[ext_resource type="Resource" uid="uid://dp3g7x083gv0t" path="res://resources/punishment_cards/insecurities_959.tres" id="47_gbgif"]
+[ext_resource type="Resource" uid="uid://bdwpemc2r72sv" path="res://resources/punishment_cards/insecurities_979.tres" id="48_24aia"]
+[ext_resource type="Resource" uid="uid://bm3cpmpqe3u6h" path="res://resources/punishment_cards/insecurities_999.tres" id="49_yofnv"]
 
 [sub_resource type="Resource" id="Resource_8b3qi"]
 resource_local_to_scene = true
@@ -84,11 +89,12 @@ transparency = 1
 material = SubResource("StandardMaterial3D_632b7")
 size = Vector2(0.8, 1.2)
 
-[node name="TestLevel" type="Node3D" node_paths=PackedStringArray("player", "level_geometry")]
+[node name="TestLevel" type="Node3D" node_paths=PackedStringArray("player", "level_geometry", "punishments")]
 script = ExtResource("1_dd1ob")
 node_size = Vector3(2.5, 2.5, 2.5)
 player = NodePath("Player")
 level_geometry = NodePath("LevelGeometry")
+punishments = NodePath("PunishmentDeck")
 
 [node name="Player" parent="." node_paths=PackedStringArray("spawn_node") instance=ExtResource("3_m6mav")]
 process_mode = 3
@@ -1447,4 +1453,4 @@ metadata/_custom_type_script = "uid://bl72bpxm44td8"
 
 [node name="PunishmentDeck" type="Node" parent="."]
 script = ExtResource("34_dw5j8")
-_deck = Array[ExtResource("13_26eu7")]([ExtResource("35_8b3qi"), ExtResource("36_n7uqk"), ExtResource("37_lod2g"), ExtResource("38_5d85i"), ExtResource("39_y5a4i"), ExtResource("40_c0fn3"), ExtResource("41_7crhe"), ExtResource("42_gbgif"), ExtResource("43_24aia"), ExtResource("44_yofnv")])
+_deck = Array[ExtResource("13_26eu7")]([ExtResource("35_8b3qi"), ExtResource("36_n7uqk"), ExtResource("37_lod2g"), ExtResource("38_5d85i"), ExtResource("39_y5a4i"), ExtResource("40_c0fn3"), ExtResource("41_7crhe"), ExtResource("42_gbgif"), ExtResource("43_24aia"), ExtResource("44_yofnv"), ExtResource("45_c0fn3"), ExtResource("46_7crhe"), ExtResource("47_gbgif"), ExtResource("48_24aia"), ExtResource("49_yofnv")])
