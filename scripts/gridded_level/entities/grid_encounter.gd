@@ -163,7 +163,7 @@ func load_from_save(level: GridLevel, save_data: Dictionary) -> void:
     sync_position()
     orient()
 
-    var enemy_cards: Dictionary = DictionaryUtils.safe_getd(save_data, _ENEMY_GAINED_CARDS_KEY)
+    var enemy_cards: Dictionary = DictionaryUtils.safe_getd(save_data, _ENEMY_GAINED_CARDS_KEY, {}, false)
     _load_enemy_cards(enemy_cards)
 
     _connect_player_callbacks(level)
@@ -178,7 +178,7 @@ func _load_enemy_cards(enemy_cards: Dictionary) -> void:
     for enemy: BattleEnemy in trigger.enemies:
         enemy.deck.restore_start_deck()
 
-        var enemy_gained_cards: Array = DictionaryUtils.safe_geta(enemy_cards, enemy.id)
+        var enemy_gained_cards: Array = DictionaryUtils.safe_geta(enemy_cards, enemy.id, [], false)
         for id: Variant in enemy_gained_cards:
             if id is not String:
                 push_warning("%s is not a string value (expected on %s in %s)" % [id, enemy_gained_cards])
@@ -189,7 +189,7 @@ func _load_enemy_cards(enemy_cards: Dictionary) -> void:
             if card == null:
                 card = BattleCardData.get_card_by_id(BattleCardData.CardCategory.Punishment, card_id)
                 if card == null:
-                    push_warning("%s couldn't be found among enemy %s or punishment cards" % [enemy.variant_id, card_id])
+                    push_warning("%s (%s): %s couldn't be found among enemy or punishment cards" % [enemy.variant_id, enemy.id, card_id])
                 elif card.card_owner != BattleCardData.Owner.ENEMY:
                     push_warning("%s is not an enemy card but %s" % [card_id, BattleCardData.name_owner(card.card_owner)])
                 else:

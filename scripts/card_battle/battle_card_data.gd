@@ -47,20 +47,25 @@ static func _card_category_path(category: CardCategory, enemy_variant_id: String
 
 static func _load_cards_cateogry(category: CardCategory, enemy_id: String = "") -> void:
     var key: String = _card_category_name(category, enemy_id)
-    var cards: Dictionary[String, BattleCardData] = _ALL_CARD.get(key)
+    var cards: Dictionary = _ALL_CARD.get(key, {})
 
     var dir_path: String = _card_category_path(category, enemy_id)
+    print_debug("Loading Cards in %s" % dir_path)
+
     for file_name: String in DirAccess.get_files_at(dir_path):
-        if file_name.get_extension() == "import":
-            file_name = file_name.replace(".import", "")
-            if file_name.get_extension() != "tres":
-                continue
-            var resource: Resource = ResourceLoader.load("%s%s" % [dir_path, file_name])
+        # print_debug("Loading Cards considering %s" % file_name)
 
-            if resource is BattleCardData:
-                var card: BattleCardData = resource
+        if file_name.get_extension() != "tres":
+            continue
 
-                cards[card.id] = card as BattleCardData
+        var resource: Resource = ResourceLoader.load("%s/%s" % [dir_path, file_name])
+
+        if resource is BattleCardData:
+            var card: BattleCardData = resource
+
+            cards[card.id] = card as BattleCardData
+
+            # print_debug("Loading Card %s" % card.id)
 
     _ALL_CARD[key] = cards
 

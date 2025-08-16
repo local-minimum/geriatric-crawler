@@ -148,6 +148,7 @@ func _execute_effect(
     else:
         target_order = _target_system.get_target_order(effect, bonus, targets, n_targets, allies)
 
+    n_targets = mini(n_targets, targets.size())
     for i: int in range(n_targets):
         var target: BattleEntity = targets[target_order[i]]
 

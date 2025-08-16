@@ -5,7 +5,7 @@
 
 [resource]
 script = ExtResource("2_xw1ws")
-id = "insecurities"
+id = "insecurities_979"
 name = "Insecurities"
 card_owner = 0
 rank = 979

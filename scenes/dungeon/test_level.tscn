@@ -18,17 +18,17 @@
 [ext_resource type="PackedScene" uid="uid://dt4v126jk07y8" path="res://scenes/dungeon/ramp.tscn" id="12_wymjw"]
 [ext_resource type="Script" uid="uid://cqlxwfe858g4h" path="res://scripts/card_battle/battle_card_data.gd" id="13_26eu7"]
 [ext_resource type="Script" uid="uid://c4gjxrt0ydalx" path="res://scripts/card_battle/enemy_battle_deck.gd" id="13_632b7"]
-[ext_resource type="Resource" uid="uid://q0csyt611j40" path="res://resources/enemy_cards/enemy_training_dummy_cards/training_dummy_bandage_20.tres" id="14_s5loo"]
+[ext_resource type="Resource" uid="uid://q0csyt611j40" path="res://resources/enemy_cards/target-dummy_cards/dummy-bandage-20.tres" id="14_s5loo"]
 [ext_resource type="PackedScene" uid="uid://ejop3mdqfxic" path="res://scenes/dungeon/teleporter.tscn" id="14_sn1co"]
 [ext_resource type="PackedScene" uid="uid://ddhx074rsdkqs" path="res://scenes/dungeon/door.tscn" id="14_wymjw"]
-[ext_resource type="Resource" uid="uid://dlslhx2nfiahd" path="res://resources/enemy_cards/enemy_training_dummy_cards/training_dummy_bandage_245.tres" id="15_632b7"]
+[ext_resource type="Resource" uid="uid://dlslhx2nfiahd" path="res://resources/enemy_cards/target-dummy_cards/dummy-bandage-245.tres" id="15_632b7"]
 [ext_resource type="PackedScene" uid="uid://cd55qnu3gk7he" path="res://scenes/dungeon/stairs.tscn" id="15_sy7nh"]
-[ext_resource type="Resource" uid="uid://cbhpqqpyr05fu" path="res://resources/enemy_cards/enemy_training_dummy_cards/training_dummy_blank_200.tres" id="16_n55gf"]
-[ext_resource type="Resource" uid="uid://jqj3jm50pkqs" path="res://resources/enemy_cards/enemy_training_dummy_cards/training_dummy_blank_420.tres" id="17_idbts"]
-[ext_resource type="Resource" uid="uid://bodhea2xa1exq" path="res://resources/enemy_cards/enemy_training_dummy_cards/training_dummy_blank_700.tres" id="18_j1mj1"]
-[ext_resource type="Resource" uid="uid://cgq448x54hl2k" path="res://resources/enemy_cards/enemy_training_dummy_cards/training_dummy_shield_up_65.tres" id="19_7gan6"]
-[ext_resource type="Resource" uid="uid://ea7mbheiqimg" path="res://resources/enemy_cards/enemy_training_dummy_cards/training_dummy_shield_up_330.tres" id="20_sn1co"]
-[ext_resource type="Resource" uid="uid://c0fagwlpy72ds" path="res://resources/enemy_cards/enemy_training_dummy_cards/training_dummy_shield_up_950.tres" id="21_wymjw"]
+[ext_resource type="Resource" uid="uid://cbhpqqpyr05fu" path="res://resources/enemy_cards/target-dummy_cards/dummy-blank-200.tres" id="16_n55gf"]
+[ext_resource type="Resource" uid="uid://jqj3jm50pkqs" path="res://resources/enemy_cards/target-dummy_cards/dummy-blank-420.tres" id="17_idbts"]
+[ext_resource type="Resource" uid="uid://bodhea2xa1exq" path="res://resources/enemy_cards/target-dummy_cards/dummy-blank-700.tres" id="18_j1mj1"]
+[ext_resource type="Resource" uid="uid://cgq448x54hl2k" path="res://resources/enemy_cards/target-dummy_cards/dummy-shield-up-65.tres" id="19_7gan6"]
+[ext_resource type="Resource" uid="uid://ea7mbheiqimg" path="res://resources/enemy_cards/target-dummy_cards/dummy-shield-up-330.tres" id="20_sn1co"]
+[ext_resource type="Resource" uid="uid://c0fagwlpy72ds" path="res://resources/enemy_cards/target-dummy_cards/dummy-shield-up-950.tres" id="21_wymjw"]
 [ext_resource type="Script" uid="uid://dtq2v31avcen2" path="res://scripts/card_battle/battle_brain.gd" id="22_rcxcv"]
 [ext_resource type="Script" uid="uid://qbk2psf0rmnw" path="res://scripts/card_battle/battle_strategy.gd" id="22_sy7nh"]
 [ext_resource type="Script" uid="uid://6vnrccj8frlq" path="res://scripts/card_battle/battle_enemy_target_system.gd" id="25_s5loo"]
@@ -50,7 +50,7 @@
 [ext_resource type="Resource" uid="uid://bdwpemc2r72sv" path="res://resources/punishment_cards/insecurities_979.tres" id="48_24aia"]
 [ext_resource type="Resource" uid="uid://bm3cpmpqe3u6h" path="res://resources/punishment_cards/insecurities_999.tres" id="49_yofnv"]
 
-[sub_resource type="Resource" id="Resource_8b3qi"]
+[sub_resource type="Resource" id="Resource_c0fn3"]
 resource_local_to_scene = true
 script = ExtResource("4_840jk")
 mode = 61
@@ -101,7 +101,7 @@ process_mode = 3
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0145968, -0.00857759, 0.00070858)
 spawn_node = NodePath("../LevelGeometry/Elevation 0/Node (0, 0, 1)")
 look_direction = 1
-transportation_abilities = SubResource("Resource_8b3qi")
+transportation_abilities = SubResource("Resource_c0fn3")
 transportation_mode = SubResource("Resource_pgxau")
 
 [node name="LevelGeometry" type="Node3D" parent="."]

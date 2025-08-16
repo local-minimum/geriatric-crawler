@@ -167,7 +167,6 @@ func _sync_player_transportation_mode() -> void:
             _player.transportation_abilities.remove_flag(TransportationMode.WALL_WALKING)
             _player.transportation_abilities.remove_flag(TransportationMode.CEILING_WALKING)
         1:
-            # TODO: When we have stairs, allow on this level
             _player.transportation_abilities.remove_flag(TransportationMode.WALL_WALKING)
             _player.transportation_abilities.remove_flag(TransportationMode.CEILING_WALKING)
         2:
