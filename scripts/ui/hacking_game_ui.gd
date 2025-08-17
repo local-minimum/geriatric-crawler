@@ -251,7 +251,7 @@ func _handle_new_attempts(attempts: Array[Array], statuses: Array[Array]) -> voi
 func _add_attempt_passphrase(root: Container, attempt: Array[String], statuses: Array[HackingGame.WordStatus]) -> void:
     for idx: int in range(_game.get_passphrase_length()):
         var in_attempt: bool = idx < statuses.size()
-        _add_word_ui_to_container(
+        HackingGameUIBuilder.add_word_ui_to_container(
             root,
             "??" if !in_attempt else attempt[idx],
             func (_label: Label, bg: TextureRect, _root: Control) -> void:
@@ -335,7 +335,7 @@ func _sync_inventory_actions() -> void:
 
 func _setup_placeholder_passphrase() -> void:
     for _idx: int in range(_game.get_passphrase_length()):
-        _add_word_ui_to_container(
+        HackingGameUIBuilder.add_word_ui_to_container(
             most_recent_attempt,
             "??",
             func (_label: Label, bg: TextureRect, _root: Control) -> void:
@@ -348,10 +348,10 @@ func _setup_lower_field(columns: int, rows: int) -> void:
         for full_col: int in range(columns):
             if full_row == 0:
                 if posmod(full_col, 2) == 0:
-                    _playing_field_container_lower.add_child(_get_spacer(outer_spacer_color))
+                    _playing_field_container_lower.add_child(HackingGameUIBuilder.get_spacer(outer_spacer_color))
 
                 else:
-                    btn = _get_shift_button("down", tex_down)
+                    btn = HackingGameUIBuilder.get_shift_button(_playing_field_container_lower, "down", tex_down)
                     _shift_buttons.append(btn)
                     if btn.connect(
                         "pressed",
@@ -382,10 +382,10 @@ func _setup_lower_field(columns: int, rows: int) -> void:
                         push_error("failed to connect shift down callback")
             elif full_row == rows - 1:
                 if posmod(full_col, 2) == 0:
-                    _playing_field_container_lower.add_child(_get_spacer(outer_spacer_color))
+                    _playing_field_container_lower.add_child(HackingGameUIBuilder.get_spacer(outer_spacer_color))
 
                 else:
-                    btn = _get_shift_button("up", tex_up)
+                    btn = HackingGameUIBuilder.get_shift_button(_playing_field_container_lower, "up", tex_up)
                     _shift_buttons.append(btn)
                     if btn.connect(
                         "pressed",
@@ -421,7 +421,7 @@ func _setup_lower_field(columns: int, rows: int) -> void:
 
                 if full_col == 0:
                     if posmod(full_row, 2) == 1:
-                        btn = _get_shift_button("right", tex_right)
+                        btn = HackingGameUIBuilder.get_shift_button(_playing_field_container_lower, "right", tex_right)
                         _shift_buttons.append(btn)
                         if btn.connect(
                             "pressed",
@@ -447,10 +447,10 @@ func _setup_lower_field(columns: int, rows: int) -> void:
                         ) != OK:
                             push_error("failed to connect shift right callback")
                     else:
-                        _playing_field_container_lower.add_child(_get_spacer(outer_spacer_color))
+                        _playing_field_container_lower.add_child(HackingGameUIBuilder.get_spacer(outer_spacer_color))
                 elif full_col == columns - 1:
                     if posmod(full_row, 2) == 1:
-                        btn = _get_shift_button("left", tex_left)
+                        btn = HackingGameUIBuilder.get_shift_button(_playing_field_container_lower, "left", tex_left)
                         _shift_buttons.append(btn)
                         if btn.connect(
                             "pressed",
@@ -477,11 +477,11 @@ func _setup_lower_field(columns: int, rows: int) -> void:
                         ) != OK:
                             push_error("failed to connect shift left callback")
                     else:
-                        _playing_field_container_lower.add_child(_get_spacer(outer_spacer_color))
+                        _playing_field_container_lower.add_child(HackingGameUIBuilder.get_spacer(outer_spacer_color))
                 else:
                     var is_below_word: bool = posmod(full_col, 2) == 1 && posmod(full_row, 2) == 1
                     _playing_field_container_lower.add_child(
-                        _get_texture_spacer(
+                        HackingGameUIBuilder.get_texture_spacer(
                             Color.TRANSPARENT if is_below_word else inner_spacer_color,
                             func (t_rect: TextureRect) -> void:
                                 _lower_field_backgrounds[Vector2i(full_col, full_row)] = t_rect
@@ -494,24 +494,24 @@ func _setup_lower_field(columns: int, rows: int) -> void:
 
 func _setup_field(columns: int) -> void:
     for full_col: int in range(columns):
-        _playing_field_container.add_child(_get_empty_container())
+        _playing_field_container.add_child(HackingGameUIBuilder.get_empty_container())
 
     for row: int in range(_game.height):
 
         for col: int in range(_game.width):
-            _playing_field_container.add_child(_get_empty_container())
+            _playing_field_container.add_child(HackingGameUIBuilder.get_empty_container())
             _create_and_add_word_tile(row, col)
 
-        _playing_field_container.add_child(_get_empty_container())
+        _playing_field_container.add_child(HackingGameUIBuilder.get_empty_container())
 
         for full_col: int in range(columns):
-            _playing_field_container.add_child(_get_empty_container())
+            _playing_field_container.add_child(HackingGameUIBuilder.get_empty_container())
 
     _sync_board()
 
 func _create_and_add_word_tile(row: int, col: int) -> void:
     var coords: Vector2i = Vector2i(col, row)
-    _add_word_ui_to_container(
+    HackingGameUIBuilder.add_word_ui_to_container(
         _playing_field_container,
         _game.get_word(coords),
         func (label: Label, bg: TextureRect, container: Control) -> void:
@@ -560,75 +560,6 @@ func _on_hover_exit(coords: Vector2i) -> void:
                 var not_present: bool = _game.is_discovered_not_present(target)
                 _field_labels[target].add_theme_color_override("font_color", _get_word_text_color(discovered, not_present))
 
-func _add_word_ui_to_container(parent: Container, word: String, parts_assignment: Variant = null) -> void:
-    var container: Container = _get_empty_container()
-
-    var bg: TextureRect = TextureRect.new()
-    bg.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-    bg.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT
-
-    _size_playing_field_item(bg)
-    container.add_child(bg)
-
-    var label: Label = Label.new()
-    label.text = word
-    label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-    label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-
-    _size_playing_field_item(label)
-    container.add_child(label)
-
-    parent.add_child(container)
-
-    if parts_assignment != null && parts_assignment is Callable:
-        @warning_ignore_start("unsafe_cast")
-        (parts_assignment as Callable).call(label, bg, container)
-        @warning_ignore_restore("unsafe_cast")
-
-func _get_texture_spacer(bg_color: Color, config_texturerect: Callable) -> Control:
-    var container: Container = _get_spacer(bg_color)
-    var t_rect: TextureRect = TextureRect.new()
-    _size_playing_field_item(t_rect)
-
-    config_texturerect.call(t_rect)
-    t_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-    t_rect.expand_mode = TextureRect.EXPAND_FIT_HEIGHT
-
-    container.add_child(t_rect)
-    return container
-
-func _get_spacer(color: Color) -> Control:
-    var container: Container = _get_empty_container()
-    var rect: ColorRect = ColorRect.new()
-    rect.color = color
-    _size_playing_field_item(rect)
-
-    container.add_child(rect)
-    return container
-
-func _get_shift_button(direction: String, tex: Texture) -> Button:
-    var container: Container = _get_empty_container()
-    var btn: Button = Button.new()
-    btn.icon = tex
-    btn.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
-    btn.expand_icon = true
-    btn.tooltip_text = "Shift codes %s" % direction
-    _size_playing_field_item(btn)
-
-    container.add_child(btn)
-    _playing_field_container_lower.add_child(container)
-    return btn
-
-func _get_empty_container() -> Control:
-    var container: AspectRatioContainer = AspectRatioContainer.new()
-    _size_playing_field_item(container)
-    container.ratio = 1
-    container.mouse_filter = Control.MOUSE_FILTER_IGNORE
-    return container
-
-func _size_playing_field_item(control: Control) -> void:
-    control.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-    control.size_flags_vertical = Control.SIZE_EXPAND_FILL
 
 func _sync_board() -> void:
     if _tween != null && _tween.is_running():
