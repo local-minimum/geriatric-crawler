@@ -61,6 +61,22 @@ func _process(_delta: float) -> void:
         worm_ticks += 1
         _worm_next_tick = Time.get_ticks_msec() + _calculate_worm_speed()
 
+func _input(event: InputEvent) -> void:
+    if event.is_echo() || !_worm_moving:
+        return
+
+    if event.is_action_pressed("crawl_forward"):
+        _on_worm_up_pressed()
+
+    elif event.is_action_pressed("crawl_backward"):
+        _on_worm_down_pressed()
+
+    elif event.is_action_pressed("crawl_strafe_left"):
+        _on_worm_left_pressed()
+
+    elif event.is_action_pressed("crawl_strafe_right"):
+        _on_worm_right_pressed()
+
 func reset_phase() -> void:
     _worming_navigation_container.hide()
     _worming_countdown.hide()
