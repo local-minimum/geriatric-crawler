@@ -29,14 +29,11 @@ static func set_credits(amount: int) -> void:
     if active_inventory != null:
         active_inventory.on_update_credits.emit(_CREDITS)
 
-@export
-var base_slaying_income: int = 20
+@export var base_slaying_income: int = 20
 
-@export
-var enemy_level_bonus: int = 5
+@export var enemy_level_bonus: int = 5
 
-@export
-var battle: BattleMode
+@export var battle: BattleMode
 
 var _inventory: Dictionary[String, float] = {}
 

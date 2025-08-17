@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://bsps2ppohebhk" path="res://scripts/ui/ui_debug_settings.gd" id="1_16j0k"]
 [ext_resource type="Texture2D" uid="uid://426qf31enipp" path="res://icon.svg" id="1_japon"]
 
-[node name="DebugSettingsUI" type="CanvasLayer" node_paths=PackedStringArray("menu_base", "menu_button", "queue_moves", "replays", "replays_replace", "smooth_movement", "concurrent_turns", "tank_movement", "speed", "fov", "wall_walking", "ceiling_walking", "jump_off")]
+[node name="DebugSettingsUI" type="CanvasLayer" node_paths=PackedStringArray("menu_base", "menu_button", "queue_moves", "replays", "replays_replace", "smooth_movement", "concurrent_turns", "tank_movement", "speed", "fov", "handedness", "wall_walking", "ceiling_walking", "jump_off")]
 layer = 5
 script = ExtResource("1_16j0k")
 menu_base = NodePath("DebugMenu")
@@ -16,6 +16,7 @@ concurrent_turns = NodePath("DebugMenu/MarginContainer/VBoxContainer/Movement Se
 tank_movement = NodePath("DebugMenu/MarginContainer/VBoxContainer/Movement Settings/Tank Animations")
 speed = NodePath("DebugMenu/MarginContainer/VBoxContainer/Movement Settings/Speed/Speed Slider")
 fov = NodePath("DebugMenu/MarginContainer/VBoxContainer/Camera/FOV/FOV Slider")
+handedness = NodePath("DebugMenu/MarginContainer/VBoxContainer/Camera/Handedness")
 wall_walking = NodePath("DebugMenu/MarginContainer/VBoxContainer/Gameplay/Wall Walking")
 ceiling_walking = NodePath("DebugMenu/MarginContainer/VBoxContainer/Gameplay/Ceiling Walking")
 jump_off = NodePath("DebugMenu/MarginContainer/VBoxContainer/Gameplay/Jump Off Walls")
@@ -47,7 +48,6 @@ flat = true
 expand_icon = true
 
 [node name="DebugMenu" type="Control" parent="."]
-visible = false
 layout_mode = 3
 anchor_right = 0.35
 anchor_bottom = 1.0
@@ -204,6 +204,12 @@ max_value = 120.0
 step = 5.0
 value = 80.0
 
+[node name="Handedness" type="CheckButton" parent="DebugMenu/MarginContainer/VBoxContainer/Camera"]
+layout_mode = 2
+tooltip_text = "Pressing a second movement key while one is executing, queues it up"
+mouse_filter = 1
+text = "Right-handed"
+
 [node name="Gameplay" type="VBoxContainer" parent="DebugMenu/MarginContainer/VBoxContainer"]
 layout_mode = 2
 mouse_filter = 2
@@ -254,6 +260,7 @@ text = "Load"
 [connection signal="toggled" from="DebugMenu/MarginContainer/VBoxContainer/Movement Settings/Tank Animations" to="." method="_on_tank_animations_toggled"]
 [connection signal="value_changed" from="DebugMenu/MarginContainer/VBoxContainer/Movement Settings/Speed/Speed Slider" to="." method="_on_speed_slider_value_changed"]
 [connection signal="value_changed" from="DebugMenu/MarginContainer/VBoxContainer/Camera/FOV/FOV Slider" to="." method="_on_fov_slider_value_changed"]
+[connection signal="toggled" from="DebugMenu/MarginContainer/VBoxContainer/Camera/Handedness" to="." method="_on_handedness_toggled"]
 [connection signal="toggled" from="DebugMenu/MarginContainer/VBoxContainer/Gameplay/Wall Walking" to="." method="_on_wall_walking_toggled"]
 [connection signal="toggled" from="DebugMenu/MarginContainer/VBoxContainer/Gameplay/Ceiling Walking" to="." method="_on_ceiling_walking_toggled"]
 [connection signal="toggled" from="DebugMenu/MarginContainer/VBoxContainer/Gameplay/Jump Off Walls" to="." method="_on_jump_off_walls_toggled"]

@@ -25,25 +25,19 @@ const SKILL_HACKING_BOMBS: String = "hacking-bombs"
 enum AbilityType { Exploration, Battle, Other }
 
 ## Class id of the ability (doesn't include the level of the ability)
-@export
-var id: String
+@export var id: String
 
-@export
-var skill_level: int
+@export var skill_level: int
 
 func full_id() -> String: return "%s-%s" % [id, skill_level]
 
-@export
-var skill_name: String
+@export var skill_name: String
 
 func full_skill_name() -> String:
     return "%s %s" % [skill_name, IntUtils.to_roman(skill_level)]
 
-@export
-var ability_type: AbilityType
+@export var ability_type: AbilityType
 
-@export
-var description: String
+@export var description: String
 
-@export
-var icon: Texture
+@export var icon: Texture

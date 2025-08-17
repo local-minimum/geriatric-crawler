@@ -20,20 +20,15 @@ var _current_save: Dictionary
 static var _session_start: int
 static var _previous_session_time_at_save: int
 
-@export
-var storage_provider: SaveStorageProvider
+@export var storage_provider: SaveStorageProvider
 
-@export
-var level_saver: LevelSaver
+@export var level_saver: LevelSaver
 
-@export
-var extensions: Array[SaveExtension] = []
+@export var extensions: Array[SaveExtension] = []
 
-@export
-var migrations: Array[SaveVersionMigration] = []
+@export var migrations: Array[SaveVersionMigration] = []
 
-@export
-var scene_loader: SaveSceneLoader
+@export var scene_loader: SaveSceneLoader
 
 ## Emitted if loading fails
 signal load_fail(slot: int)

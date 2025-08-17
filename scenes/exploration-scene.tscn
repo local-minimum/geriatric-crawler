@@ -1,6 +1,7 @@
-[gd_scene load_steps=12 format=3 uid="uid://5mvkmlsl4h3x"]
+[gd_scene load_steps=15 format=3 uid="uid://5mvkmlsl4h3x"]
 
 [ext_resource type="PackedScene" uid="uid://dx6ngxriyyq7l" path="res://scenes/ui/ui_debug_settings.tscn" id="1_6lmoa"]
+[ext_resource type="Script" uid="uid://da6tnwd64dup6" path="res://scripts/exploration_scene.gd" id="1_w7kg7"]
 [ext_resource type="PackedScene" uid="uid://xqedv5aeal6n" path="res://scenes/exploration_save_system.tscn" id="2_n04bd"]
 [ext_resource type="PackedScene" uid="uid://d3iceirfj21qw" path="res://scenes/ui/exploration_ui.tscn" id="4_kbxam"]
 [ext_resource type="PackedScene" uid="uid://eoj51yv61yas" path="res://scenes/exploration_view.tscn" id="5_6lmoa"]
@@ -11,8 +12,10 @@
 [ext_resource type="Script" uid="uid://bkky4nqo47eiv" path="res://scripts/ui/notifications/notifications_panel_ui.gd" id="9_t2qw5"]
 [ext_resource type="PackedScene" uid="uid://bb0220nki3rb5" path="res://scenes/ui/start_hacking_dialog.tscn" id="10_n04bd"]
 [ext_resource type="PackedScene" uid="uid://02k0ubq0nlxn" path="res://scenes/hacking_game.tscn" id="11_08vpu"]
+[ext_resource type="Script" uid="uid://dqwqm2boptlgi" path="res://scripts/settings/disk_json_settings_provider.gd" id="12_47t46"]
+[ext_resource type="Script" uid="uid://03jcb75xfhhs" path="res://scripts/settings/accessibility_settings.gd" id="13_w7kg7"]
 
-[node name="Exploration" type="Control"]
+[node name="Exploration" type="Control" node_paths=PackedStringArray("accessibility", "subviewport", "exploration_ui")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -21,10 +24,10 @@ grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-
-[node name="DebugSettingsUI" parent="." node_paths=PackedStringArray("exploration_view", "save_system") instance=ExtResource("1_6lmoa")]
-exploration_view = NodePath("../SubViewportContainer/SubViewport/Exploration View")
-save_system = NodePath("../SaveSystem")
+script = ExtResource("1_w7kg7")
+accessibility = NodePath("Settings/AccessibilitySettings")
+subviewport = NodePath("SubViewportContainer")
+exploration_ui = NodePath("Exploration UI")
 
 [node name="SaveSystem" parent="." instance=ExtResource("2_n04bd")]
 
@@ -63,6 +66,11 @@ render_target_update_mode = 4
 
 [node name="Exploration View" parent="SubViewportContainer/SubViewport" instance=ExtResource("5_6lmoa")]
 
+[node name="DebugSettingsUI" parent="SubViewportContainer/SubViewport" node_paths=PackedStringArray("exploration_view", "save_system", "accessibility") instance=ExtResource("1_6lmoa")]
+exploration_view = NodePath("../Exploration View")
+save_system = NodePath("../../../SaveSystem")
+accessibility = NodePath("../../../Settings/AccessibilitySettings")
+
 [node name="Exploration UI" parent="." node_paths=PackedStringArray("exploration_view", "battle", "inspect_robot_ui") instance=ExtResource("4_kbxam")]
 layout_mode = 1
 anchors_preset = -1
@@ -86,3 +94,14 @@ metadata/_custom_type_script = "uid://dftf4h6eyrsio"
 visible = false
 
 [node name="Hacking Game" parent="." instance=ExtResource("11_08vpu")]
+
+[node name="Settings" type="Node" parent="."]
+
+[node name="DiskJsonSettingsProvider" type="Node" parent="Settings"]
+script = ExtResource("12_47t46")
+metadata/_custom_type_script = "uid://dqwqm2boptlgi"
+
+[node name="AccessibilitySettings" type="Node" parent="Settings" node_paths=PackedStringArray("settings")]
+script = ExtResource("13_w7kg7")
+settings = NodePath("../DiskJsonSettingsProvider")
+metadata/_custom_type_script = "uid://03jcb75xfhhs"

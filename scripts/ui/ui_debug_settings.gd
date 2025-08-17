@@ -1,52 +1,41 @@
 extends Node
 
-@export
-var exploration_view: ExplorationView
+@export var exploration_view: ExplorationView
 
-@export
-var menu_base: Control
+@export var menu_base: Control
 
-@export
-var menu_button: Control
+@export var menu_button: Control
 
 # Movement
-@export
-var queue_moves: CheckButton
+@export var queue_moves: CheckButton
 
-@export
-var replays: CheckButton
+@export var replays: CheckButton
 
-@export
-var replays_replace: CheckButton
+@export var replays_replace: CheckButton
 
-@export
-var smooth_movement: CheckButton
+@export var smooth_movement: CheckButton
 
-@export
-var concurrent_turns: CheckButton
+@export var concurrent_turns: CheckButton
 
-@export
-var tank_movement: CheckButton
+@export var tank_movement: CheckButton
 
-@export
-var speed: HSlider
+@export var speed: HSlider
 
 # Camera
-@export
-var fov: HSlider
+@export var fov: HSlider
+
+@export var handedness: CheckButton
 
 # Gameplay
-@export
-var wall_walking: CheckButton
+@export var wall_walking: CheckButton
 
-@export
-var ceiling_walking: CheckButton
+@export var ceiling_walking: CheckButton
 
-@export
-var jump_off: CheckButton
+@export var jump_off: CheckButton
 
-@export
-var save_system: SaveSystem
+@export var save_system: SaveSystem
+
+@export var accessibility: AccessibilitySettings
 
 var inited: bool
 
@@ -84,6 +73,7 @@ func _sync() -> void:
     speed.value = level.player.planner.animation_speed
 
     fov.value = level.player.camera.fov
+    handedness.button_pressed = AccessibilitySettings.handedness == AccessibilitySettings.Handedness.RIGHT
 
     jump_off.button_pressed = level.player.can_jump_off_walls
 
@@ -145,3 +135,6 @@ func _on_save_button_pressed() -> void:
 func _on_load_button_pressed() -> void:
     if !save_system.load_last_save():
         pass
+
+func _on_handedness_toggled(toggled_on:bool) -> void:
+    accessibility.set_handedness(AccessibilitySettings.Handedness.RIGHT if toggled_on else AccessibilitySettings.Handedness.LEFT)

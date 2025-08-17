@@ -1,7 +1,6 @@
 extends SaveStorageProvider
 
-@export
-var save_file_pattern: String = "user://save_game_%s.json"
+@export var save_file_pattern: String = "user://save_game_%s.json"
 
 func store_data(slot: int, save_data: Dictionary) -> bool:
     var save_file: FileAccess = FileAccess.open(save_file_pattern % slot, FileAccess.WRITE)
