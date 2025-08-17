@@ -127,6 +127,7 @@ func _handle_solve_game(solution_start: Vector2i) -> void:
 
 func _handle_fail_game() -> void:
     _disable_everything()
+    await get_tree().create_timer(0.8).timeout
 
     for coords: Vector2i in _field_roots:
         _field_labels[coords].visible = false

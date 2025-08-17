@@ -488,7 +488,10 @@ func hack() -> void:
 
             for phrase_idx: int in range(passphrase_length):
                 if phrase_idx < solution.size():
-                    attempt.append(_board[row][word_locations[phrase_idx]])
+                    var word: String = _board[row][word_locations[phrase_idx]]
+                    if _passphrase.has(word) && !discovered_present.has(word):
+                        discovered_present.append(word)
+                    attempt.append(word)
                 else:
                     attempt.append("??")
                     solution.append(WordStatus.DEFAULT)
