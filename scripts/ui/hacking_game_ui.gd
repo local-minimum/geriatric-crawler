@@ -289,6 +289,7 @@ func _setup_lower_field(columns: int, rows: int) -> void:
                     if btn.connect(
                         "pressed",
                         func () -> void:
+                            toggle_shift_buttons(true)
                             if _tween != null && _tween.is_running():
                                 _tween.kill()
                                 _sync_board()
@@ -310,6 +311,7 @@ func _setup_lower_field(columns: int, rows: int) -> void:
 
                             await get_tree().create_timer(SLIDE_TIME * 1.1).timeout
                             _sync_board()
+                            toggle_shift_buttons(false)
                             ,
                     ) != OK:
                         push_error("failed to connect shift down callback")
@@ -323,6 +325,7 @@ func _setup_lower_field(columns: int, rows: int) -> void:
                     if btn.connect(
                         "pressed",
                         func () -> void:
+                            toggle_shift_buttons(true)
                             if _tween != null && _tween.is_running():
                                 _tween.kill()
                                 _sync_board()
@@ -344,6 +347,7 @@ func _setup_lower_field(columns: int, rows: int) -> void:
 
                             await get_tree().create_timer(SLIDE_TIME * 1.1).timeout
                             _sync_board()
+                            toggle_shift_buttons(false)
                             ,
                     ) != OK:
                         push_error("failed to connect shift down callback")
@@ -359,23 +363,26 @@ func _setup_lower_field(columns: int, rows: int) -> void:
                         if btn.connect(
                             "pressed",
                             func () -> void:
+                                toggle_shift_buttons(true)
                                 if _tween != null && _tween.is_running():
                                     _tween.kill()
                                     _sync_board()
 
                                 _game.shift_row(row, 1)
-
                                 _tween = create_tween()
+
                                 @warning_ignore_start("return_value_discarded")
-                                _tween.set_parallel()
                                 for idx: int in range(_game.width):
                                     var root: Control = _field_roots[Vector2i(idx, row)]
                                     var distance: float = root.get_global_rect().size.x * 2
                                     _tween.tween_property(root, "global_position:x", root.global_position.x + distance, SLIDE_TIME)
+                                    if idx == 0:
+                                        _tween.set_parallel()
                                 @warning_ignore_restore("return_value_discarded")
 
                                 await get_tree().create_timer(SLIDE_TIME * 1.1).timeout
                                 _sync_board()
+                                toggle_shift_buttons(false)
                                 ,
                         ) != OK:
                             push_error("failed to connect shift right callback")
@@ -388,10 +395,10 @@ func _setup_lower_field(columns: int, rows: int) -> void:
                         if btn.connect(
                             "pressed",
                             func () -> void:
+                                toggle_shift_buttons(true)
                                 if _tween != null && _tween.is_running():
                                     _tween.kill()
                                     _sync_board()
-
 
                                 _game.shift_row(row, -1)
 
@@ -406,6 +413,7 @@ func _setup_lower_field(columns: int, rows: int) -> void:
 
                                 await get_tree().create_timer(SLIDE_TIME * 1.1).timeout
                                 _sync_board()
+                                toggle_shift_buttons(false)
                                 ,
                         ) != OK:
                             push_error("failed to connect shift left callback")
@@ -515,7 +523,6 @@ func _sync_board() -> void:
                 _field_labels[coords].add_theme_color_override("font_color",  _get_word_text_color(discovered, not_present))
             HackingGame.WordStatus.CORRECT:
                 _field_labels[coords].add_theme_color_override("font_color",  _get_word_text_color(discovered, not_present))
-
 
 func _status_to_texture(status: HackingGame.WordStatus) -> Texture:
     match status:

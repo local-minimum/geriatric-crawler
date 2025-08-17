@@ -1,28 +1,21 @@
 extends GridEntity
 class_name GridPlayer
 
-@export
-var camera: Camera3D
+@export var camera: Camera3D
 var camera_resting_position: Vector3
 var camera_resting_rotation: Quaternion
 
-@export
-var spawn_node: GridNode
+@export var spawn_node: GridNode
 
-@export
-var allow_replays: bool = true
+@export var allow_replays: bool = true
 
-@export
-var persist_repeat_moves: bool
+@export var persist_repeat_moves: bool
 
-@export
-var repeat_move_delay: float = 100
+@export var repeat_move_delay: float = 100
 
-@export
-var robot: Robot
+@export var robot: Robot
 
-@export
-var key_ring: KeyRing
+@export var key_ring: KeyRing
 
 var override_wall_walking: bool:
     set(value):

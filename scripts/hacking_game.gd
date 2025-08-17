@@ -165,12 +165,7 @@ func end_game() -> void:
     if _solved:
         _on_complete_success.call()
     else:
-        _handle_punishment()
         _on_complete_fail.call()
-
-func _handle_punishment() -> void:
-    # TODO: Add punishments
-    pass
 
 static func generate_alphabet(difficulty: int) -> PackedStringArray:
     var alphabet: PackedStringArray
@@ -481,7 +476,11 @@ func hack() -> void:
                     parts[word] -= 1
                     base_col = col
                 else:
-                    word_locations = word_locations.slice(0, word_locations.find(col))
+                    var in_phrase: bool = _passphrase.has(word)
+                    if !in_phrase && !discovered_not_present.has(word):
+                        discovered_not_present.append(word)
+
+                    word_locations = word_locations.slice(0, idx if in_phrase else idx + 1)
                     solution = solution.slice(0, word_locations.size())
                     break
 
