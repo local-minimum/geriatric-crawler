@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://5mvkmlsl4h3x"]
+[gd_scene load_steps=16 format=3 uid="uid://5mvkmlsl4h3x"]
 
 [ext_resource type="PackedScene" uid="uid://dx6ngxriyyq7l" path="res://scenes/ui/ui_debug_settings.tscn" id="1_6lmoa"]
 [ext_resource type="Script" uid="uid://da6tnwd64dup6" path="res://scripts/exploration_scene.gd" id="1_w7kg7"]
@@ -13,9 +13,10 @@
 [ext_resource type="PackedScene" uid="uid://bb0220nki3rb5" path="res://scenes/ui/start_hacking_dialog.tscn" id="10_n04bd"]
 [ext_resource type="PackedScene" uid="uid://02k0ubq0nlxn" path="res://scenes/hacking_game.tscn" id="11_08vpu"]
 [ext_resource type="Script" uid="uid://dqwqm2boptlgi" path="res://scripts/settings/disk_json_settings_provider.gd" id="12_47t46"]
+[ext_resource type="Script" uid="uid://byetmq0ilyqor" path="res://scripts/settings/game_settings.gd" id="13_hdcgk"]
 [ext_resource type="Script" uid="uid://03jcb75xfhhs" path="res://scripts/settings/accessibility_settings.gd" id="13_w7kg7"]
 
-[node name="Exploration" type="Control" node_paths=PackedStringArray("accessibility", "subviewport", "exploration_ui")]
+[node name="Exploration" type="Control" node_paths=PackedStringArray("settings", "subviewport", "exploration_ui")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -25,7 +26,7 @@ grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 script = ExtResource("1_w7kg7")
-accessibility = NodePath("Settings/AccessibilitySettings")
+settings = NodePath("Settings")
 subviewport = NodePath("SubViewportContainer")
 exploration_ui = NodePath("Exploration UI")
 
@@ -93,9 +94,12 @@ metadata/_custom_type_script = "uid://dftf4h6eyrsio"
 [node name="Start Hacking Dialog" parent="." instance=ExtResource("10_n04bd")]
 visible = false
 
-[node name="Hacking Game" parent="." instance=ExtResource("11_08vpu")]
+[node name="Hacking Game" parent="." node_paths=PackedStringArray("settings") instance=ExtResource("11_08vpu")]
+settings = NodePath("../Settings")
 
-[node name="Settings" type="Node" parent="."]
+[node name="Settings" type="Node" parent="." node_paths=PackedStringArray("accessibility")]
+script = ExtResource("13_hdcgk")
+accessibility = NodePath("AccessibilitySettings")
 
 [node name="DiskJsonSettingsProvider" type="Node" parent="Settings"]
 script = ExtResource("12_47t46")

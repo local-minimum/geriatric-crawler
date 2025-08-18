@@ -3,6 +3,10 @@ class_name HackingGameUI
 
 @export var _game: HackingGame
 
+@export var _hacking_area: Control
+
+@export var _controls_area: Control
+
 @export var _attempts_label: Label
 
 @export var _attempt_button: Button
@@ -82,6 +86,11 @@ func _ready() -> void:
     if _game.on_fail_game.connect(_handle_fail_game) != OK:
         push_error("Could not connect to hacking failed")
 
+    if _game.settings.accessibility.on_update_handedness.connect(_handle_handedness) != OK:
+        push_error("Could not connect handedness change")
+
+    _handle_handedness(AccessibilitySettings.handedness)
+
     _bombs_label.text = HackingGame.item_id_to_text(HackingGame.ITEM_HACKING_BOMB)
     _worms_label.text = HackingGame.item_id_to_text(HackingGame.ITEM_HACKING_WORM)
 
@@ -112,6 +121,12 @@ func translate_to_game_coords(coords: Vector2i) -> Vector2i:
     @warning_ignore_start("integer_division")
     return Vector2i(coords.x / 2, coords.y / 2)
     @warning_ignore_restore("integer_division")
+
+func _handle_handedness(hand: AccessibilitySettings.Handedness) -> void:
+    if hand == AccessibilitySettings.Handedness.RIGHT:
+        _controls_area.move_to_front()
+    else:
+        _hacking_area.move_to_front()
 
 func _handle_solve_game(solution_start: Vector2i) -> void:
     _disable_everything()

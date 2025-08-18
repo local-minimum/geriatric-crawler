@@ -96,6 +96,7 @@ signal on_new_attempts(attempts: Array[Array], statuses: Array[Array])
 signal on_board_changed()
 
 @export var ui: HackingGameUI
+@export var settings: GameSettings
 
 var _danger: Danger
 var _difficulty: int

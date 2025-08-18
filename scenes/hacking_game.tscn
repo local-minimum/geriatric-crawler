@@ -22,10 +22,12 @@
 script = ExtResource("1_5dcew")
 ui = NodePath("Hacking Game UI")
 
-[node name="Hacking Game UI" type="CanvasLayer" parent="." node_paths=PackedStringArray("_game", "_attempts_label", "_attempt_button", "_bombs_label", "_bombs_counter", "_worms_label", "_worms_counter", "_worming", "_deploy_bomb_button", "_playing_field_outer_container", "_playing_field_container", "_playing_field_container_lower", "attempt_history", "most_recent_attempt")]
+[node name="Hacking Game UI" type="CanvasLayer" parent="." node_paths=PackedStringArray("_game", "_hacking_area", "_controls_area", "_attempts_label", "_attempt_button", "_bombs_label", "_bombs_counter", "_worms_label", "_worms_counter", "_worming", "_deploy_bomb_button", "_playing_field_outer_container", "_playing_field_container", "_playing_field_container_lower", "attempt_history", "most_recent_attempt")]
 layer = 100
 script = ExtResource("2_kelsw")
 _game = NodePath("..")
+_hacking_area = NodePath("HBoxContainer/Game Area")
+_controls_area = NodePath("HBoxContainer/Controls")
 _attempts_label = NodePath("HBoxContainer/Controls/MarginContainer/VBoxContainer/Attempts and Tools/Attempts Count")
 _attempt_button = NodePath("HBoxContainer/Controls/MarginContainer/VBoxContainer/Hack Button")
 _bombs_label = NodePath("HBoxContainer/Controls/MarginContainer/VBoxContainer/Attempts and Tools/Bombs Label")

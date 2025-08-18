@@ -1,7 +1,7 @@
 extends Node
 class_name ExplorationScene
 
-@export var accessibility: AccessibilitySettings
+@export var settings: GameSettings
 
 @export var subviewport: Control
 @export var exploration_ui: Control
@@ -11,7 +11,7 @@ var _view_split: float
 func _ready() -> void:
     _view_split = subviewport.anchor_right
 
-    if accessibility.on_update_handedness.connect(_handle_handedness_change) != OK:
+    if settings.accessibility.on_update_handedness.connect(_handle_handedness_change) != OK:
         push_error("Failed to connect on update handedness")
 
     _handle_handedness_change(AccessibilitySettings.handedness)
