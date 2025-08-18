@@ -1,13 +1,15 @@
 extends CanvasLayer
 class_name HackingGameUI
 
+const _HACKING_TUTORIAL_KEY: String = "hacking"
+
 @export var _game: HackingGame
 
 @export var _hacking_area: Control
 
 @export var _controls_area: Control
 
-@export var _attempts_label: Label
+@export var _attempts_counter: Label
 
 @export var _attempt_button: Button
 
@@ -63,7 +65,11 @@ class_name HackingGameUI
 
 @export var attempt_history: Container
 
+@export var most_recent_attempt_label: Label
+
 @export var most_recent_attempt: Container
+
+@export var intro_tutorial: Array[String]
 
 const DEPLOY_BOMB_TEXT: String = "Deploy Bomb"
 const CANCEL_BOMB_TEXT: String = "Abort Bomb Deployment"
@@ -216,7 +222,7 @@ func set_worm_phase() -> void:
 
 func _handle_attempts_updated(attempts: int) -> void:
     print_debug("Got new attempts %s" % attempts)
-    _attempts_label.text = "%02d" % attempts
+    _attempts_counter.text = "%02d" % attempts
 
     reset_phase()
 
@@ -268,6 +274,38 @@ func show_game() -> void:
     sync_inventory_actions()
 
     show()
+
+    if _game.settings.tutorial.get_tutorial_progress(_HACKING_TUTORIAL_KEY) == 0:
+        tutorial_idx = 0
+
+var tutorial_idx: int
+
+func _show_current_tutorial() -> void:
+    _game.tutoral_ui.show_tutorial(
+        intro_tutorial[tutorial_idx],
+        null if tutorial_idx == 0 else (_show_previous_tutorial as Variant),
+        _show_next_tutorial,
+        _get_intro_current_targets(),
+    )
+
+func _get_intro_current_targets() -> Array[Control]:
+    match tutorial_idx:
+        0:
+            return [most_recent_attempt_label, most_recent_attempt]
+        1:
+            return [_attempts_counter, ]
+        2:
+            return [_bombs_label, _bombs_counter, _worms_label, _worms_counter]
+    return []
+
+func _show_previous_tutorial() -> void:
+    tutorial_idx = maxi(0, tutorial_idx - 1)
+    _show_current_tutorial()
+
+func _show_next_tutorial() -> void:
+    tutorial_idx += 1
+    if tutorial_idx < intro_tutorial.size():
+        _show_current_tutorial()
 
 func sync_inventory_actions() -> void:
     var inventory: Inventory = Inventory.active_inventory

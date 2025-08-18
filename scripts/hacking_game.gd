@@ -97,6 +97,7 @@ signal on_board_changed()
 
 @export var ui: HackingGameUI
 @export var settings: GameSettings
+@export var tutoral_ui: TutorialUI
 
 var _danger: Danger
 var _difficulty: int
