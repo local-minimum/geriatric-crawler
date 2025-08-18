@@ -23,7 +23,7 @@
 [ext_resource type="Texture2D" uid="uid://dog5ren3gjxpj" path="res://sprites/kenny game icons/right.png" id="19_hd6rl"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hdcgk"]
-bg_color = Color(0.6972, 0.498, 0.83, 0.780392)
+bg_color = Color(0.6972, 0.498, 0.83, 0.945098)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
@@ -113,12 +113,14 @@ metadata/_custom_type_script = "uid://dftf4h6eyrsio"
 [node name="Start Hacking Dialog" parent="." instance=ExtResource("10_n04bd")]
 visible = false
 
-[node name="Hacking Game" parent="." node_paths=PackedStringArray("settings") instance=ExtResource("11_08vpu")]
+[node name="Hacking Game" parent="." node_paths=PackedStringArray("settings", "tutoral_ui") instance=ExtResource("11_08vpu")]
 settings = NodePath("../Settings")
+tutoral_ui = NodePath("../Tutorials")
 
-[node name="Settings" type="Node" parent="." node_paths=PackedStringArray("accessibility")]
+[node name="Settings" type="Node" parent="." node_paths=PackedStringArray("accessibility", "tutorial")]
 script = ExtResource("13_hdcgk")
 accessibility = NodePath("AccessibilitySettings")
+tutorial = NodePath("TutorialSettings")
 
 [node name="DiskJsonSettingsProvider" type="Node" parent="Settings"]
 script = ExtResource("12_47t46")
@@ -129,8 +131,9 @@ script = ExtResource("13_w7kg7")
 settings = NodePath("../DiskJsonSettingsProvider")
 metadata/_custom_type_script = "uid://03jcb75xfhhs"
 
-[node name="TutorialSettings" type="Node" parent="Settings"]
+[node name="TutorialSettings" type="Node" parent="Settings" node_paths=PackedStringArray("settings")]
 script = ExtResource("16_gl6i3")
+settings = NodePath("../DiskJsonSettingsProvider")
 metadata/_custom_type_script = "uid://b6t7ddd2s4oo"
 
 [node name="Tutorials" type="CanvasLayer" parent="." node_paths=PackedStringArray("outliner", "peephole", "box", "box_label", "next_btn", "prev_btn")]
@@ -152,7 +155,7 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("16_t2qw5")
 outliner = NodePath("../TargetOutliner")
-color = Color(0.06, 0.06, 0.06, 0.964706)
+color = Color(0.06, 0.06, 0.06, 0.792157)
 metadata/_custom_type_script = "uid://bfv42ir0f6kca"
 
 [node name="TargetOutliner" type="Control" parent="Tutorials" node_paths=PackedStringArray("source")]

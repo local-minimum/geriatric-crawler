@@ -11,17 +11,14 @@ class_name TutorialUI
 func _ready() -> void:
     _hide_parts()
 
-var tutorial_id: int = 0
+var _tutorial_id: int = 0
 
 var _on_next: Variant
 var _on_prev: Variant
 
-func show_tutorial(message: String, on_next: Variant, on_previous: Variant, targets: Array[Control], autohide_time: float = -1) -> void:
+func show_tutorial(message: String, on_previous: Variant, on_next: Variant, targets: Array[Control], autohide_time: float = -1) -> void:
     box_label.text = message
     outliner.targets = targets
-    box.show()
-    peephole.show()
-    outliner.show()
 
     _on_next = on_next
     _on_prev = on_previous
@@ -29,14 +26,20 @@ func show_tutorial(message: String, on_next: Variant, on_previous: Variant, targ
     next_btn.disabled = on_next is not Callable
     prev_btn.disabled = on_previous is not Callable
 
-    var id : int = tutorial_id
+    var id : int = _tutorial_id
     if autohide_time > 0:
         await get_tree().create_timer(autohide_time).timeout
-        if tutorial_id == id && on_next is Callable:
+        if _tutorial_id == id && on_next is Callable:
             _hide_parts()
             @warning_ignore_start("unsafe_cast")
             (on_next as Callable).call()
             @warning_ignore_restore("unsafe_cast")
+
+    box.show()
+    peephole.show()
+    outliner.show()
+
+    print_debug("Tutorial: %s" % message)
 
 func _hide_parts() -> void:
     box.hide()
@@ -44,7 +47,7 @@ func _hide_parts() -> void:
     outliner.hide()
 
 func _on_next_button_pressed() -> void:
-    tutorial_id += 1
+    _tutorial_id += 1
     _hide_parts()
     if _on_next is Callable:
         @warning_ignore_start("unsafe_cast")
@@ -52,7 +55,7 @@ func _on_next_button_pressed() -> void:
         @warning_ignore_restore("unsafe_cast")
 
 func _on_prev_button_pressed() -> void:
-    tutorial_id += 1
+    _tutorial_id += 1
     _hide_parts()
     if _on_prev is Callable:
         @warning_ignore_start("unsafe_cast")

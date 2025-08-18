@@ -9,6 +9,8 @@ const _HACKING_TUTORIAL_KEY: String = "hacking"
 
 @export var _controls_area: Control
 
+@export var _attempts_label: Label
+
 @export var _attempts_counter: Label
 
 @export var _attempt_button: Button
@@ -69,7 +71,7 @@ const _HACKING_TUTORIAL_KEY: String = "hacking"
 
 @export var most_recent_attempt: Container
 
-@export var intro_tutorial: Array[String]
+@export_multiline var intro_tutorial: Array[String]
 
 const DEPLOY_BOMB_TEXT: String = "Deploy Bomb"
 const CANCEL_BOMB_TEXT: String = "Abort Bomb Deployment"
@@ -275,8 +277,10 @@ func show_game() -> void:
 
     show()
 
-    if _game.settings.tutorial.get_tutorial_progress(_HACKING_TUTORIAL_KEY) == 0:
+    var progress: int = _game.settings.tutorial.get_tutorial_progress(_HACKING_TUTORIAL_KEY)
+    if progress == 0:
         tutorial_idx = 0
+        _show_current_tutorial()
 
 var tutorial_idx: int
 
@@ -293,9 +297,24 @@ func _get_intro_current_targets() -> Array[Control]:
         0:
             return [most_recent_attempt_label, most_recent_attempt]
         1:
-            return [_attempts_counter, ]
+            return [_attempts_counter, _attempts_label]
         2:
-            return [_bombs_label, _bombs_counter, _worms_label, _worms_counter]
+            return [_bombs_label, _bombs_counter, _worms_label, _worms_counter, _deploy_bomb_button, _worming._deploy_worm_button]
+        3:
+            return [_playing_field_container]
+        4:
+            _sync_board()
+            var example: Array[Control]
+            for col: int in range(1, _game.get_passphrase_length() + 1):
+                var coords: Vector2i = Vector2i(col, 1)
+                if _field_roots.has(coords):
+                    example.append(_field_roots[coords])
+            return example
+        5:
+            return [_shift_buttons[3]]
+        6:
+            return [_attempt_button]
+
     return []
 
 func _show_previous_tutorial() -> void:

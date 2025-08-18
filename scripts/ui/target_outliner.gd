@@ -35,6 +35,9 @@ func _draw() -> void:
 
     var first: bool = true
     for target: Control in targets:
+        if target == null:
+            continue
+
         var t_rect: Rect2 = target.get_global_rect()
         var t_pos: Vector2 = t_rect.position
         var t_end: Vector2 = t_rect.end
