@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://5mvkmlsl4h3x"]
+[gd_scene load_steps=19 format=3 uid="uid://5mvkmlsl4h3x"]
 
 [ext_resource type="PackedScene" uid="uid://dx6ngxriyyq7l" path="res://scenes/ui/ui_debug_settings.tscn" id="1_6lmoa"]
 [ext_resource type="Script" uid="uid://da6tnwd64dup6" path="res://scripts/exploration_scene.gd" id="1_w7kg7"]
@@ -15,6 +15,21 @@
 [ext_resource type="Script" uid="uid://dqwqm2boptlgi" path="res://scripts/settings/disk_json_settings_provider.gd" id="12_47t46"]
 [ext_resource type="Script" uid="uid://byetmq0ilyqor" path="res://scripts/settings/game_settings.gd" id="13_hdcgk"]
 [ext_resource type="Script" uid="uid://03jcb75xfhhs" path="res://scripts/settings/accessibility_settings.gd" id="13_w7kg7"]
+[ext_resource type="Script" uid="uid://bahguhui1nyi0" path="res://scripts/ui/target_outliner.gd" id="16_7qmp0"]
+[ext_resource type="Script" uid="uid://bfv42ir0f6kca" path="res://scripts/ui/peephole.gd" id="16_t2qw5"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hdcgk"]
+bg_color = Color(0.6972, 0.498, 0.83, 0.780392)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.301, 0.785467, 0.86, 0.772549)
+border_blend = true
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
 
 [node name="Exploration" type="Control" node_paths=PackedStringArray("settings", "subviewport", "exploration_ui")]
 layout_mode = 3
@@ -109,3 +124,80 @@ metadata/_custom_type_script = "uid://dqwqm2boptlgi"
 script = ExtResource("13_w7kg7")
 settings = NodePath("../DiskJsonSettingsProvider")
 metadata/_custom_type_script = "uid://03jcb75xfhhs"
+
+[node name="Tutorials And Tooltips" type="CanvasLayer" parent="."]
+layer = 128
+
+[node name="PeepHole" type="Control" parent="Tutorials And Tooltips" node_paths=PackedStringArray("outliner")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("16_t2qw5")
+outliner = NodePath("../TargetOutliner")
+color = Color(0.06, 0.06, 0.06, 0.964706)
+metadata/_custom_type_script = "uid://bfv42ir0f6kca"
+
+[node name="TargetOutliner" type="Control" parent="Tutorials And Tooltips" node_paths=PackedStringArray("source", "targets")]
+process_mode = 1
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("16_7qmp0")
+source = NodePath("../Tutorial Box")
+targets = [NodePath("../Demo Target")]
+line_color = Color(0.465, 0.4805, 0.93, 0.890196)
+margin = 5.0
+width = 3.0
+live = true
+connector_width = 3.0
+connector_anchor_radius = 5.0
+connector_anchor_pos = 0.2
+metadata/_custom_type_script = "uid://bahguhui1nyi0"
+
+[node name="Tutorial Box" type="PanelContainer" parent="Tutorials And Tooltips"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -10.5
+offset_top = -10.0
+offset_right = 10.5
+offset_bottom = 33.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_hdcgk")
+
+[node name="MarginContainer" type="MarginContainer" parent="Tutorials And Tooltips/Tutorial Box"]
+clip_contents = true
+layout_mode = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="Label" type="Label" parent="Tutorials And Tooltips/Tutorial Box/MarginContainer"]
+layout_mode = 2
+text = "Some explanation of
+what that is..."
+
+[node name="Demo Target" type="ColorRect" parent="Tutorials And Tooltips"]
+offset_left = 1077.0
+offset_top = -36.0
+offset_right = 1193.0
+offset_bottom = 76.0
+
+[node name="Demo Target2" type="ColorRect" parent="Tutorials And Tooltips"]
+offset_left = 826.0
+offset_top = 413.0
+offset_right = 908.0
+offset_bottom = 453.0
