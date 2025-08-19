@@ -326,6 +326,8 @@ func _show_next_tutorial() -> void:
     tutorial_idx += 1
     if tutorial_idx < intro_tutorial.size():
         _show_current_tutorial()
+    else:
+        _game.settings.tutorial.set_tutorial_progress(_HACKING_TUTORIAL_KEY, 1)
 
 func sync_inventory_actions() -> void:
     var inventory: Inventory = Inventory.active_inventory

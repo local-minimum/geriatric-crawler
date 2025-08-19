@@ -31,6 +31,10 @@ func _store_cache() -> void:
     else:
         push_error("Could not open file '%s' with write permissions" % file_path)
 
+func get_all_keys() -> Array[String]:
+    _load_cache()
+    return super.get_all_keys()
+
 func get_setting(key: String, default: Variant = null) -> Variant:
     _load_cache()
     return _cache.get(key, default)

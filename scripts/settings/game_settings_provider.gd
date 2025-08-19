@@ -5,6 +5,14 @@ class_name GameSettingsProvider
 static var _cache: Dictionary
 @warning_ignore_restore("unused_private_class_variable")
 
+func get_all_keys() -> Array[String]:
+    var keys: Array[String]
+    for key: Variant in _cache:
+        if key is String:
+            keys.append(key)
+
+    return keys
+
 func get_setting(_key: String, default: Variant = null) -> Variant:
     return default
 
