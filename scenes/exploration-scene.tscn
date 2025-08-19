@@ -191,13 +191,15 @@ offset_right = 10.5
 offset_bottom = 33.0
 grow_horizontal = 2
 grow_vertical = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
+size_flags_horizontal = 4
+size_flags_vertical = 4
 theme_override_styles/panel = SubResource("StyleBoxFlat_hdcgk")
 
 [node name="MarginContainer" type="MarginContainer" parent="Tutorials/Tutorial Box"]
 clip_contents = true
 layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
 theme_override_constants/margin_left = 8
 theme_override_constants/margin_top = 8
 theme_override_constants/margin_right = 8
@@ -205,13 +207,17 @@ theme_override_constants/margin_bottom = 8
 
 [node name="VBoxContainer" type="VBoxContainer" parent="Tutorials/Tutorial Box/MarginContainer"]
 layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
 
 [node name="Label" type="Label" parent="Tutorials/Tutorial Box/MarginContainer/VBoxContainer"]
 layout_mode = 2
-text = "Some explanatioaaaa"
+size_flags_horizontal = 4
+text = "Some explanation"
 
 [node name="HBoxContainer" type="HBoxContainer" parent="Tutorials/Tutorial Box/MarginContainer/VBoxContainer"]
 layout_mode = 2
+size_flags_vertical = 4
 alignment = 2
 
 [node name="Prev Button" type="Button" parent="Tutorials/Tutorial Box/MarginContainer/VBoxContainer/HBoxContainer"]
