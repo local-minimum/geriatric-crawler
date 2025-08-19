@@ -280,6 +280,7 @@ func show_game() -> void:
     var progress: int = _game.settings.tutorial.get_tutorial_progress(_HACKING_TUTORIAL_KEY)
     if progress == 0:
         tutorial_idx = 0
+        _game.tutoral_ui.reset_tutorial()
         _show_current_tutorial()
 
 var tutorial_idx: int

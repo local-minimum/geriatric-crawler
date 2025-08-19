@@ -17,6 +17,7 @@ class_name TargetOutliner
 @export var live: bool = false
 @export var connector_width: float = 1.0
 @export var connector_anchor_radius: float = 0
+@export var connector_min_distance: float = 15
 @export_range(0, 1) var connector_anchor_pos: float = 0.1
 
 var drawing: bool
@@ -34,8 +35,13 @@ var tween_duration: float
 signal on_redrawn(tween_progress: float)
 
 func _ready() -> void:
+    reset_outlining()
+
+func reset_outlining() -> void:
     pos = get_viewport_rect().size / 2
     end = pos
+    if !live:
+        targets = []
 
 func _draw() -> void:
     var new_pos: Vector2 = Vector2.ZERO
@@ -103,7 +109,7 @@ func _draw() -> void:
     # Outliner
     draw_polyline([outline_corners[0], outline_corners[1], outline_corners[2], outline_corners[3], outline_corners[0]], line_color, width)
 
-    if source != null:
+    if source != null && progress == 1 && !post_tweeing:
         # Connector line
         var s_rect: Rect2 = source.get_global_rect()
         var s_pos: Vector2 = s_rect.position
@@ -122,15 +128,45 @@ func _draw() -> void:
                 return a.distance_squared_to(s_center) < b.distance_squared_to(s_center)
         )
 
-        var t_center: Vector2 = targets_global_rect.get_center()
+        var outline_best: Vector2 = outline_corners[0]
+
+        outline_corners.sort_custom(
+            func (a: Vector2, b: Vector2) -> bool:
+                return a.distance_squared_to(outline_best) < b.distance_squared_to(outline_best)
+        )
 
         source_corners.sort_custom(
             func (a: Vector2, b: Vector2) -> bool:
-                return a.distance_squared_to(t_center) < b.distance_squared_to(t_center)
+                return a.distance_squared_to(outline_corners[0]) < b.distance_squared_to(outline_corners[0])
         )
 
-        var from: Vector2 = outline_corners[0].lerp(outline_corners[1], connector_anchor_pos)
-        var to: Vector2 = source_corners[0].lerp(source_corners[1], connector_anchor_pos)
+
+        var d: Vector2 = source_corners[0] - outline_corners[0]
+        var outline_idx2: int = 1 if absf(d.dot(outline_corners[1] - outline_corners[0])) > absf(d.dot(outline_corners[2] - outline_corners[0])) else 2
+
+        var from: Vector2 = outline_corners[0].lerp(
+            outline_corners[outline_idx2],
+            connector_anchor_pos,
+        )
+
+        source_corners.sort_custom(
+            func (a: Vector2, b: Vector2) -> bool:
+                return a.distance_squared_to(from) < b.distance_squared_to(from)
+        )
+
+        var d1: float = VectorUtils.inv_chebychev_distance2f(from, source_corners[1])
+        var d2: float = VectorUtils.inv_chebychev_distance2f(from, source_corners[2])
+        var source_idx2: int = 1
+        if d1 < connector_min_distance:
+            source_idx2 = 2
+        elif d2 < connector_min_distance:
+            source_idx2 = 1
+        elif d1 < d2:
+            source_idx2 = 1
+        else:
+            source_idx2 = 2
+
+        var to: Vector2 = source_corners[0].lerp(source_corners[source_idx2], connector_anchor_pos)
 
         if to.x == from.x || to.y == from.y:
             # Connector is straight line
@@ -141,8 +177,8 @@ func _draw() -> void:
                 connector_width,
             )
         else:
-            var outline_side: Vector2 = outline_corners[0] - outline_corners[1]
-            var source_side: Vector2 = source_corners[0] - source_corners[1]
+            var outline_side: Vector2 = outline_corners[0] - outline_corners[outline_idx2]
+            var source_side: Vector2 = source_corners[0] - source_corners[source_idx2]
 
             # Orthogonal sides makes elbow
             if source_side.x == 0 && outline_side.y == 0 || source_side.y == 0 && outline_side.x == 0:
@@ -168,8 +204,9 @@ func _draw() -> void:
 
 func _process(_delta: float) -> void:
     if visible && live || tweening || post_tweeing:
-        if !tweening:
+        if !tweening && post_tweeing:
             post_tweeing = false
+            await get_tree().create_timer(0.1).timeout
         queue_redraw()
 
 func tween_to(new_targets: Array[Control], duration_seconds: float) -> void:

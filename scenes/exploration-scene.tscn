@@ -175,6 +175,7 @@ margin = 5.0
 width = 3.0
 connector_width = 3.0
 connector_anchor_radius = 5.0
+connector_min_distance = 20.0
 connector_anchor_pos = 0.2
 metadata/_custom_type_script = "uid://bahguhui1nyi0"
 

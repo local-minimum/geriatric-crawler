@@ -23,6 +23,14 @@ var _prev_text: String
 var _current_text: String
 var _box_start_position: Vector2
 
+func reset_tutorial() -> void:
+    _hide_parts()
+    outliner.reset_outlining()
+    box.global_position = box.get_viewport_rect().get_center() - box.get_global_rect().size / 2
+    box_label.text = ""
+    _prev_text = ""
+    _current_text = ""
+
 func show_tutorial(message: String, on_previous: Variant, on_next: Variant, targets: Array[Control], autohide_time: float = -1) -> void:
     _prev_text = _current_text
     _current_text = message
@@ -37,21 +45,29 @@ func show_tutorial(message: String, on_previous: Variant, on_next: Variant, targ
     _on_next = on_next
     _on_prev = on_previous
 
+
+    var id : int = _tutorial_id
+
+    box.show()
+    peephole.show()
+    outliner.show()
+
+    if tween_time > 0:
+        next_btn.disabled = true
+        prev_btn.disabled = true
+        await get_tree().create_timer(tween_time).timeout
+
     next_btn.disabled = on_next is not Callable
     prev_btn.disabled = on_previous is not Callable
 
-    var id : int = _tutorial_id
     if autohide_time > 0:
-        await get_tree().create_timer(tween_time + autohide_time).timeout
+        await get_tree().create_timer(autohide_time).timeout
         if _tutorial_id == id && on_next is Callable:
             _hide_parts()
             @warning_ignore_start("unsafe_cast")
             (on_next as Callable).call()
             @warning_ignore_restore("unsafe_cast")
 
-    box.show()
-    peephole.show()
-    outliner.show()
 
     print_debug("Tutorial: %s" % message)
 
@@ -79,7 +95,8 @@ func _on_prev_button_pressed() -> void:
 func _handle_outliner_redrawn(tween_progress: float) -> void:
     if tween_progress == 1:
         box_label.text = _current_text
-        _position_box.call_deferred(tween_progress)
+        if outliner.tweening:
+            _position_box.call_deferred(tween_progress)
         return
 
     var l_prev: float = _prev_text.length()
