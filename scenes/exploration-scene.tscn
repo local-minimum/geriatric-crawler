@@ -1,4 +1,4 @@
-[gd_scene load_steps=23 format=3 uid="uid://5mvkmlsl4h3x"]
+[gd_scene load_steps=18 format=3 uid="uid://5mvkmlsl4h3x"]
 
 [ext_resource type="PackedScene" uid="uid://dx6ngxriyyq7l" path="res://scenes/ui/ui_debug_settings.tscn" id="1_6lmoa"]
 [ext_resource type="Script" uid="uid://da6tnwd64dup6" path="res://scripts/exploration_scene.gd" id="1_w7kg7"]
@@ -15,25 +15,8 @@
 [ext_resource type="Script" uid="uid://dqwqm2boptlgi" path="res://scripts/settings/disk_json_settings_provider.gd" id="12_47t46"]
 [ext_resource type="Script" uid="uid://byetmq0ilyqor" path="res://scripts/settings/game_settings.gd" id="13_hdcgk"]
 [ext_resource type="Script" uid="uid://03jcb75xfhhs" path="res://scripts/settings/accessibility_settings.gd" id="13_w7kg7"]
-[ext_resource type="Script" uid="uid://bahguhui1nyi0" path="res://scripts/ui/target_outliner.gd" id="16_7qmp0"]
-[ext_resource type="Script" uid="uid://cw7q1gwdhyf8p" path="res://scripts/ui/tutorial_ui.gd" id="16_160vf"]
 [ext_resource type="Script" uid="uid://b6t7ddd2s4oo" path="res://scripts/settings/tutorial_settings.gd" id="16_gl6i3"]
-[ext_resource type="Script" uid="uid://bfv42ir0f6kca" path="res://scripts/ui/peephole.gd" id="16_t2qw5"]
-[ext_resource type="Texture2D" uid="uid://dwdbddokbcnl7" path="res://sprites/kenny game icons/left.png" id="18_kdmba"]
-[ext_resource type="Texture2D" uid="uid://dog5ren3gjxpj" path="res://sprites/kenny game icons/right.png" id="19_hd6rl"]
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hdcgk"]
-bg_color = Color(0.6972, 0.498, 0.83, 0.945098)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.301, 0.785467, 0.86, 0.772549)
-border_blend = true
-corner_radius_top_left = 2
-corner_radius_top_right = 2
-corner_radius_bottom_right = 2
-corner_radius_bottom_left = 2
+[ext_resource type="PackedScene" uid="uid://tdh164rk30bx" path="res://scenes/ui/tutorials.tscn" id="17_t2qw5"]
 
 [node name="Exploration" type="Control" node_paths=PackedStringArray("settings", "subviewport", "exploration_ui")]
 layout_mode = 3
@@ -136,104 +119,4 @@ script = ExtResource("16_gl6i3")
 settings = NodePath("../DiskJsonSettingsProvider")
 metadata/_custom_type_script = "uid://b6t7ddd2s4oo"
 
-[node name="Tutorials" type="CanvasLayer" parent="." node_paths=PackedStringArray("outliner", "peephole", "box", "box_label", "next_btn", "prev_btn")]
-layer = 127
-script = ExtResource("16_160vf")
-outliner = NodePath("TargetOutliner")
-peephole = NodePath("PeepHole")
-box = NodePath("Tutorial Box")
-box_label = NodePath("Tutorial Box/MarginContainer/VBoxContainer/Label")
-next_btn = NodePath("Tutorial Box/MarginContainer/VBoxContainer/HBoxContainer/Next Button")
-prev_btn = NodePath("Tutorial Box/MarginContainer/VBoxContainer/HBoxContainer/Prev Button")
-tween_time = 0.4
-
-[node name="PeepHole" type="Control" parent="Tutorials" node_paths=PackedStringArray("outliner")]
-layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-script = ExtResource("16_t2qw5")
-outliner = NodePath("../TargetOutliner")
-color = Color(0.06, 0.06, 0.06, 0.792157)
-metadata/_custom_type_script = "uid://bfv42ir0f6kca"
-
-[node name="TargetOutliner" type="Control" parent="Tutorials" node_paths=PackedStringArray("source")]
-process_mode = 1
-layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-script = ExtResource("16_7qmp0")
-source = NodePath("../Tutorial Box")
-line_color = Color(0.465, 0.4805, 0.93, 0.890196)
-margin = 5.0
-width = 3.0
-connector_width = 3.0
-connector_anchor_radius = 5.0
-connector_min_distance = 20.0
-connector_anchor_pos = 0.2
-metadata/_custom_type_script = "uid://bahguhui1nyi0"
-
-[node name="Tutorial Box" type="PanelContainer" parent="Tutorials"]
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -10.5
-offset_top = -10.0
-offset_right = 10.5
-offset_bottom = 33.0
-grow_horizontal = 2
-grow_vertical = 2
-size_flags_horizontal = 4
-size_flags_vertical = 4
-theme_override_styles/panel = SubResource("StyleBoxFlat_hdcgk")
-
-[node name="MarginContainer" type="MarginContainer" parent="Tutorials/Tutorial Box"]
-clip_contents = true
-layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 4
-theme_override_constants/margin_left = 8
-theme_override_constants/margin_top = 8
-theme_override_constants/margin_right = 8
-theme_override_constants/margin_bottom = 8
-
-[node name="VBoxContainer" type="VBoxContainer" parent="Tutorials/Tutorial Box/MarginContainer"]
-layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 4
-
-[node name="Label" type="Label" parent="Tutorials/Tutorial Box/MarginContainer/VBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 4
-text = "Some explanation"
-
-[node name="HBoxContainer" type="HBoxContainer" parent="Tutorials/Tutorial Box/MarginContainer/VBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 5
-size_flags_vertical = 4
-alignment = 2
-
-[node name="Prev Button" type="Button" parent="Tutorials/Tutorial Box/MarginContainer/VBoxContainer/HBoxContainer"]
-custom_minimum_size = Vector2(20, 20)
-layout_mode = 2
-icon = ExtResource("18_kdmba")
-icon_alignment = 1
-expand_icon = true
-
-[node name="Next Button" type="Button" parent="Tutorials/Tutorial Box/MarginContainer/VBoxContainer/HBoxContainer"]
-custom_minimum_size = Vector2(20, 20)
-layout_mode = 2
-icon = ExtResource("19_hd6rl")
-icon_alignment = 1
-expand_icon = true
-
-[connection signal="pressed" from="Tutorials/Tutorial Box/MarginContainer/VBoxContainer/HBoxContainer/Prev Button" to="Tutorials" method="_on_prev_button_pressed"]
-[connection signal="pressed" from="Tutorials/Tutorial Box/MarginContainer/VBoxContainer/HBoxContainer/Next Button" to="Tutorials" method="_on_next_button_pressed"]
+[node name="Tutorials" parent="." instance=ExtResource("17_t2qw5")]

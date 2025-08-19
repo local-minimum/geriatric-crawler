@@ -1,0 +1,122 @@
+[gd_scene load_steps=7 format=3 uid="uid://tdh164rk30bx"]
+
+[ext_resource type="Script" uid="uid://cw7q1gwdhyf8p" path="res://scripts/ui/tutorial_ui.gd" id="1_0gj5e"]
+[ext_resource type="Script" uid="uid://bfv42ir0f6kca" path="res://scripts/ui/peephole.gd" id="2_idc43"]
+[ext_resource type="Script" uid="uid://bahguhui1nyi0" path="res://scripts/ui/target_outliner.gd" id="3_yfs3x"]
+[ext_resource type="Texture2D" uid="uid://dwdbddokbcnl7" path="res://sprites/kenny game icons/left.png" id="4_0vgye"]
+[ext_resource type="Texture2D" uid="uid://dog5ren3gjxpj" path="res://sprites/kenny game icons/right.png" id="5_ybqcr"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hdcgk"]
+bg_color = Color(0.6972, 0.498, 0.83, 0.945098)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.301, 0.785467, 0.86, 0.772549)
+border_blend = true
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
+
+[node name="Tutorials" type="CanvasLayer" node_paths=PackedStringArray("outliner", "peephole", "box", "box_label", "next_btn", "prev_btn")]
+layer = 127
+script = ExtResource("1_0gj5e")
+outliner = NodePath("TargetOutliner")
+peephole = NodePath("PeepHole")
+box = NodePath("Tutorial Box")
+box_label = NodePath("Tutorial Box/MarginContainer/VBoxContainer/Label")
+next_btn = NodePath("Tutorial Box/MarginContainer/VBoxContainer/HBoxContainer/Next Button")
+prev_btn = NodePath("Tutorial Box/MarginContainer/VBoxContainer/HBoxContainer/Prev Button")
+tween_time = 0.4
+
+[node name="PeepHole" type="Control" parent="." node_paths=PackedStringArray("outliner")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("2_idc43")
+outliner = NodePath("../TargetOutliner")
+color = Color(0.06, 0.06, 0.06, 0.792157)
+metadata/_custom_type_script = "uid://bfv42ir0f6kca"
+
+[node name="TargetOutliner" type="Control" parent="." node_paths=PackedStringArray("source")]
+process_mode = 1
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("3_yfs3x")
+source = NodePath("../Tutorial Box")
+line_color = Color(0.465, 0.4805, 0.93, 0.890196)
+margin = 5.0
+width = 3.0
+connector_width = 3.0
+connector_anchor_radius = 5.0
+connector_min_distance = 20.0
+connector_anchor_pos = 0.2
+metadata/_custom_type_script = "uid://bahguhui1nyi0"
+
+[node name="Tutorial Box" type="PanelContainer" parent="."]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -10.5
+offset_top = -10.0
+offset_right = 10.5
+offset_bottom = 33.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_styles/panel = SubResource("StyleBoxFlat_hdcgk")
+
+[node name="MarginContainer" type="MarginContainer" parent="Tutorial Box"]
+clip_contents = true
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Tutorial Box/MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+
+[node name="Label" type="Label" parent="Tutorial Box/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Some explanation"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Tutorial Box/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 5
+size_flags_vertical = 4
+alignment = 2
+
+[node name="Prev Button" type="Button" parent="Tutorial Box/MarginContainer/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+icon = ExtResource("4_0vgye")
+icon_alignment = 1
+expand_icon = true
+
+[node name="Next Button" type="Button" parent="Tutorial Box/MarginContainer/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+icon = ExtResource("5_ybqcr")
+icon_alignment = 1
+expand_icon = true
+
+[connection signal="pressed" from="Tutorial Box/MarginContainer/VBoxContainer/HBoxContainer/Prev Button" to="." method="_on_prev_button_pressed"]
+[connection signal="pressed" from="Tutorial Box/MarginContainer/VBoxContainer/HBoxContainer/Next Button" to="." method="_on_next_button_pressed"]

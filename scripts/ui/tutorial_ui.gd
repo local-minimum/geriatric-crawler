@@ -14,6 +14,17 @@ func _ready() -> void:
     if outliner.on_redrawn.connect(_handle_outliner_redrawn) != OK:
         push_error("Failed to connect outliner redrawn")
 
+func _input(event: InputEvent) -> void:
+    if event.is_echo() || !box.visible:
+        return
+
+    if event.is_action_pressed("crawl_strafe_left"):
+        if !prev_btn.disabled:
+            _on_prev_button_pressed()
+
+    elif event.is_action_pressed("crawl_strafe_right"):
+        if !next_btn.disabled:
+            _on_next_button_pressed()
 
 var _tutorial_id: int = 0
 
