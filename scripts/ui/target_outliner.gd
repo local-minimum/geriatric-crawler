@@ -54,6 +54,12 @@ func _draw() -> void:
             end.x = max(t_pos.x, t_end.x, end.x)
             end.y = max(t_pos.y, t_end.y, end.y)
 
+    # No valid target
+    if first:
+        drawing = false
+        on_redrawn.emit()
+        return
+
     pos -= Vector2.ONE * margin
     end += Vector2.ONE * margin
 
@@ -158,5 +164,5 @@ func _draw() -> void:
     on_redrawn.emit()
 
 func _process(_delta: float) -> void:
-    if live:
+    if visible && live:
         queue_redraw()

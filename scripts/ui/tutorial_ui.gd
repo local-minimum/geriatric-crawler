@@ -9,7 +9,8 @@ class_name TutorialUI
 @export var prev_btn: Button
 
 func _ready() -> void:
-    _hide_parts()
+    # _hide_parts()
+    pass
 
 var _tutorial_id: int = 0
 

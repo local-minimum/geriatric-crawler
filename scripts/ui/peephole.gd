@@ -40,7 +40,11 @@ func _draw() -> void:
         draw_rect(Rect2(origin , Vector2(hole_end.x, hole_pos.y) - origin), color)
         draw_rect(Rect2(Vector2(hole_end.x, origin.y), Vector2(view_size.x - hole_end.x, view_size.y - origin.y)), color)
     else:
-        draw_rect(Rect2(origin, Vector2(size.x - origin.x, hole_pos.y - origin.y)), color)
-        draw_rect(Rect2(Vector2(origin.x, hole_pos.y), Vector2(hole_pos.x - origin.x, hole_end.y - hole_pos.y)), color)
-        draw_rect(Rect2(Vector2(hole_end.x, hole_pos.y), Vector2(view_size.x - hole_end.x, hole_end.y - hole_pos.y)), color)
-        draw_rect(Rect2(Vector2(origin.x, hole_end.y), Vector2(view_size.x - origin.x, view_size.y - hole_end.y)), color)
+        if hole_pos.y > origin.y:
+            draw_rect(Rect2(origin, Vector2(size.x - origin.x, hole_pos.y - origin.y)), color)
+        if hole_pos.x > origin.x:
+            draw_rect(Rect2(Vector2(origin.x, hole_pos.y), Vector2(hole_pos.x - origin.x, hole_end.y - hole_pos.y)), color)
+        if hole_end.x < view_size.x:
+            draw_rect(Rect2(Vector2(hole_end.x, hole_pos.y), Vector2(view_size.x - hole_end.x, hole_end.y - hole_pos.y)), color)
+        if hole_end.y < view_size.y:
+            draw_rect(Rect2(Vector2(origin.x, hole_end.y), Vector2(view_size.x - origin.x, view_size.y - hole_end.y)), color)

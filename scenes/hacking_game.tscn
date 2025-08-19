@@ -61,7 +61,7 @@ intro_tutorial = Array[String](["This shows the length of the passphrase needed
 and the the best solution in the most recent attempt", "This shows how many attempts remain", "This shows how many utilities you have left
 and buttons to deploy them", "This is the playing fields where you need to shift
 the pass code parts around to form the corret solution", "The solution must be written horizontally, 
-but can start anywhere on a line", "Click the buttons around the bord to shift
+but can start anywhere on a line", "Click the buttons around the board to shift
 rows and columns", "Press \"Hack!\" to perform one attempt"])
 
 [node name="Background" type="ColorRect" parent="Hacking Game UI"]
