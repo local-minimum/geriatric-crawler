@@ -35,7 +35,7 @@ extends Node
 
 @export var save_system: SaveSystem
 
-@export var accessibility: AccessibilitySettings
+@export var settings: GameSettings
 
 var inited: bool
 
@@ -137,4 +137,8 @@ func _on_load_button_pressed() -> void:
         pass
 
 func _on_handedness_toggled(toggled_on:bool) -> void:
-    accessibility.set_handedness(AccessibilitySettings.Handedness.RIGHT if toggled_on else AccessibilitySettings.Handedness.LEFT)
+    settings.accessibility.set_handedness(AccessibilitySettings.Handedness.RIGHT if toggled_on else AccessibilitySettings.Handedness.LEFT)
+
+func _on_reset_tutorials_pressed() -> void:
+    settings.tutorial.reset_all_tutorials()
+    NotificationsManager.info("Tutorials", "All tutorials reset")

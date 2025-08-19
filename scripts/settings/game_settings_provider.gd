@@ -24,3 +24,8 @@ func set_setting(_key: String, _value: Variant) -> void:
 
 func set_settingi(_key: String, _value: int) -> void:
     pass
+
+func remove_setting(key: String) -> void:
+    @warning_ignore_start("return_value_discarded")
+    _cache.erase(key)
+    @warning_ignore_restore("return_value_discarded")

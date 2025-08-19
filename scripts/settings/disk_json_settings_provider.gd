@@ -53,3 +53,7 @@ func set_setting(key: String, value: Variant) -> void:
 func set_settingi(key: String, value: int) -> void:
     _cache[key] = value
     _store_cache()
+
+func remove_setting(key: String) -> void:
+    super.remove_setting(key)
+    _store_cache()

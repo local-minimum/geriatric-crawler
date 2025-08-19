@@ -237,18 +237,23 @@ tooltip_text = "If there's a void in the movement direction while wall walking, 
 text = "Jump Off Walls / Ceilings
 "
 
-[node name="Save_Load" type="HBoxContainer" parent="DebugMenu/MarginContainer/VBoxContainer"]
+[node name="Buttons" type="HBoxContainer" parent="DebugMenu/MarginContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="Save Button" type="Button" parent="DebugMenu/MarginContainer/VBoxContainer/Save_Load"]
+[node name="Save Button" type="Button" parent="DebugMenu/MarginContainer/VBoxContainer/Buttons"]
 layout_mode = 2
 mouse_filter = 1
 text = "Save"
 
-[node name="Load Button" type="Button" parent="DebugMenu/MarginContainer/VBoxContainer/Save_Load"]
+[node name="Load Button" type="Button" parent="DebugMenu/MarginContainer/VBoxContainer/Buttons"]
 layout_mode = 2
 mouse_filter = 1
 text = "Load"
+
+[node name="Reset Tutorials" type="Button" parent="DebugMenu/MarginContainer/VBoxContainer/Buttons"]
+layout_mode = 2
+mouse_filter = 1
+text = "Reset Tutorials"
 
 [connection signal="pressed" from="OpenMenuButton/Margin/OpenMenuButton" to="." method="_on_show_setting_menu"]
 [connection signal="pressed" from="DebugMenu/MarginContainerBG/MarginContainer/Close Menu Button" to="." method="_on_hide_setting_menu"]
@@ -264,5 +269,6 @@ text = "Load"
 [connection signal="toggled" from="DebugMenu/MarginContainer/VBoxContainer/Gameplay/Wall Walking" to="." method="_on_wall_walking_toggled"]
 [connection signal="toggled" from="DebugMenu/MarginContainer/VBoxContainer/Gameplay/Ceiling Walking" to="." method="_on_ceiling_walking_toggled"]
 [connection signal="toggled" from="DebugMenu/MarginContainer/VBoxContainer/Gameplay/Jump Off Walls" to="." method="_on_jump_off_walls_toggled"]
-[connection signal="pressed" from="DebugMenu/MarginContainer/VBoxContainer/Save_Load/Save Button" to="." method="_on_save_button_pressed"]
-[connection signal="pressed" from="DebugMenu/MarginContainer/VBoxContainer/Save_Load/Load Button" to="." method="_on_load_button_pressed"]
+[connection signal="pressed" from="DebugMenu/MarginContainer/VBoxContainer/Buttons/Save Button" to="." method="_on_save_button_pressed"]
+[connection signal="pressed" from="DebugMenu/MarginContainer/VBoxContainer/Buttons/Load Button" to="." method="_on_load_button_pressed"]
+[connection signal="pressed" from="DebugMenu/MarginContainer/VBoxContainer/Buttons/Reset Tutorials" to="." method="_on_reset_tutorials_pressed"]

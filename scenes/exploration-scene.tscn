@@ -86,10 +86,10 @@ render_target_update_mode = 4
 
 [node name="Exploration View" parent="SubViewportContainer/SubViewport" instance=ExtResource("5_6lmoa")]
 
-[node name="DebugSettingsUI" parent="SubViewportContainer/SubViewport" node_paths=PackedStringArray("exploration_view", "save_system", "accessibility") instance=ExtResource("1_6lmoa")]
+[node name="DebugSettingsUI" parent="SubViewportContainer/SubViewport" node_paths=PackedStringArray("exploration_view", "save_system", "settings") instance=ExtResource("1_6lmoa")]
 exploration_view = NodePath("../Exploration View")
 save_system = NodePath("../../../SaveSystem")
-accessibility = NodePath("../../../Settings/AccessibilitySettings")
+settings = NodePath("../../../Settings")
 
 [node name="Exploration UI" parent="." node_paths=PackedStringArray("exploration_view", "battle", "inspect_robot_ui") instance=ExtResource("4_kbxam")]
 layout_mode = 1
