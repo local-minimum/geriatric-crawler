@@ -2,6 +2,7 @@ extends CanvasLayer
 class_name HackingGameUI
 
 const _HACKING_TUTORIAL_KEY: String = "hacking"
+const _HACKING_TUTORIAL_BOMB_KEY: String = "hacking.bomb"
 
 @export var _game: HackingGame
 
@@ -72,6 +73,8 @@ const _HACKING_TUTORIAL_KEY: String = "hacking"
 @export var most_recent_attempt: Container
 
 @export_multiline var intro_tutorial: Array[String]
+@export_multiline var bombing_tutorial: Array[String]
+@export_multiline var worming_tutorial: Array[String]
 
 const DEPLOY_BOMB_TEXT: String = "Deploy Bomb"
 const CANCEL_BOMB_TEXT: String = "Abort Bomb Deployment"
@@ -281,53 +284,120 @@ func show_game() -> void:
     if progress == 0:
         tutorial_idx = 0
         _game.tutoral_ui.reset_tutorial()
-        _show_current_tutorial()
+        active_tutorial = intro_tutorial
+        on_complete_tutorial.clear()
+        on_complete_tutorial.append(OnCompleteTutorial.new(_HACKING_TUTORIAL_KEY, 1))
+        show_current_tutorial()
 
 var tutorial_idx: int
 
-func _show_current_tutorial() -> void:
+var active_tutorial: Array[String]
+
+class OnCompleteTutorial:
+    var key: String
+    var step: int
+    var callback: Variant
+
+    @warning_ignore_start("shadowed_variable")
+    func _init(key: String, step: int, callback: Variant = null) -> void:
+        self.key = key
+        self.step = step
+        self.callback = callback
+    @warning_ignore_restore("shadowed_variable")
+
+var on_complete_tutorial: Array[OnCompleteTutorial]
+
+func show_current_tutorial() -> void:
     _game.tutoral_ui.show_tutorial(
-        intro_tutorial[tutorial_idx],
+        active_tutorial[tutorial_idx],
         null if tutorial_idx == 0 else (_show_previous_tutorial as Variant),
         _show_next_tutorial,
         _get_intro_current_targets(),
     )
 
 func _get_intro_current_targets() -> Array[Control]:
-    match tutorial_idx:
-        0:
-            return [most_recent_attempt_label, most_recent_attempt]
-        1:
-            return [_attempts_counter, _attempts_label]
-        2:
-            return [_bombs_label, _bombs_counter, _worms_label, _worms_counter, _deploy_bomb_button, _worming._deploy_worm_button]
-        3:
-            return [_playing_field_container]
-        4:
-            _sync_board()
-            var example: Array[Control]
-            for col: int in range(1, _game.get_passphrase_length() + 1):
-                var coords: Vector2i = Vector2i(col, 1)
-                if _field_roots.has(coords):
-                    example.append(_field_roots[coords])
-            return example
-        5:
-            return [_shift_buttons[3]]
-        6:
-            return [_attempt_button]
+    if active_tutorial == intro_tutorial:
+        match tutorial_idx:
+            0:
+                return [most_recent_attempt_label, most_recent_attempt]
+            1:
+                return [_attempts_counter, _attempts_label]
+            2:
+                return [_bombs_label, _bombs_counter, _worms_label, _worms_counter, _deploy_bomb_button, _worming._deploy_worm_button]
+            3:
+                return [_playing_field_container]
+            4:
+                _sync_board()
+                var example: Array[Control]
+                for col: int in range(1, _game.get_passphrase_length() + 1):
+                    var coords: Vector2i = Vector2i(col, 1)
+                    if _field_roots.has(coords):
+                        example.append(_field_roots[coords])
+                return example
+            5:
+                return [_shift_buttons[3]]
+            6:
+                return [_attempt_button]
+
+    elif active_tutorial == bombing_tutorial:
+        match  tutorial_idx:
+            0,1,2:
+                return [_field_roots[_field_roots.keys()[0]]]
+            3:
+                return [_shift_buttons[3]]
+            4:
+                return [_deploy_bomb_button]
+
+    elif active_tutorial == worming_tutorial:
+        match  tutorial_idx:
+            0, 7:
+                return [_worming.worm_head_texture_rect]
+            1:
+                return [_worming._worming_countdown]
+            2:
+                return [_worming._deploy_worm_button]
+            3:
+                return [_shift_buttons[3]]
+            4:
+                return [_worming._worming_navigation_container]
+            5, 6:
+                return [_field_roots[_field_roots.keys()[0]]]
+            8:
+                var lowest: Vector2i
+                var highest: Vector2i
+                var first: bool = true
+                for coords: Vector2i in _field_roots:
+                    if first:
+                        lowest = coords
+                        highest = coords
+                        first = false
+                    else:
+                        if coords.y <= lowest.y && coords.x <= lowest.x:
+                            lowest = coords
+                        if coords.y >= highest.y && coords.x >= highest.x:
+                            highest = coords
+
+                return [_field_roots[lowest],_field_roots[highest]]
 
     return []
 
 func _show_previous_tutorial() -> void:
     tutorial_idx = maxi(0, tutorial_idx - 1)
-    _show_current_tutorial()
+    show_current_tutorial()
 
 func _show_next_tutorial() -> void:
     tutorial_idx += 1
-    if tutorial_idx < intro_tutorial.size():
-        _show_current_tutorial()
+    if tutorial_idx < active_tutorial.size():
+        show_current_tutorial()
     else:
-        _game.settings.tutorial.set_tutorial_progress(_HACKING_TUTORIAL_KEY, 1)
+        for on_complete: OnCompleteTutorial in on_complete_tutorial:
+            _game.settings.tutorial.set_tutorial_progress(on_complete.key, on_complete.step)
+            if on_complete.callback is Callable:
+                @warning_ignore_start("unsafe_cast")
+                (on_complete.callback as Callable).call()
+                @warning_ignore_restore("unsafe_cast")
+
+        on_complete_tutorial.clear()
 
 func sync_inventory_actions() -> void:
     var inventory: Inventory = Inventory.active_inventory
@@ -624,6 +694,7 @@ func _get_word_text_color(discovered: bool, not_present: bool) -> Color:
 func _on_hack_button_pressed() -> void:
     _game.hack()
     _sync_board()
+    # TODO: Check if we have more tutorials
 
 func _on_deploy_bomb_pressed() -> void:
     if _bombing:
@@ -641,9 +712,17 @@ func _cancel_bombing() -> void:
     _handle_attempts_updated(_game.attempts_remaining)
 
 func _ready_bombing() -> void:
-    _bombing = true
+    var tutorial: int = _game.settings.tutorial.get_tutorial_progress(_HACKING_TUTORIAL_BOMB_KEY)
+    if tutorial == 0:
+        active_tutorial = bombing_tutorial
+        on_complete_tutorial.clear()
+        on_complete_tutorial.append(OnCompleteTutorial.new(_HACKING_TUTORIAL_BOMB_KEY, 1))
+        show_current_tutorial()
+
     _deploy_bomb_button.text = CANCEL_BOMB_TEXT
     toggle_shift_buttons(true)
     toggle_word_controls(true)
     _worming.disabled = true
     _attempt_button.disabled = true
+
+    _bombing = true

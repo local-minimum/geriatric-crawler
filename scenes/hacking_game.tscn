@@ -63,6 +63,16 @@ and buttons to deploy them", "This is the playing fields where you need to shift
 the pass code parts around to form the corret solution", "The solution must be written horizontally, 
 but can start anywhere on a line", "Click the buttons around the board to shift
 rows and columns", "Press \"Hack!\" to perform one attempt"])
+bombing_tutorial = Array[String](["Select any position to bomb.
+It and its four neighbors will be affected.", "If they are not part of a pass code,
+they will be destroyed.", "Otherwise they will be marked as
+present in the code", "You cannot shift around the board
+while bombing", "You can cancel bombing at any time
+by pressing the bombing button agian"])
+worming_tutorial = Array[String](["This is your worm", "You have a little time before it starts to move", "During this period you can cancel the worm", "You cannot shift the board while the worm is ative", "Use the arrows or navigation directions keys to
+change the direction of the worm's head", "The worm will eat and destroy all code parts
+that are not part of the pass code", "It will die when it eats one that is included
+in the solution", "It will also die if it collides with itself", "The outer walls will also end the worm"])
 
 [node name="Background" type="ColorRect" parent="Hacking Game UI"]
 anchors_preset = 15
@@ -107,9 +117,9 @@ layout_mode = 2
 mouse_filter = 2
 columns = 13
 
-[node name="Worm Count Down" type="Label" parent="Hacking Game UI/HBoxContainer/Game Area/Playing Field Aspect Ratio"]
+[node name="Worm Count Down" type="Label" parent="Hacking Game UI/HBoxContainer/Game Area"]
 layout_mode = 2
-size_flags_vertical = 1
+size_flags_horizontal = 4
 theme_override_colors/font_color = Color(0.77, 0.77, 0.77, 0.905882)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 0.494118)
 theme_override_constants/outline_size = 10
@@ -265,7 +275,7 @@ worm_straight_tex = ExtResource("12_7o2ew")
 worm_angled_tex = ExtResource("13_l3q62")
 worm_tail_tex = ExtResource("14_7o2ew")
 _deploy_worm_button = NodePath("../HBoxContainer/Controls/MarginContainer/VBoxContainer/Deploy Worm")
-_worming_countdown = NodePath("../HBoxContainer/Game Area/Playing Field Aspect Ratio/Worm Count Down")
+_worming_countdown = NodePath("../HBoxContainer/Game Area/Worm Count Down")
 metadata/_custom_type_script = "uid://kf4ebrv2dpa3"
 
 [connection signal="pressed" from="Hacking Game UI/HBoxContainer/Controls/MarginContainer/VBoxContainer/Deploy Bomb" to="Hacking Game UI" method="_on_deploy_bomb_pressed"]

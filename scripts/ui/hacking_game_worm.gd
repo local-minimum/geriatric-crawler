@@ -26,6 +26,7 @@ const WORM_SPEEDUP: int = 10
 const WORM_MAX_SPEED: int = 80
 const DEPLOY_WORM_TEXT: String = "Deploy Worm"
 const CANCEL_WORM_TEXT: String = "Recall Worm"
+const _HACKING_TUTORIAL_WORM_KEY: String = "hacking.worms"
 
 var _worming: bool
 var _worm_moving: bool
@@ -127,6 +128,8 @@ func _kill_worm() -> void:
     _cancel_worm()
     print_debug("Worm dead")
 
+var worm_head_texture_rect: TextureRect
+
 func _draw_worm() -> void:
     var s: int = _worm.size()
     var prev_coords: Vector2i = Vector2i.ZERO
@@ -147,6 +150,7 @@ func _draw_worm() -> void:
         if idx == 0:
             t_rect.texture = worm_head_tex if _worming else worm_head_dead_tex
             t_rect.rotation_degrees = _delta_to_degrees(_worming_direction)
+            worm_head_texture_rect = t_rect
         elif idx == s - 1:
             t_rect.texture = worm_tail_tex
             t_rect.rotation_degrees = _delta_to_degrees(d1)
@@ -231,6 +235,18 @@ func _ready_worm() -> void:
     _draw_worm()
 
     _worming_countdown.show()
+    _worming_countdown.text = "3"
+
+    var tutorial: int = _game.settings.tutorial.get_tutorial_progress(_HACKING_TUTORIAL_WORM_KEY)
+    if tutorial == 0:
+        game_ui.on_complete_tutorial.clear()
+        game_ui.on_complete_tutorial.append(HackingGameUI.OnCompleteTutorial.new(_HACKING_TUTORIAL_WORM_KEY, 1, _countdown_worm))
+        game_ui.active_tutorial = game_ui.worming_tutorial
+        game_ui.show_current_tutorial()
+    else:
+        _countdown_worm()
+
+func _countdown_worm() -> void:
     for i: int in range(3, 0, -1):
         _worming_countdown.text = "%s" % i
         await get_tree().create_timer(WORM_TICK_FREQ / 1000.0).timeout
