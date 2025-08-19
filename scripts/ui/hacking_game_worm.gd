@@ -126,6 +126,7 @@ func _kill_worm() -> void:
         await get_tree().create_timer(_calculate_worm_speed() * 0.001).timeout
 
     _cancel_worm()
+    game_ui.check_board_tutorials()
     print_debug("Worm dead")
 
 var worm_head_texture_rect: TextureRect
@@ -242,6 +243,7 @@ func _ready_worm() -> void:
         game_ui.on_complete_tutorial.clear()
         game_ui.on_complete_tutorial.append(HackingGameUI.OnCompleteTutorial.new(_HACKING_TUTORIAL_WORM_KEY, 1, _countdown_worm))
         game_ui.active_tutorial = game_ui.worming_tutorial
+        game_ui.tutorial_idx = 0
         game_ui.show_current_tutorial()
     else:
         _countdown_worm()

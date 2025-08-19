@@ -385,6 +385,35 @@ func is_discovered_present(coords: Vector2i) -> bool:
 func is_discovered_not_present(coords: Vector2i) -> bool:
     return discovered_not_present.has(_board[coords.y][coords.x])
 
+func has_any(status: WordStatus) -> bool:
+    for row: int in range(height):
+        for col: int in range(width):
+            if _statuses[row][col] == status:
+                return true
+    return false
+
+func get_first(status: WordStatus) -> Vector2i:
+    for row: int in range(height):
+        for col: int in range(width):
+            if _statuses[row][col] == status:
+                return Vector2i(col, row)
+    return Vector2i(-1, -1)
+
+func get_first_known_inluded() -> Vector2i:
+    for row: int in range(height):
+        for col: int in range(width):
+            if discovered_present.has(_board[row][col]):
+                return Vector2i(col, row)
+    return Vector2i(-1, -1)
+
+func get_first_known_not_inluded() -> Vector2i:
+    for row: int in range(height):
+        for col: int in range(width):
+            if discovered_not_present.has(_board[row][col]):
+                return Vector2i(col, row)
+    return Vector2i(-1, -1)
+
+
 enum WordStatus { DEFAULT, DESTROYED, CORRECT, WRONG_POSITION }
 
 func get_word_status(coords: Vector2i) -> WordStatus:

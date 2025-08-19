@@ -3,6 +3,11 @@ class_name HackingGameUI
 
 const _HACKING_TUTORIAL_KEY: String = "hacking"
 const _HACKING_TUTORIAL_BOMB_KEY: String = "hacking.bomb"
+const _HACKING_TUTORIAL_CORRECT_PLACE_KEY: String = "hacking.correct"
+const _HACKING_TUTORIAL_WRONG_PLACE_KEY: String = "hacking.wrong"
+const _HACKING_TUTORIAL_DESTROYED_PLACE_KEY: String = "hacking.destroyed"
+const _HACKING_TUTORIAL_INCLUEDED_KEY: String = "hacking.included"
+const _HACKING_TUTORIAL_EXCLUDED_KEY: String = "hacking.excluded"
 
 @export var _game: HackingGame
 
@@ -75,6 +80,12 @@ const _HACKING_TUTORIAL_BOMB_KEY: String = "hacking.bomb"
 @export_multiline var intro_tutorial: Array[String]
 @export_multiline var bombing_tutorial: Array[String]
 @export_multiline var worming_tutorial: Array[String]
+@export_multiline var correct_tutorial: Array[String]
+@export_multiline var wrong_place_tutorial: Array[String]
+@export_multiline var destroyed_tutorial: Array[String]
+@export_multiline var included_tutorial: Array[String]
+@export_multiline var excluded_tutorial: Array[String]
+
 
 const DEPLOY_BOMB_TEXT: String = "Deploy Bomb"
 const CANCEL_BOMB_TEXT: String = "Abort Bomb Deployment"
@@ -116,6 +127,8 @@ func _unhandled_input(event: InputEvent) -> void:
             _game.bomb_coords(_marked_targets)
             _cancel_bombing()
             sync_inventory_actions()
+            check_board_tutorials()
+
 
     elif event is InputEventScreenTouch:
         var touch: InputEventScreenTouch = event
@@ -124,6 +137,7 @@ func _unhandled_input(event: InputEvent) -> void:
             _game.bomb_coords(_marked_targets)
             _cancel_bombing()
             sync_inventory_actions()
+            check_board_tutorials()
 
 func is_game_coords(coords: Vector2i) -> bool:
     return posmod(coords.x, 2) == 1 && posmod(coords.y, 2) == 1
@@ -292,6 +306,7 @@ func show_game() -> void:
 var tutorial_idx: int
 
 var active_tutorial: Array[String]
+var fallback_tutorial_targets: Array[Array]
 
 class OnCompleteTutorial:
     var key: String
@@ -379,6 +394,8 @@ func _get_intro_current_targets() -> Array[Control]:
 
                 return [_field_roots[lowest],_field_roots[highest]]
 
+    elif fallback_tutorial_targets.size() > tutorial_idx:
+        return fallback_tutorial_targets[tutorial_idx]
     return []
 
 func _show_previous_tutorial() -> void:
@@ -694,13 +711,73 @@ func _get_word_text_color(discovered: bool, not_present: bool) -> Color:
 func _on_hack_button_pressed() -> void:
     _game.hack()
     _sync_board()
-    # TODO: Check if we have more tutorials
+    check_board_tutorials()
+
+func check_board_tutorials() -> void:
+    await get_tree().create_timer(0.5).timeout
+    active_tutorial = []
+    fallback_tutorial_targets = []
+
+    var tutorial_settings: TutorialSettings = _game.settings.tutorial
+    if tutorial_settings.get_tutorial_progress(_HACKING_TUTORIAL_CORRECT_PLACE_KEY) == 0 && _game.has_any(HackingGame.WordStatus.CORRECT):
+        active_tutorial.append_array(correct_tutorial)
+        var correct_targets: Array[Control] = [_field_roots.get(_game.get_first(HackingGame.WordStatus.CORRECT), null)]
+        var attempts_targets: Array[Control] = [most_recent_attempt, attempt_history]
+
+        fallback_tutorial_targets.append_array([
+            correct_targets,
+            correct_targets,
+            attempts_targets,
+        ])
+
+        on_complete_tutorial.append(OnCompleteTutorial.new(_HACKING_TUTORIAL_CORRECT_PLACE_KEY, 1))
+
+    if tutorial_settings.get_tutorial_progress(_HACKING_TUTORIAL_WRONG_PLACE_KEY) == 0 && _game.has_any(HackingGame.WordStatus.WRONG_POSITION):
+        active_tutorial.append_array(wrong_place_tutorial)
+        var incorrect_targets: Array[Control] = [_field_roots.get(_game.get_first(HackingGame.WordStatus.WRONG_POSITION), null)]
+
+        fallback_tutorial_targets.append_array([
+            incorrect_targets,
+        ])
+
+        on_complete_tutorial.append(OnCompleteTutorial.new(_HACKING_TUTORIAL_WRONG_PLACE_KEY, 1))
+
+    if tutorial_settings.get_tutorial_progress(_HACKING_TUTORIAL_DESTROYED_PLACE_KEY) == 0 && _game.has_any(HackingGame.WordStatus.DESTROYED):
+        active_tutorial.append_array(destroyed_tutorial)
+        var destroyed_targets: Array[Control] = [_field_roots.get(_game.get_first(HackingGame.WordStatus.DESTROYED), null)]
+
+        fallback_tutorial_targets.append_array([
+            destroyed_targets,
+        ])
+
+        on_complete_tutorial.append(OnCompleteTutorial.new(_HACKING_TUTORIAL_DESTROYED_PLACE_KEY, 1))
+
+    if tutorial_settings.get_tutorial_progress(_HACKING_TUTORIAL_INCLUEDED_KEY) == 0:
+        var ctrl: Control = _field_roots.get(_game.get_first_known_inluded())
+        if ctrl != null:
+            active_tutorial.append_array(included_tutorial)
+            var targets: Array[Control] = [ctrl]
+            fallback_tutorial_targets.append(targets)
+            on_complete_tutorial.append(OnCompleteTutorial.new(_HACKING_TUTORIAL_INCLUEDED_KEY, 1))
+
+    if tutorial_settings.get_tutorial_progress(_HACKING_TUTORIAL_EXCLUDED_KEY) == 0:
+        var ctrl: Control = _field_roots.get(_game.get_first_known_not_inluded())
+        if ctrl != null:
+            active_tutorial.append_array(excluded_tutorial)
+            var targets: Array[Control] = [ctrl]
+            fallback_tutorial_targets.append(targets)
+            on_complete_tutorial.append(OnCompleteTutorial.new(_HACKING_TUTORIAL_EXCLUDED_KEY, 1))
+
+    if !active_tutorial.is_empty():
+        tutorial_idx = 0
+        show_current_tutorial()
 
 func _on_deploy_bomb_pressed() -> void:
     if _bombing:
         _cancel_bombing()
     else:
         _ready_bombing()
+
 var _bombing: bool
 
 func _cancel_bombing() -> void:
@@ -717,6 +794,7 @@ func _ready_bombing() -> void:
         active_tutorial = bombing_tutorial
         on_complete_tutorial.clear()
         on_complete_tutorial.append(OnCompleteTutorial.new(_HACKING_TUTORIAL_BOMB_KEY, 1))
+        tutorial_idx = 0
         show_current_tutorial()
 
     _deploy_bomb_button.text = CANCEL_BOMB_TEXT

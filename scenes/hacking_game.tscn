@@ -73,6 +73,22 @@ worming_tutorial = Array[String](["This is your worm", "You have a little time b
 change the direction of the worm's head", "The worm will eat and destroy all code parts
 that are not part of the pass code", "It will die when it eats one that is included
 in the solution", "It will also die if it collides with itself", "The outer walls will also end the worm"])
+correct_tutorial = Array[String](["This indicates that it is included in the passphrase
+and that it is in the correct location", "Note that since the  pass code can start anywhere
+on the line, that if a green is preceded by another
+green or orange, it may mean the detetion has
+started over again on the first letter of the pass code", "Look at the output partial solutions to see the
+exact results of the hacking attempt"])
+wrong_place_tutorial = Array[String](["Orange frames like this one indicate that they
+included in the word, but not in this location"])
+destroyed_tutorial = Array[String](["Destroyed positions like this will be jumped
+over when scanning for the pass code,
+so they can be completely ignored"])
+included_tutorial = Array[String](["When the font changes like this it indicates that
+it is known to be included in the pass code"])
+excluded_tutorial = Array[String](["When the font is greyed out it indicates that
+it is known to not be included anywhere in the
+pass code"])
 
 [node name="Background" type="ColorRect" parent="Hacking Game UI"]
 anchors_preset = 15
