@@ -21,16 +21,29 @@ class_name TargetOutliner
 
 var drawing: bool
 var targets_global_rect: Rect2
+var final_targets_global_rect: Rect2
 
-signal on_redrawn
+var pos: Vector2
+var end: Vector2
+
+var tweening: bool
+var post_tweeing: bool
+var tween_start: float
+var tween_duration: float
+
+signal on_redrawn(tween_progress: float)
+
+func _ready() -> void:
+    pos = get_viewport_rect().size / 2
+    end = pos
 
 func _draw() -> void:
-    var pos: Vector2 = Vector2.ZERO
-    var end: Vector2 = Vector2.ZERO
+    var new_pos: Vector2 = Vector2.ZERO
+    var new_end: Vector2 = Vector2.ZERO
 
     if targets.size() == 0:
         drawing = false
-        on_redrawn.emit()
+        on_redrawn.emit(1)
         return
 
     var first: bool = true
@@ -43,36 +56,48 @@ func _draw() -> void:
         var t_end: Vector2 = t_rect.end
 
         if first:
-            pos.x = min(t_pos.x, t_end.x)
-            pos.y = min(t_pos.y, t_end.y)
-            end.x = max(t_pos.x, t_end.x)
-            end.y = max(t_pos.y, t_end.y)
+            new_pos.x = min(t_pos.x, t_end.x)
+            new_pos.y = min(t_pos.y, t_end.y)
+            new_end.x = max(t_pos.x, t_end.x)
+            new_end.y = max(t_pos.y, t_end.y)
             first = false
         else:
-            pos.x = min(t_pos.x, t_end.x, pos.x)
-            pos.y = min(t_pos.y, t_end.y, pos.y)
-            end.x = max(t_pos.x, t_end.x, end.x)
-            end.y = max(t_pos.y, t_end.y, end.y)
+            new_pos.x = min(t_pos.x, t_end.x, new_pos.x)
+            new_pos.y = min(t_pos.y, t_end.y, new_pos.y)
+            new_end.x = max(t_pos.x, t_end.x, new_end.x)
+            new_end.y = max(t_pos.y, t_end.y, new_end.y)
 
     # No valid target
     if first:
         drawing = false
-        on_redrawn.emit()
+        on_redrawn.emit(1)
         return
 
-    pos -= Vector2.ONE * margin
-    end += Vector2.ONE * margin
+    new_pos -= Vector2.ONE * margin
+    new_end += Vector2.ONE * margin
+    final_targets_global_rect = Rect2(new_pos, new_end - new_pos)
 
-    targets_global_rect = Rect2(pos, end - pos)
+    var progress: float = 1
+    if tweening:
+        progress = clampf((Time.get_ticks_msec() - tween_start) / tween_duration, 0, 1)
+        tweening = progress < 1
+        new_pos = pos.lerp(new_pos, progress)
+        new_end = end.lerp(new_end, progress)
 
-    pos = get_global_transform().affine_inverse().basis_xform(pos)
-    end = get_global_transform().affine_inverse().basis_xform(end)
+    if !tweening:
+        pos = new_pos
+        end = new_end
+
+    targets_global_rect = Rect2(new_pos, new_end - new_pos)
+
+    new_pos = get_global_transform().affine_inverse().basis_xform(new_pos)
+    new_end = get_global_transform().affine_inverse().basis_xform(new_end)
 
     var outline_corners: Array[Vector2] = [
-        pos,
-        Vector2(pos.x, end.y),
-        end,
-        Vector2(end.x, pos.y),
+        new_pos,
+        Vector2(new_pos.x, new_end.y),
+        new_end,
+        Vector2(new_end.x, new_pos.y),
     ]
 
     # Outliner
@@ -161,8 +186,22 @@ func _draw() -> void:
 
     drawing = true
     # print_debug("Draw outline")
-    on_redrawn.emit()
+    on_redrawn.emit(progress)
 
 func _process(_delta: float) -> void:
-    if visible && live:
+    if visible && live || tweening || post_tweeing:
+        if !tweening:
+            post_tweeing = false
         queue_redraw()
+
+func tween_to(new_targets: Array[Control], duration_seconds: float) -> void:
+    tweening = true
+    post_tweeing = true
+    tween_start = Time.get_ticks_msec()
+    tween_duration = duration_seconds * 1000
+    targets = new_targets
+
+func snap_to(new_targets: Array[Control]) -> void:
+    tweening = false
+    post_tweeing = false
+    targets = new_targets

@@ -145,6 +145,7 @@ box = NodePath("Tutorial Box")
 box_label = NodePath("Tutorial Box/MarginContainer/VBoxContainer/Label")
 next_btn = NodePath("Tutorial Box/MarginContainer/VBoxContainer/HBoxContainer/Next Button")
 prev_btn = NodePath("Tutorial Box/MarginContainer/VBoxContainer/HBoxContainer/Prev Button")
+tween_time = 0.4
 
 [node name="PeepHole" type="Control" parent="Tutorials" node_paths=PackedStringArray("outliner")]
 layout_mode = 3
@@ -206,8 +207,7 @@ layout_mode = 2
 
 [node name="Label" type="Label" parent="Tutorials/Tutorial Box/MarginContainer/VBoxContainer"]
 layout_mode = 2
-text = "Some explanation of
-what that is..."
+text = "Some explanatioaaaa"
 
 [node name="HBoxContainer" type="HBoxContainer" parent="Tutorials/Tutorial Box/MarginContainer/VBoxContainer"]
 layout_mode = 2

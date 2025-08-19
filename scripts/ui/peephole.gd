@@ -9,7 +9,7 @@ func _ready() -> void:
         push_error("Could not connect outliner redrawn")
     _handle_redrawn()
 
-func _handle_redrawn() -> void:
+func _handle_redrawn(_tween_progress: float = 1.0) -> void:
     if outliner.drawing:
         show()
         queue_redraw()
