@@ -217,6 +217,7 @@ text = "Some explanation"
 
 [node name="HBoxContainer" type="HBoxContainer" parent="Tutorials/Tutorial Box/MarginContainer/VBoxContainer"]
 layout_mode = 2
+size_flags_horizontal = 5
 size_flags_vertical = 4
 alignment = 2
 

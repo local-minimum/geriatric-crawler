@@ -96,6 +96,7 @@ func _handle_outliner_redrawn(tween_progress: float) -> void:
     if tween_progress == 1:
         box_label.text = _current_text
         if outliner.tweening:
+            box.size = Vector2.ZERO
             _position_box.call_deferred(tween_progress)
         return
 
@@ -105,6 +106,7 @@ func _handle_outliner_redrawn(tween_progress: float) -> void:
     var length_cur_part: int = roundi(lerpf(0, l_cur, tween_progress))
     var length_prev_part: int = roundi(lerpf(maxf(l_prev, l_cur), l_cur, tween_progress)) - length_cur_part
     box_label.text = _current_text.substr(0, length_cur_part) + _prev_text.substr(length_cur_part, length_prev_part)
+    box.size = Vector2.ZERO
     _position_box.call_deferred(tween_progress)
 
 const _PLACE_OUTSIDE_THRESHOLD: float = 0.5

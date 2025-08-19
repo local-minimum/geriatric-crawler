@@ -121,7 +121,6 @@ func _on_speed_slider_value_changed(value: float) -> void:
         return
     level.player.planner.animation_speed = value
 
-
 func _on_fov_slider_value_changed(value: float) -> void:
     if !inited:
         return

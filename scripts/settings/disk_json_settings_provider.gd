@@ -1,8 +1,7 @@
 extends GameSettingsProvider
 class_name DiskJsonSettingsProvider
 
-@export
-var file_path: String = "user://game_settings.json"
+@export var file_path: String = "user://game_settings.json"
 
 func _load_cache() -> void:
     if !_cache.is_empty():
