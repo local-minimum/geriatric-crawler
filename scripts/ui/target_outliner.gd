@@ -115,40 +115,18 @@ func _draw() -> void:
             Vector2(s_end.x, s_pos.y),
         ]
 
+        var s_center: Vector2 = s_rect.get_center()
+
         outline_corners.sort_custom(
             func (a: Vector2, b: Vector2) -> bool:
-                return (
-                    min(
-                        a.distance_squared_to(source_corners[0]),
-                        a.distance_squared_to(source_corners[1]),
-                        a.distance_squared_to(source_corners[2]),
-                        a.distance_squared_to(source_corners[3]),
-                    ) <
-                    min(
-                        b.distance_squared_to(source_corners[0]),
-                        b.distance_squared_to(source_corners[1]),
-                        b.distance_squared_to(source_corners[2]),
-                        b.distance_squared_to(source_corners[3]),
-                    )
-                )
+                return a.distance_squared_to(s_center) < b.distance_squared_to(s_center)
         )
+
+        var t_center: Vector2 = targets_global_rect.get_center()
 
         source_corners.sort_custom(
             func (a: Vector2, b: Vector2) -> bool:
-                return (
-                    min(
-                        a.distance_squared_to(outline_corners[0]),
-                        a.distance_squared_to(outline_corners[1]),
-                        a.distance_squared_to(outline_corners[2]),
-                        a.distance_squared_to(outline_corners[3]),
-                    ) <
-                    min(
-                        b.distance_squared_to(outline_corners[0]),
-                        b.distance_squared_to(outline_corners[1]),
-                        b.distance_squared_to(outline_corners[2]),
-                        b.distance_squared_to(outline_corners[3]),
-                    )
-                )
+                return a.distance_squared_to(t_center) < b.distance_squared_to(t_center)
         )
 
         var from: Vector2 = outline_corners[0].lerp(outline_corners[1], connector_anchor_pos)
