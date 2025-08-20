@@ -1,0 +1,59 @@
+[gd_scene format=3 uid="uid://7flb82m2ddwe"]
+
+[node name="Spaceshiip" type="Node2D"]
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="Rooms Panel" type="Panel" parent="CanvasLayer"]
+offset_left = 40.0
+offset_top = 40.0
+offset_right = 40.0
+offset_bottom = 40.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/Rooms Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/Rooms Panel/MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+theme_override_constants/separation = 6
+
+[node name="Nav Btn" type="Button" parent="CanvasLayer/Rooms Panel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Nav"
+
+[node name="Mission Ops Btn" type="Button" parent="CanvasLayer/Rooms Panel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Mission Ops"
+
+[node name="Materials Lab Btn" type="Button" parent="CanvasLayer/Rooms Panel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Materials Lab"
+
+[node name="Printers Btn" type="Button" parent="CanvasLayer/Rooms Panel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Printers"
+
+[node name="Infermery Btn" type="Button" parent="CanvasLayer/Rooms Panel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Infermery"
+
+[node name="Storage Btn" type="Button" parent="CanvasLayer/Rooms Panel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Storage Bay"
+
+[node name="Engine Btn" type="Button" parent="CanvasLayer/Rooms Panel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Engine Bay"
