@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=3 uid="uid://7flb82m2ddwe"]
 
-[ext_resource type="Script" uid="uid://nnoxcu366588" path="res://scripts/ui/chap_ui.gd" id="1_p687j"]
+[ext_resource type="Script" uid="uid://nnoxcu366588" path="res://scripts/ui/chap_ui.gd" id="1_yqmju"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ws7tf"]
 bg_color = Color(0.477872, 0.602944, 0.818495, 1)
@@ -95,10 +95,19 @@ grow_vertical = 0
 size_flags_horizontal = 2
 size_flags_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_p687j")
-script = ExtResource("1_p687j")
+script = ExtResource("1_yqmju")
+start_message = "Welcome to your integrated exploration, extraction, and enslavement experience. 
+
+Just kidding.
+Just kidding. 
+
+Welcome to your brand  new space-faring mansion.
+You can call me CHAP and I'm here to answer any question you have as well as facilitate any of your and Mimas Travel Ltd mutual interests."
 title = NodePath("MarginContainer/VBoxContainer/Title")
 scroll_container = NodePath("MarginContainer/VBoxContainer/ScrollContainer")
 messages = NodePath("MarginContainer/VBoxContainer/ScrollContainer/PanelContainer/MarginContainer/Messages")
+animation = 1
+letter_pause = 0.02
 
 [node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/CHAP AI"]
 layout_mode = 2
@@ -141,14 +150,3 @@ theme_override_constants/margin_bottom = 4
 layout_mode = 2
 theme_override_constants/separation = 2
 alignment = 2
-
-[node name="Test Message" type="Label" parent="CanvasLayer/CHAP AI/MarginContainer/VBoxContainer/ScrollContainer/PanelContainer/MarginContainer/Messages"]
-custom_minimum_size = Vector2(100, 0)
-layout_mode = 2
-theme_override_font_sizes/font_size = 10
-text = "Welcome to your integrated exploration, extraction, and enslavement experience. 
-Just kidding.
-Just kidding. 
-Welcome to your brand  new space-faring mansion.
-You can call me CHAP and I'm here to answer any question you have as well as facilitate any of your and Mimas Travel Ltd mutual interests."
-autowrap_mode = 3
