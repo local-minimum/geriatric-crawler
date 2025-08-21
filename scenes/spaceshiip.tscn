@@ -1,24 +1,36 @@
-[gd_scene format=3 uid="uid://7flb82m2ddwe"]
+[gd_scene load_steps=3 format=3 uid="uid://7flb82m2ddwe"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ws7tf"]
+bg_color = Color(0.477872, 0.602944, 0.818495, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.936506, 0.725304, 0.872948, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_p687j"]
+bg_color = Color(0.737489, 0.44525, 0.941468, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.789532, 0.837777, 0.472636, 1)
 
 [node name="Spaceshiip" type="Node2D"]
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
-[node name="Rooms Panel" type="Panel" parent="CanvasLayer"]
+[node name="Rooms Panel" type="PanelContainer" parent="CanvasLayer"]
 offset_left = 40.0
 offset_top = 40.0
-offset_right = 40.0
-offset_bottom = 40.0
+offset_right = 173.0
+offset_bottom = 313.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_ws7tf")
 
 [node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/Rooms Panel"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
+layout_mode = 2
 theme_override_constants/margin_left = 8
 theme_override_constants/margin_top = 8
 theme_override_constants/margin_right = 8
@@ -26,8 +38,8 @@ theme_override_constants/margin_bottom = 8
 
 [node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/Rooms Panel/MarginContainer"]
 layout_mode = 2
-size_flags_horizontal = 0
-size_flags_vertical = 0
+size_flags_horizontal = 8
+size_flags_vertical = 8
 theme_override_constants/separation = 6
 
 [node name="Nav Btn" type="Button" parent="CanvasLayer/Rooms Panel/MarginContainer/VBoxContainer"]
@@ -38,6 +50,10 @@ text = "Nav"
 layout_mode = 2
 text = "Mission Ops"
 
+[node name="Living Quarters Btn" type="Button" parent="CanvasLayer/Rooms Panel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Living Quarters"
+
 [node name="Materials Lab Btn" type="Button" parent="CanvasLayer/Rooms Panel/MarginContainer/VBoxContainer"]
 layout_mode = 2
 text = "Materials Lab"
@@ -46,9 +62,9 @@ text = "Materials Lab"
 layout_mode = 2
 text = "Printers"
 
-[node name="Infermery Btn" type="Button" parent="CanvasLayer/Rooms Panel/MarginContainer/VBoxContainer"]
+[node name="Infermary Btn" type="Button" parent="CanvasLayer/Rooms Panel/MarginContainer/VBoxContainer"]
 layout_mode = 2
-text = "Infermery"
+text = "Infermary"
 
 [node name="Storage Btn" type="Button" parent="CanvasLayer/Rooms Panel/MarginContainer/VBoxContainer"]
 layout_mode = 2
@@ -56,4 +72,77 @@ text = "Storage Bay"
 
 [node name="Engine Btn" type="Button" parent="CanvasLayer/Rooms Panel/MarginContainer/VBoxContainer"]
 layout_mode = 2
-text = "Engine Bay"
+text = "Engine Room"
+
+[node name="Broom Closet Btn" type="Button" parent="CanvasLayer/Rooms Panel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Broom Closet"
+
+[node name="Customer Satisfaction AI" type="PanelContainer" parent="CanvasLayer"]
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -40.0
+offset_top = -40.0
+offset_right = -40.0
+offset_bottom = -40.0
+grow_horizontal = 0
+grow_vertical = 0
+size_flags_horizontal = 2
+size_flags_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_p687j")
+
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/Customer Satisfaction AI"]
+layout_mode = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/Customer Satisfaction AI/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="Label" type="Label" parent="CanvasLayer/Customer Satisfaction AI/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_shadow_color = Color(0.903598, 0.903598, 0.903598, 1)
+text = "Customer Happiness Assistant Program"
+horizontal_alignment = 1
+uppercase = true
+
+[node name="ScrollContainer" type="ScrollContainer" parent="CanvasLayer/Customer Satisfaction AI/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 150)
+layout_mode = 2
+horizontal_scroll_mode = 0
+
+[node name="PanelContainer" type="PanelContainer" parent="CanvasLayer/Customer Satisfaction AI/MarginContainer/VBoxContainer/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/Customer Satisfaction AI/MarginContainer/VBoxContainer/ScrollContainer/PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 2
+theme_override_constants/margin_top = 2
+theme_override_constants/margin_right = 2
+theme_override_constants/margin_bottom = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/Customer Satisfaction AI/MarginContainer/VBoxContainer/ScrollContainer/PanelContainer/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 2
+alignment = 2
+
+[node name="Label" type="Label" parent="CanvasLayer/Customer Satisfaction AI/MarginContainer/VBoxContainer/ScrollContainer/PanelContainer/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.985655, 0.994153, 0.985207, 1)
+theme_override_font_sizes/font_size = 10
+text = "Welcome to your integrated exploration, extraction, and enslavement experience. 
+Just kidding.
+Just kidding. 
+Welcome to your brand  new space-faring mansion.
+You can call me CHAP and I'm here to answer any question you have as well as facilitate any of your and Mimas Travel Ltd mutual interests."
+autowrap_mode = 3
