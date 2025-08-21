@@ -1,5 +1,6 @@
-[gd_scene load_steps=4 format=3 uid="uid://7flb82m2ddwe"]
+[gd_scene load_steps=5 format=3 uid="uid://7flb82m2ddwe"]
 
+[ext_resource type="Script" uid="uid://dfub4a26emjgr" path="res://scripts/spaceship.gd" id="1_ae4p7"]
 [ext_resource type="Script" uid="uid://nnoxcu366588" path="res://scripts/ui/chap_ui.gd" id="1_yqmju"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ws7tf"]
@@ -18,7 +19,9 @@ border_width_right = 2
 border_width_bottom = 2
 border_color = Color(0.789532, 0.837777, 0.472636, 1)
 
-[node name="Spaceshiip" type="Node2D"]
+[node name="Spaceshiip" type="Node2D" node_paths=PackedStringArray("chap_ui")]
+script = ExtResource("1_ae4p7")
+chap_ui = NodePath("CanvasLayer/CHAP AI")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
