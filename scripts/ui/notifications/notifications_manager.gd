@@ -105,20 +105,27 @@ class NotificationData:
         type = p_type
         _show_duration = p_duration
 
-func _ready() -> void:
+func _enter_tree() -> void:
     if active_manager != self && !inherit_queue:
         _queue.clear()
 
     var old_manager: NotificationsManager = active_manager
 
-    active_manager = self
-
     if active_manager != self && active_manager != null:
         active_manager.on_update_manager.emit(old_manager, self)
+
+    if active_manager != null && active_manager != self:
+        active_manager.queue_free()
+
+    active_manager = self
 
     if !_waiting_callbacks.is_empty():
         for callback: Callable in _waiting_callbacks:
             callback.call(old_manager, active_manager)
+
+func _exit_tree() -> void:
+    if active_manager == self:
+        active_manager = null
 
 static var _active_messages: Dictionary[String, NotificationData] = {}
 

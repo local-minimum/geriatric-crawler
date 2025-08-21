@@ -60,7 +60,6 @@ func _init() -> void:
 var _inited: bool
 
 func _ready() -> void:
-    instance = self
     if battle_hand.on_hand_drawn.connect(_after_deal) != OK:
         push_error("Failed to connect callback to hand dealt")
     if battle_hand.slots.on_update_slotted.connect(_handle_update_slotted):
@@ -76,6 +75,16 @@ func _ready() -> void:
         if GridLevel.active_level.on_change_player.connect(_handle_new_player) != OK:
             push_error("Failed to connect new player")
 
+
+func _enter_tree() -> void:
+    if instance != null && instance != self:
+        instance.queue_free()
+
+    instance = self
+
+func _exit_tree() -> void:
+    if instance == self:
+        instance = null
 
 func _handle_new_player() -> void:
     _handle_new_level()

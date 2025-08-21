@@ -43,7 +43,6 @@ var emit_loaded: bool = true
 
 func _ready() -> void:
     emit_loaded = true
-    active_level = self
 
     _sync_nodes()
 
@@ -51,6 +50,16 @@ func _ready() -> void:
         push_warning("Level %s is empty" % name)
     else:
         print_debug("Level %s has %s nodes" % [name, _nodes.size()])
+
+func _enter_tree() -> void:
+    if active_level != null && active_level != self:
+        active_level.queue_free()
+
+    active_level = self
+
+func _exit_tree() -> void:
+    if active_level == self:
+        active_level = null
 
 func illusory_sides() -> Array[GridNodeSide]:
     if _nodes.is_empty():

@@ -13,8 +13,15 @@ var default_key_description: String = "key"
 
 static var instance: KeyMaster
 
-func _ready() -> void:
+func _enter_tree() -> void:
+    if instance != null && instance != self:
+        instance.queue_free()
+
     instance = self
+
+func _exit_tree() -> void:
+    if instance == self:
+        instance = null
 
 func get_description(key: String) -> String:
     return _key_descriptions.get(key, default_key_description)

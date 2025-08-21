@@ -12,7 +12,6 @@ var level: GridLevel:
         on_change_level.emit(old, new)
 
 func _ready() -> void:
-    instance = self
     if level == null:
         if GridLevel.active_level != null:
             level = GridLevel.active_level
@@ -22,3 +21,13 @@ func _ready() -> void:
                 break
     elif  level != GridLevel.active_level:
         level = GridLevel.active_level
+
+func _enter_tree() -> void:
+    if instance != null && instance != self:
+        instance.queue_free()
+
+    instance = self
+
+func _exit_tree() -> void:
+    if instance == self:
+        instance = null

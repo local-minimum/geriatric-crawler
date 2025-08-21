@@ -7,8 +7,15 @@ static var instance: PunishmentDeck
 
 var _given_out_cards: Array[BattleCardData] = []
 
-func _ready() -> void:
+func _enter_tree() -> void:
+    if instance != null && instance != self:
+        instance.queue_free()
+
     instance = self
+
+func _exit_tree() -> void:
+    if instance == self:
+        instance = null
 
 func has(card: BattleCardData) -> bool:
     return _deck.has(card)

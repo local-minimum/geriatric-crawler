@@ -52,13 +52,22 @@ static func credits_with_sign(amount: int) -> String:
     return "₳ %s" % amount
 
 func _ready() -> void:
-    active_inventory = self
     if battle.on_entity_join_battle.connect(_handle_entity_join_battle) != OK:
         push_error("Could not connect entity join battle")
     if battle.on_entity_leave_battle.connect(_handle_enity_leave_battle) != OK:
         push_error("Could not connect entity leave battle")
 
     on_update_credits.emit(_CREDITS)
+
+func _enter_tree() -> void:
+    if active_inventory != null && active_inventory != self:
+        active_inventory.queue_free()
+
+    active_inventory = self
+
+func _exit_tree() -> void:
+    if active_inventory == self:
+        active_inventory = null
 
 func _handle_entity_join_battle(entity: BattleEntity) -> void:
     if entity is BattleEnemy:

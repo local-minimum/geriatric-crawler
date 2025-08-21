@@ -56,8 +56,17 @@ func _after_load_history() -> void:
     _handle_move_end(_player)
 
 func _ready() -> void:
-    active_mapper = self
     _setup.call_deferred()
+
+func _enter_tree() -> void:
+    if active_mapper != null && active_mapper != self:
+        active_mapper.queue_free()
+
+    active_mapper = self
+
+func _exit_tree() -> void:
+    if active_mapper == self:
+        active_mapper = null
 
 func _setup() -> void:
     _level = GridLevel.active_level
