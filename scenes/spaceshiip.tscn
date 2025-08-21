@@ -1,4 +1,6 @@
-[gd_scene load_steps=3 format=3 uid="uid://7flb82m2ddwe"]
+[gd_scene load_steps=4 format=3 uid="uid://7flb82m2ddwe"]
+
+[ext_resource type="Script" uid="uid://nnoxcu366588" path="res://scripts/ui/chap_ui.gd" id="1_p687j"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ws7tf"]
 bg_color = Color(0.477872, 0.602944, 0.818495, 1)
@@ -78,67 +80,71 @@ text = "Engine Room"
 layout_mode = 2
 text = "Broom Closet"
 
-[node name="Customer Satisfaction AI" type="PanelContainer" parent="CanvasLayer"]
+[node name="CHAP AI" type="PanelContainer" parent="CanvasLayer" node_paths=PackedStringArray("title", "scroll_container", "messages")]
 anchors_preset = 3
 anchor_left = 1.0
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -40.0
-offset_top = -40.0
+offset_left = -322.0
+offset_top = -228.0
 offset_right = -40.0
-offset_bottom = -40.0
+offset_bottom = -37.0
 grow_horizontal = 0
 grow_vertical = 0
 size_flags_horizontal = 2
 size_flags_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_p687j")
+script = ExtResource("1_p687j")
+title = NodePath("MarginContainer/VBoxContainer/Title")
+scroll_container = NodePath("MarginContainer/VBoxContainer/ScrollContainer")
+messages = NodePath("MarginContainer/VBoxContainer/ScrollContainer/PanelContainer/MarginContainer/Messages")
 
-[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/Customer Satisfaction AI"]
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/CHAP AI"]
 layout_mode = 2
 theme_override_constants/margin_left = 8
 theme_override_constants/margin_top = 8
 theme_override_constants/margin_right = 8
 theme_override_constants/margin_bottom = 8
 
-[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/Customer Satisfaction AI/MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/CHAP AI/MarginContainer"]
 layout_mode = 2
 theme_override_constants/separation = 4
 
-[node name="Label" type="Label" parent="CanvasLayer/Customer Satisfaction AI/MarginContainer/VBoxContainer"]
+[node name="Title" type="Label" parent="CanvasLayer/CHAP AI/MarginContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_colors/font_shadow_color = Color(0.903598, 0.903598, 0.903598, 1)
+theme_override_font_sizes/font_size = 12
 text = "Customer Happiness Assistant Program"
 horizontal_alignment = 1
 uppercase = true
 
-[node name="ScrollContainer" type="ScrollContainer" parent="CanvasLayer/Customer Satisfaction AI/MarginContainer/VBoxContainer"]
+[node name="ScrollContainer" type="ScrollContainer" parent="CanvasLayer/CHAP AI/MarginContainer/VBoxContainer"]
 custom_minimum_size = Vector2(0, 150)
 layout_mode = 2
 horizontal_scroll_mode = 0
 
-[node name="PanelContainer" type="PanelContainer" parent="CanvasLayer/Customer Satisfaction AI/MarginContainer/VBoxContainer/ScrollContainer"]
+[node name="PanelContainer" type="PanelContainer" parent="CanvasLayer/CHAP AI/MarginContainer/VBoxContainer/ScrollContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/Customer Satisfaction AI/MarginContainer/VBoxContainer/ScrollContainer/PanelContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/CHAP AI/MarginContainer/VBoxContainer/ScrollContainer/PanelContainer"]
 layout_mode = 2
 theme_override_constants/margin_left = 2
-theme_override_constants/margin_top = 2
+theme_override_constants/margin_top = 4
 theme_override_constants/margin_right = 2
-theme_override_constants/margin_bottom = 2
+theme_override_constants/margin_bottom = 4
 
-[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/Customer Satisfaction AI/MarginContainer/VBoxContainer/ScrollContainer/PanelContainer/MarginContainer"]
+[node name="Messages" type="VBoxContainer" parent="CanvasLayer/CHAP AI/MarginContainer/VBoxContainer/ScrollContainer/PanelContainer/MarginContainer"]
 layout_mode = 2
 theme_override_constants/separation = 2
 alignment = 2
 
-[node name="Label" type="Label" parent="CanvasLayer/Customer Satisfaction AI/MarginContainer/VBoxContainer/ScrollContainer/PanelContainer/MarginContainer/VBoxContainer"]
+[node name="Test Message" type="Label" parent="CanvasLayer/CHAP AI/MarginContainer/VBoxContainer/ScrollContainer/PanelContainer/MarginContainer/Messages"]
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
-theme_override_colors/font_color = Color(0.985655, 0.994153, 0.985207, 1)
 theme_override_font_sizes/font_size = 10
 text = "Welcome to your integrated exploration, extraction, and enslavement experience. 
 Just kidding.
