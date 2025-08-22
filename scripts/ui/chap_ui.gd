@@ -50,7 +50,8 @@ func _unhandled_input(event: InputEvent) -> void:
         if key.pressed && _OPTION_KEYS.has(key.keycode):
             var option_id: int = _OPTION_KEYS.find(key.keycode)
             var btn_idx: int = _option_buttons.find_custom(func (btn: Button) -> bool: return btn.get_meta(_BTN_META_HOTKEY) == option_id)
-            if btn_idx > 0:
+            # print_debug("[CHAP] Key %s is option %s and that gives btn %s" % [key.keycode, option_id, btn_idx])
+            if btn_idx >= 0:
                 @warning_ignore_start("unsafe_call_argument")
                 _handle_choice(_option_buttons[btn_idx].get_meta(_BTN_META_CHOICE))
                 @warning_ignore_restore("unsafe_call_argument")
