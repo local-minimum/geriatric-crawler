@@ -106,7 +106,7 @@ _ink_adapter = NodePath("InkAdapter")
 title = NodePath("MarginContainer/VBoxContainer/Title")
 scroll_container = NodePath("MarginContainer/VBoxContainer/ScrollContainer")
 messages = NodePath("MarginContainer/VBoxContainer/ScrollContainer/PanelContainer/MarginContainer/Messages")
-animation = 3
+animation = 4
 letter_pause = 0.02
 
 [node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/CHAP AI"]
@@ -148,7 +148,7 @@ theme_override_constants/margin_bottom = 4
 
 [node name="Messages" type="VBoxContainer" parent="CanvasLayer/CHAP AI/MarginContainer/VBoxContainer/ScrollContainer/PanelContainer/MarginContainer"]
 layout_mode = 2
-theme_override_constants/separation = 2
+theme_override_constants/separation = 8
 alignment = 2
 
 [node name="InkAdapter" type="Node" parent="CanvasLayer/CHAP AI"]

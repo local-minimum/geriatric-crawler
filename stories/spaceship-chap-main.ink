@@ -16,11 +16,12 @@ You can call me CHAP and I'm here to answer any question you have as well as fac
 
 === return_greeting ===
 
-Oh hi there skipper, how can I help you today?
+{Oh hi there skipper!|Welcome back, don't be a stranger!|Fancy meeting you here!}
 
 -> chap
 
 === chap ===
+{How can I help you today?|What do you need?|What's on your mind?|Any inquiry?}
 
 + [Who are you?] Me? I'm CHAP! Didn't I tell you? -> chap
 + [Nothing really] I wont hold it against you -> END

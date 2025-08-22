@@ -18,27 +18,27 @@ static func init() -> void:
 
 ## Return end of next text segment
 ## NOTE: TextUtils.init() must have been called first for proper operations
-static func find_message_segment_end(message: String, start: int, segment: Segment) -> int:
+static func find_message_segment_end(text: String, start: int, segment: Segment) -> int:
     match segment:
         Segment.CHARACTER:
-            return start + (2 if start < message.length() && _SPACERS.contains(message[start]) else 1)
+            return start + (2 if start < text.length() && _SPACERS.contains(text[start]) else 1)
 
         Segment.WORD:
-            var match: RegExMatch = _next_word.search(message, start)
+            var match: RegExMatch = _next_word.search(text, start)
             if match:
                 return match.get_end()
-            return message.length()
+            return text.length()
 
         Segment.SENTENCE:
-            var match: RegExMatch = _next_sentence.search(message, start)
+            var match: RegExMatch = _next_sentence.search(text, start)
             if match:
                 return match.get_end()
-            return message.length()
+            return text.length()
 
         Segment.PARAGRAPH:
-            var match: RegExMatch = _paragraph.search(message, start)
+            var match: RegExMatch = _paragraph.search(text, start)
             if match:
                 return match.get_start(2)
-            return message.length()
+            return text.length()
 
-    return message.length()
+    return text.length()
