@@ -18,6 +18,10 @@ config/custom_user_dir_name="Unknown Incubator/Geriatric Crawler"
 config/features=PackedStringArray("4.4", "Forward Plus")
 config/icon="res://icon.svg"
 
+[autoload]
+
+__InkRuntime="*res://addons/inkgd/ink_runtime.gd"
+
 [debug]
 
 gdscript/warnings/untyped_declaration=2
@@ -36,12 +40,16 @@ window/stretch/aspect="expand"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/grid_level_digger/plugin.cfg")
+enabled=PackedStringArray("res://addons/grid_level_digger/plugin.cfg", "res://addons/inkgd/plugin.cfg")
 
 [global_group]
 
 Persistant="Scenes that may be saved and loaded"
 Encounter="Entity that can trigger effects"
+
+[inkgd]
+
+register_templates=true
 
 [input]
 
