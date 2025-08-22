@@ -1,7 +1,9 @@
-[gd_scene load_steps=5 format=3 uid="uid://7flb82m2ddwe"]
+[gd_scene load_steps=7 format=3 uid="uid://7flb82m2ddwe"]
 
 [ext_resource type="Script" uid="uid://dfub4a26emjgr" path="res://scripts/spaceship.gd" id="1_ae4p7"]
 [ext_resource type="Script" uid="uid://nnoxcu366588" path="res://scripts/ui/chap_ui.gd" id="1_yqmju"]
+[ext_resource type="Resource" uid="uid://bompwr87ukvlx" path="res://stories/spaceship-chap-main.ink.json" id="3_v0rat"]
+[ext_resource type="Script" uid="uid://bb2wj0ucnido4" path="res://scripts/ink_adapter.gd" id="4_me4wu"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ws7tf"]
 bg_color = Color(0.477872, 0.602944, 0.818495, 1)
@@ -83,7 +85,7 @@ text = "Engine Room"
 layout_mode = 2
 text = "Broom Closet"
 
-[node name="CHAP AI" type="PanelContainer" parent="CanvasLayer" node_paths=PackedStringArray("title", "scroll_container", "messages")]
+[node name="CHAP AI" type="PanelContainer" parent="CanvasLayer" node_paths=PackedStringArray("_ink_adapter", "title", "scroll_container", "messages")]
 anchors_preset = 3
 anchor_left = 1.0
 anchor_top = 1.0
@@ -99,6 +101,8 @@ size_flags_horizontal = 2
 size_flags_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_p687j")
 script = ExtResource("1_yqmju")
+_story_main = ExtResource("3_v0rat")
+_ink_adapter = NodePath("InkAdapter")
 start_message = "Welcome to your integrated exploration, extraction, and enslavement experience. 
 
 Just kidding.
@@ -109,7 +113,7 @@ You can call me CHAP and I'm here to answer any question you have as well as fac
 title = NodePath("MarginContainer/VBoxContainer/Title")
 scroll_container = NodePath("MarginContainer/VBoxContainer/ScrollContainer")
 messages = NodePath("MarginContainer/VBoxContainer/ScrollContainer/PanelContainer/MarginContainer/Messages")
-animation = 1
+animation = 4
 letter_pause = 0.02
 
 [node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/CHAP AI"]
@@ -153,3 +157,7 @@ theme_override_constants/margin_bottom = 4
 layout_mode = 2
 theme_override_constants/separation = 2
 alignment = 2
+
+[node name="InkAdapter" type="Node" parent="CanvasLayer/CHAP AI"]
+script = ExtResource("4_me4wu")
+metadata/_custom_type_script = "uid://bb2wj0ucnido4"

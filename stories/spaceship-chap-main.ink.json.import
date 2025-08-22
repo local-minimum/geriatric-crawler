@@ -1,0 +1,15 @@
+[remap]
+
+importer="inkgd.ink.json"
+type="Resource"
+uid="uid://bompwr87ukvlx"
+path="res://.godot/imported/spaceship-chap-main.ink.json-4ddac32365542c01c14803b3159be59c.res"
+
+[deps]
+
+source_file="res://stories/spaceship-chap-main.ink.json"
+dest_files=["res://.godot/imported/spaceship-chap-main.ink.json-4ddac32365542c01c14803b3159be59c.res"]
+
+[params]
+
+compress=true
