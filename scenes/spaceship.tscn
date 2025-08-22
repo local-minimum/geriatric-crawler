@@ -103,17 +103,10 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_p687j")
 script = ExtResource("1_yqmju")
 _story_main = ExtResource("3_v0rat")
 _ink_adapter = NodePath("InkAdapter")
-start_message = "Welcome to your integrated exploration, extraction, and enslavement experience. 
-
-Just kidding.
-Just kidding. 
-
-Welcome to your brand  new space-faring mansion.
-You can call me CHAP and I'm here to answer any question you have as well as facilitate any of your and Mimas Travel Ltd mutual interests."
 title = NodePath("MarginContainer/VBoxContainer/Title")
 scroll_container = NodePath("MarginContainer/VBoxContainer/ScrollContainer")
 messages = NodePath("MarginContainer/VBoxContainer/ScrollContainer/PanelContainer/MarginContainer/Messages")
-animation = 4
+animation = 3
 letter_pause = 0.02
 
 [node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/CHAP AI"]

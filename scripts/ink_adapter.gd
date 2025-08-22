@@ -115,5 +115,3 @@ func _variable_updated(variable: String, obj: InkObject) -> void:
     if obj is InkValue:
         var value: InkValue = obj
         on_variable_changed.emit(variable, value.value_object)
-
-    # _ink_player.bind_external_function(
