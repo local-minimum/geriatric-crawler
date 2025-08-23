@@ -1,6 +1,5 @@
 extends Control
 class_name ChapUI
-
 @export var _story_main: Resource
 @export var _ink_adapter: InkAdapter
 
@@ -9,6 +8,7 @@ class_name ChapUI
 @export var messages: VBoxContainer
 @export var message_font_size: int = 10
 @export var animation: TextUtils.Segment
+@export var ignore_empty_messages: bool = true
 @export_range(0, 1) var letter_pause: float = 0.05
 @export_range(0, 1) var word_pause: float = 0.1
 @export_range(0, 1) var sentence_pause: float = 0.3
@@ -19,10 +19,16 @@ var _choosing: bool
 var _story_queue: Array[String]
 var _awaiting_choice: Array[InkAdapter.Choice]
 var _option_buttons: Array[Button]
+var _story_state: Dictionary[String, Variant]
 
 const _OPTION_KEYS: Array[Key] = [KEY_0, KEY_1, KEY_2, KEY_3, KEY_4, KEY_5, KEY_6]
 const _BTN_META_CHOICE: String = "choice"
 const _BTN_META_HOTKEY: String = "hot_key"
+const _MAIN_STORY_KNOWS_CHAP: String = "knows_chap"
+const _MAIN_STORY_KNOWS_PREMIUM: String = "knows_premium"
+const _STORY_COLLECTION_QUEST: String = "collection_quest"
+const _STORY_CREDITS: String = "credits"
+const _STORY_LOANED_CREDITS: String = "loaned_credits"
 
 var _busy: bool:
     get():
@@ -37,8 +43,11 @@ func _ready() -> void:
     if _ink_adapter.on_display_choices.connect(_display_story_choice) != OK:
         push_error("Failed to connect display choice")
 
+    if _ink_adapter.on_variable_changed.connect(_handle_story_variable_change) != OK:
+        push_error("Failed to connect variable changed")
+
     await get_tree().create_timer(1).timeout
-    _ink_adapter.load_story(_story_main, true, { "knows_chap": false })
+    _ink_adapter.load_story(_story_main, true, _get_main_story_state())
 
 func _unhandled_input(event: InputEvent) -> void:
     if !_choosing || event.is_echo():
@@ -56,12 +65,39 @@ func _unhandled_input(event: InputEvent) -> void:
                 _handle_choice(_option_buttons[btn_idx].get_meta(_BTN_META_CHOICE))
                 @warning_ignore_restore("unsafe_call_argument")
 
+func _get_main_story_state() -> Dictionary[String, Variant]:
+    if _story_state.is_empty():
+        return {
+            _MAIN_STORY_KNOWS_CHAP: false,
+            _MAIN_STORY_KNOWS_PREMIUM: 0,
+            _STORY_COLLECTION_QUEST: "",
+            _STORY_CREDITS: Inventory.credits(),
+            _STORY_LOANED_CREDITS: 0,
+        }
+    else:
+        _story_state[_STORY_CREDITS] = Inventory.credits()
+
+        return _story_state
+
+func _handle_story_variable_change(variable: String, value: Variant) -> void:
+    _story_state[variable] = value
+    if variable == _STORY_CREDITS && value is int:
+        @warning_ignore_start("unsafe_cast")
+        Inventory.set_credits(value as int)
+        @warning_ignore_restore("unsafe_cast")
+
 func _display_story_part(text: String, _tags: Array) -> void:
     if _busy:
+        if text.strip_edges().is_empty():
+            return
         _story_queue.append(text.strip_edges())
         return
 
-    _add_message(text)
+    if text.strip_edges().is_empty():
+        _ink_adapter.continue_story()
+        return
+
+    _add_message(text.strip_edges())
 
 func _display_story_choice(options: Array[InkAdapter.Choice]) -> void:
     print_debug("[CHAP] Received %s options choice" % options.size())
@@ -134,7 +170,7 @@ func _animate_message(label: Label, message: String) -> void:
     label.visible_characters = 0
 
     var start: int = 0
-    var end: int = TextUtils.find_message_segment_end(message, start, animation)
+    var end: int = 0
 
     while end < message.length():
         end = TextUtils.find_message_segment_end(message, start, animation)
