@@ -1,0 +1,18 @@
+keys,en,sv
+NAV,Navigation,Styrhytt
+MISSION_OPS,Mission Ops.,Uppdragskontrollrum
+LIVING_QUARTERS,Living Quarters,Bostad
+MATERIALS_LAB,Materials Lab,Materiallab
+PRINTERS,Printers,Printers
+INFIRMARY,Infirmary,Sjukstuga
+STORAGE_BAY,Storage Bay,Magasin
+ENGINE_ROOM,Engine Room,Maskinrum
+BROOM_CLOSET,Broom Closet,Städskrubb
+CHAP_LONG,Customer Happiness Assistant Program,Kund Nöjdhets Uppmuntrings Tjänare
+CREDIT,Credit,Kredit
+LOANS,Loans,Debit
+DEBIT,Debit,Lån
+INTEREST_WITH_RATE,Interest {rate},Ränta {rate}
+RENT,Rent,Hyra
+BALANCE,Balance,Balans
+DUE_IN,Due in,Betalas om
