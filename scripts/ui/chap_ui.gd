@@ -74,7 +74,7 @@ func _unhandled_input(event: InputEvent) -> void:
                 _handle_choice(_option_buttons[btn_idx].get_meta(_BTN_META_CHOICE))
                 @warning_ignore_restore("unsafe_call_argument")
 
-    if _animating && event.is_action_pressed("ui_select"):
+    if (_animating || _choosing) && event.is_action_pressed("ui_select"):
         _fast_forward = true
 
 func _handle_story_loaded() -> void:
@@ -135,6 +135,8 @@ func _display_story_choice(options: Array[InkAdapter.Choice]) -> void:
 
 func _display_options() -> void:
     _choosing = true
+    _fast_forward = false
+
     var hot_key: int = 1
     for choice: InkAdapter.Choice in _awaiting_choice:
         var btn: Button = _get_option_buttion()
@@ -155,7 +157,8 @@ func _display_options() -> void:
         if get_tree().create_timer(0.1).connect("timeout", _scroll_to_bottom) != OK:
             pass
 
-        await get_tree().create_timer(option_pause).timeout
+        if !_fast_forward:
+            await get_tree().create_timer(option_pause).timeout
 
         hot_key += 1
 
