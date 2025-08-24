@@ -136,3 +136,10 @@ func _variable_updated(variable: String, obj: InkObject) -> void:
     if obj is InkValue:
         var value: InkValue = obj
         on_variable_changed.emit(variable, value.value_object)
+
+
+func register_story_function(function_name: String, object: Object, method: String) -> void:
+    _ink_player.bind_external_function(function_name, object, method)
+
+func unregister_story_function(function_name: String) -> void:
+    _ink_player.unbind_external_function(function_name)

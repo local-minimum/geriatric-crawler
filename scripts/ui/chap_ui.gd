@@ -29,6 +29,7 @@ const _MAIN_STORY_KNOWS_PREMIUM: String = "knows_premium"
 const _STORY_COLLECTION_QUEST: String = "collection_quest"
 const _STORY_CREDITS: String = "credits"
 const _STORY_LOANED_CREDITS: String = "loaned_credits"
+const _STORY_FUNCTION_LOAN: String = "take_out_loan"
 
 var _busy: bool:
     get():
@@ -46,8 +47,14 @@ func _ready() -> void:
     if _ink_adapter.on_variable_changed.connect(_handle_story_variable_change) != OK:
         push_error("Failed to connect variable changed")
 
+    if _ink_adapter.on_load_story.connect(_handle_story_loaded) != OK:
+        push_error("Failed to connect story loaded")
+
+    if _ink_adapter.on_story_end.connect(_handle_story_ended) != OK:
+        push_error("Failed to connect story ended")
+
     await get_tree().create_timer(1).timeout
-    _ink_adapter.load_story(_story_main, true, _get_main_story_state())
+    _ink_adapter.load_story(_story_main, false, _get_main_story_state())
 
 func _unhandled_input(event: InputEvent) -> void:
     if !_choosing || event.is_echo():
@@ -65,6 +72,17 @@ func _unhandled_input(event: InputEvent) -> void:
                 _handle_choice(_option_buttons[btn_idx].get_meta(_BTN_META_CHOICE))
                 @warning_ignore_restore("unsafe_call_argument")
 
+func _handle_story_loaded() -> void:
+    _ink_adapter.register_story_function(_STORY_FUNCTION_LOAN, self, "_handle_new_loan")
+
+    _ink_adapter.continue_story()
+
+func _handle_new_loan(amount: int) -> void:
+    __GlobalGameState.take_out_loan(amount)
+
+func _handle_story_ended() -> void:
+    _ink_adapter.unregister_story_function(_STORY_FUNCTION_LOAN)
+
 func _get_main_story_state() -> Dictionary[String, Variant]:
     if _story_state.is_empty():
         return {
@@ -81,7 +99,8 @@ func _get_main_story_state() -> Dictionary[String, Variant]:
         return _story_state
 
 func _handle_story_variable_change(variable: String, value: Variant) -> void:
-    _story_state[variable] = value
+    if variable in _story_state:
+        _story_state[variable] = value
 
 func _display_story_part(text: String, _tags: Array) -> void:
     if _busy:

@@ -3,6 +3,7 @@ VAR knows_premium = 0
 VAR collection_quest = ""
 VAR credits = 0
 VAR loaned_credits = 0
+EXTERNAL take_out_loan(value)
 
 {knows_chap:
     -> return_greeting 
@@ -140,7 +141,7 @@ Are you sure {collection_quest=="rocks":rocks}{collection_quest=="mementos":othe
     -> rooms
 
 === premium_programs ===
-You see, it would be a very bad business to sell overly expensive ships that naive Natan and entrepreneuring Ellen cannot afford. 
+You see, it would be a very bad business to sell overly expensive ships that Naive Natan and Entrepreneuring Ellen cannot afford. 
 
 It's also, absolutely not practical to build out a galaxy spanning service network.
 
@@ -177,6 +178,7 @@ If you ever find yourself in dire straits and cannot afford next months rent or 
 * [Borrow 1000 credits]
     ~ loaned_credits += 1000
     ~ credits += 1000
+    ~ take_out_loan(1000)
     Congratulation you are now 1000 credits richer. Wasn't that easy?
     -> indenture
  + [Thank's but not now]
@@ -189,3 +191,4 @@ If you ever find yourself in dire straits and cannot afford next months rent or 
 	- else:
 		~ return a
 	}
+    

@@ -49,6 +49,7 @@ func _handle_credits_update(total_credits: int, loans: int) -> void:
     var interest: int = __GlobalGameState.calculate_interest()
     interest_value.text = GlobalGameState.credits_with_sign(-interest)
     debits_value.text = GlobalGameState.credits_with_sign(-(__GlobalGameState.rent + interest))
+    _update_balance()
 
 func _update_balance() -> void:
     var balance: int = __GlobalGameState.calculate_balance()
