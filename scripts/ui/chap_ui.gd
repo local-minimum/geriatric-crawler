@@ -37,6 +37,7 @@ const _MAIN_STORY_KNOWS_CHAP: String = "knows_chap"
 const _MAIN_STORY_KNOWS_PREMIUM: String = "knows_premium"
 const _MAIN_STORY_KNOWS_SHORT_MONTHS: String = "knows_short_months"
 const _MAIN_STORY_COLLECTION_QUEST: String = "collection_quest"
+const _MAIN_STORY_TOOK_OUT_A_LOAN: String = "took_out_a_loan"
 const _STORY_CREDITS: String = "credits"
 const _STORY_LOANED_CREDITS: String = "loaned_credits"
 const _STORY_FUNCTION_LOAN: String = "take_out_loan"
@@ -62,6 +63,9 @@ func _ready() -> void:
 
     if _ink_adapter.on_story_end.connect(_handle_story_ended) != OK:
         push_error("Failed to connect story ended")
+
+    if __SignalBus.on_increment_day.connect(_handle_new_day) != OK:
+        push_error("Failed to connect new day")
 
     await get_tree().create_timer(1).timeout
     _ink_adapter.load_story(_story_main, false, _get_main_story_state())
@@ -90,6 +94,9 @@ func _unhandled_input(event: InputEvent) -> void:
     if (_animating || _choosing) && event.is_action_pressed("ui_select"):
         _fast_forward = true
 
+func _handle_new_day(_day_of_month: int, _days_remaining_of_month: int) -> void:
+    _story_state[_MAIN_STORY_TOOK_OUT_A_LOAN] = false
+
 func _handle_story_loaded() -> void:
     _ink_adapter.register_story_function(_STORY_FUNCTION_LOAN, self, "_handle_new_loan")
 
@@ -105,6 +112,7 @@ func _get_main_story_state() -> Dictionary[String, Variant]:
     if _story_state.is_empty():
         return {
             _MAIN_STORY_KNOWS_CHAP: false,
+            _MAIN_STORY_TOOK_OUT_A_LOAN: false,
             _MAIN_STORY_KNOWS_PREMIUM: 0,
             _MAIN_STORY_COLLECTION_QUEST: "",
             _MAIN_STORY_KNOWS_SHORT_MONTHS: !__GlobalGameState.is_first_month,
@@ -351,11 +359,11 @@ func collect_save_state() -> Dictionary[String, Variant]:
 
 func load_save_state(state: Dictionary) -> void:
     _story_state.clear()
-    for key: String in [_MAIN_STORY_COLLECTION_QUEST, _MAIN_STORY_KNOWS_CHAP, _MAIN_STORY_KNOWS_PREMIUM]:
+    for key: String in [_MAIN_STORY_COLLECTION_QUEST, _MAIN_STORY_KNOWS_CHAP, _MAIN_STORY_KNOWS_PREMIUM, _MAIN_STORY_TOOK_OUT_A_LOAN]:
         if state.has(key):
             var value: Variant = state[key]
             match key:
-                _MAIN_STORY_KNOWS_CHAP:
+                _MAIN_STORY_TOOK_OUT_A_LOAN, _MAIN_STORY_KNOWS_CHAP:
                     if value is not bool:
                         continue
                 _MAIN_STORY_COLLECTION_QUEST:

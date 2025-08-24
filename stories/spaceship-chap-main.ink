@@ -4,6 +4,8 @@ VAR collection_quest = ""
 VAR knows_short_months = false
 VAR credits = 0
 VAR loaned_credits = 0
+VAR took_out_a_loan = false
+
 EXTERNAL take_out_loan(value)
 
 {knows_chap:
@@ -187,9 +189,10 @@ If you ever find yourself in dire straits and cannot afford next months rent or 
         -> indenture
 + {lock_collection == 0} [How do loans work?] Easiest thing in the world! You pick the amount and it gets transferred to your account instantly. -> indenture
 
-* [Borrow 1000 credits]
+* {!took_out_a_loan} [Borrow 1000 credits]
     ~ loaned_credits += 1000
     ~ credits += 1000
+    ~ took_out_a_loan = true
     ~ take_out_loan(1000)
     Congratulation you are now 1000 credits richer. Wasn't that easy?
     -> indenture
