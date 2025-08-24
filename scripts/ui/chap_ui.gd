@@ -188,7 +188,7 @@ func _display_options() -> void:
 
     if _choice_page > 0:
         var btn: Button = _get_option_buttion()
-        btn.text = "%s. < PREVIOUS <" % hot_key
+        btn.text = "%s. < %s <" % [hot_key, tr("PREVIOUS").to_upper()]
         btn.set_meta(_BTN_META_HOTKEY, hot_key)
         btn.set_meta(_BTN_META_PAGE_NAV, PageNav.PREVIOUS)
         if btn.connect(
@@ -237,7 +237,7 @@ func _display_options() -> void:
 
     if _choice_page == 0 && page_choices.size() < _awaiting_choice.size() || _choice_page > 0 && !page_choices.has(last_choice):
         var btn: Button = _get_option_buttion()
-        btn.text = "%s. > NEXT >" % hot_key
+        btn.text = "%s. > %s >" % [hot_key, tr("NEXT").to_upper()]
         btn.set_meta(_BTN_META_HOTKEY, hot_key)
         btn.set_meta(_BTN_META_PAGE_NAV, PageNav.NEXT)
         if btn.connect(

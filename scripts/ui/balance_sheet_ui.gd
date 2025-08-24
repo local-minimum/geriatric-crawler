@@ -42,10 +42,10 @@ func _sync() -> void:
     _handle_update_interest_rate(__GlobalGameState.interest_rate_points)
 
 func _handle_update_interest_rate(rate: int) -> void:
-    interest_label.text = "Interest %s%%" % rate
+    interest_label.text = tr("INTEREST_WITH_RATE").format({"rate": "%s%%" % rate})
 
 func _handle_update_day(_year: int, _month: int, _day_of_mont: int, days_until_end_of_month: int) -> void:
-    due_time_value.text = "%s day%s" % [days_until_end_of_month, "" if days_until_end_of_month == 1 else "s"]
+    due_time_value.text = tr("DAY_WITH_NUMBER") if days_until_end_of_month == 1 else tr("DAYS_WITH_NUMBER").format({"days": days_until_end_of_month})
     due_time_value.add_theme_color_override("font_color", positive_color if days_until_end_of_month > 3 else negative_color)
 
 func _handle_update_rent(new_rent: int) -> void:

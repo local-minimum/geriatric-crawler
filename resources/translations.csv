@@ -16,3 +16,7 @@ INTEREST_WITH_RATE,Interest {rate},Ränta {rate}
 RENT,Rent,Hyra
 BALANCE,Balance,Balans
 DUE_IN,Due in,Betalas om
+PREVIOUS,previous,föregående
+NEXT,next,nästa
+DAY_WITH_NUMBER,1 day,1 dag
+DAYS_WITH_NUMBER,{days} days,{days} dagar
