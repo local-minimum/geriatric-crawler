@@ -27,7 +27,7 @@ const _BTN_META_HOTKEY: String = "hot_key"
 const _MAIN_STORY_KNOWS_CHAP: String = "knows_chap"
 const _MAIN_STORY_KNOWS_PREMIUM: String = "knows_premium"
 const _MAIN_STORY_KNOWS_SHORT_MONTHS: String = "knows_short_months"
-const _STORY_COLLECTION_QUEST: String = "collection_quest"
+const _MAIN_STORY_COLLECTION_QUEST: String = "collection_quest"
 const _STORY_CREDITS: String = "credits"
 const _STORY_LOANED_CREDITS: String = "loaned_credits"
 const _STORY_FUNCTION_LOAN: String = "take_out_loan"
@@ -89,7 +89,7 @@ func _get_main_story_state() -> Dictionary[String, Variant]:
         return {
             _MAIN_STORY_KNOWS_CHAP: false,
             _MAIN_STORY_KNOWS_PREMIUM: 0,
-            _STORY_COLLECTION_QUEST: "",
+            _MAIN_STORY_COLLECTION_QUEST: "",
             _MAIN_STORY_KNOWS_SHORT_MONTHS: !__GlobalGameState.is_first_month,
             _STORY_CREDITS: __GlobalGameState.total_credits,
             _STORY_LOANED_CREDITS: __GlobalGameState.loans,
@@ -242,3 +242,30 @@ func _get_option_buttion() -> Button:
     btn.add_theme_font_size_override("font_size", message_font_size)
 
     return btn
+
+func collect_save_state() -> Dictionary[String, Variant]:
+    var state: Dictionary[String, Variant] = _get_main_story_state().duplicate()
+    @warning_ignore_start("return_value_discarded")
+    state.erase(_STORY_CREDITS)
+    state.erase(_STORY_LOANED_CREDITS)
+    state.erase(_MAIN_STORY_KNOWS_SHORT_MONTHS)
+    @warning_ignore_restore("return_value_discarded")
+
+    return state
+
+func load_save_state(state: Dictionary) -> void:
+    _story_state.clear()
+    for key: String in [_MAIN_STORY_COLLECTION_QUEST, _MAIN_STORY_KNOWS_CHAP, _MAIN_STORY_KNOWS_PREMIUM]:
+        if state.has(key):
+            var value: Variant = state[key]
+            match key:
+                _MAIN_STORY_KNOWS_CHAP:
+                    if value is not bool:
+                        continue
+                _MAIN_STORY_COLLECTION_QUEST:
+                    if value is not String:
+                        continue
+                _MAIN_STORY_KNOWS_PREMIUM:
+                    if value is not int:
+                        continue
+            _story_state[key] = value

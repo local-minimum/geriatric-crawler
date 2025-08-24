@@ -10,7 +10,6 @@ const _RENT_KEY: String = "rent"
 
 const _GAME_DAY_KEY: String = "day"
 
-
 @export var _save_key: String = "globals"
 
 func get_key() -> String:
