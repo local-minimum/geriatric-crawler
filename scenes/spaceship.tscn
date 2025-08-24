@@ -1,9 +1,10 @@
-[gd_scene load_steps=7 format=3 uid="uid://7flb82m2ddwe"]
+[gd_scene load_steps=9 format=3 uid="uid://7flb82m2ddwe"]
 
 [ext_resource type="Script" uid="uid://dfub4a26emjgr" path="res://scripts/spaceship.gd" id="1_ae4p7"]
 [ext_resource type="Script" uid="uid://nnoxcu366588" path="res://scripts/ui/chap_ui.gd" id="1_yqmju"]
 [ext_resource type="Resource" uid="uid://bompwr87ukvlx" path="res://stories/spaceship-chap-main.ink.json" id="3_v0rat"]
 [ext_resource type="Script" uid="uid://bb2wj0ucnido4" path="res://scripts/ink_adapter.gd" id="4_me4wu"]
+[ext_resource type="Script" uid="uid://cewp6ig7p8ec4" path="res://scripts/ui/balance_sheet_ui.gd" id="5_me4wu"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ws7tf"]
 bg_color = Color(0.477872, 0.602944, 0.818495, 1)
@@ -20,6 +21,15 @@ border_width_top = 2
 border_width_right = 2
 border_width_bottom = 2
 border_color = Color(0.789532, 0.837777, 0.472636, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_v0rat"]
+bg_color = Color(0.138842, 0.674531, 0.733655, 1)
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(0.88354, 0.749394, 0.889082, 1)
+border_blend = true
 
 [node name="Spaceshiip" type="Node2D" node_paths=PackedStringArray("chap_ui")]
 script = ExtResource("1_ae4p7")
@@ -154,3 +164,120 @@ alignment = 2
 [node name="InkAdapter" type="Node" parent="CanvasLayer/CHAP AI"]
 script = ExtResource("4_me4wu")
 metadata/_custom_type_script = "uid://bb2wj0ucnido4"
+
+[node name="Balance Sheet UI" type="PanelContainer" parent="CanvasLayer" node_paths=PackedStringArray("credits_value", "loans_value", "debits_value", "interest_value", "rent_value", "balance_value", "due_time_value")]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -40.0
+offset_top = 40.0
+offset_right = -40.0
+offset_bottom = 40.0
+grow_horizontal = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_v0rat")
+script = ExtResource("5_me4wu")
+positive_color = Color(0.783142, 0.916648, 0.899138, 1)
+negative_color = Color(0.69, 0.2553, 0.262545, 1)
+credits_value = NodePath("MarginContainer/GridContainer/Credits Value")
+loans_value = NodePath("MarginContainer/GridContainer/Loans Value")
+debits_value = NodePath("MarginContainer/GridContainer/Debit Value")
+interest_value = NodePath("MarginContainer/GridContainer/Interest Value")
+rent_value = NodePath("MarginContainer/GridContainer/Rent Value")
+balance_value = NodePath("MarginContainer/GridContainer/Balance Value")
+due_time_value = NodePath("MarginContainer/GridContainer/Due Value")
+
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/Balance Sheet UI"]
+layout_mode = 2
+theme_override_constants/margin_left = 6
+theme_override_constants/margin_top = 6
+theme_override_constants/margin_right = 6
+theme_override_constants/margin_bottom = 6
+
+[node name="GridContainer" type="GridContainer" parent="CanvasLayer/Balance Sheet UI/MarginContainer"]
+layout_mode = 2
+theme_override_constants/h_separation = 16
+theme_override_constants/v_separation = 4
+columns = 2
+
+[node name="Credits Label" type="Label" parent="CanvasLayer/Balance Sheet UI/MarginContainer/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Credits"
+
+[node name="Credits Value" type="Label" parent="CanvasLayer/Balance Sheet UI/MarginContainer/GridContainer"]
+layout_mode = 2
+text = "000"
+horizontal_alignment = 2
+
+[node name="Loans Label" type="Label" parent="CanvasLayer/Balance Sheet UI/MarginContainer/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 12
+text = "   Loans"
+
+[node name="Loans Value" type="Label" parent="CanvasLayer/Balance Sheet UI/MarginContainer/GridContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "000"
+horizontal_alignment = 2
+
+[node name="Debit Label" type="Label" parent="CanvasLayer/Balance Sheet UI/MarginContainer/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Debit"
+
+[node name="Debit Value" type="Label" parent="CanvasLayer/Balance Sheet UI/MarginContainer/GridContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.780392, 0.164706, 0.196078, 1)
+text = "000"
+horizontal_alignment = 2
+
+[node name="Interest Label" type="Label" parent="CanvasLayer/Balance Sheet UI/MarginContainer/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 12
+text = "   Interest"
+
+[node name="Interest Value" type="Label" parent="CanvasLayer/Balance Sheet UI/MarginContainer/GridContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.78, 0.1638, 0.19461, 1)
+theme_override_font_sizes/font_size = 12
+text = "000"
+horizontal_alignment = 2
+
+[node name="Rent Label" type="Label" parent="CanvasLayer/Balance Sheet UI/MarginContainer/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 12
+text = "   Rent "
+
+[node name="Rent Value" type="Label" parent="CanvasLayer/Balance Sheet UI/MarginContainer/GridContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.78, 0.1638, 0.19461, 1)
+theme_override_font_sizes/font_size = 12
+text = "000"
+horizontal_alignment = 2
+
+[node name="Balance Label" type="Label" parent="CanvasLayer/Balance Sheet UI/MarginContainer/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Balance"
+
+[node name="Balance Value" type="Label" parent="CanvasLayer/Balance Sheet UI/MarginContainer/GridContainer"]
+layout_mode = 2
+text = "000"
+horizontal_alignment = 2
+
+[node name="Due Label" type="Label" parent="CanvasLayer/Balance Sheet UI/MarginContainer/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.277528, 0.277528, 0.277528, 1)
+theme_override_font_sizes/font_size = 12
+text = "Due in"
+
+[node name="Due Value" type="Label" parent="CanvasLayer/Balance Sheet UI/MarginContainer/GridContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.277528, 0.277528, 0.277528, 1)
+theme_override_font_sizes/font_size = 12
+text = "30 days"
+horizontal_alignment = 2

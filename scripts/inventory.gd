@@ -1,33 +1,10 @@
 extends Node
 class_name Inventory
 
-static var _CREDITS: int
 static var active_inventory: Inventory
-
-signal on_update_credits(credits: int)
 
 signal on_add_to_inventory(id: String, amount: float, total: float)
 signal on_remove_from_inventory(id: String, amount: float, total: float)
-
-static func credits() -> int: return _CREDITS
-
-static func withdraw_credits(amount: int) -> bool:
-    if amount < 0:
-        return false
-
-    if amount <= _CREDITS:
-        _CREDITS -= amount
-        if active_inventory != null:
-            active_inventory.on_update_credits.emit(_CREDITS)
-
-        NotificationsManager.info("Lost", credits_with_sign(amount), 5000)
-        return true
-    return false
-
-static func set_credits(amount: int) -> void:
-    _CREDITS = amount
-    if active_inventory != null:
-        active_inventory.on_update_credits.emit(_CREDITS)
 
 @export var base_slaying_income: int = 20
 
@@ -48,16 +25,12 @@ static func inventory_item_id_to_unit(id: String) -> String:
         return ""
     return "kg"
 
-static func credits_with_sign(amount: int) -> String:
-    return "₳ %s" % amount
 
 func _ready() -> void:
     if battle.on_entity_join_battle.connect(_handle_entity_join_battle) != OK:
         push_error("Could not connect entity join battle")
     if battle.on_entity_leave_battle.connect(_handle_enity_leave_battle) != OK:
         push_error("Could not connect entity leave battle")
-
-    on_update_credits.emit(_CREDITS)
 
 func _enter_tree() -> void:
     if active_inventory != null && active_inventory != self:
@@ -84,9 +57,8 @@ func _handle_enemy_death(entity: BattleEntity) -> void:
     if entity is BattleEnemy:
         var enemy: BattleEnemy = entity
         var amount: int = base_slaying_income + maxi(0, enemy.level - 1) * enemy_level_bonus + enemy.carried_credits
-        _CREDITS += amount
-        on_update_credits.emit(_CREDITS)
-        NotificationsManager.info("Gained", credits_with_sign(amount), 5000)
+
+        __GlobalGameState.deposit_credits(amount)
 
 class InventoryListing:
     var id: String

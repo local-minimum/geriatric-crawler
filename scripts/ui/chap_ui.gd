@@ -71,20 +71,17 @@ func _get_main_story_state() -> Dictionary[String, Variant]:
             _MAIN_STORY_KNOWS_CHAP: false,
             _MAIN_STORY_KNOWS_PREMIUM: 0,
             _STORY_COLLECTION_QUEST: "",
-            _STORY_CREDITS: Inventory.credits(),
-            _STORY_LOANED_CREDITS: 0,
+            _STORY_CREDITS: __GlobalGameState.total_credits,
+            _STORY_LOANED_CREDITS: __GlobalGameState.loans,
         }
     else:
-        _story_state[_STORY_CREDITS] = Inventory.credits()
+        _story_state[_STORY_CREDITS] = __GlobalGameState.total_credits
+        _story_state[_STORY_LOANED_CREDITS] = __GlobalGameState.loans
 
         return _story_state
 
 func _handle_story_variable_change(variable: String, value: Variant) -> void:
     _story_state[variable] = value
-    if variable == _STORY_CREDITS && value is int:
-        @warning_ignore_start("unsafe_cast")
-        Inventory.set_credits(value as int)
-        @warning_ignore_restore("unsafe_cast")
 
 func _display_story_part(text: String, _tags: Array) -> void:
     if _busy:
