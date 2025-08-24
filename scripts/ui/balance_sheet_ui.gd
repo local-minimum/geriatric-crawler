@@ -8,6 +8,7 @@ class_name BalanceSheetUI
 @export var loans_value: Label
 
 @export var debits_value: Label
+@export var interest_label: Label
 @export var interest_value: Label
 @export var rent_value: Label
 
@@ -20,6 +21,10 @@ func _enter_tree() -> void:
         push_error("Could not listen to credits change")
     if __SignalBus.on_update_day.connect(_handle_update_day) != OK:
         push_error("Could not listen to update day")
+    if __SignalBus.on_update_interest_rate.connect(_handle_update_interest_rate) != OK:
+        push_error("Could not listen to interest rate update")
+    if __SignalBus.on_update_rent.connect(_handle_update_rent) != OK:
+        push_error("Could not listen to update rent")
 
     credits_value.add_theme_color_override("font_color", positive_color)
     loans_value.add_theme_color_override("font_color", positive_color)
@@ -34,6 +39,10 @@ func _sync() -> void:
     _handle_update_rent(__GlobalGameState.rent)
     _update_balance()
     _handle_update_day(__GlobalGameState.year, __GlobalGameState.month, __GlobalGameState.day_of_month, __GlobalGameState.days_until_end_of_month)
+    _handle_update_interest_rate(__GlobalGameState.interest_rate_points)
+
+func _handle_update_interest_rate(rate: int) -> void:
+    interest_label.text = "Interest %s%" % rate
 
 func _handle_update_day(_year: int, _month: int, _day_of_mont: int, days_until_end_of_month: int) -> void:
     due_time_value.text = "%s" % days_until_end_of_month

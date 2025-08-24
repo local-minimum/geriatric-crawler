@@ -26,6 +26,7 @@ const _BTN_META_CHOICE: String = "choice"
 const _BTN_META_HOTKEY: String = "hot_key"
 const _MAIN_STORY_KNOWS_CHAP: String = "knows_chap"
 const _MAIN_STORY_KNOWS_PREMIUM: String = "knows_premium"
+const _MAIN_STORY_KNOWS_SHORT_MONTHS: String = "knows_short_months"
 const _STORY_COLLECTION_QUEST: String = "collection_quest"
 const _STORY_CREDITS: String = "credits"
 const _STORY_LOANED_CREDITS: String = "loaned_credits"
@@ -89,10 +90,12 @@ func _get_main_story_state() -> Dictionary[String, Variant]:
             _MAIN_STORY_KNOWS_CHAP: false,
             _MAIN_STORY_KNOWS_PREMIUM: 0,
             _STORY_COLLECTION_QUEST: "",
+            _MAIN_STORY_KNOWS_SHORT_MONTHS: !__GlobalGameState.is_first_month,
             _STORY_CREDITS: __GlobalGameState.total_credits,
             _STORY_LOANED_CREDITS: __GlobalGameState.loans,
         }
     else:
+        _story_state[_MAIN_STORY_KNOWS_SHORT_MONTHS] = !__GlobalGameState.is_first_month
         _story_state[_STORY_CREDITS] = __GlobalGameState.total_credits
         _story_state[_STORY_LOANED_CREDITS] = __GlobalGameState.loans
 

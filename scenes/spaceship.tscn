@@ -165,7 +165,7 @@ alignment = 2
 script = ExtResource("4_me4wu")
 metadata/_custom_type_script = "uid://bb2wj0ucnido4"
 
-[node name="Balance Sheet UI" type="PanelContainer" parent="CanvasLayer" node_paths=PackedStringArray("credits_value", "loans_value", "debits_value", "interest_value", "rent_value", "balance_value", "due_time_value")]
+[node name="Balance Sheet UI" type="PanelContainer" parent="CanvasLayer" node_paths=PackedStringArray("credits_value", "loans_value", "debits_value", "interest_label", "interest_value", "rent_value", "balance_value", "due_time_value")]
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
@@ -181,6 +181,7 @@ negative_color = Color(0.69, 0.2553, 0.262545, 1)
 credits_value = NodePath("MarginContainer/GridContainer/Credits Value")
 loans_value = NodePath("MarginContainer/GridContainer/Loans Value")
 debits_value = NodePath("MarginContainer/GridContainer/Debit Value")
+interest_label = NodePath("MarginContainer/GridContainer/Interest Label")
 interest_value = NodePath("MarginContainer/GridContainer/Interest Value")
 rent_value = NodePath("MarginContainer/GridContainer/Rent Value")
 balance_value = NodePath("MarginContainer/GridContainer/Balance Value")

@@ -1,6 +1,7 @@
 VAR knows_chap = false
 VAR knows_premium = 0
 VAR collection_quest = ""
+VAR knows_short_months = false
 VAR credits = 0
 VAR loaned_credits = 0
 EXTERNAL take_out_loan(value)
@@ -46,10 +47,15 @@ You can call me CHAP and I'm here to answer any question you have as well as fac
     ~ knows_premium = max(knows_premium, 1)
     -> chap
 + [I have question about the rooms] -> rooms
++ {knows_short_months} [What's up with these short months?] -> calendar
++ {knows_short_months && knows_premium > 0} [Next...] -> chap2
++ {knows_short_months == false && knows_premium == 0} [Nothing really] I wont hold that against you -> END
+
+=== chap2 ===
++ {knows_short_months || knows_premium > 0} [Previous...] -> chap1
 + {knows_premium > 0} [Premium Program] Oh yes glad you want to know more about our extended catalogue of marvelous offers -> premium_programs
 + {knows_premium > 1} [Indenture Program] -> loans
-+ [What's up with these months?] -> calendar
-+ [Nothing really] I wont hold it against you -> END
++ [Nothing really] I wont hold that against you -> END
 
 === calendar ===
 Oh, forget you are still an Earther!

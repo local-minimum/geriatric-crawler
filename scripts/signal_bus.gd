@@ -5,5 +5,6 @@ class_name SignalBus
 signal on_update_day(year: int, month: int, day_of_month: int, days_until_end_of_month: int)
 
 signal on_update_credits(credits: int, loans: int)
-
+signal on_update_interest_rate(rate_points: int)
+signal on_update_rent(rent: int)
 @warning_ignore_restore("unused_signal")

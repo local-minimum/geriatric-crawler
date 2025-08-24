@@ -1,8 +1,7 @@
 extends SaveExtension
 class_name InventorySaver
 
-@export
-var _save_key: String = "exploration-inventory"
+@export var _save_key: String = "exploration-inventory"
 
 func get_key() -> String:
     return _save_key
