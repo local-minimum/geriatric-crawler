@@ -15,6 +15,7 @@ class_name ChapUI
 @export_range(0, 1) var option_pause: float = 0.5
 
 var _animating: bool
+var _fast_forward: bool
 var _choosing: bool
 var _story_queue: Array[String]
 var _awaiting_choice: Array[InkAdapter.Choice]
@@ -58,10 +59,10 @@ func _ready() -> void:
     _ink_adapter.load_story(_story_main, false, _get_main_story_state())
 
 func _unhandled_input(event: InputEvent) -> void:
-    if !_choosing || event.is_echo():
+    if event.is_echo():
         return
 
-    if event is InputEventKey:
+    if _choosing && event is InputEventKey:
         var key: InputEventKey = event
 
         if key.pressed && _OPTION_KEYS.has(key.keycode):
@@ -72,6 +73,9 @@ func _unhandled_input(event: InputEvent) -> void:
                 @warning_ignore_start("unsafe_call_argument")
                 _handle_choice(_option_buttons[btn_idx].get_meta(_BTN_META_CHOICE))
                 @warning_ignore_restore("unsafe_call_argument")
+
+    if _animating && event.is_action_pressed("ui_select"):
+        _fast_forward = true
 
 func _handle_story_loaded() -> void:
     _ink_adapter.register_story_function(_STORY_FUNCTION_LOAN, self, "_handle_new_loan")
@@ -185,13 +189,14 @@ func _add_message(message: String) -> void:
 
 func _animate_message(label: Label, message: String) -> void:
     _animating = true
+    _fast_forward = false
 
     label.visible_characters = 0
 
     var start: int = 0
     var end: int = 0
 
-    while end < message.length():
+    while end < message.length() && !_fast_forward:
         end = TextUtils.find_message_segment_end(message, start, animation)
 
         label.visible_characters = end

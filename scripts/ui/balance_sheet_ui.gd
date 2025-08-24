@@ -42,7 +42,7 @@ func _sync() -> void:
     _handle_update_interest_rate(__GlobalGameState.interest_rate_points)
 
 func _handle_update_interest_rate(rate: int) -> void:
-    interest_label.text = "Interest %s%" % rate
+    interest_label.text = "Interest %s%%" % rate
 
 func _handle_update_day(_year: int, _month: int, _day_of_mont: int, days_until_end_of_month: int) -> void:
     due_time_value.text = "%s" % days_until_end_of_month

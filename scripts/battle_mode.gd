@@ -353,7 +353,6 @@ func _handle_player_death(entity: BattleEntity) -> void:
     # TODO Handle party wipe better
     exit_battle()
 
-
 var _ending_player_turn_early: bool
 
 func _handle_enemy_death(entity: BattleEntity) -> void:

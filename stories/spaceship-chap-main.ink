@@ -48,11 +48,6 @@ You can call me CHAP and I'm here to answer any question you have as well as fac
     -> chap
 + [I have question about the rooms] -> rooms
 + {knows_short_months} [What's up with these short months?] -> calendar
-+ {knows_short_months && knows_premium > 0} [Next...] -> chap2
-+ {knows_short_months == false && knows_premium == 0} [Nothing really] I wont hold that against you -> END
-
-=== chap2 ===
-+ {knows_short_months || knows_premium > 0} [Previous...] -> chap1
 + {knows_premium > 0} [Premium Program] Oh yes glad you want to know more about our extended catalogue of marvelous offers -> premium_programs
 + {knows_premium > 1} [Indenture Program] -> loans
 + [Nothing really] I wont hold that against you -> END
@@ -71,9 +66,7 @@ Yeah I don't know why that is either, but it is great! It allows us to collect r
 
 === rooms ===
 Then we have each individual room. I'm happy to answer particular questions about any of them:
--> rooms1
 
-=== rooms1 ===
 + [Nav]
     Yes this is where you chart out regions of space to explore.
     
@@ -106,11 +99,6 @@ Then we have each individual room. I'm happy to answer particular questions abou
     
     Or when a complex carbohydrate compound is needed.
     -> rooms
-+ [The other rooms] -> rooms2
-+ [That's all] 
-    -> chap
-    
-=== rooms2 ===
 + [Printers]
     Need more shelfing? Need more storage containers for radioactive materials?
     
@@ -130,7 +118,6 @@ Then we have each individual room. I'm happy to answer particular questions abou
     
     But you, who invested in a spaceship must surely be interested in moving around.
     -> rooms
-+ [The first rooms] -> rooms1
 + [That's all] 
     -> chap
     
