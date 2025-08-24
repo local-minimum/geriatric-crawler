@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://7flb82m2ddwe"]
+[gd_scene load_steps=13 format=3 uid="uid://7flb82m2ddwe"]
 
 [ext_resource type="Script" uid="uid://dfub4a26emjgr" path="res://scripts/spaceship.gd" id="1_ae4p7"]
 [ext_resource type="Script" uid="uid://nnoxcu366588" path="res://scripts/ui/chap_ui.gd" id="1_yqmju"]
@@ -7,6 +7,8 @@
 [ext_resource type="Script" uid="uid://cewp6ig7p8ec4" path="res://scripts/ui/balance_sheet_ui.gd" id="5_me4wu"]
 [ext_resource type="Script" uid="uid://cune3lm2ngiy1" path="res://scripts/ui/notifications/notifications_manager.gd" id="6_v6qj0"]
 [ext_resource type="Script" uid="uid://bkky4nqo47eiv" path="res://scripts/ui/notifications/notifications_panel_ui.gd" id="7_6i2wf"]
+[ext_resource type="Script" uid="uid://bkjlt23hansuv" path="res://scripts/savesystem/save_system.gd" id="8_r0fvi"]
+[ext_resource type="Script" uid="uid://bemcpr6cqtnb3" path="res://scripts/savesystem/disk_json_storage_provider.gd" id="9_6wr2n"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ws7tf"]
 bg_color = Color(0.477872, 0.602944, 0.818495, 1)
@@ -301,3 +303,10 @@ mouse_filter = 2
 alignment = 2
 script = ExtResource("7_6i2wf")
 _tween_notifiction_duration = 0.5
+
+[node name="SaveSystem" type="Node" parent="."]
+script = ExtResource("8_r0fvi")
+metadata/_custom_type_script = "uid://bkjlt23hansuv"
+
+[node name="StorageProvider" type="Node" parent="SaveSystem"]
+script = ExtResource("9_6wr2n")

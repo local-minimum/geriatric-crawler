@@ -61,24 +61,29 @@ func save_slot(slot: int) -> void:
 func save_last_slot() -> void:
     save_slot(_current_save_slot)
 
-func _collect_save_data(save_data: Dictionary) -> Dictionary:
-
-    var current_level: String = level_saver.get_level_name()
+func _collect_levels_save_data(save_data: Dictionary) -> Dictionary:
+    if level_saver == null:
+        return save_data.get(_LEVEL_SAVE_KEY)
 
     var updated_levels: Dictionary = {}
     if save_data.has(_LEVEL_SAVE_KEY):
         var levels: Dictionary = save_data[_LEVEL_SAVE_KEY]
         updated_levels = levels.duplicate()
 
+    var current_level: String = level_saver.get_level_name()
+
     @warning_ignore_start("return_value_discarded")
     updated_levels.erase(current_level)
     @warning_ignore_restore("return_value_discarded")
     updated_levels[current_level] = level_saver.collect_save_state()
 
+    return updated_levels
+
+func _collect_save_data(save_data: Dictionary) -> Dictionary:
     var updated_save_data: Dictionary = {
         _APPLICATION_KEY: _collect_application_save_data(),
-        _GLOBAL_GAME_STATE_KEY: _collect_global_game_save_data(save_data, current_level),
-        _LEVEL_SAVE_KEY: updated_levels
+        _GLOBAL_GAME_STATE_KEY: _collect_global_game_save_data(save_data),
+        _LEVEL_SAVE_KEY: _collect_levels_save_data(save_data),
     }
 
     for extension: SaveExtension in extensions:
@@ -107,19 +112,20 @@ func _collect_application_save_data() -> Dictionary:
         _PLATFORM_KEY: OS.get_name(),
     }
 
-
-func _collect_global_game_save_data(save_data: Dictionary, current_level: String) -> Dictionary:
+func _collect_global_game_save_data(save_data: Dictionary) -> Dictionary:
 
     var session_playtime: int = Time.get_ticks_msec() - _session_start
     var total_playtime: int = save_data[_GLOBAL_GAME_STATE_KEY][_TOTAL_PLAYTIME_KEY] - _previous_session_time_at_save + session_playtime
 
     var level_history: Array[String] = save_data[_GLOBAL_GAME_STATE_KEY][_LEVEL_HISTORY_KEY]
-    if level_history.size() == 0 || level_history[level_history.size() - 1] != current_level:
-        level_history = level_history + ([current_level] as Array[String])
+    if level_saver != null:
+        var current_level: String = level_saver.get_level_name()
+        if level_history.size() == 0 || level_history[level_history.size() - 1] != current_level:
+            level_history = level_history + ([current_level] as Array[String])
 
     return {
         _LEVEL_HISTORY_KEY: level_history,
-        _LEVEL_TO_LOAD_KEY: level_saver.get_level_to_load(),
+        _LEVEL_TO_LOAD_KEY: save_data.get(_LEVEL_TO_LOAD_KEY, "") if level_saver == null else level_saver.get_level_to_load(),
         _TOTAL_PLAYTIME_KEY: total_playtime,
         _SESSION_PLAYTIME_KEY: session_playtime,
         _SAVE_TIME_KEY: Time.get_datetime_string_from_system(true),
@@ -131,7 +137,7 @@ func _collect_inital_global_game_save_data() -> Dictionary:
 
     return {
         _LEVEL_HISTORY_KEY: [] as Array[String],
-        _LEVEL_TO_LOAD_KEY: level_saver.get_level_to_load(),
+        _LEVEL_TO_LOAD_KEY: "" if level_saver == null else level_saver.get_level_to_load(),
         _TOTAL_PLAYTIME_KEY: 0,
         _SESSION_PLAYTIME_KEY: 0,
         _SAVE_TIME_KEY: Time.get_date_string_from_system(true),
@@ -147,7 +153,7 @@ func _load_save_data_or_default_initial_data(slot: int) -> Dictionary:
     data = {
         _APPLICATION_KEY: _collect_application_save_data(),
         _GLOBAL_GAME_STATE_KEY: _collect_inital_global_game_save_data(),
-        _LEVEL_SAVE_KEY: {
+        _LEVEL_SAVE_KEY: {} if level_saver == null else {
             level_saver.get_level_name(): level_saver.get_initial_save_state()
         },
     }
@@ -185,7 +191,7 @@ func load_slot(slot: int) -> bool:
 
 
     var wanted_level: String = data[_GLOBAL_GAME_STATE_KEY][_LEVEL_TO_LOAD_KEY]
-    if wanted_level != level_saver.get_level_name():
+    if level_saver == null || wanted_level != level_saver.get_level_name():
         return load_new_root_scene_by_level_name(wanted_level)
 
     # Load extension save data
