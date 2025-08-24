@@ -96,6 +96,10 @@ crawl_turn_right={
 ]
 }
 
+[internationalization]
+
+locale/translations=PackedStringArray("res://resources/translations.en.translation", "res://resources/translations.sv.translation")
+
 [layer_names]
 
 3d_render/layer_1="3D Default"

@@ -66,39 +66,39 @@ theme_override_constants/separation = 6
 
 [node name="Nav Btn" type="Button" parent="CanvasLayer/Rooms Panel/MarginContainer/VBoxContainer"]
 layout_mode = 2
-text = "Nav"
+text = "NAV"
 
 [node name="Mission Ops Btn" type="Button" parent="CanvasLayer/Rooms Panel/MarginContainer/VBoxContainer"]
 layout_mode = 2
-text = "Mission Ops"
+text = "MISSION_OPS"
 
 [node name="Living Quarters Btn" type="Button" parent="CanvasLayer/Rooms Panel/MarginContainer/VBoxContainer"]
 layout_mode = 2
-text = "Living Quarters"
+text = "LIVING_QUARTERS"
 
 [node name="Materials Lab Btn" type="Button" parent="CanvasLayer/Rooms Panel/MarginContainer/VBoxContainer"]
 layout_mode = 2
-text = "Materials Lab"
+text = "MATERIALS_LAB"
 
 [node name="Printers Btn" type="Button" parent="CanvasLayer/Rooms Panel/MarginContainer/VBoxContainer"]
 layout_mode = 2
-text = "Printers"
+text = "PRINTERS"
 
 [node name="Infermary Btn" type="Button" parent="CanvasLayer/Rooms Panel/MarginContainer/VBoxContainer"]
 layout_mode = 2
-text = "Infermary"
+text = "INFIRMARY"
 
 [node name="Storage Btn" type="Button" parent="CanvasLayer/Rooms Panel/MarginContainer/VBoxContainer"]
 layout_mode = 2
-text = "Storage Bay"
+text = "STORAGE_BAY"
 
 [node name="Engine Btn" type="Button" parent="CanvasLayer/Rooms Panel/MarginContainer/VBoxContainer"]
 layout_mode = 2
-text = "Engine Room"
+text = "ENGINE_ROOM"
 
 [node name="Broom Closet Btn" type="Button" parent="CanvasLayer/Rooms Panel/MarginContainer/VBoxContainer"]
 layout_mode = 2
-text = "Broom Closet"
+text = "BROOM_CLOSET"
 
 [node name="CHAP AI" type="PanelContainer" parent="CanvasLayer" node_paths=PackedStringArray("_ink_adapter", "title", "scroll_container", "messages")]
 anchors_preset = 3
@@ -140,7 +140,7 @@ layout_mode = 2
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_colors/font_shadow_color = Color(0.903598, 0.903598, 0.903598, 1)
 theme_override_font_sizes/font_size = 12
-text = "Customer Happiness Assistant Program"
+text = "CHAP_LONG"
 horizontal_alignment = 1
 uppercase = true
 
@@ -208,7 +208,7 @@ columns = 2
 [node name="Credits Label" type="Label" parent="CanvasLayer/Balance Sheet UI/MarginContainer/GridContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Credits"
+text = "CREDIT"
 
 [node name="Credits Value" type="Label" parent="CanvasLayer/Balance Sheet UI/MarginContainer/GridContainer"]
 layout_mode = 2
@@ -219,7 +219,7 @@ horizontal_alignment = 2
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_font_sizes/font_size = 12
-text = "   Loans"
+text = "LOANS"
 
 [node name="Loans Value" type="Label" parent="CanvasLayer/Balance Sheet UI/MarginContainer/GridContainer"]
 layout_mode = 2
@@ -230,7 +230,7 @@ horizontal_alignment = 2
 [node name="Debit Label" type="Label" parent="CanvasLayer/Balance Sheet UI/MarginContainer/GridContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Debit"
+text = "DEBIT"
 
 [node name="Debit Value" type="Label" parent="CanvasLayer/Balance Sheet UI/MarginContainer/GridContainer"]
 layout_mode = 2
@@ -242,7 +242,7 @@ horizontal_alignment = 2
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_font_sizes/font_size = 12
-text = "   Interest"
+text = "INTEREST_WITH_RATE"
 
 [node name="Interest Value" type="Label" parent="CanvasLayer/Balance Sheet UI/MarginContainer/GridContainer"]
 layout_mode = 2
@@ -255,7 +255,7 @@ horizontal_alignment = 2
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_font_sizes/font_size = 12
-text = "   Rent "
+text = "RENT"
 
 [node name="Rent Value" type="Label" parent="CanvasLayer/Balance Sheet UI/MarginContainer/GridContainer"]
 layout_mode = 2
@@ -267,7 +267,7 @@ horizontal_alignment = 2
 [node name="Balance Label" type="Label" parent="CanvasLayer/Balance Sheet UI/MarginContainer/GridContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Balance"
+text = "BALANCE"
 
 [node name="Balance Value" type="Label" parent="CanvasLayer/Balance Sheet UI/MarginContainer/GridContainer"]
 layout_mode = 2
@@ -279,7 +279,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.277528, 0.277528, 0.277528, 1)
 theme_override_font_sizes/font_size = 12
-text = "Due in"
+text = "DUE_IN"
 
 [node name="Due Value" type="Label" parent="CanvasLayer/Balance Sheet UI/MarginContainer/GridContainer"]
 layout_mode = 2
