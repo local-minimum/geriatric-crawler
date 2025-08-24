@@ -11,23 +11,21 @@ const LEVEL_GROUP: String = "battle-mode"
 
 static var instance: BattleMode
 
-@export
-var animator: AnimationPlayer
+@export var animator: AnimationPlayer
 
-@export
-var battle_hand: BattleHandManager
+@export var battle_hand: BattleHandManager
 
-@export
-var player_deck: BattleDeck
+@export var player_deck: BattleDeck
 
-@export
-var _active_cards: Control
+@export var _active_cards: Control
 
-@export
-var _ui: CanvasLayer
+@export var _ui: CanvasLayer
 
-@export
-var battle_player: BattlePlayer
+@export var battle_player: BattlePlayer
+
+@export var base_slaying_income: int = 20
+
+@export var enemy_level_bonus: int = 5
 
 var trigger: GridEncounterEffect
 var robot: Robot
@@ -365,6 +363,10 @@ func _handle_enemy_death(entity: BattleEntity) -> void:
     )
 
     print_debug("%s died, any remaining %s" % [entity.name, remaining_enemies])
+    if entity is BattleEnemy:
+        var enemy: BattleEnemy = entity
+        var credit_gain: int = base_slaying_income + maxi(0, enemy.level - 1) * enemy_level_bonus + enemy.carried_credits
+        __GlobalGameState.deposit_credits(credit_gain)
 
     if !remaining_enemies:
         battle_player.end_turn_early()
