@@ -1,10 +1,12 @@
-[gd_scene load_steps=9 format=3 uid="uid://7flb82m2ddwe"]
+[gd_scene load_steps=11 format=3 uid="uid://7flb82m2ddwe"]
 
 [ext_resource type="Script" uid="uid://dfub4a26emjgr" path="res://scripts/spaceship.gd" id="1_ae4p7"]
 [ext_resource type="Script" uid="uid://nnoxcu366588" path="res://scripts/ui/chap_ui.gd" id="1_yqmju"]
 [ext_resource type="Resource" uid="uid://bompwr87ukvlx" path="res://stories/spaceship-chap-main.ink.json" id="3_v0rat"]
 [ext_resource type="Script" uid="uid://bb2wj0ucnido4" path="res://scripts/ink_adapter.gd" id="4_me4wu"]
 [ext_resource type="Script" uid="uid://cewp6ig7p8ec4" path="res://scripts/ui/balance_sheet_ui.gd" id="5_me4wu"]
+[ext_resource type="Script" uid="uid://cune3lm2ngiy1" path="res://scripts/ui/notifications/notifications_manager.gd" id="6_v6qj0"]
+[ext_resource type="Script" uid="uid://bkky4nqo47eiv" path="res://scripts/ui/notifications/notifications_panel_ui.gd" id="7_6i2wf"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ws7tf"]
 bg_color = Color(0.477872, 0.602944, 0.818495, 1)
@@ -282,3 +284,20 @@ theme_override_colors/font_color = Color(0.277528, 0.277528, 0.277528, 1)
 theme_override_font_sizes/font_size = 12
 text = "30 days"
 horizontal_alignment = 2
+
+[node name="Spaceship Notifications" type="CanvasLayer" parent="."]
+layer = 128
+script = ExtResource("6_v6qj0")
+max_concurrent_messages = 4
+_min_time_between_messages = 600.0
+
+[node name="NotificationsPanel" type="VBoxContainer" parent="Spaceship Notifications"]
+anchors_preset = -1
+anchor_left = 0.042
+anchor_top = 0.629
+anchor_right = 0.256
+anchor_bottom = 0.92
+mouse_filter = 2
+alignment = 2
+script = ExtResource("7_6i2wf")
+_tween_notifiction_duration = 0.5
