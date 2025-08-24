@@ -17,17 +17,23 @@ Welcome to your brand  new space-faring mansion.
 
 You can call me CHAP and I'm here to answer any question you have as well as facilitate any of yours and Mimas Travel Ltd mutual interests.
 
--> chap
+-> pre_chap
 
 === return_greeting ===
 
 {Oh hi there skipper!|Welcome back, don't be a stranger!|Fancy meeting you here!}
 
--> chap
+-> pre_chap
+
+=== pre_chap ===
+{How can I help you today?|What do you need?|What's on your mind?|Any inquiry?}
+-> chap1
 
 === chap ===
-{How can I help you today?|What do you need?|What's on your mind?|Any inquiry?}
+{What do you need?|What's on your mind?|Any inquiry?}
+-> chap1
 
+=== chap1 ===
 + [Who are you?] Me? I'm CHAP! Didn't I tell you? -> chap
 + [Tell me about this mansion]
     Oh, yes. You are sitting in an X900. A marvel tailored to your every need.
@@ -42,7 +48,20 @@ You can call me CHAP and I'm here to answer any question you have as well as fac
 + [I have question about the rooms] -> rooms
 + {knows_premium > 0} [Premium Program] Oh yes glad you want to know more about our extended catalogue of marvelous offers -> premium_programs
 + {knows_premium > 1} [Indenture Program] -> loans
++ [What's up with these months?] -> calendar
 + [Nothing really] I wont hold it against you -> END
+
+=== calendar ===
+Oh, forget you are still an Earther!
+
+In space each day takes the same amount of time as a standard day on earth, but it is devided into 10 hours, each with 10 minutes, and 10 seconds. 
+
+But we usually just use decimal days like it's 0.32 in the morning!
+
+Then there are 24 days in each month and there are 10 months to a year, which is much shorter than earth years.
+
+Yeah I don't know why that is either, but it is great! It allows us to collect rent more often!
+-> chap
 
 === rooms ===
 Then we have each individual room. I'm happy to answer particular questions about any of them:
