@@ -1,5 +1,9 @@
 extends Control
 class_name ChapUI
+
+enum PageNav {NONE, PREVIOUS, NEXT}
+enum ListingCoices {NO, YES, TRUNCATING}
+
 @export var _story_main: Resource
 @export var _ink_adapter: InkAdapter
 
@@ -17,13 +21,17 @@ class_name ChapUI
 var _animating: bool
 var _fast_forward: bool
 var _choosing: bool
+var _listing_choices: ListingCoices = ListingCoices.NO
 var _story_queue: Array[String]
 var _awaiting_choice: Array[InkAdapter.Choice]
 var _option_buttons: Array[Button]
 var _story_state: Dictionary[String, Variant]
+var _choice_page: int = 0
 
+const _PAGINATION_SIZE: int = 6
 const _OPTION_KEYS: Array[Key] = [KEY_0, KEY_1, KEY_2, KEY_3, KEY_4, KEY_5, KEY_6]
 const _BTN_META_CHOICE: String = "choice"
+const _BTN_META_PAGE_NAV: String = "page_nav"
 const _BTN_META_HOTKEY: String = "hot_key"
 const _MAIN_STORY_KNOWS_CHAP: String = "knows_chap"
 const _MAIN_STORY_KNOWS_PREMIUM: String = "knows_premium"
@@ -70,9 +78,14 @@ func _unhandled_input(event: InputEvent) -> void:
             var btn_idx: int = _option_buttons.find_custom(func (btn: Button) -> bool: return btn.get_meta(_BTN_META_HOTKEY) == option_id)
             # print_debug("[CHAP] Key %s is option %s and that gives btn %s" % [key.keycode, option_id, btn_idx])
             if btn_idx >= 0:
-                @warning_ignore_start("unsafe_call_argument")
-                _handle_choice(_option_buttons[btn_idx].get_meta(_BTN_META_CHOICE))
-                @warning_ignore_restore("unsafe_call_argument")
+                var btn: Button = _option_buttons[btn_idx]
+                var nav: PageNav = btn.get_meta(_BTN_META_PAGE_NAV, PageNav.NONE)
+                if nav != PageNav.NONE:
+                    _handle_change_options_page(nav)
+                else:
+                    @warning_ignore_start("unsafe_call_argument")
+                    _handle_choice(btn.get_meta(_BTN_META_CHOICE))
+                    @warning_ignore_restore("unsafe_call_argument")
 
     if (_animating || _choosing) && event.is_action_pressed("ui_select"):
         _fast_forward = true
@@ -126,6 +139,7 @@ func _display_story_choice(options: Array[InkAdapter.Choice]) -> void:
     print_debug("[CHAP] Received %s options choice" % options.size())
 
     _awaiting_choice = options
+    _choice_page = 0
 
     if _busy:
         print_debug("[CHAP] Busy, waiting with the stories")
@@ -133,12 +147,59 @@ func _display_story_choice(options: Array[InkAdapter.Choice]) -> void:
 
     _display_options()
 
+func _handle_change_options_page(nav: PageNav) -> void:
+    for btn: Button in _option_buttons:
+        btn.queue_free()
+
+    _option_buttons.clear()
+
+    match nav:
+        PageNav.PREVIOUS:
+            _choice_page = maxi(0, _choice_page - 1)
+            print_debug("[CHAP] Showing previous choice page %s" % _choice_page)
+        PageNav.NEXT:
+            _choice_page += 1
+            print_debug("[CHAP] Showing next choice page %s" % _choice_page)
+
+    if _listing_choices == ListingCoices.YES:
+        _listing_choices = ListingCoices.TRUNCATING
+
+    while _listing_choices != ListingCoices.NO:
+        await get_tree().create_timer(0.1).timeout
+
+    _display_options()
+
 func _display_options() -> void:
     _choosing = true
+    _listing_choices = ListingCoices.YES
     _fast_forward = false
 
     var hot_key: int = 1
-    for choice: InkAdapter.Choice in _awaiting_choice:
+    var page_choices: Array[InkAdapter.Choice] = ArrayUtils.paginate_with_nav_reservation(_awaiting_choice, _choice_page, _PAGINATION_SIZE)
+    var last_choice: InkAdapter.Choice = null if _awaiting_choice.is_empty() else _awaiting_choice[_awaiting_choice.size() - 1]
+
+    if _choice_page > 0:
+        var btn: Button = _get_option_buttion()
+        btn.text = "%s. < PREVIOUS <" % hot_key
+        btn.set_meta(_BTN_META_HOTKEY, hot_key)
+        btn.set_meta(_BTN_META_PAGE_NAV, PageNav.PREVIOUS)
+        if btn.connect(
+            "pressed",
+            func () -> void:
+                _handle_change_options_page(PageNav.PREVIOUS)
+                ,
+        ) != OK:
+            push_error("Failed to connect callback for pressing options nav %s" % hot_key)
+
+        _option_buttons.append(btn)
+        messages.add_child(btn)
+
+        if get_tree().create_timer(0.1).connect("timeout", _scroll_to_bottom) != OK:
+            pass
+
+        hot_key += 1
+
+    for choice: InkAdapter.Choice in page_choices:
         var btn: Button = _get_option_buttion()
         btn.text = "%s. %s" % [hot_key, choice.text.strip_edges()]
         btn.set_meta(_BTN_META_CHOICE, choice)
@@ -160,7 +221,34 @@ func _display_options() -> void:
         if !_fast_forward:
             await get_tree().create_timer(option_pause).timeout
 
+        if _listing_choices != ListingCoices.YES:
+            _listing_choices = ListingCoices.NO
+            return
+
         hot_key += 1
+
+    if _choice_page == 0 && page_choices.size() < _awaiting_choice.size() || _choice_page > 0 && !page_choices.has(last_choice):
+        var btn: Button = _get_option_buttion()
+        btn.text = "%s. > NEXT >" % hot_key
+        btn.set_meta(_BTN_META_HOTKEY, hot_key)
+        btn.set_meta(_BTN_META_PAGE_NAV, PageNav.NEXT)
+        if btn.connect(
+            "pressed",
+            func () -> void:
+                _handle_change_options_page(PageNav.NEXT)
+                ,
+        ) != OK:
+            push_error("Failed to connect callback for pressing options nav %s" % hot_key)
+
+        _option_buttons.append(btn)
+        messages.add_child(btn)
+
+        if get_tree().create_timer(0.1).connect("timeout", _scroll_to_bottom) != OK:
+            pass
+
+        hot_key += 1
+
+    _listing_choices = ListingCoices.NO
 
     print_debug("[CHAP] %s choices presented" % _awaiting_choice.size())
 

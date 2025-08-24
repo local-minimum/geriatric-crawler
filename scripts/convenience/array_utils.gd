@@ -75,3 +75,18 @@ static func first(arr: Array, predicate: Callable) -> Variant:
             return item
 
     return null
+
+## Returns page of array reducing page sizes to accomodate previous page and next page items as needed
+static func paginate_with_nav_reservation(arr: Array, page_idx: int, page_size: int) -> Array:
+    var size: int = arr.size()
+    print_debug("[ArrayUtils] %s size, page %s, page size %s" % [arr.size(), page_idx, page_size])
+    if size <= page_size:
+        return arr
+
+    if page_idx <= 0:
+        return arr.slice(0, page_size - 1)
+
+    var start: int = (page_size - 1) + (page_idx - 1) * (page_size - 2)
+    var end: int = start + page_size - 1 if size - start - 1 <= page_size else start + page_size - 2
+    print_debug("[ArrayUtils] %s size, items %s - %s " % [arr.size(), start, end])
+    return arr.slice(start, end)
