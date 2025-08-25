@@ -1,29 +1,21 @@
 extends Node3D
 class_name MovementPlanner
 
-@export
-var entity: GridEntity
+@export var entity: GridEntity
 
-@export
-var translation_time: float = 0.4
+@export var translation_time: float = 0.4
 
-@export
-var fall_time: float = 0.25
+@export var fall_time: float = 0.25
 
-@export
-var exotic_translation_time: float = 0.5
+@export var exotic_translation_time: float = 0.5
 
-@export
-var turn_time: float = 0.3
+@export var turn_time: float = 0.3
 
-@export
-var animation_speed: float = 1.0
+@export var animation_speed: float = 1.0
 
-@export
-var tank_movement: bool
+@export var tank_movement: bool
 
-@export
-var _refuse_distance_factor: float = 0.45
+@export var _refuse_distance_factor: float = 0.45
 
 const _UNHANDLED: int = 0
 const _HANDLED: int = 1

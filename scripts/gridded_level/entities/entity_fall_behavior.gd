@@ -1,11 +1,9 @@
 extends Node3D
 class_name EntityFallBehavior
 
-@export
-var entity: GridEntity
+@export var entity: GridEntity
 
-@export
-var delay_per_fall_move_msec: int = 20
+@export var delay_per_fall_move_msec: int = 20
 
 var next_fall: int = 0
 

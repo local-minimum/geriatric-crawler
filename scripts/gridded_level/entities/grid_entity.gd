@@ -30,42 +30,33 @@ var cinematic: bool:
         on_cinematic.emit(self, value)
         print_debug("%s is cinematic %s" % [name, cinematic])
 
-@export
-var look_direction: CardinalDirections.CardinalDirection:
+@export var look_direction: CardinalDirections.CardinalDirection:
     set(value):
         _old_look_direction = look_direction
         _emit_orientation = true
         look_direction = value
         delay_emit.call_deferred()
 
-@export
-var down: CardinalDirections.CardinalDirection = CardinalDirections.CardinalDirection.DOWN:
+@export var down: CardinalDirections.CardinalDirection = CardinalDirections.CardinalDirection.DOWN:
     set(value):
         _old_down = down
         _emit_orientation = true
         down = value
         delay_emit.call_deferred()
 
-@export
-var transportation_abilities: TransportationMode
+@export var transportation_abilities: TransportationMode
 
-@export
-var transportation_mode: TransportationMode
+@export var transportation_mode: TransportationMode
 
-@export
-var can_jump_off_walls: bool
+@export var can_jump_off_walls: bool
 
-@export
-var planner: MovementPlanner
+@export var planner: MovementPlanner
 
-@export
-var instant_step: bool
+@export var instant_step: bool
 
-@export
-var concurrent_turns: bool
+@export var concurrent_turns: bool
 
-@export
-var queue_moves: bool = true
+@export var queue_moves: bool = true
 
 var _active_movement: Movement.MovementType = Movement.MovementType.NONE
 var _concurrent_movement: Movement.MovementType = Movement.MovementType.NONE
