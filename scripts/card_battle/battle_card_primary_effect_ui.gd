@@ -62,13 +62,13 @@ func _mode_icon(mode: BattleCardPrimaryEffect.EffectMode) -> Texture:
 func _mode_icon_tooltip(mode: BattleCardPrimaryEffect.EffectMode) -> String:
     match mode:
         BattleCardPrimaryEffect.EffectMode.Damage:
-            return "Attack"
+            return tr("ATTACK")
         BattleCardPrimaryEffect.EffectMode.Defence:
-            return "Shield"
+            return tr("SHIELD")
         BattleCardPrimaryEffect.EffectMode.Heal:
-            return "Heal"
+            return tr("HEAL")
 
-    return ""
+    return tr("UNKOWN_ID").format({"type": tr("EFFECT"), "id": mode})
 
 func _target_type_icon(target_type: BattleCardPrimaryEffect.EffectTarget) -> Texture:
     match target_type:
@@ -91,17 +91,17 @@ func _target_type_icon(target_type: BattleCardPrimaryEffect.EffectTarget) -> Tex
 func _target_type_tooltip(target_type: BattleCardPrimaryEffect.EffectTarget) -> String:
     match target_type:
         BattleCardPrimaryEffect.EffectTarget.Self:
-            return "Self"
+            return tr("SELF")
         BattleCardPrimaryEffect.EffectTarget.Allies:
-            return "Ally"
+            return tr("ALLY")
         BattleCardPrimaryEffect.EffectTarget.Enemies:
-            return "Foe"
+            return tr("FOE")
         BattleCardPrimaryEffect.EffectTarget.AlliesAndEnemies:
-            return "Allies & foes"
+            return tr("A_AND_B").format({"a": tr("ALLIES"), "b": tr("FOES")})
         BattleCardPrimaryEffect.EffectTarget.SelfAndEnemies:
-            return "Self & foes"
+            return tr("A_AND_B").format({"a": tr("SELF"), "b": tr("FOES")})
 
-    return ""
+    return tr("UNKNOWN_ID").format({"type": tr("TARGET"), "id": target_type})
 
 func _bonus_icon(allows_bonus: bool, bonus: int) -> Texture:
     if !allows_bonus:
@@ -112,15 +112,15 @@ func _bonus_icon(allows_bonus: bool, bonus: int) -> Texture:
 
 func _bonus_icon_tooltip(allows_bonus: bool, bonus: int) -> String:
     if !allows_bonus:
-        return "Cannot produce bonus"
+        return tr("CANNOT_HAVE_BONUS")
     if bonus > 0:
-        return "Effect elevated by bonus"
-    return ""
+        return tr("HAS_BONUS")
+    return tr("NO_BONUS")
 
 func sync(effect: BattleCardPrimaryEffect, bonus: int) -> void:
     if effect == null:
         _mode.visible = false
-        _target_count.text = "Does noting"
+        _target_count.text = tr("DOES_NOTHING")
         _random_select.visible = false
         _target_type.visible = false
         _effect_magnitude.visible = false
@@ -134,7 +134,7 @@ func sync(effect: BattleCardPrimaryEffect, bonus: int) -> void:
     _target_count.text = BattleCardPrimaryEffect.target_range_text(effect.get_target_range())
 
     _random_select.visible = effect.targets_random()
-    _random_select.tooltip_text = "random targets"
+    _random_select.tooltip_text = tr("RANDOM_TARGETS")
 
     var target_type: BattleCardPrimaryEffect.EffectTarget = effect.target_type()
     _target_type.texture = _target_type_icon(target_type)
@@ -143,7 +143,7 @@ func sync(effect: BattleCardPrimaryEffect, bonus: int) -> void:
 
     var effect_range: Array[int] = effect.get_effect_range(bonus)
     var effect_range_text: String ="%s - %s" % effect_range if effect_range[0] != effect_range[1] else str(effect_range[0])
-    _effect_magnitude.text = "for %s" % effect_range_text
+    _effect_magnitude.text = tr("FOR_VALUE").format({"value": effect_range_text})
     _effect_magnitude.visible = true
 
     var allows_bonus: bool = effect.allows_crit(effect.targets_allies())
