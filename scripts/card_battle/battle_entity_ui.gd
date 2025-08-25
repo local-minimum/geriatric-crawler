@@ -1,17 +1,13 @@
 extends Control
 class_name BattleEntityUI
 
-@export
-var healthUI: Label
+@export var healthUI: Label
 
-@export
-var defenceUI: Label
+@export var defenceUI: Label
 
-@export
-var icon: TextureRect
+@export var icon: TextureRect
 
-@export
-var nameUI: Label
+@export var nameUI: Label
 
 @export_range(1, 2)
 var _target_scale: float
@@ -192,21 +188,21 @@ func _handle_defocus() -> void:
         nameUI.text = _entity.get_entity_name()
 
 func _handle_death(_battle_entity: BattleEntity) -> void:
-    healthUI.text = "XXX DEAD XXX"
+    healthUI.text = "XXX %s XXX" % tr("DEAD")
     await get_tree().create_timer(SHOW_CHANGE_TIME).timeout
 
     disconnect_entity(_battle_entity)
 
 func _handle_heal(_battle_entity: BattleEntity, amount: int, new_health: int, _overheal: bool) -> void:
     if amount > 0:
-        healthUI.text = "HEALING %s HP" % amount
+        healthUI.text = tr("HEALING_HP").format({"hp": amount}).to_upper()
         await get_tree().create_timer(SHOW_CHANGE_TIME).timeout
 
     _set_health(new_health)
 
 func _handle_hurt(_battle_entity: BattleEntity, amount: int, new_health: int) -> void:
     if amount > 0:
-        healthUI.text = "HURT %s HP" % amount
+        healthUI.text = tr("HURT_HP").format({"hp": amount}).to_upper()
         await get_tree().create_timer(SHOW_CHANGE_TIME).timeout
 
     _set_health(new_health)
@@ -243,27 +239,27 @@ func _set_health(health: int) -> void:
 
 func _handle_break_shield(_battle_entity: BattleEntity, shields: Array[int], broken_shield: int) -> void:
     if broken_shield > 0:
-        defenceUI.text = "BROKE %s⛨" % broken_shield
+        defenceUI.text = tr("BROKE").format({"amount": broken_shield}).to_upper()
         await get_tree().create_timer(SHOW_CHANGE_TIME).timeout
 
     _set_shield(shields)
 
 func _handle_gain_shield(_battle_entity: BattleEntity, shields: Array[int], new_shield: int) -> void:
     if new_shield > 0:
-        defenceUI.text = "SHIELDING %s⛨" % new_shield
+        defenceUI.text = tr("SHIELDING").format({"amount": new_shield})
         await get_tree().create_timer(SHOW_CHANGE_TIME).timeout
 
     _set_shield(shields)
 
 func _set_shield(shields: Array[int]) -> void:
     if shields.is_empty():
-        defenceUI.text = "DEF: EXPOSED"
+        defenceUI.text = "%: %" % [tr("DEFENCE_STAT"), tr("EXPOSED")]
         return
 
     var shields_text: Array  = shields.map(
         func (shield: int) -> String:
             return "%s⛨" % shield)
-    defenceUI.text = "DEF: %s" % " | ".join(shields_text)
+    defenceUI.text = "%s: %s" % [tr("DEFENCE_STAT"), " | ".join(shields_text)]
 
 func _gui_input(event: InputEvent) -> void:
     if !interactable:

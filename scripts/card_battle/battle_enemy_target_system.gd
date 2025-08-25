@@ -1,20 +1,15 @@
 extends Node
 class_name BattleEnemyTargetSystem
 
-@export
-var _kill_bonus: float = 2
+@export var _kill_bonus: float = 2
 
-@export_range(0, 1)
-var _hit_unhealthy: float = 0.7
+@export_range(0, 1) var _hit_unhealthy: float = 0.7
 
-@export_range(0, 1)
-var _hit_unshielded: float = 0.4
+@export_range(0, 1) var _hit_unshielded: float = 0.4
 
-@export_range(0, 1)
-var _prioritize_self: float = 0.6
+@export_range(0, 1) var _prioritize_self: float = 0.6
 
-@export
-var _self: BattleEnemy
+@export var _self: BattleEnemy
 
 func get_target_order(
     effect: BattleCardPrimaryEffect,

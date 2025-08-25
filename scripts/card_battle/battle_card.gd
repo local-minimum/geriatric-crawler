@@ -54,50 +54,24 @@ static var _hovered: BattleCard:
 
             _hovered = value
 
-@export
-var suite_icon: TextureRect
+@export var suite_icon: TextureRect
+@export var suite_electricity: Texture
+@export var suite_metal: Texture
+@export var suite_data: Texture
+@export var suite_electricity_metal: Texture
+@export var suite_metal_data: Texture
+@export var suite_data_electricity: Texture
+@export var suite_data_electricity_metal: Texture
 
-@export
-var suite_electricity: Texture
+@export var rank_label: Label
+@export var card_icon: TextureRect
+@export var title: Label
 
-@export
-var suite_metal: Texture
+@export var primary_effects: Array[BattleCardPrimaryEffectUI]
+@export var main_divider: Control
 
-@export
-var suite_data: Texture
-
-@export
-var suite_electricity_metal: Texture
-
-@export
-var suite_metal_data: Texture
-
-@export
-var suite_data_electricity: Texture
-
-@export
-var suite_data_electricity_metal: Texture
-
-@export
-var rank_label: Label
-
-@export
-var card_icon: TextureRect
-
-@export
-var title: Label
-
-@export
-var primary_effects: Array[BattleCardPrimaryEffectUI]
-
-@export
-var main_divider: Control
-
-@export
-var secondary_effects: Array[Label]
-
-@export
-var secondary_effects_dividers: Array[Control]
+@export var secondary_effects: Array[Label]
+@export var secondary_effects_dividers: Array[Control]
 
 var card_played: bool
 
@@ -188,12 +162,11 @@ func _get_primary_effect_text(effect: BattleCardPrimaryEffect, crit_multiplyer: 
     var target_type: String = effect.target_type_text()
     var effect_range_text: String ="%s - %s" % effect_range if effect_range[0] != effect_range[1] else str(effect_range[0])
 
-    return "%s %s %s for %s%s" % [
+    return "%s %s %s %s" % [
         mode,
         target_range,
         target_type,
-        effect_range_text,
-        "★" if can_crit else "",
+        tr("FOR_VALUE").format({"value": "%s%s" % [effect_range_text, "★" if can_crit else ""]}),
     ]
 
 var _may_drag: bool

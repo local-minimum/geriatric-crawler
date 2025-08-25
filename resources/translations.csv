@@ -56,3 +56,11 @@ NO_BONUS,Can be elevated by bonus,Kan förändras av bonus
 DOES_NOTHING,Does nothing,Har ingen effekt
 RANDOM_TARGETS,Ranom targets,Slumpvalda mål
 FOR_VALUE,for {value},för {värde}
+NO_ONE,no-one,ingen
+DEAD,dead,död
+HEALING_HP,healing {hp} hp,helar {hp} hp
+HURT_HP,hurt {hp} hp,skadar {hp} hp
+BREAK_SHIELD,broke {amount}⛨,bräckte {amount}⛨
+SHIELDING,shielding {amount}⛨,skyddar {amount}⛨
+DEFENCE_STAT,def,def
+EXPOSED,exposed,exponerad

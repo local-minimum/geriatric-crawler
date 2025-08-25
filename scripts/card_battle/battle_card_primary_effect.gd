@@ -4,8 +4,7 @@ class_name BattleCardPrimaryEffect
 enum EffectMode {Damage, Defence, Heal}
 enum EffectTarget {None, Self, Allies, Enemies, AlliesAndEnemies, SelfAndEnemies}
 
-@export
-var mode: EffectMode
+@export var mode: EffectMode
 
 static func humanize(effect_mode: EffectMode) -> String:
     match effect_mode:
@@ -15,7 +14,7 @@ static func humanize(effect_mode: EffectMode) -> String:
         _:
             push_error("%s not known mode" % effect_mode)
             print_stack()
-            return ""
+            return __GlobalGameState.tr("UNKNOWN_ID").format({"type": __GlobalGameState.tr("EFFECT"), "id": effect_mode})
 
 func mode_name() -> String: return humanize(mode)
 
@@ -133,24 +132,14 @@ func target_type_text() -> String:
             return "🧍" # "allies" if !single else "ally"
         elif enemies:
             return "👾" # "enemies" if !single else "enemy"
-        return "no-one"
+        return tr("NO_ONe")
 
 
-
-@export
-var min_effect: int
-
-@export
-var max_effect: int
-
-@export
-var effect_crit_base: int
-
-@export
-var crits_on_allies: bool = true
-
-@export
-var crits_on_enemies: bool = true
+@export var min_effect: int
+@export var max_effect: int
+@export var effect_crit_base: int
+@export var crits_on_allies: bool = true
+@export var crits_on_enemies: bool = true
 
 func can_crit() -> bool:
     return effect_crit_base != 0 && (crits_on_allies || crits_on_enemies)

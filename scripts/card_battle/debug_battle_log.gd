@@ -1,10 +1,8 @@
 extends Label
 
-@export
-var _hand: BattleHandManager
+@export var _hand: BattleHandManager
 
-@export
-var _show_messages: int = 10
+@export var _show_messages: int = 10
 
 func _ready() -> void:
     if _hand.on_hand_debug.connect(_add_message) != OK:
