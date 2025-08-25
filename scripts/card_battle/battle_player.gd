@@ -270,7 +270,7 @@ func use_robot(robot: Robot) -> void:
 
 
 func get_entity_name() -> String:
-    return "Simon Cyberdeck" if _robot == null else _robot.given_name
+    return tr("NO_ROBOT_NAME") if _robot == null else _robot.given_name
 
 func clean_up_round() -> void:
     _restore_card_size()
@@ -284,7 +284,7 @@ func clean_up_battle() -> void:
     super.clean_up_battle()
     var card: BattleCardData = _robot.remove_one_punishment_card()
     if card != null:
-        NotificationsManager.important("Inspiration", "Lost punishment card \"%s\"" % card.name)
+        NotificationsManager.important(tr("NOTICE_INSPIRATION"), tr("LOST_PUNISHMENT").format({"card": card.name}))
         PunishmentDeck.instance.return_card(card)
 
 func collect_save_data() -> Dictionary:

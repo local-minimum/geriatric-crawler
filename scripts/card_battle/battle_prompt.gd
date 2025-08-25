@@ -27,21 +27,21 @@ func _handle_leave_battle(entity: BattleEntity) -> void:
 
 func _name_target(target_type: BattleCardPrimaryEffect.EffectTarget, count: int) -> String:
     match  target_type:
-        BattleCardPrimaryEffect.EffectTarget.None: return "no-one"
-        BattleCardPrimaryEffect.EffectTarget.Self: return "self"
-        BattleCardPrimaryEffect.EffectTarget.Allies: return "ally" if count == 1 else "allies"
-        BattleCardPrimaryEffect.EffectTarget.Enemies: return "enemy" if count == 1 else "enemies"
-        BattleCardPrimaryEffect.EffectTarget.AlliesAndEnemies: return "entity" if count == 1 else "entities"
-        BattleCardPrimaryEffect.EffectTarget.SelfAndEnemies: return "self or enemy" if count == 1 else "self or enemies"
+        BattleCardPrimaryEffect.EffectTarget.None: return tr("NO_ONE")
+        BattleCardPrimaryEffect.EffectTarget.Self: return tr("SELF")
+        BattleCardPrimaryEffect.EffectTarget.Allies: return tr("ALLY") if count == 1 else tr("ALLIES")
+        BattleCardPrimaryEffect.EffectTarget.Enemies: return tr("ENEMY") if count == 1 else tr("ENEMIES")
+        BattleCardPrimaryEffect.EffectTarget.AlliesAndEnemies: return tr("ENTITY") if count == 1 else tr("ENTITIES")
+        BattleCardPrimaryEffect.EffectTarget.SelfAndEnemies: return tr("A_OR_B").format({"a": tr("SELF"), "b": tr("enemy")}) if count == 1 else tr("A_OR_B").format({"a": tr("SELF"), "b": tr("ENEMIES")})
 
     return "no-one"
 
 func _name_effect(effect: BattleCardPrimaryEffect.EffectMode) -> String:
     match effect:
-        BattleCardPrimaryEffect.EffectMode.Damage: return "attack"
-        BattleCardPrimaryEffect.EffectMode.Defence: return "shield"
-        BattleCardPrimaryEffect.EffectMode.Heal: return "heal"
-    return "perform unknown effect"
+        BattleCardPrimaryEffect.EffectMode.Damage: return tr("ATTACK")
+        BattleCardPrimaryEffect.EffectMode.Defence: return tr("SHIELD")
+        BattleCardPrimaryEffect.EffectMode.Heal: return tr("HEAL")
+    return tr("PERFORM_UNKNOWN_EFFECT")
 
 func _show_prompt(
     _player: BattlePlayer,
@@ -54,7 +54,11 @@ func _show_prompt(
         _hide_prompt(null)
         return
 
-    text = "Select %s %s to %s" % [count, _name_target(target_type, count), _name_effect(effect)]
+    text = tr("SELECT_TO_EFFECT").format({
+        "count": count,
+        "type": _name_target(target_type, count),
+        "effect": _name_effect(effect),
+    })
     visible = true
 
 func _hide_prompt(_target: BattleEntity) -> void:

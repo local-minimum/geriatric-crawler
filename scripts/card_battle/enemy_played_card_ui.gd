@@ -1,8 +1,7 @@
 extends Node
 class_name EnemyPlayedCardUI
 
-@export
-var battle: BattleMode
+@export var battle: BattleMode
 
 const _battle_card_resource: PackedScene = preload("res://scenes/battle_card.tscn")
 

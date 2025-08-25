@@ -1,22 +1,12 @@
 extends Button
 
-@export
-var _slots: BattleCardSlots
+@export var _slots: BattleCardSlots
 
-@export
-var _image: TextureRect
+@export var _image: TextureRect
 
-@export
-var _any_slotted_image: Texture
+@export var _any_slotted_image: Texture
 
-@export
-var _nothing_slotted_image: Texture
-
-@export
-var _any_slotted_tooltip: String = "Click when done slotting cards"
-
-@export
-var _nothing_slotted_tooltip: String = "Skip turn but get new hand"
+@export var _nothing_slotted_image: Texture
 
 func _ready() -> void:
     if _slots.on_update_slotted.connect(_handle_slotted_updated) != OK:
@@ -29,11 +19,11 @@ func _ready() -> void:
 func _handle_slotted_updated(cards: Array[BattleCard]) -> void:
     if cards.any(func (card: BattleCard) -> bool: return card != null):
         _image.texture = _any_slotted_image
-        tooltip_text = _any_slotted_tooltip
+        tooltip_text = tr("HAS_SLOTTED_TOOLTIP")
     else:
         _image.texture = _nothing_slotted_image
-        tooltip_text = _nothing_slotted_tooltip
+        tooltip_text = tr("SWAP_HAND_TOOLTIP")
 
 func _handle_nothing_slotted() -> void:
     _image.texture = _nothing_slotted_image
-    tooltip_text = _nothing_slotted_tooltip
+    tooltip_text = tr("SWAP_HAND_TOOLTIP")

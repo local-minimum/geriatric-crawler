@@ -25,6 +25,8 @@ ALLY,Ally,Vän
 ALLIES,Allies,Vänner
 ENEMY,Enemy,Fiende
 ENEMIES,Enemies,Fiender
+ENTITY,Entity,Entitet
+ENTITES,Entities,Entiteter
 FOE,Foe,Fiende
 FOES,Foes,Fiender
 OWNER,Owner,Ägare
@@ -45,10 +47,11 @@ EFFECT_ACCELERATED_DESC,"Keeping crit duplicates bonus, breaking causes negative
 EFFECT_SOLID_DESC,Crit multiplier cannot break due to this card,Crit bonusen kan inte brytas på grund av detta kort
 EFFECT_BREAKING_DESC,Forces crit multiplier to be set to negative,Tvingar crit bonusen att bli negativ
 EFFECT_IMPOSING_DESC,Secondary effects also trigger while card is in hand,Sekundär effekter triggar även när kortet är i hand
-ATTACK,Attack,Attack
-SHIELD,Shield,Sköld
-HEAL,Heal,Hälsa
+ATTACK,Attack,Attackera
+SHIELD,Shield,Skölda
+HEAL,Heal,Hela
 A_AND_B,{a} & {b},{a} & {b}
+A_OR_B,{a} or {b},{a} eller {b}
 TARGET,Target,Mottagare
 HAS_BONUS,Effect elevated by bonus,Effekt förhöjd av bonus
 CANNOT_HAVE_BONUS,Not effected by accumulated bonus,Inte påverkad av ackumulerad bonus
@@ -64,3 +67,10 @@ BREAK_SHIELD,broke {amount}⛨,bräckte {amount}⛨
 SHIELDING,shielding {amount}⛨,skyddar {amount}⛨
 DEFENCE_STAT,def,def
 EXPOSED,exposed,exponerad
+NO_ROBOT_NAME,Simon Cyberdeck,Simon Cyberdeck
+NOTICE_INSPIRATION,Inspiration,Inspiration
+LOST_PUNISHMENT,Lost punishment card \"{card}\",Förlorade straffkortet \"{card}\"
+PERFORM_UNKNOWN_EFFECT,perform unknown effect,utför okänd effekt
+SELECT_TO_EFFECT,Select {count} {type} to {effect},Välj {count} {type} att {effect}
+HAS_SLOTTED_TOOLTIP,Click when done slotting cards,Klicka när du valt klart dina kort
+SWAP_HAND_TOOLTIP,Skip turn and get new hand,Skippa din tur och få en ny hand

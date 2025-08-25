@@ -1,8 +1,7 @@
 extends BattleDeck
 class_name EnemyBattleDeck
 
-@export
-var _start_deck: Array[BattleCardData]
+@export var _start_deck: Array[BattleCardData]
 
 var _gained_cards: Array[BattleCardData]
 
