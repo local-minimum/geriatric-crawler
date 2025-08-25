@@ -20,3 +20,24 @@ PREVIOUS,previous,föregående
 NEXT,next,nästa
 DAY_WITH_NUMBER,1 day,1 dag
 DAYS_WITH_NUMBER,{days} days,{days} dagar
+SELF,Self/Player,Du själv/Spelaren
+ALLY,Ally,Vän
+ENEMY,Enemy,Fiende
+OWNER,Owner,Ägare
+UNKNOWN_ID,Unknown {type} ({id}),Okänd {type} ({id})
+SUITE,Suit,Färg
+SUIT_NONE,None,Ingen
+SUIT_ELECTRICITY,Electricity,Elektrisk
+SUIT_METAL,Metal,Metall
+SUIT_DATA,Data,Data
+EFFECT,Effect,Effect
+EFFECT_SUITED_UP,Suited Up,Infärgad
+EFFECT_ACCELERATED,Accelerated,Accelererad
+EFFECT_SOLID,Solid,Solid
+EFFECT_BREAKING,Breaking,Skör
+EFFECT_IMPOSING,Imposing,Imponerande
+EFFECT_SUITED_UP_DESC,Must be matching suits on both sides to not break bonus,Måste vara matchande färg på båda sidor för att inte bryta bonus
+EFFECT_ACCELERATED_DESC,"Keeping crit duplicates bonus, breaking causes negative bonus","Bevarad crit duplicerar bonusen, bruten crit ger negativ bonus"
+EFFECT_SOLID_DESC,Crit multiplier cannot break due to this card,Crit bonusen kan inte brytas på grund av detta kort
+EFFECT_BREAKING_DESC,Forces crit multiplier to be set to negative,Tvingar crit bonusen att bli negativ
+EFFECT_IMPOSING_DESC,Secondary effects also trigger while card is in hand,Sekundär effekter triggar även när kortet är i hand

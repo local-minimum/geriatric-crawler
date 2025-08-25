@@ -24,7 +24,7 @@ enum SecondaryEffect {
 
 static var _ALL_CARD: Dictionary[String, Dictionary] = {}
 
-static func _card_category_name(category: CardCategory, enemy_variant_id: String = "") -> String:
+static func _card_category_id(category: CardCategory, enemy_variant_id: String = "") -> String:
     match category:
         CardCategory.Player: return "player"
         CardCategory.Enemy:
@@ -46,7 +46,7 @@ static func _card_category_path(category: CardCategory, enemy_variant_id: String
         _: return "res://resources/other_cards"
 
 static func _load_cards_cateogry(category: CardCategory, enemy_id: String = "") -> void:
-    var key: String = _card_category_name(category, enemy_id)
+    var key: String = _card_category_id(category, enemy_id)
     var cards: Dictionary = _ALL_CARD.get(key, {})
 
     var dir_path: String = _card_category_path(category, enemy_id)
@@ -70,7 +70,7 @@ static func _load_cards_cateogry(category: CardCategory, enemy_id: String = "") 
     _ALL_CARD[key] = cards
 
 static func get_card_by_id(category: CardCategory, card_id: String, enemy_id: String = "") -> BattleCardData:
-    var key: String = _card_category_name(category, enemy_id)
+    var key: String = _card_category_id(category, enemy_id)
     if !_ALL_CARD.has(key):
         _load_cards_cateogry(category, enemy_id)
 
@@ -93,15 +93,14 @@ enum Owner { SELF, ALLY, ENEMY }
 static func name_owner(owner: Owner) -> String:
     match owner:
         Owner.SELF:
-            return "Self/Player"
+            return __GlobalGameState.tr("SELF")
         Owner.ALLY:
-            return "Ally"
+            return __GlobalGameState.tr("ALLY")
         Owner.ENEMY:
-            return "Enemy"
+            return __GlobalGameState.tr("ENEMY")
         _:
             push_error("Owner %s not handled" % owner)
-            return "Unknown (%s)" % owner
-
+            return __GlobalGameState.tr("UNKNOWN_ID").format({"type": __GlobalGameState.tr("OWNER"), "id": owner})
 
 @export var card_owner: Owner
 
@@ -137,14 +136,14 @@ func suit_names() -> Array[String]:
 
 static func suit_name(suit_flag: int) -> String:
     match suit_flag:
-        SUIT_NONE: return "None"
-        SUIT_ELECTRICITY: return "Electricity"
-        SUIT_METAL: return "Metal"
-        SUIT_DATA: return "Data"
+        SUIT_NONE: return __GlobalGameState.tr("SUIT_NONE")
+        SUIT_ELECTRICITY: return __GlobalGameState.tr("SUIT_ELECTRICTY")
+        SUIT_METAL: return __GlobalGameState.tr("SUITE_METAL")
+        SUIT_DATA: return __GlobalGameState.tr("SUIT_DATA")
         _:
             push_error("%s is not a battle card suite flag" % suit_flag)
             print_stack()
-            return ""
+            return __GlobalGameState.tr("UNKNOWN_ID").format({"type": __GlobalGameState.tr("SUIT"), "id": suit_flag})
 
 @export var icon: Texture
 
@@ -168,24 +167,24 @@ func secondary_effect_tooltips() -> Array[String]:
 
 static func secondary_effect_name(effect: SecondaryEffect) -> String:
     match effect:
-        SecondaryEffect.SUITED_UP: return "Suited Up"
-        SecondaryEffect.ACCELERATED: return "Accelerated"
-        SecondaryEffect.SOLID: return "Solid"
-        SecondaryEffect.BREAKING: return "Breaking"
-        SecondaryEffect.IMPOSING: return "Imposing"
+        SecondaryEffect.SUITED_UP: return __GlobalGameState.tr("EFFECT_SUITED_UP")
+        SecondaryEffect.ACCELERATED: return __GlobalGameState.tr("EFFECT_ACCELERATED")
+        SecondaryEffect.SOLID: return __GlobalGameState.tr("EFFECT_SOLID")
+        SecondaryEffect.BREAKING: return __GlobalGameState.tr("EFFECT_BREAKING")
+        SecondaryEffect.IMPOSING: return __GlobalGameState.tr("EFFECT_IMPOSING")
         _:
             push_error("%s doesn't have a name" % effect)
             print_stack()
-            return ""
+            return __GlobalGameState.tr("UNKNOWN_ID").format({"type": __GlobalGameState.tr("EFFECT"), "id": effect})
 
 static func secondary_effect_tooltip(effect: SecondaryEffect) -> String:
     match effect:
-        SecondaryEffect.SUITED_UP: return "Must be matching suits on both sides to not break bonus"
-        SecondaryEffect.ACCELERATED: return "Keeping crit duplicates bonus, breaking causes negative bonus"
-        SecondaryEffect.SOLID: return "Crit multiplier cannot break due to this card"
-        SecondaryEffect.BREAKING: return "Forces crit multiplier to be set to negative"
-        SecondaryEffect.IMPOSING: return "Secondary effects also trigger while card is in hand"
+        SecondaryEffect.SUITED_UP: return __GlobalGameState.tr("EFFECT_SUITED_UP_DESC")
+        SecondaryEffect.ACCELERATED: return __GlobalGameState.tr("EFFECT_ACCELERATED_DESC")
+        SecondaryEffect.SOLID: return __GlobalGameState.tr("EFFECT_SOLID_DESC")
+        SecondaryEffect.BREAKING: return __GlobalGameState.tr("EFFECT_BREAKING_DESC")
+        SecondaryEffect.IMPOSING: return __GlobalGameState.tr("EFFECT_IMPOSING_DESC")
         _:
             push_error("%s doesn't have a name" % effect)
             print_stack()
-            return ""
+            return __GlobalGameState.tr("UNKNOWN_ID").format({"type": __GlobalGameState.tr("EFFECT"), "id": effect})
