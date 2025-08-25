@@ -1,8 +1,7 @@
 extends Control
 class_name InspectBattleDeckUI
 
-@export
-var cards_root: Control
+@export var cards_root: Control
 
 const _inspect_card_resource: PackedScene = preload("res://scenes/ui/inspect_card_ui.tscn")
 

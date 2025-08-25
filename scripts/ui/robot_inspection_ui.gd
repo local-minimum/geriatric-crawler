@@ -1,50 +1,35 @@
 extends CanvasLayer
 class_name RobotInspectionUI
 
-@export
-var _name_label: Label
+@export var _name_label: Label
+@export var _model_label: Label
+@export var _health_label: Label
+@export var _credits_label: Label
 
-@export
-var _model_label: Label
+@export var _tab_bar: TabBar
 
-@export
-var _health_label: Label
+@export var _tabs: Array[Control]
 
-@export
-var _credits_label: Label
+@export var _active_skills_parent: Control
 
-@export
-var _tab_bar: TabBar
+@export var _inspect_deck: InspectBattleDeckUI
 
-@export
-var _tabs: Array[Control]
+@export var _robot_skill_tree: RobotSkillTreeUI
 
-@export
-var _active_skills_parent: Control
-
-@export
-var _inspect_deck: InspectBattleDeckUI
-
-@export
-var _robot_skill_tree: RobotSkillTreeUI
-
-@export
-var _exploration_inventory: ExplorationInventoryUI
-
-@export
-var _exploration_keys: ExplorationKeysUI
+@export var _exploration_inventory: ExplorationInventoryUI
+@export var _exploration_keys: ExplorationKeysUI
 
 func _ready() -> void:
     visible = false
 
 func inspect(robot: Robot, battle_player: BattlePlayer, credits: int) -> void:
     _name_label.text = robot.given_name
-    _model_label.text = "Model: %s" % robot.model.model_name
+    _model_label.text = "%s: %s" % [tr("MODEL"), robot.model.model_name]
 
     if battle_player.is_alive():
-        _health_label.text = "%s/%s HP" % [battle_player.get_health(), battle_player.max_health]
+        _health_label.text = "%s/%s %s" % [battle_player.get_health(), battle_player.max_health, tr("HEALTH_POINTS")]
     else:
-        _health_label.text = "DISEASED"
+        _health_label.text = tr("DISEASED").to_upper()
 
     _credits_label.text = "₳%s" % credits
 

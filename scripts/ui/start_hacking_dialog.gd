@@ -108,7 +108,7 @@ func _on_confirmed() -> void:
 func _on_deploy_proxy_button_pressed() -> void:
     var inventory: Inventory = Inventory.active_inventory
     if inventory.remove_from_inventory(HackingGame.ITEM_HACKING_PROXY, 1.0) != 1.0:
-        NotificationsManager.warn("Proxy", "Failed to deploy proxy")
+        NotificationsManager.warn(tr("NOTICE_HACKING_PROXY"), tr("HACKING_PROXY_FAILED_DEPLOY"))
         _sync()
         return
 
@@ -116,4 +116,4 @@ func _on_deploy_proxy_button_pressed() -> void:
     _on_change_danger.call(_danger)
     _sync()
 
-    NotificationsManager.info("Proxy", "Successfully deployed")
+    NotificationsManager.info(tr("NOTICE_HACKING_PROXY"), tr("HACKING_PROXY_DEPLOYED"))

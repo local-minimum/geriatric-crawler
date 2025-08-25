@@ -1,12 +1,12 @@
 class_name HackingGameUIBuilder
 
-static func get_shift_button(parent: Container, direction: String, tex: Texture) -> Button:
+static func get_shift_button(parent: Container, localized_direction: String, tex: Texture) -> Button:
     var container: Container = get_empty_container()
     var btn: Button = Button.new()
     btn.icon = tex
     btn.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
     btn.expand_icon = true
-    btn.tooltip_text = "Shift codes %s" % direction
+    btn.tooltip_text = __GlobalGameState.tr("SHIFT_CODES").format({"direction": localized_direction.to_lower()})
     size_playing_field_item(btn)
 
     container.add_child(btn)

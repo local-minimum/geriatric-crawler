@@ -1,14 +1,11 @@
 extends Control
 class_name RobotSkillLevelUI
 
-@export
-var _fights: RobotSkillLevelFightsUI
+@export var _fights: RobotSkillLevelFightsUI
 
-@export
-var _level_title: Label
+@export var _level_title: Label
 
-@export
-var _skills: Array[RobotSkillUI]
+@export var _skills: Array[RobotSkillUI]
 
 func sync(
     level: int,
@@ -21,7 +18,7 @@ func sync(
     available_slots: int,
 ) -> void:
     _fights.sync(completed_fights, total_fights)
-    _level_title.text = "TIER %s" % IntUtils.to_roman(level)
+    _level_title.text = tr("TIER_COUNT").format({"level": IntUtils.to_roman(level)})
 
     var bought_for_level: bool = !selected_abilities.is_empty()
     var ready_to_buy: bool = completed_fights >= total_fights && available_slots > 0 && (!bought_for_level || can_buy_multiple)

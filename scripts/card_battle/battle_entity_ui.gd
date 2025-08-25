@@ -195,14 +195,14 @@ func _handle_death(_battle_entity: BattleEntity) -> void:
 
 func _handle_heal(_battle_entity: BattleEntity, amount: int, new_health: int, _overheal: bool) -> void:
     if amount > 0:
-        healthUI.text = tr("HEALING_HP").format({"hp": amount}).to_upper()
+        healthUI.text = tr("HEALING_HP").format({"hp": tr("HEALTH_POINTS"), "count":  amount}).to_upper()
         await get_tree().create_timer(SHOW_CHANGE_TIME).timeout
 
     _set_health(new_health)
 
 func _handle_hurt(_battle_entity: BattleEntity, amount: int, new_health: int) -> void:
     if amount > 0:
-        healthUI.text = tr("HURT_HP").format({"hp": amount}).to_upper()
+        healthUI.text = tr("HURT_HP").format({"hp": tr("HEALTH_POINTS"), "count": amount}).to_upper()
         await get_tree().create_timer(SHOW_CHANGE_TIME).timeout
 
     _set_health(new_health)

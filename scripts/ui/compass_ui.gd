@@ -1,26 +1,18 @@
 extends Control
 class_name CompassUI
 
-@export
-var exploration_ui: ExplorationUI
+@export var exploration_ui: ExplorationUI
+@export var cardinal_north: Control
+@export var cardinal_south: Control
+@export var cardinal_west: Control
+@export var cardinal_east: Control
+@export var cardinal_up: Control
+@export var cardinal_down: Control
 
-@export
-var cardinal_north: Control
+@export var _animation_duration: float = 0.3
 
-@export
-var cardinal_south: Control
-
-@export
-var cardinal_west: Control
-
-@export
-var cardinal_east: Control
-
-@export
-var cardinal_up: Control
-
-@export
-var cardinal_down: Control
+@export var _vertical_label_offset: float = -14
+@export var _horizontal_label_offset: float = -10
 
 func _ready() -> void:
     if exploration_ui.level.on_change_player.connect(_handle_new_player) != OK:
@@ -86,9 +78,6 @@ func _sync_robot(player: GridPlayer, robot: Robot) -> void:
             continue
 
         _get_cardinal(direction).global_position = up_coords
-
-@export
-var _animation_duration: float = 0.3
 
 func _animate_roll_rotation(
     old_down: CardinalDirections.CardinalDirection,
@@ -211,11 +200,6 @@ func _get_cardinal(direction: CardinalDirections.CardinalDirection) -> Control:
     return null
 
 enum CompassCardinalLabelPosition {FAR_LEFT, LEFT, MID, RIGHT, FAR_RIGHT, UP, DOWN, RIGHT_UP, RIGHT_DOWN, LEFT_UP, LEFT_DOWN}
-
-@export
-var _vertical_label_offset: float = -14
-@export
-var _horizontal_label_offset: float = -10
 
 func _get_coordinates(label_position: CompassCardinalLabelPosition) -> Vector2:
     var rect: Rect2 = get_global_rect()

@@ -1,8 +1,7 @@
 extends Panel
 class_name  ExplorationUI
 
-@export
-var exploration_view: ExplorationView
+@export var exploration_view: ExplorationView
 
 var level: GridLevel:
     get():
@@ -10,11 +9,9 @@ var level: GridLevel:
             level = GridLevel.active_level
         return level
 
-@export
-var battle: BattleMode
+@export var battle: BattleMode
 
-@export
-var inspect_robot_ui: RobotInspectionUI
+@export var inspect_robot_ui: RobotInspectionUI
 
 func _ready() -> void:
     level = GridLevel.active_level

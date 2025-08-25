@@ -11,22 +11,22 @@ enum Danger { LOW, SLIGHT, DEFAULT, SEVERE }
 
 static func item_id_to_text(id: String) -> String:
     match id:
-        ITEM_HACKING_BOMB: return "Logical Bombs"
-        ITEM_HACKING_WORM: return "Worms"
-        ITEM_HACKING_PROXY: return "Proxies"
+        ITEM_HACKING_BOMB: return __GlobalGameState.tr("HACKING_BOMBS")
+        ITEM_HACKING_WORM: return __GlobalGameState.tr("HACKING_WORMS")
+        ITEM_HACKING_PROXY: return __GlobalGameState.tr("HACKING_PROXIES")
         _:
             push_warning("%s is not a known hacking item id" % id)
-            return ""
+            return __GlobalGameState.tr("HACKING_UNKNOWN")
 
 static func danger_to_text(danger: Danger) -> String:
     match danger:
-        Danger.LOW: return "Failing is as safe as it gets"
-        Danger.SLIGHT: return "Failure most likely prompt some reaction"
-        Danger.DEFAULT: return "Failure will have consequences"
-        Danger.SEVERE: return "The fallout of failing will be severe"
+        Danger.LOW: return __GlobalGameState.tr("HACKING_RISK_LOW")
+        Danger.SLIGHT: return __GlobalGameState.tr("HACKING_RISK_SLIGHT")
+        Danger.DEFAULT: return __GlobalGameState.tr("HACKING_RISK_DEFAULT")
+        Danger.SEVERE: return __GlobalGameState.tr("HACKING_RISK_SEVERE")
         _:
             push_error("%s is not a handled danger level" % danger)
-            return "Unknown risk of consequences"
+            return __GlobalGameState.tr("HACKING_RISK_UNKNOWN")
 
 static func decrease_danger(danger: Danger) -> Danger:
     match danger:
@@ -666,7 +666,7 @@ func bomb_coords(coords: Array[Vector2i]) -> void:
             if !Inventory.active_inventory.add_to_inventory(HackingGame.ITEM_HACKING_BOMB, 1.0, false):
                 push_warning("Could not regain bomb")
             else:
-                NotificationsManager.important(skill.skill_name, "Bomb refunded")
+                NotificationsManager.important(skill.skill_name, tr("HACKING_BOMB_REFUNDED"))
 
     on_board_changed.emit()
 

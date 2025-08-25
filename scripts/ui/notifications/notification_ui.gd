@@ -1,23 +1,17 @@
 extends Control
 class_name NotificationUI
 
-@export
-var _background: Control
+@export var _background: Control
 
-@export
-var _info_color: Color
+@export var _info_color: Color
 
-@export
-var _important_color: Color
+@export var _important_color: Color
 
-@export
-var _warning_color: Color
+@export var _warning_color: Color
 
-@export
-var title: RichTextLabel
+@export var title: RichTextLabel
 
-@export
-var close_button: Button
+@export var close_button: Button
 
 var message_id: String
 

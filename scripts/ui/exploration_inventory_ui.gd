@@ -1,8 +1,7 @@
 extends Node
 class_name ExplorationInventoryUI
 
-@export
-var _chained_boxes: ChainedVBoxes
+@export var _chained_boxes: ChainedVBoxes
 
 var _previous_labels: Array[Control]
 

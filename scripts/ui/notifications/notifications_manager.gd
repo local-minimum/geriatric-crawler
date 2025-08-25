@@ -12,14 +12,11 @@ static var _queue: Array[NotificationData]
 
 enum NotificationType { INFO, IMPORTANT, WARNING }
 
-@export_range(1, 20)
-var max_concurrent_messages: int = 5
+@export_range(1, 20) var max_concurrent_messages: int = 5
 
-@export
-var _min_time_between_messages: float = 300
+@export var _min_time_between_messages: float = 300
 
-@export
-var _min_time_visible_message: float = 400
+@export var _min_time_visible_message: float = 400
 
 static var _waiting_callbacks: Array[Callable] = []
 
@@ -62,8 +59,7 @@ static func force_remove_message(id: String) -> bool:
 
     return active_manager._force_remove_message_by_id(id)
 
-@export
-var inherit_queue: bool
+@export var inherit_queue: bool
 
 class NotificationData:
     var id: String

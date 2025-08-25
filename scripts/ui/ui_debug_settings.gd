@@ -140,4 +140,4 @@ func _on_handedness_toggled(toggled_on:bool) -> void:
 
 func _on_reset_tutorials_pressed() -> void:
     settings.tutorial.reset_all_tutorials()
-    NotificationsManager.info("Tutorials", "All tutorials reset")
+    NotificationsManager.info(__GlobalGameState.tr("NOTICE_SETTINGS"), __GlobalGameState.tr("TUTORIALS_RESET"))

@@ -1,41 +1,24 @@
 extends Control
 class_name SonarUI
 
-@export
-var sonar_root: Control
+@export var sonar_root: Control
+@export var sonar_label: Label
 
-@export
-var sonar_label: Label
+@export var exploration_ui: ExplorationUI
 
-@export
-var exploration_ui: ExplorationUI
+@export_range(4, 128) var bars: int = 12
+@export_range(0, 20) var bar_width: float = 1
 
-@export_range(4, 128)
-var bars: int = 12
+@export var bar_color: Color
 
-@export_range(0, 20)
-var bar_width: float = 1
+@export_range(0, 10) var detection_range: int = 5
 
-@export
-var bar_color: Color
+@export var update_frequency_msec: int = 200
 
-@export_range(0, 10)
-var detection_range: int = 5
-
-@export
-var update_frequency_msec: int = 200
-
-@export_range(0, 20)
-var signal_bar_progress: float = 5
-
-@export_range(0, 20)
-var look_direction_signal_bar_progress: float = 11
-
-@export_range(0, 1)
-var signal_speed: float = 0.001
-
-@export_range(0, 1)
-var look_direction_signal_speed: float = 0.03
+@export_range(0, 20) var signal_bar_progress: float = 5
+@export_range(0, 20) var look_direction_signal_bar_progress: float = 11
+@export_range(0, 1) var signal_speed: float = 0.001
+@export_range(0, 1) var look_direction_signal_speed: float = 0.03
 
 var _astar: AStar3D
 var _astar_lookup: Dictionary[Vector3i, int]

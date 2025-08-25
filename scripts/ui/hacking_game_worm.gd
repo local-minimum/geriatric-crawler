@@ -24,8 +24,6 @@ class_name HackingGameWorm
 const WORM_TICK_FREQ: int = 500
 const WORM_SPEEDUP: int = 10
 const WORM_MAX_SPEED: int = 80
-const DEPLOY_WORM_TEXT: String = "Deploy Worm"
-const CANCEL_WORM_TEXT: String = "Recall Worm"
 const _HACKING_TUTORIAL_WORM_KEY: String = "hacking.worms"
 
 var _worming: bool
@@ -83,7 +81,7 @@ func reset_phase() -> void:
     _worming_countdown.hide()
 
 func reset_deploy_button_text() -> void:
-    _deploy_worm_button.text = DEPLOY_WORM_TEXT
+    _deploy_worm_button.text = tr("DEPLOY_WORM")
 
 func _calculate_worm_speed() -> int:
     return maxi(WORM_MAX_SPEED, WORM_TICK_FREQ - worm_ticks * WORM_SPEEDUP)
@@ -206,7 +204,7 @@ func _clear_drawn_worm() -> void:
 func _cancel_worm() -> void:
     _worming = false
     game_ui.toggle_shift_buttons(false)
-    _deploy_worm_button.text = DEPLOY_WORM_TEXT
+    _deploy_worm_button.text = tr("DEPLOY_WORM")
     _worming_navigation_container.hide()
     _worming_countdown.hide()
 
@@ -221,7 +219,7 @@ func _ready_worm() -> void:
     _worming = true
     game_ui.toggle_shift_buttons(true)
     game_ui.set_worm_phase()
-    _deploy_worm_button.text = CANCEL_WORM_TEXT
+    _deploy_worm_button.text = tr("CANCEL_WORM")
     _worming_navigation_container.show()
     _worming_direction = Vector2i.LEFT
     @warning_ignore_start("integer_division")

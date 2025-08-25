@@ -2,17 +2,10 @@ extends Control
 class_name MapControlsUI
 
 
-@export
-var mode_2d_button: Button
-
-@export
-var mode_3d_button: Button
-
-@export
-var zoom_in_button: Button
-
-@export
-var zoom_out_button: Button
+@export var mode_2d_button: Button
+@export var mode_3d_button: Button
+@export var zoom_in_button: Button
+@export var zoom_out_button: Button
 
 var _mapper: RobotExplorationMapper
 

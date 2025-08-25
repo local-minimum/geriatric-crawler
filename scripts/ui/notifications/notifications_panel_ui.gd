@@ -1,11 +1,9 @@
 extends Control
 class_name NotificationsPanelUI
 
-@export_range(0, 2)
-var _tween_notifiction_duration: float = 0.3
+@export_range(0, 2) var _tween_notifiction_duration: float = 0.3
 
-@export_range(0, 2)
-var _tween_offset_width_factor: float = 1.2
+@export_range(0, 2) var _tween_offset_width_factor: float = 1.2
 
 var _notification: PackedScene = preload("res://scenes/ui/notification.tscn")
 

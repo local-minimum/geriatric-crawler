@@ -1,41 +1,21 @@
 extends Control
 class_name SimpleMapUI
 
-@export
-var line_color: Color
+@export var line_color: Color
+@export var player_color: Color
+@export var ground_color: Color
+@export var no_floor_color: Color
+@export var feature_color: Color
+@export var illusion_color: Color
+@export var wall_color: Color
 
-@export
-var player_color: Color
+@export var exploration_ui: ExplorationUI
 
-@export
-var ground_color: Color
+@export var cell_padding: float = 1
+@export var player_marker_padding: float = 4
 
-@export
-var no_floor_color: Color
-
-@export
-var feature_color: Color
-
-@export
-var illusion_color: Color
-
-@export
-var wall_color: Color
-
-@export
-var exploration_ui: ExplorationUI
-
-@export
-var cell_padding: float = 1
-
-@export
-var player_marker_padding: float = 4
-
-@export_range(4, 20)
-var wanted_columns: int = 10
-
-@export_range(4, 20)
-var wanted_rows: int = 8
+@export_range(4, 20) var wanted_columns: int = 10
+@export_range(4, 20) var wanted_rows: int = 8
 
 var _player: GridPlayer
 var _seen: Array[Vector3i]

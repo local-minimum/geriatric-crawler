@@ -1,8 +1,7 @@
 extends Node
 class_name SaveVersionMigration
 
-@export
-var applies_from: Version
+@export var applies_from: Version
 
 func applicable(save_version: Version) -> bool:
     return applies_from.higher(save_version)

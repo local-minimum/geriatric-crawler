@@ -1,20 +1,15 @@
 extends Control
 class_name ExplorationRobotUI
 
-@export
-var _exploration_ui: ExplorationUI
+@export var _exploration_ui: ExplorationUI
 
-@export
-var _name_label: Label
+@export var _name_label: Label
 
-@export
-var _model_label: Label
+@export var _model_label: Label
 
-@export
-var _health_label: Label
+@export var _health_label: Label
 
-@export
-var _level_label: Label
+@export var _level_label: Label
 
 func _ready() -> void:
     if _exploration_ui.level.on_change_player.connect(_handle_new_player) != OK:
@@ -81,33 +76,33 @@ func _sync_robot(robot: Robot, battle_player: BattlePlayer) -> void:
 
     if battle_player == null:
         push_warning("Assuming full health because battle player not set")
-        _health_label.text = "%s/%s HP" % [robot.model.max_hp, robot.model.max_hp]
+        _health_label.text = "%s/%s %s" % [robot.model.max_hp, robot.model.max_hp, tr("HEALTH_POINTS")]
     else:
         _sync_health(battle_player)
 
 func _sync_level(robot: Robot) -> void:
     if robot.must_upgrade():
-        _level_label.text = "UPGRADE!"
+        _level_label.text = "%s!" % tr("UPGRADE").to_upper()
         return
 
     if robot.fully_upgraded():
-        _level_label.text = "MAXED OUT"
+        _level_label.text = "%s!" % tr("MAXED_OUT").to_upper()
         return
 
     var slots: int = robot.available_upgrade_slots()
     if slots == 0:
-        _level_label.text ="%s UNTIL SLOT" % robot.get_fights_required_to_level()
+        _level_label.text = tr("FIGHTS_UNTIL_SLOTS").format({"count": robot.get_fights_required_to_level()})
     else:
-        _level_label.text ="%s SLOTS (%s UNTIL NEXT)" % [slots, robot.get_fights_required_to_level()]
+        _level_label.text = tr("SLOTS_AND_COUNTDOWN").format({"slots": slots, "count": robot.get_fights_required_to_level()})
 
 func _sync_health(battle_player: BattleEntity) -> void:
     if battle_player == null:
         return
 
     if battle_player.is_alive():
-        _health_label.text = "%s/%s HP" % [battle_player.get_health(), battle_player.max_health]
+        _health_label.text = "%s/%s %s" % [battle_player.get_health(), battle_player.max_health, tr("HEALTH_POINTS")]
     else:
-        _health_label.text = "DISEASED"
+        _health_label.text = tr("DISEASED").to_upper()
 
 func _handle_on_heal(entity: BattleEntity, _amount: int, _new_health: int, _overheal: bool) -> void:
     _sync_health(entity)

@@ -3,8 +3,7 @@ class_name FaderUI
 
 enum FadeTarget { EXPLORATION_VIEW }
 
-@export
-var target: FadeTarget = FadeTarget.EXPLORATION_VIEW
+@export var target: FadeTarget = FadeTarget.EXPLORATION_VIEW
 
 static func name_target(fade_target: FadeTarget) -> String:
     match fade_target:
@@ -13,20 +12,15 @@ static func name_target(fade_target: FadeTarget) -> String:
             push_warning("Unknown target %s" % name_target)
             return "Unknown Target"
 
-@export
-var ease_duration: float = 0.4
+@export var ease_duration: float = 0.4
 
-@export
-var faded_duration: float = 0.1
+@export var faded_duration: float = 0.1
 
-@export
-var color_rect: ColorRect
+@export var color_rect: ColorRect
 
-@export
-var solid_color: Color
+@export var solid_color: Color
 
-@export
-var transparent_color: Color
+@export var transparent_color: Color
 
 static var _faders: Dictionary[FadeTarget, FaderUI] = {}
 

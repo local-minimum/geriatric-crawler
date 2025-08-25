@@ -61,8 +61,9 @@ RANDOM_TARGETS,Ranom targets,Slumpvalda mål
 FOR_VALUE,for {value},för {värde}
 NO_ONE,no-one,ingen
 DEAD,dead,död
-HEALING_HP,healing {hp} hp,helar {hp} hp
-HURT_HP,hurt {hp} hp,skadar {hp} hp
+HEALTH_POINTS,hp,hp
+HEALING_HP,healing {count} {hp},helar {count} {hp}
+HURT_HP,hurt {hp} {count},skadar {count} {hp}
 BREAK_SHIELD,broke {amount}⛨,bräckte {amount}⛨
 SHIELDING,shielding {amount}⛨,skyddar {amount}⛨
 DEFENCE_STAT,def,def
@@ -99,6 +100,8 @@ CARDINAL_WEST,West,Väst
 CARDINAL_EAST,East,Öst
 CARDINAL_UP,Up,Upp
 CARDINAL_DOWN,Down,Ner
+LEFT,left,vänster
+RIGHT,right,höger
 NOTICE_KEYRING,Key ring,Nyckelknippa
 GAINED_KEY_COUNT,Gained {count} {key},Plocka upp {count} {key}
 GAINED_NEW_KEY_COUNT,Gained new key \"{key}\" ({count}),Plocka upp ny nyckel \"{key}\" ({count})
@@ -120,3 +123,33 @@ TRANSPORTATION_MODE_CEILING_WALKING,Ceiling Walking,Takgång
 TRANSPORTATION_MODE_SQUEEZING,Squeezing,Trängande igenom
 TRANSPORTATION_MODE_SWIMMING,Swimming,Simmande
 TRANSPORTATION_MODE_UNKNOWN,Unknown,Okänt
+UPGRADE,upgrade,uppgradera
+MAXED_OUT,maxed out,maxad
+FIGHTS_UNTIL_SLOT,{count} until slot,{count} tills slot
+SLOTS_AND_COUNTDOWN,{slots} slots ({count} until next),{slots} slots ({count} till nästa)
+DISEASED,diseased,avliden
+SHIFT_CODES,Shift codes {direction},Skifta koder {direction}
+DEPLOY_WORM,Deploy Worm,Sänd ut worm
+RECALL_WORM,Recall Worm,Återkalla worm
+HACKING_WORMS,Worms,Worms
+HACKING_BOMBS,Logical Bombs,Logiska Bomber
+HACKING_BOMB_REFUNDED,Bomb refunded,Bomb återgäldad
+HACKING_PROXIES,Proxies,Proxies
+NOTICE_HACKING_PROXY,Proxy,Proxy
+HACKING_PROXY_DEPLOYED,Successfully deployed,Framgångsrikt utsänd
+HACKING_PROXY_FAILED_DEPLOY,Failed to deploy,Upprättandet misslyckat
+HACKING_UNKNOWN,Unknown,Okänd
+HACKING_RISK_LOW,Failing is as safe as it gets,Misslyckande är så ofarligt som det kan bli
+HACKING_RISK_SLIGHT,Failure most likely prompts some reaction,Nederlag kommer troligtvis orsaka reakion
+HACKING_RISK_DEFAULT,Failure will have consequences,Nederlag kommer ha konsekvenser
+HACKING_RISK_SEVERE,The fallout of failing will be severe,Utfallet av misslyckande kommer vara drastiskt
+HACKING_RISK_UNKNOWN,Unknown risk of consequences when failing,Okänd risk för konsekvenser vid nederlag
+ON_CARD,1 card,1 kort
+CARD_COUNT,{count} cards,{count} kort
+MODEL,Model,Model
+TIER_COUNT,Tier {level},Nivå {level}
+BUY_COST,Buy {cost},Köp {cost}
+ACTIVE,Active,Aktiv
+NOT_ACTIVE,Not active,Inte aktiv
+NOTICE_SETTINGS,Settings,Inställningar
+TUTORIALS_RESET,All tutorials reset,All handledning nollställd

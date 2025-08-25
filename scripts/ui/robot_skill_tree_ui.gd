@@ -1,8 +1,7 @@
 extends Control
 class_name RobotSkillTreeUI
 
-@export
-var _levels: Array[RobotSkillLevelUI]
+@export var _levels: Array[RobotSkillLevelUI]
 
 func sync(robot: Robot, credits: int) -> void:
     var ability_lvl: int = robot.get_skill_level(RobotAbility.SKILL_UPGRADES)

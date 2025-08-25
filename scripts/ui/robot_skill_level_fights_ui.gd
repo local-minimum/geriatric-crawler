@@ -1,17 +1,13 @@
 extends Control
 class_name RobotSkillLevelFightsUI
 
-@export
-var _fight_rects: Array[TextureRect]
+@export var _fight_rects: Array[TextureRect]
 
-@export
-var _completed_tex: Texture
+@export var _completed_tex: Texture
 
-@export
-var _remaining_tex: Texture
+@export var _remaining_tex: Texture
 
-@export
-var _na_tex: Texture
+@export var _na_tex: Texture
 
 func sync(completed: int, total: int) -> void:
     for idx: int in range(_fight_rects.size()):

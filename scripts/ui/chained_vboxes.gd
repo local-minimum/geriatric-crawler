@@ -3,11 +3,9 @@ class_name ChainedVBoxes
 
 enum _Check { NOTHING, GROWTH, SHRINKAGE, HAS_SPACE, STAYS }
 
-@export
-var _boxes: Array[VBoxContainer]
+@export var _boxes: Array[VBoxContainer]
 
-@export
-var _static_child_height: bool
+@export var _static_child_height: bool
 
 var _check: Dictionary[VBoxContainer, _Check]
 
