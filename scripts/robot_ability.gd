@@ -22,6 +22,15 @@ const SKILL_BYPASS: String = "bypass"
 ## LVL 1: Minimum tools
 const SKILL_HACKING_BOMBS: String = "hacking-bombs"
 
+## Handsize is level + 4
+const SKILL_HAND_SIZE: String = "hand"
+
+## LVL 1 Bonus stays to next round, LVL 2: Last card remembered to next round, LVL 3: Also remembers to next battle
+const SKILL_HAND_MEMORY: String = "memory"
+
+## Cards to slot is level + 1
+const SKILL_HAND_SLOTS: String = "slots"
+
 enum AbilityType { Exploration, Battle, Other }
 
 ## Class id of the ability (doesn't include the level of the ability)

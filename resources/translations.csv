@@ -11,6 +11,7 @@ BROOM_CLOSET,Broom Closet,Städskrubb
 CHAP_LONG,Customer Happiness Assistant Program,Kund Nöjdhets Uppmuntrings Tjänare
 CREDIT,Credit,Kredit
 LOANS,Loans,Debit
+TOOK_OUT_LOAN_AMOUNT,Loaned {amount},Lånade {amount}
 DEBIT,Debit,Lån
 INTEREST_WITH_RATE,Interest {rate},Ränta {rate}
 RENT,Rent,Hyra
@@ -84,6 +85,7 @@ MISSING_ITEM,Missing {item},Saknar {item}
 NOTICE_DOOR_BYPASS,Door bypass,Dörr hackad
 INSUFFICIENT_LEVEL,Insufficient skill level to attempt,Färdighet inte tillräcklig för att försöka
 NOTICE_DOOR_UNLOCKED,Door unlocked,Dörr upplåst
+GAINED_ITEM,Gained {item},Mottog {item}
 LOST_ITEM,Lost {item},Förlorade {item}
 UNLOCK_FAILED,Could not unlock with {item},Kunde inte låsa upp med {item}
 USED_ITEM,Used {item},Använde {item}
@@ -153,3 +155,4 @@ ACTIVE,Active,Aktiv
 NOT_ACTIVE,Not active,Inte aktiv
 NOTICE_SETTINGS,Settings,Inställningar
 TUTORIALS_RESET,All tutorials reset,All handledning nollställd
+NOTICE_CREDITS,Credits,Credits

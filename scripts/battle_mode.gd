@@ -164,10 +164,9 @@ func round_start_prepare_hands() -> void:
 
     deal_player_hand()
 
-const _HAND_SIZE: String = "hand"
 
 func _get_hand_size() -> int:
-    return robot.get_skill_level(_HAND_SIZE) + 4
+    return robot.get_skill_level(RobotAbility.SKILL_HAND_SIZE) + 4
 
 func deal_player_hand() -> void:
     var cards: Array[BattleCard] = []
@@ -271,10 +270,8 @@ func _handle_update_slotted(cards: Array[BattleCard]) -> void:
 
         prev_card = card.data
 
-const _SLOTS: String = "slots"
-
 func _get_number_of_slots() -> int:
-    return robot.get_skill_level(_SLOTS) + 1
+    return robot.get_skill_level(RobotAbility.SKILL_HAND_SLOTS) + 1
 
 func _after_deal() -> void:
     battle_hand.slots.show_slots(_get_number_of_slots())
@@ -377,12 +374,11 @@ func _handle_enemy_death(entity: BattleEntity) -> void:
 #endregion PHASE PLAY CARD
 
 #region PHASE CLEANUP
-const _MEMORY: String = "memory"
-func _remembers_bonus_end_of_round() -> bool: return robot.get_skill_level(_MEMORY) > 0
+func _remembers_bonus_end_of_round() -> bool: return robot.get_skill_level(RobotAbility.SKILL_HAND_MEMORY) > 0
 
-func _remembers_previous_end_of_round() -> bool: return robot.get_skill_level(_MEMORY) > 1
+func _remembers_previous_end_of_round() -> bool: return robot.get_skill_level(RobotAbility.SKILL_HAND_MEMORY) > 1
 
-func _remembers_to_next_battle() -> bool: return robot.get_skill_level(_MEMORY) > 2
+func _remembers_to_next_battle() -> bool: return robot.get_skill_level(RobotAbility.SKILL_HAND_MEMORY) > 2
 
 func _clean_up_round(exit_battle_cleanup: bool = false) -> void:
     _enemies = _enemies.filter(

@@ -56,7 +56,7 @@ func withdraw_credits(amount: int) -> bool:
         _credits -= amount
 
         __SignalBus.on_update_credits.emit(_credits, _loans)
-        NotificationsManager.info("Lost", credits_with_sign(amount), 5000)
+        NotificationsManager.info(tr("NOTICE_CREDITS"), tr("GAINED_ITEM").format({"item": credits_with_sign(amount)}), 5000)
         return true
 
     return false
@@ -68,7 +68,7 @@ func deposit_credits(amount: int) -> void:
     _credits += amount
 
     __SignalBus.on_update_credits.emit(_credits, _loans)
-    NotificationsManager.info("Gained", credits_with_sign(amount), 5000)
+    NotificationsManager.info(tr("NOTICE_CREDITS"), tr("LOST_ITEM").format({"item": credits_with_sign(amount)}), 5000)
 
 func set_credits(new_credits: int, new_loans: int) -> void:
     _credits = new_credits
@@ -87,7 +87,7 @@ func take_out_loan(amount: int) -> void:
     _credits += amount
 
     __SignalBus.on_update_credits.emit(_credits, _loans)
-    NotificationsManager.info("Loaned", credits_with_sign(amount), 5000)
+    NotificationsManager.info(tr("NOTICE_CREDITS"), tr("TOOK_OUT_LOAN_AMOUNT").format({"amount": credits_with_sign(amount)}), 5000)
 
 func calculate_interest() -> int:
     return ceili(loans * _interest_rate)

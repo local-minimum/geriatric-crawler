@@ -2,8 +2,7 @@ extends SaveExtension
 ## Clears out an inventory in the save state when saving and transfers the content of loaded inventory into the active
 class_name InventoryTransferSaver
 
-@export
-var _save_key: String = "exploration-inventory"
+@export var _save_key: String = "exploration-inventory"
 
 func get_key() -> String:
     return _save_key

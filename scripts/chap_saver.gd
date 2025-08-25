@@ -1,7 +1,7 @@
 extends SaveExtension
 class_name ChapSaver
 
-@export var _save_key: String = "globals"
+@export var _save_key: String = "chap"
 @export var chap_ui: ChapUI
 
 func _enter_tree() -> void:
