@@ -1,20 +1,15 @@
 extends Node3D
 class_name GridNodeSide
 
-@export
-var direction: CardinalDirections.CardinalDirection = CardinalDirections.CardinalDirection.DOWN
+@export var direction: CardinalDirections.CardinalDirection = CardinalDirections.CardinalDirection.DOWN
 
-@export
-var infer_direction_from_rotation: bool = true
+@export var infer_direction_from_rotation: bool = true
 
-@export
-var anchor: GridAnchor
+@export var anchor: GridAnchor
 
-@export
-var negative_anchor: GridAnchor
+@export var negative_anchor: GridAnchor
 
-@export
-var illosory: bool
+@export var illosory: bool
 
 func is_two_sided() -> bool:
     return negative_anchor != null

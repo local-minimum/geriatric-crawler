@@ -1,23 +1,17 @@
 extends GridNodeFeature
 class_name PlayerFacer
 
-@export
-var use_look_direction_for_rotation: bool
+@export var use_look_direction_for_rotation: bool
 
-@export
-var offset_if_on_same_tile: bool
+@export var offset_if_on_same_tile: bool
 
-@export
-var maintain_down: bool
+@export var maintain_down: bool
 
-@export
-var use_parent_for_down: bool = true
+@export var use_parent_for_down: bool = true
 
-@export_range(0, 0.5)
-var offset_amount: float = 0
+@export_range(0, 0.5) var offset_amount: float = 0
 
-@export_range(0, 1)
-var interpoation_fraction: float = 0.25
+@export_range(0, 1) var interpoation_fraction: float = 0.25
 
 var _local_anchor_position: Vector3
 

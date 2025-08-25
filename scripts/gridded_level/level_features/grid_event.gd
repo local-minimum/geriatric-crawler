@@ -3,20 +3,16 @@ class_name GridEvent
 
 const GRID_EVENT_GROUP: String = "grid-events"
 
-@export
-var _repeatable: bool = true
+@export var _repeatable: bool = true
 
-@export
-var _trigger_entire_node: bool
+@export var _trigger_entire_node: bool
 
-@export
-var _trigger_sides: Array[CardinalDirections.CardinalDirection]
+@export var _trigger_sides: Array[CardinalDirections.CardinalDirection]
 
 # TODO: Might need to handle rotation to not have to set manually always
 
 ## Both attachment and entry from the side
-@export
-var _blocks_sides: Array[CardinalDirections.CardinalDirection]
+@export var _blocks_sides: Array[CardinalDirections.CardinalDirection]
 
 var _triggered: bool
 

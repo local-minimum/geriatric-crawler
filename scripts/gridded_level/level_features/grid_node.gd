@@ -1,11 +1,9 @@
 extends Node3D
 class_name GridNode
 
-@export
-var coordinates: Vector3i
+@export var coordinates: Vector3i
 
-@export
-var entry_requires_anchor: bool = true
+@export var entry_requires_anchor: bool = true
 
 var level: GridLevel
 

@@ -47,27 +47,27 @@ func get_flags() -> Array[int]:
 
     return flags
 
-static func get_flag_name(flag: int) -> String:
+static func get_flag_name(flag: int, localized: bool = false) -> String:
     match flag:
-        NONE: return "None"
-        WALKING: return "Walking"
-        FLYING: return "Flying"
-        CLIMBING: return "Climbing"
-        WALL_WALKING: return "Wall Walking"
-        CEILING_WALKING: return "Ceiling Walking"
-        SQUEEZING: return "Squeezing"
-        SWIMMING: return "Swimming"
+        NONE: return __GlobalGameState.tr("TRANSPORTATION_MODE_NONE") if localized else "None"
+        WALKING: return __GlobalGameState.tr("TRANSPORTATION_MODE_WALKING") if localized else "Walking"
+        FLYING: return __GlobalGameState.tr("TRANSPORTATION_MODE_FLYING") if localized else "Flying"
+        CLIMBING: return __GlobalGameState.tr("TRANSPORTATION_MODE_CLIMBING") if localized else "Climbing"
+        WALL_WALKING: return __GlobalGameState.tr("TRANSPORTATION_MODE_WALL_WALKING") if localized else "Wall Walking"
+        CEILING_WALKING: return __GlobalGameState.tr("TRANSPORTATION_MODE_CEILING_WALKING") if localized else "Ceiling Walking"
+        SQUEEZING: return __GlobalGameState.tr("TRANSPORTATION_MODE_SQUEEZING") if localized else "Squeezing"
+        SWIMMING: return __GlobalGameState.tr("TRANSPORTATION_MODE_SWIMMING") if localized else "Swimming"
         _:
             push_error("%s is not a transportation mode flag")
             print_stack()
-            return ""
+            return __GlobalGameState.tr("TRANSPORTATION_MODE_UNKNOWN") if localized else "Unknown"
 
-func get_flag_names() -> Array[String]:
+func get_flag_names(localized: bool = false) -> Array[String]:
     var flags: Array[String] = []
 
     for flag: int in ALL_FLAGS:
         if has_flag(flag):
-            flags.append(get_flag_name(flag))
+            flags.append(get_flag_name(flag, localized))
 
     return flags
 
@@ -75,5 +75,5 @@ func get_flag_names() -> Array[String]:
 func intersection(other: TransportationMode) -> int:
     return mode & other.mode
 
-func humanize() -> String:
-    return ", ".join(get_flag_names())
+func humanize(localized: bool = false) -> String:
+    return ", ".join(get_flag_names(localized))

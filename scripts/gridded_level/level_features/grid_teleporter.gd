@@ -3,29 +3,21 @@ class_name GridTeleporter
 
 signal on_arrive_entity(teleporter: GridTeleporter, entity: GridEntity)
 
-@export
-var exit: GridTeleporter
+@export var exit: GridTeleporter
 
-@export
-var teleports_player: bool = true
+@export var teleports_player: bool = true
 
-@export
-var teleports_non_players: bool
+@export var teleports_non_players: bool
 
-@export
-var look_direction: CardinalDirections.CardinalDirection
+@export var look_direction: CardinalDirections.CardinalDirection
 
-@export
-var anchor_direction: CardinalDirections.CardinalDirection
+@export var anchor_direction: CardinalDirections.CardinalDirection
 
-@export
-var inactive_scale: float = 0.3
+@export var inactive_scale: float = 0.3
 
-@export
-var effect: Node3D
+@export var effect: Node3D
 
-@export
-var rotation_speed: float = 1
+@export var rotation_speed: float = 1
 
 func _ready() -> void:
     if effect != null:

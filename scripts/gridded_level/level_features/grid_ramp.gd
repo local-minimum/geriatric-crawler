@@ -1,51 +1,39 @@
 extends GridEvent
 class_name GridRamp
 
-@export
-var climbing_requirement: int = 0
+@export var climbing_requirement: int = 0
 
-@export
-var up_direction: CardinalDirections.CardinalDirection = CardinalDirections.CardinalDirection.UP
+@export var up_direction: CardinalDirections.CardinalDirection = CardinalDirections.CardinalDirection.UP
 
 ## If entity is wallwalking we need to trigger event on inverse upper exit direction walls
-@export
-var upper_exit_direction: CardinalDirections.CardinalDirection
+@export var upper_exit_direction: CardinalDirections.CardinalDirection
 
-@export
-var lower_exit_direction: CardinalDirections.CardinalDirection
+@export var lower_exit_direction: CardinalDirections.CardinalDirection
 
-@export
-var lower_overshoot: float = 0.2
+@export var lower_overshoot: float = 0.2
 
 func manages_triggering_translation() -> bool:
     return true
 
-@export
-var animation_duration: float = 1
+@export var animation_duration: float = 1
 
-@export_range(0, 1)
-var lower_duration_fraction: float = 0.1
+@export_range(0, 1) var lower_duration_fraction: float = 0.1
 
 var ramp_duration_fraction: float:
     get():
         return 1.0 - lower_duration_fraction - ramp_upper_duration_fraction
 
-@export_range(0, 1)
-var ramp_upper_duration_fraction: float = 0.15
+@export_range(0, 1) var ramp_upper_duration_fraction: float = 0.15
 
-@export_range(0, 1)
-var pivot_duration_fraction: float = 0.05
+@export_range(0, 1) var pivot_duration_fraction: float = 0.05
 
 enum AnimationMode { Ramp, Stairs }
 
-@export
-var animation_mode: AnimationMode = AnimationMode.Ramp
+@export var animation_mode: AnimationMode = AnimationMode.Ramp
 
-@export
-var stair_steps: int = 7
+@export var stair_steps: int = 7
 
-@export
-var shift_points_on_stairs: float = 0.1
+@export var shift_points_on_stairs: float = 0.1
 
 var _transporting_entities: Array[GridEntity]
 
@@ -340,7 +328,7 @@ func blocks_entry_translation(
         var player: GridPlayer = entity
         if player.robot.get_skill_level(RobotAbility.SKILL_CLIMBING) < climbing_requirement:
             if !silent:
-                NotificationsManager.warn("Inaccessible", "You lack sufficient climbing skill")
+                NotificationsManager.warn(tr("NOTICE_INACCESSIBLE"), tr("INSUFFICIENT_LEVEL"))
                 print_debug("Entry to ramp blocked by too low climbing-skill")
             return true
 

@@ -44,18 +44,8 @@ static func to_direction(
 
     return CardinalDirections.CardinalDirection.NONE
 
-static func name(movement: MovementType) -> String:
-    match movement:
-        MovementType.NONE: return "None"
-        MovementType.FORWARD: return "Forward"
-        MovementType.BACK: return "Back"
-        MovementType.STRAFE_LEFT: return "Strafe left"
-        MovementType.STRAFE_RIGHT: return "Strafe right"
-        MovementType.TURN_CLOCKWISE: return "Turn right"
-        MovementType.TURN_COUNTER_CLOCKWISE: return "Turn left"
-        MovementType.ABS_DOWN: return "Absolute down"
-        MovementType.ABS_UP: return "Absolute up"
-        _:
-            push_error("%s is not a movement" % movement)
-            print_stack()
-            return "Unknown"
+static func name(movement: MovementType, localized: bool = false) -> String:
+    if localized:
+        return __GlobalGameState.tr("MOVEMENT_%s" % MovementType.find_key(movement))
+
+    return MovementType.find_key(movement)

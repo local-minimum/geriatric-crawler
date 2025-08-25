@@ -1,11 +1,9 @@
 extends Node3D
 class_name CameraPuller
 
-@export
-var look_target: Node3D
+@export var look_target: Node3D
 
-@export
-var tween_duration: float = 0.7
+@export var tween_duration: float = 0.7
 
 var _tween: Tween
 

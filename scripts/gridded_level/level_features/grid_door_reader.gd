@@ -1,53 +1,37 @@
 extends Node3D
 class_name GridDoorReader
 
-@export
-var door: GridDoor
+@export var door: GridDoor
 
-@export
-var is_negative_side: bool
+@export var is_negative_side: bool
 
-@export
-var mesh: MeshInstance3D
+@export var mesh: MeshInstance3D
 
-@export
-var collision_shape: CollisionShape3D
+@export var collision_shape: CollisionShape3D
 
-@export
-var display_material_idx: int = 2
+@export var display_material_idx: int = 2
 
-@export
-var automatic_door_tex: Texture
+@export var automatic_door_tex: Texture
 
-@export
-var walk_into_door_tex: Texture
+@export var walk_into_door_tex: Texture
 
-@export
-var no_entry_door_tex: Texture
+@export var no_entry_door_tex: Texture
 
-@export
-var click_to_open_tex: Texture
+@export var click_to_open_tex: Texture
 
-@export
-var locked_door_tex_model1: Texture
+@export var locked_door_tex_model1: Texture
 
-@export
-var locked_door_tex_model2: Texture
+@export var locked_door_tex_model2: Texture
 
-@export
-var locked_door_tex_model3: Texture
+@export var locked_door_tex_model3: Texture
 
-@export
-var open_door_tex: Texture
+@export var open_door_tex: Texture
 
-@export
-var emission_intensity: float = 3
+@export var emission_intensity: float = 3
 
-@export
-var max_click_distance: float = 1
+@export var max_click_distance: float = 1
 
-@export
-var camera_puller: CameraPuller
+@export var camera_puller: CameraPuller
 
 var _check_click: bool
 
@@ -164,14 +148,11 @@ func _on_static_body_3d_input_event(
             else:
                 door.toggle_door()
 
-
 func _on_static_body_3d_mouse_entered() -> void:
     _hovered = true
     if _check_click && _get_in_range(global_position):
         Input.set_default_cursor_shape(Input.CURSOR_POINTING_HAND)
         _showing_cursor_hand = true
-
-
 
 func _on_static_body_3d_mouse_exited() -> void:
     _hovered = false

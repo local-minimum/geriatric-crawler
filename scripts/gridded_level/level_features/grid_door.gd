@@ -11,11 +11,11 @@ enum LockState { LOCKED, CLOSED, OPEN }
 
 static func lock_state_name(state: LockState) -> String:
     match state:
-        LockState.LOCKED: return "Locked"
-        LockState.CLOSED: return "Closed"
-        LockState.OPEN: return "Open"
+        LockState.LOCKED: return __GlobalGameState.tr("DOOR_LOCKED")
+        LockState.CLOSED: return __GlobalGameState.tr("DOOR_CLOSED")
+        LockState.OPEN: return __GlobalGameState.tr("DOOR_OPEN")
         _:
-            return "--UNKNOWN--"
+            return __GlobalGameState.tr("DOOR_UNKNOWN")
 
 @export var _automation: OpenAutomation
 
@@ -286,7 +286,7 @@ func attempt_door_unlock(puller: CameraPuller) -> void:
 
     var key_ring: KeyRing = player.key_ring
     if key_ring == null || !key_ring.has_key(key_id):
-        NotificationsManager.warn("Door locked", "Missing %s" % KeyMaster.instance.get_description(key_id))
+        NotificationsManager.warn(tr("NOTICE_DOOR_LOCKED"), tr("MISSING_ITEM").format({"item": KeyMaster.instance.get_description(key_id)}))
 
         if puller != null:
             var skill_level: int = player.robot.get_skill_level(RobotAbility.SKILL_BYPASS)
@@ -302,7 +302,7 @@ func attempt_door_unlock(puller: CameraPuller) -> void:
                     player,
                     func () -> void:
                         await get_tree().create_timer(0.2).timeout
-                        NotificationsManager.important("Lock bypass", "Insufficient level to attempt")
+                        NotificationsManager.important(tr("NOTICE_DOOR_BYPASS"), tr("INSUFFICIENT_LEVEL"))
                         await get_tree().create_timer(0.8).timeout
                         puller.release_player(player)
                         ,
@@ -312,12 +312,12 @@ func attempt_door_unlock(puller: CameraPuller) -> void:
 
     if _consumes_key:
         if key_ring.consume_key(key_id):
-            NotificationsManager.important("Door unlocked", "Lost %s" % KeyMaster.instance.get_description(key_id))
+            NotificationsManager.important(tr("NOTICE_DOOR_UNLOCKED"), tr("LOST_ITEM").format({"item": KeyMaster.instance.get_description(key_id)}))
         else:
-            NotificationsManager.warn("Door locked", "Could not unlock with %s" % KeyMaster.instance.get_description(key_id))
+            NotificationsManager.warn(tr("NOTICE_DOOR_LOCKED"), tr("UNLOCK_FAILED").format({"item": KeyMaster.instance.get_description(key_id)}))
             return
     else:
-        NotificationsManager.info("Door unlocked", "Used %s" % KeyMaster.instance.get_description(key_id))
+        NotificationsManager.info(tr("NOTICE_DOOR_UNLOCKED"), tr("USED_ITEM").format({"item": KeyMaster.instance.get_description(key_id)}))
 
     lock_state = LockState.CLOSED
     on_door_state_chaged.emit()
@@ -329,7 +329,7 @@ func _trigger_hacking_prompt(puller: CameraPuller) -> void:
     var attempts: int = HackingGame.calculate_attempts(player.robot, _lock_difficulty)
 
     StartHackingDialog.show_dialog(
-        "Locked door",
+        tr("NOTICE_DOOR_LOCKED"),
         _lock_difficulty,
         attempts,
         _hacking_danger,
@@ -337,7 +337,7 @@ func _trigger_hacking_prompt(puller: CameraPuller) -> void:
             _hacking_danger = danger
             ,
         func () -> void:
-            NotificationsManager.info("Hacking", "Not worth the risk")
+            NotificationsManager.info(tr("NOTICE_HACKING"), tr("NOT_WORTH"))
             puller.release_player(player)
             ,
         func () -> void:
@@ -364,7 +364,7 @@ func _trigger_hacking_prompt(puller: CameraPuller) -> void:
                         match card.card_owner:
                             BattleCardData.Owner.SELF:
                                 robot.gain_card(card)
-                                NotificationsManager.important("Punishment", "Gained card \"%s\"" % card.name)
+                                NotificationsManager.important(tr("NOTICE_PUNISHMENT"), tr("GAINED_CARD").format({"card": card.name}))
                             BattleCardData.Owner.ENEMY:
                                 if enemies.is_empty():
                                     push_warning("No enemy is alive, returning card %s" % card.name)
@@ -372,7 +372,7 @@ func _trigger_hacking_prompt(puller: CameraPuller) -> void:
                                 else:
                                     var enemy: BattleEnemy = enemies[randi_range(0, enemies.size() - 1)]
                                     enemy.deck.gain_card(card)
-                                    NotificationsManager.important("Punishment", "An enemy gained card \"%s\"" % card.name)
+                                    NotificationsManager.important(tr("NOTICE_PUNISHMENT"), tr("ENEMY_GAINED_CARD").format({"card": card.name}))
 
                             BattleCardData.Owner.ALLY:
                                 push_warning("We don't know how to give a punishment to an ally yet, returning card %s" % card.name)

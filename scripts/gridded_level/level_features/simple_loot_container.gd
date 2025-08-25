@@ -3,14 +3,11 @@ class_name SimpleLootContainer
 
 var _looted: bool
 
-@export
-var _contents: Dictionary[String, float]
+@export var _contents: Dictionary[String, float]
 
-@export
-var _mesh: MeshInstance3D
+@export var _mesh: MeshInstance3D
 
-@export
-var _open_tex: Texture
+@export var _open_tex: Texture
 
 var _looting: bool
 

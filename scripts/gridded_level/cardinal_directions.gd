@@ -451,7 +451,9 @@ static func angle_around_axis(direction: CardinalDirection, down: CardinalDirect
     print_stack()
     return 0
 
-static func name(direction: CardinalDirection) -> String:
+static func name(direction: CardinalDirection, localized: bool = false) -> String:
+    if localized:
+        return __GlobalGameState.tr("CARDINAL_%s" % CardinalDirection.find_key(direction))
     return CardinalDirection.find_key(direction)
 
 #region To Other

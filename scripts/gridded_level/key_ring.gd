@@ -23,10 +23,10 @@ func gain(key: String, amount: int = 1) -> void:
 
     if _keys.has(key):
         _keys[key] += amount
-        NotificationsManager.info("Gained %s key%s" % [amount, "" if amount == 0 else "s"], KeyMaster.instance.get_description(key))
+        NotificationsManager.info(tr("NOTICE_KEYRING"), tr("GAINED_KEY_COUNT").format({"key": KeyMaster.instance.get_description(key), "amount": amount}))
     else:
         _keys[key] = amount
-        NotificationsManager.important("New key", KeyMaster.instance.get_description(key))
+        NotificationsManager.important(tr("NOTICE_KEYRING"), tr("GAINED_NEW_KEY_COUNT").format({"key": KeyMaster.instance.get_description(key), "amount": amount}))
 
 func collect_save_data() -> Dictionary[String, int]:
     return _keys.duplicate()
