@@ -63,7 +63,11 @@ func add_to_inventory(id: String, amount: float, notify: bool = true) -> bool:
 
     on_add_to_inventory.emit(id, amount, _inventory[id])
     if notify:
-        NotificationsManager.info("Gained", "%10.2f %s [b]%s[/b]" % [amount, inventory_item_id_to_unit(id) , inventory_item_id_to_text(id)], 5000)
+        NotificationsManager.info(
+            tr("NOTICE_INVENTORY"),
+            tr("GAINED_ITEM").format({"item": "%10.2f %s [b]%s[/b]" % [amount, inventory_item_id_to_unit(id) , inventory_item_id_to_text(id)]}),
+            5000,
+        )
     return true
 
 func add_many_to_inventory(items: Dictionary[String, float], notify: bool = true) -> bool:
@@ -92,7 +96,11 @@ func remove_from_inventory(id: String, amount: float, accept_less: bool = false,
     _inventory[id] = total - withdraw
     on_remove_from_inventory.emit(id, withdraw, _inventory[id])
     if notify:
-        NotificationsManager.info("Lost", "%4.3f %s [b]%s[/b]" % [amount, inventory_item_id_to_unit(id), inventory_item_id_to_text(id)], 5000)
+        NotificationsManager.info(
+            tr("NOTICE_INVENTORY"),
+            tr("LOST_ITEM").format({"item": "%4.3f %s [b]%s[/b]" % [amount, inventory_item_id_to_unit(id), inventory_item_id_to_text(id)]}),
+            5000,
+        )
 
     return withdraw
 

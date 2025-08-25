@@ -5,7 +5,7 @@ LIVING_QUARTERS,Living Quarters,Bostad
 MATERIALS_LAB,Materials Lab,Materiallab
 PRINTERS,Printers,Printers
 INFIRMARY,Infirmary,Sjukstuga
-STORAGE_BAY,Storage Bay,Magasin
+STORAGE_BAY,Storage Bay,Förvaring
 ENGINE_ROOM,Engine Room,Maskinrum
 BROOM_CLOSET,Broom Closet,Städskrubb
 CHAP_LONG,Customer Happiness Assistant Program,Kund Nöjdhets Uppmuntrings Tjänare
@@ -156,3 +156,4 @@ NOT_ACTIVE,Not active,Inte aktiv
 NOTICE_SETTINGS,Settings,Inställningar
 TUTORIALS_RESET,All tutorials reset,All handledning nollställd
 NOTICE_CREDITS,Credits,Credits
+NOTICE_INVENTORY,Inventory,Förvaring

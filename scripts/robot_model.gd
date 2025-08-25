@@ -1,44 +1,31 @@
 extends Resource
 class_name RobotModel
 
-@export
-var id: String
+@export var id: String
 
-@export
-var model_name: String
+@export var model_name: String
 
-@export
-var innate_abilities: Array[RobotAbility]
+@export var innate_abilities: Array[RobotAbility]
 
-@export
-var level_1_options: Array[RobotAbility]
+@export var level_1_options: Array[RobotAbility]
 
-@export
-var level_2_options: Array[RobotAbility]
+@export var level_2_options: Array[RobotAbility]
 
-@export
-var level_3_options: Array[RobotAbility]
+@export var level_3_options: Array[RobotAbility]
 
-@export
-var level_4_options: Array[RobotAbility]
+@export var level_4_options: Array[RobotAbility]
 
-@export_range(1, 6)
-var level_1_steps: int = 3
+@export_range(1, 6) var level_1_steps: int = 3
 
-@export_range(1, 6)
-var level_2_steps: int = 4
+@export_range(1, 6) var level_2_steps: int = 4
 
-@export_range(1, 6)
-var level_3_steps: int = 5
+@export_range(1, 6) var level_3_steps: int = 5
 
-@export_range(1, 6)
-var level_4_steps: int = 6
+@export_range(1, 6) var level_4_steps: int = 6
 
-@export
-var starter_deck: Array[BattleCardData]
+@export var starter_deck: Array[BattleCardData]
 
-@export
-var max_hp: int = 20
+@export var max_hp: int = 20
 
 func get_level(steps: int) -> int:
     if steps < level_1_steps:

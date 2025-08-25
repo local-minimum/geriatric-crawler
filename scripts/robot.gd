@@ -122,7 +122,7 @@ func collect_save_data() -> Dictionary:
     }
 
 func load_from_save(data: Dictionary) -> void:
-    given_name = DictionaryUtils.safe_gets(data, _NAME_KEY, "Sad roboto noname")
+    given_name = DictionaryUtils.safe_gets(data, _NAME_KEY, tr("NO_ROBOT_NAME"))
     _fights = DictionaryUtils.safe_geti(data, _FIGHTS_KEY)
     _alive = DictionaryUtils.safe_getb(data, _ALIVE_KEY, true)
 

@@ -3,23 +3,17 @@ class_name RobotExplorationMapper
 
 static var active_mapper: RobotExplorationMapper
 
-@export_range(5, 200)
-var _memory_size: int = 100
+@export_range(5, 200) var _memory_size: int = 100
 
-@export
-var _2d_map_ui: SimpleMapUI
+@export var _2d_map_ui: SimpleMapUI
 
-@export
-var _3d_map_ui: IsometricMapUI
+@export var _3d_map_ui: IsometricMapUI
 
-@export
-var map_controls: MapControlsUI
+@export var map_controls: MapControlsUI
 
-@export
-var _mapping_area: Control
+@export var _mapping_area: Control
 
-@export
-var _detect_area: bool = true
+@export var _detect_area: bool = true
 
 var prefer_2d: bool:
     set(value):
