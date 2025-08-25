@@ -11,5 +11,8 @@
 # InkGD
 .inkgd_compiler.cfg
 
-# Libre / Open Office
+# Libre / Office
 .~lock.*
+
+# Vim
+*.swp
