@@ -221,7 +221,8 @@ func get_suit_bonus_step() -> int:
     match robot.get_skill_level(RobotAbility.SKILL_SUIT):
         0: return 0
         1: return 1
-        2: return 3
+        2: return 2
+        3: return 4
         _:
             push_warning("Not implemented level %s skill for suits (skill '%s')" % [robot.get_skill_level(RobotAbility.SKILL_SUIT), RobotAbility.SKILL_SUIT])
             return 3

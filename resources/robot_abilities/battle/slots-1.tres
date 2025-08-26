@@ -6,7 +6,7 @@
 script = ExtResource("1_2tomo")
 id = "slots"
 skill_level = 1
-skill_name = "Card Slots"
+skill_name = "ABILITY_SLOTS_NAME"
 ability_type = 1
-description = "Play 2 cards each round"
+description = "ABILITY_SLOTS_1_DESC"
 metadata/_custom_type_script = "uid://0qri7op4mfno"

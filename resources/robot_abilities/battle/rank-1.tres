@@ -6,7 +6,7 @@
 script = ExtResource("1_iie8j")
 id = "rank"
 skill_level = 1
-skill_name = "Rank Bonus"
+skill_name = "ABILITY_RANK_NAME"
 ability_type = 1
-description = "Gain bonus from increasing rank ladders"
+description = "ABILITY_RANK_1_DESC"
 metadata/_custom_type_script = "uid://0qri7op4mfno"

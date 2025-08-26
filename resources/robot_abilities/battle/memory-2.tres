@@ -6,7 +6,7 @@
 script = ExtResource("1_cmu0k")
 id = "memory"
 skill_level = 2
-skill_name = "Memory"
+skill_name = "ABILITY_MEMORY_NAME"
 ability_type = 1
-description = "Bonus value and previous card is remembered between rounds"
+description = "ABILITY_MEMORY_2_DESC"
 metadata/_custom_type_script = "uid://0qri7op4mfno"

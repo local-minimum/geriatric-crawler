@@ -1,0 +1,20 @@
+keys,en,sv
+ABILITY_HAND_NAME,Hand,Hand
+ABILITY_HAND_1_DESC,Deal one extra card,Dela ett extra kort
+ABILITY_HAND_2_DESC,Deal two extra cards,Dela två extra kort
+ABILITY_MEMORY_NAME,Memory,Minne
+ABILITY_MEMORY_1_DESC,Bonus value is remembered between rounds,Bonusen bevaras mellan rundor
+ABILITY_MEMORY_2_DESC,Bonus value and previous card is remembered between rounds,Bonus och föregående kort minns mellan rundor
+ABILITY_MEMORY_3_DESC,Bonus value and previous card are remembered between battle,Bonus och föregående kort minns mellan fighter
+ABILITY_RANK_NAME,Card Rank Bonus,Kort-ranks Bonus
+ABILITY_RANK_1_DESC,Gain bonus from increasing rank ladders,Få bonus från stegar med ökande kort-rank
+ABILITY_RANK_2_DESC,High bonus from increasing rank-ladders,Få stor bonus från stegar med ökande kort-rank
+ABILITY_RANK_3_DESC,High bonus from both increasing and decreasing rank ladders,Få stor bonus från stegar med ökande eller sjunkande kort-rank
+ABILITY_SLOTS_NAME,Card Slots,Spelade Kort
+ABILITY_SLOTS_1_DESC,Play 2 cards each round,Spela 2 kort per runda
+ABILITY_SLOTS_2_DESC,Play 3 cards each round,Spela 3 kort per runda
+ABILITY_SLOTS_3_DESC,Play 4 cards each round,Spela 4 kort per runda
+ABILITY_SUITS_NAME,Suit Bonus,Färgbonus
+ABILITY_SUITS_1_DESC,Gain slight bonus from playing suits,Få liten bonus från att spela färger
+ABILITY_SUITS_2_DESC,Gain moderate bonus from playing suits,Få medelbonus från att spela färger
+ABILITY_SUITS_3_DESC,Gain large bonus from playing suits,Få stor bonus från att spela färger

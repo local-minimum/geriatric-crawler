@@ -40,13 +40,16 @@ enum AbilityType { Exploration, Battle, Other }
 
 func full_id() -> String: return "%s-%s" % [id, skill_level]
 
+## Skill name localization key
 @export var skill_name: String
 
+## Return localized full skill name
 func full_skill_name() -> String:
     return "%s %s" % [tr(skill_name), IntUtils.to_roman(skill_level)]
 
 @export var ability_type: AbilityType
 
+## Skill description localization key
 @export var description: String
 
 @export var icon: Texture

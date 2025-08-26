@@ -38,7 +38,7 @@ func _state_to_button_text(state: State, cost: int) -> String:
 
 func sync(ability: RobotAbility, state: State, cost: int = 1000) -> void:
     _title.text = ability.full_skill_name()
-    _description.text = ability.description
+    _description.text = tr(ability.description)
     _icon.texture = _generic_icon if ability.icon == null else ability.icon
     _background.color = _state_to_color(state)
     _buy_button.disabled = state != State.Buyable
