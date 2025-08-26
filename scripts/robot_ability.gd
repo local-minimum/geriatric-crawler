@@ -43,7 +43,7 @@ func full_id() -> String: return "%s-%s" % [id, skill_level]
 @export var skill_name: String
 
 func full_skill_name() -> String:
-    return "%s %s" % [skill_name, IntUtils.to_roman(skill_level)]
+    return "%s %s" % [tr(skill_name), IntUtils.to_roman(skill_level)]
 
 @export var ability_type: AbilityType
 

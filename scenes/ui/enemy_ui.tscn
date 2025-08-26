@@ -13,18 +13,22 @@ nameUI = NodePath("Name")
 _target_scale = 1.15
 
 [node name="Health" type="Label" parent="."]
+auto_translate_mode = 2
 layout_mode = 2
 mouse_filter = 1
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_colors/font_shadow_color = Color(0.321074, 0.109373, 0.262374, 1)
-text = "HP:"
+text = "HEALTH_POINTS"
+uppercase = true
 
 [node name="Defence" type="Label" parent="."]
+auto_translate_mode = 2
 layout_mode = 2
 mouse_filter = 1
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_colors/font_shadow_color = Color(0.321074, 0.109373, 0.262374, 1)
-text = "DEF:"
+text = "DEFENCE_STAT"
+uppercase = true
 
 [node name="Avatar" type="TextureRect" parent="."]
 custom_minimum_size = Vector2(200, 300)
@@ -33,6 +37,7 @@ expand_mode = 3
 stretch_mode = 5
 
 [node name="Name" type="Label" parent="."]
+auto_translate_mode = 2
 layout_mode = 2
 mouse_filter = 1
 theme_override_colors/font_color = Color(0, 0, 0, 1)

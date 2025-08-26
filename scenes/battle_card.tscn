@@ -57,6 +57,7 @@ expand_mode = 5
 stretch_mode = 5
 
 [node name="Rank" type="Label" parent="."]
+auto_translate_mode = 2
 layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
@@ -93,6 +94,7 @@ mouse_default_cursor_shape = 2
 theme_override_constants/separation = -1
 
 [node name="CardName" type="Label" parent="Info"]
+auto_translate_mode = 2
 layout_mode = 2
 size_flags_vertical = 1
 mouse_filter = 1
@@ -101,12 +103,15 @@ theme_override_font_sizes/font_size = 12
 text = "CARD NAME"
 
 [node name="PrimaryEffect 1" parent="Info" instance=ExtResource("10_r8ph8")]
+auto_translate_mode = 2
 layout_mode = 2
 
 [node name="PrimaryEffect 2" parent="Info" instance=ExtResource("10_r8ph8")]
+auto_translate_mode = 2
 layout_mode = 2
 
 [node name="PrimaryEffect 3" parent="Info" instance=ExtResource("10_r8ph8")]
+auto_translate_mode = 2
 layout_mode = 2
 
 [node name="Spacer" type="Control" parent="Info"]
@@ -127,6 +132,7 @@ theme_override_constants/h_separation = 2
 theme_override_constants/v_separation = 0
 
 [node name="SecondaryEffect 1" type="Label" parent="Info/SecondaryEffects"]
+auto_translate_mode = 2
 layout_mode = 2
 mouse_filter = 1
 theme_override_font_sizes/font_size = 12
@@ -142,6 +148,7 @@ expand_mode = 1
 stretch_mode = 4
 
 [node name="SecondaryEffect 2" type="Label" parent="Info/SecondaryEffects"]
+auto_translate_mode = 2
 layout_mode = 2
 mouse_filter = 1
 theme_override_font_sizes/font_size = 12
@@ -157,6 +164,7 @@ expand_mode = 1
 stretch_mode = 4
 
 [node name="SecondaryEffect 3" type="Label" parent="Info/SecondaryEffects"]
+auto_translate_mode = 2
 layout_mode = 2
 mouse_filter = 1
 theme_override_font_sizes/font_size = 12
@@ -172,6 +180,7 @@ expand_mode = 1
 stretch_mode = 4
 
 [node name="SecondaryEffect 4" type="Label" parent="Info/SecondaryEffects"]
+auto_translate_mode = 2
 layout_mode = 2
 mouse_filter = 1
 theme_override_font_sizes/font_size = 12

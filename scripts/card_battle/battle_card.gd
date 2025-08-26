@@ -110,7 +110,7 @@ func sync_display(bonus: int) -> void:
         rank_label.text = str(data.rank)
         card_icon.texture = data.icon
 
-        title.text = data.name
+        title.text = data.localized_name()
 
         for idx: int in range(primary_effects.size()):
             if idx == 0 || idx < data.primary_effects.size():

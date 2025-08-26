@@ -9,6 +9,7 @@ const BASE_ATTEMPTS: int = 3
 
 enum Danger { LOW, SLIGHT, DEFAULT, SEVERE }
 
+## Returns localized name of item
 static func item_id_to_text(id: String) -> String:
     match id:
         ITEM_HACKING_BOMB: return __GlobalGameState.tr("HACKING_BOMBS")
@@ -18,6 +19,7 @@ static func item_id_to_text(id: String) -> String:
             push_warning("%s is not a known hacking item id" % id)
             return __GlobalGameState.tr("HACKING_UNKNOWN")
 
+## Returns localized description of danger level
 static func danger_to_text(danger: Danger) -> String:
     match danger:
         Danger.LOW: return __GlobalGameState.tr("HACKING_RISK_LOW")
@@ -666,7 +668,7 @@ func bomb_coords(coords: Array[Vector2i]) -> void:
             if !Inventory.active_inventory.add_to_inventory(HackingGame.ITEM_HACKING_BOMB, 1.0, false):
                 push_warning("Could not regain bomb")
             else:
-                NotificationsManager.important(skill.skill_name, tr("HACKING_BOMB_REFUNDED"))
+                NotificationsManager.important(tr(skill.skill_name), tr("HACKING_BOMB_REFUNDED"))
 
     on_board_changed.emit()
 

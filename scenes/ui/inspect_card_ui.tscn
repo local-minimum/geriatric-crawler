@@ -12,6 +12,7 @@ label = NodePath("Label")
 layout_mode = 2
 
 [node name="Label" type="Label" parent="."]
+auto_translate_mode = 2
 layout_mode = 2
 size_flags_vertical = 10
 text = "1 Card"

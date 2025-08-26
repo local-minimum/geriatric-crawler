@@ -364,15 +364,15 @@ func _trigger_hacking_prompt(puller: CameraPuller) -> void:
                         match card.card_owner:
                             BattleCardData.Owner.SELF:
                                 robot.gain_card(card)
-                                NotificationsManager.important(tr("NOTICE_PUNISHMENT"), tr("GAINED_CARD").format({"card": card.name}))
+                                NotificationsManager.important(tr("NOTICE_PUNISHMENT"), tr("GAINED_CARD").format({"card": card.localized_name()}))
                             BattleCardData.Owner.ENEMY:
                                 if enemies.is_empty():
-                                    push_warning("No enemy is alive, returning card %s" % card.name)
+                                    push_warning("No enemy is alive, returning card %s" % card.localized_name())
                                     punishments.return_card(card)
                                 else:
                                     var enemy: BattleEnemy = enemies[randi_range(0, enemies.size() - 1)]
                                     enemy.deck.gain_card(card)
-                                    NotificationsManager.important(tr("NOTICE_PUNISHMENT"), tr("ENEMY_GAINED_CARD").format({"card": card.name}))
+                                    NotificationsManager.important(tr("NOTICE_PUNISHMENT"), tr("ENEMY_GAINED_CARD").format({"card": card.localized_name()}))
 
                             BattleCardData.Owner.ALLY:
                                 push_warning("We don't know how to give a punishment to an ally yet, returning card %s" % card.name)

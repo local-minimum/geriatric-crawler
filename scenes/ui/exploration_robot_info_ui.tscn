@@ -2,11 +2,10 @@
 
 [ext_resource type="Script" uid="uid://ds0xko5iuludm" path="res://scripts/ui/exploration_robot_ui.gd" id="1_3owbm"]
 
-[node name="RobotInfo" type="VBoxContainer" node_paths=PackedStringArray("_exploration_ui", "_name_label", "_model_label", "_health_label", "_level_label")]
+[node name="RobotInfo" type="VBoxContainer" node_paths=PackedStringArray("_name_label", "_model_label", "_health_label", "_level_label")]
 mouse_default_cursor_shape = 2
 theme_override_constants/separation = 1
 script = ExtResource("1_3owbm")
-_exploration_ui = NodePath("")
 _name_label = NodePath("Name & Model/Name")
 _model_label = NodePath("Name & Model/Model")
 _health_label = NodePath("Health & Level/Health")
@@ -16,6 +15,7 @@ _level_label = NodePath("Health & Level/Level")
 layout_mode = 2
 
 [node name="Name" type="Label" parent="Name & Model"]
+auto_translate_mode = 2
 layout_mode = 2
 mouse_filter = 1
 text = "Robbie"
@@ -28,6 +28,7 @@ size_flags_stretch_ratio = 3.0
 mouse_filter = 1
 
 [node name="Model" type="Label" parent="Name & Model"]
+auto_translate_mode = 2
 layout_mode = 2
 mouse_filter = 1
 theme_override_colors/font_color = Color(0.479183, 0.479183, 0.479183, 1)
@@ -38,6 +39,7 @@ text = "D100"
 layout_mode = 2
 
 [node name="Health" type="Label" parent="Health & Level"]
+auto_translate_mode = 2
 layout_mode = 2
 mouse_filter = 1
 theme_override_font_sizes/font_size = 10
@@ -51,6 +53,7 @@ size_flags_stretch_ratio = 3.0
 mouse_filter = 1
 
 [node name="Level" type="Label" parent="Health & Level"]
+auto_translate_mode = 2
 layout_mode = 2
 mouse_filter = 1
 theme_override_font_sizes/font_size = 10

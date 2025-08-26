@@ -43,6 +43,7 @@ expand_mode = 1
 stretch_mode = 4
 
 [node name="TargetCount" type="Label" parent="."]
+auto_translate_mode = 2
 layout_mode = 2
 mouse_filter = 1
 theme_override_font_sizes/font_size = 12
@@ -67,6 +68,7 @@ expand_mode = 1
 stretch_mode = 4
 
 [node name="EffectMagnitude" type="Label" parent="."]
+auto_translate_mode = 2
 layout_mode = 2
 mouse_filter = 1
 theme_override_font_sizes/font_size = 12

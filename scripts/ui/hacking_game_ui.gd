@@ -440,6 +440,11 @@ func _setup_placeholder_passphrase() -> void:
 
 func _setup_lower_field(columns: int, rows: int) -> void:
     var btn: Button
+    var down_text: String = tr("CARDINAL_DOWN")
+    var up_text: String = tr("CARDINAL_UP")
+    var left_text: String = tr("LEFT")
+    var right_text: String = tr("RIGHT")
+
     for full_row: int in range(rows):
         for full_col: int in range(columns):
             if full_row == 0:
@@ -447,7 +452,7 @@ func _setup_lower_field(columns: int, rows: int) -> void:
                     _playing_field_container_lower.add_child(HackingGameUIBuilder.get_spacer(outer_spacer_color))
 
                 else:
-                    btn = HackingGameUIBuilder.get_shift_button(_playing_field_container_lower, tr("CARDINAL_DOWN"), tex_down)
+                    btn = HackingGameUIBuilder.get_shift_button(_playing_field_container_lower, down_text, tex_down)
                     _shift_buttons.append(btn)
                     if btn.connect(
                         "pressed",
@@ -483,7 +488,7 @@ func _setup_lower_field(columns: int, rows: int) -> void:
                     _playing_field_container_lower.add_child(HackingGameUIBuilder.get_spacer(outer_spacer_color))
 
                 else:
-                    btn = HackingGameUIBuilder.get_shift_button(_playing_field_container_lower, tr("CARDINAL_UP"), tex_up)
+                    btn = HackingGameUIBuilder.get_shift_button(_playing_field_container_lower, up_text, tex_up)
                     _shift_buttons.append(btn)
                     if btn.connect(
                         "pressed",
@@ -521,7 +526,7 @@ func _setup_lower_field(columns: int, rows: int) -> void:
 
                 if full_col == 0:
                     if posmod(full_row, 2) == 1:
-                        btn = HackingGameUIBuilder.get_shift_button(_playing_field_container_lower, tr("RIGHT"), tex_right)
+                        btn = HackingGameUIBuilder.get_shift_button(_playing_field_container_lower, right_text, tex_right)
                         _shift_buttons.append(btn)
                         if btn.connect(
                             "pressed",
@@ -553,7 +558,7 @@ func _setup_lower_field(columns: int, rows: int) -> void:
                         _playing_field_container_lower.add_child(HackingGameUIBuilder.get_spacer(outer_spacer_color))
                 elif full_col == columns - 1:
                     if posmod(full_row, 2) == 1:
-                        btn = HackingGameUIBuilder.get_shift_button(_playing_field_container_lower, tr("LEFT"), tex_left)
+                        btn = HackingGameUIBuilder.get_shift_button(_playing_field_container_lower, left_text, tex_left)
                         _shift_buttons.append(btn)
                         if btn.connect(
                             "pressed",

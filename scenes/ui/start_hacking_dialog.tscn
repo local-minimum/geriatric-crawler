@@ -11,8 +11,8 @@ title = "Card Reader"
 initial_position = 2
 size = Vector2i(425, 296)
 visible = true
-ok_button_text = "Hack"
-cancel_button_text = "Leave"
+ok_button_text = "HACK"
+cancel_button_text = "LEAVE"
 script = ExtResource("1_6kgdf")
 _difficulty = NodePath("MarginContainer/VBoxContainer/Summary/Difficulty Value")
 _attempts = NodePath("MarginContainer/VBoxContainer/Summary/Attempts Value")
@@ -51,9 +51,10 @@ columns = 2
 [node name="Difficulty Label" type="Label" parent="MarginContainer/VBoxContainer/Summary"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Difficulty"
+text = "DIFFICULTY"
 
 [node name="Difficulty Value" type="Label" parent="MarginContainer/VBoxContainer/Summary"]
+auto_translate_mode = 2
 layout_mode = 2
 text = "2"
 horizontal_alignment = 2
@@ -61,48 +62,56 @@ horizontal_alignment = 2
 [node name="Attempts Label" type="Label" parent="MarginContainer/VBoxContainer/Summary"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Attempts"
+text = "ATTEMPTS"
 
 [node name="Attempts Value" type="Label" parent="MarginContainer/VBoxContainer/Summary"]
+auto_translate_mode = 2
 layout_mode = 2
 text = "3"
 horizontal_alignment = 2
 
 [node name="Worms Label" type="Label" parent="MarginContainer/VBoxContainer/Summary"]
+auto_translate_mode = 2
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Worms"
 
 [node name="Worms Count" type="Label" parent="MarginContainer/VBoxContainer/Summary"]
+auto_translate_mode = 2
 layout_mode = 2
 text = "1"
 horizontal_alignment = 2
 
 [node name="Bomb Label" type="Label" parent="MarginContainer/VBoxContainer/Summary"]
+auto_translate_mode = 2
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Logical Bombs"
 
 [node name="Bomb Count" type="Label" parent="MarginContainer/VBoxContainer/Summary"]
+auto_translate_mode = 2
 layout_mode = 2
 text = "0"
 horizontal_alignment = 2
 
 [node name="Proxies Label" type="Label" parent="MarginContainer/VBoxContainer/Summary"]
+auto_translate_mode = 2
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Proxies"
 
 [node name="Proxies Count" type="Label" parent="MarginContainer/VBoxContainer/Summary"]
+auto_translate_mode = 2
 layout_mode = 2
 text = "0"
 horizontal_alignment = 2
 
 [node name="Deploy Proxy Button" type="Button" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
-text = "Deploy proxy to lower risk of failure penalty"
+text = "HACKING_PROXY_DEPLOY"
 
 [node name="Warning" type="Label" parent="MarginContainer/VBoxContainer"]
+auto_translate_mode = 2
 layout_mode = 2
 theme_override_colors/font_color = Color(0.800979, 0.323821, 0.294446, 1)
 theme_override_fonts/font = SubResource("FontVariation_6lmoa")

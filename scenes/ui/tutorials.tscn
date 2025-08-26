@@ -94,6 +94,7 @@ size_flags_horizontal = 4
 size_flags_vertical = 4
 
 [node name="Label" type="Label" parent="Tutorial Box/MarginContainer/VBoxContainer"]
+auto_translate_mode = 2
 layout_mode = 2
 size_flags_horizontal = 4
 text = "Some explanation"
@@ -105,6 +106,7 @@ size_flags_vertical = 4
 alignment = 2
 
 [node name="Prev Button" type="Button" parent="Tutorial Box/MarginContainer/VBoxContainer/HBoxContainer"]
+auto_translate_mode = 2
 custom_minimum_size = Vector2(20, 20)
 layout_mode = 2
 icon = ExtResource("4_0vgye")
@@ -112,6 +114,7 @@ icon_alignment = 1
 expand_icon = true
 
 [node name="Next Button" type="Button" parent="Tutorial Box/MarginContainer/VBoxContainer/HBoxContainer"]
+auto_translate_mode = 2
 custom_minimum_size = Vector2(20, 20)
 layout_mode = 2
 icon = ExtResource("5_ybqcr")

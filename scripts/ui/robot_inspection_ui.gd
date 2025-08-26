@@ -66,7 +66,7 @@ func _sync_active_abilities(robot: Robot) -> void:
 
             if child is Label:
                 label = child
-                label.text = "%s: %s" % [ability.full_skill_name(), ability.description]
+                label.text = "%s: %s" % [ability.full_skill_name(), tr(ability.description)]
 
                 continue
 
@@ -74,7 +74,8 @@ func _sync_active_abilities(robot: Robot) -> void:
             continue
 
         label = Label.new()
-        label.text = "%s: %s" % [ability.full_skill_name(), ability.description]
+        label.text = "%s: %s" % [ability.full_skill_name(), tr(ability.description)]
+        label.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
 
         _active_skills_parent.add_child(label)
 

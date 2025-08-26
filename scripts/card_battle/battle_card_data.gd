@@ -87,6 +87,7 @@ func base_id() -> String:
     return id.substr(0, id.rfind("-"))
 
 @export var name: String
+func localized_name() -> String: return tr(name)
 
 enum Owner { SELF, ALLY, ENEMY }
 
@@ -151,6 +152,7 @@ static func suit_name(suit_flag: int) -> String:
 
 @export var secondary_effects: Array[SecondaryEffect] = []
 
+## Returns the localized secondary effect names
 func secondary_effect_names() -> Array[String]:
     var names: Array[String] = []
     for effect: SecondaryEffect in secondary_effects:

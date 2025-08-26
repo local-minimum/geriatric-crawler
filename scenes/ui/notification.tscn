@@ -56,6 +56,7 @@ theme_override_constants/margin_right = 8
 theme_override_constants/margin_bottom = 2
 
 [node name="Message" type="RichTextLabel" parent="Control/MarginContainer"]
+auto_translate_mode = 2
 custom_minimum_size = Vector2(0, 15)
 layout_mode = 2
 size_flags_horizontal = 3

@@ -2,11 +2,8 @@ extends Control
 class_name BattleEntityUI
 
 @export var healthUI: Label
-
 @export var defenceUI: Label
-
 @export var icon: TextureRect
-
 @export var nameUI: Label
 
 @export_range(1, 2)
@@ -235,7 +232,7 @@ func _set_health(health: int) -> void:
     var fivers: int = health / 5
     @warning_ignore_restore("integer_division")
     var remain: int = health % 5
-    healthUI.text = "HP: %s%s" % ["♥".repeat(fivers), "♡".repeat(remain)]
+    healthUI.text = "%s: %s%s" % [tr("HEALTH_POINTS").to_upper(), "♥".repeat(fivers), "♡".repeat(remain)]
 
 func _handle_break_shield(_battle_entity: BattleEntity, shields: Array[int], broken_shield: int) -> void:
     if broken_shield > 0:

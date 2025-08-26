@@ -284,7 +284,7 @@ func clean_up_battle() -> void:
     super.clean_up_battle()
     var card: BattleCardData = _robot.remove_one_punishment_card()
     if card != null:
-        NotificationsManager.important(tr("NOTICE_INSPIRATION"), tr("LOST_PUNISHMENT").format({"card": card.name}))
+        NotificationsManager.important(tr("NOTICE_INSPIRATION"), tr("LOST_PUNISHMENT").format({"card": card.localized_name()}))
         PunishmentDeck.instance.return_card(card)
 
 func collect_save_data() -> Dictionary:

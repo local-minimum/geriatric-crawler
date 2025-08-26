@@ -2,12 +2,11 @@
 
 [ext_resource type="Script" uid="uid://b8urty4ia3p2j" path="res://scripts/ui/compass_ui.gd" id="1_fsw68"]
 
-[node name="CompassModule" type="ColorRect" node_paths=PackedStringArray("exploration_ui", "cardinal_north", "cardinal_south", "cardinal_west", "cardinal_east", "cardinal_up", "cardinal_down")]
+[node name="CompassModule" type="ColorRect" node_paths=PackedStringArray("cardinal_north", "cardinal_south", "cardinal_west", "cardinal_east", "cardinal_up", "cardinal_down")]
 clip_contents = true
 custom_minimum_size = Vector2(0, 40)
 color = Color(0.09, 0.09, 0.09, 0.6)
 script = ExtResource("1_fsw68")
-exploration_ui = NodePath("")
 cardinal_north = NodePath("MarginContainer/Control/Cardinal Label N")
 cardinal_south = NodePath("MarginContainer/Control/Cardinal Label S")
 cardinal_west = NodePath("MarginContainer/Control/Cardinal Label W")
@@ -47,7 +46,8 @@ offset_bottom = 14.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_font_sizes/font_size = 20
-text = "N"
+text = "CARDINAL_NORTH_SHORT"
+horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="Cardinal Label S" type="Label" parent="MarginContainer/Control"]
@@ -64,7 +64,8 @@ offset_bottom = 14.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_font_sizes/font_size = 20
-text = "S"
+text = "CARDINAL_SOUTH_SHORT"
+horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="Cardinal Label W" type="Label" parent="MarginContainer/Control"]
@@ -81,7 +82,8 @@ offset_bottom = 14.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_font_sizes/font_size = 20
-text = "W"
+text = "CARDINAL_WEST_SHORT"
+horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="Cardinal Label E" type="Label" parent="MarginContainer/Control"]
@@ -98,7 +100,8 @@ offset_bottom = 14.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_font_sizes/font_size = 20
-text = "E"
+text = "CARDINAL_EAST_SHORT"
+horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="Cardinal Label U" type="Label" parent="MarginContainer/Control"]
@@ -115,7 +118,8 @@ offset_bottom = 14.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_font_sizes/font_size = 20
-text = "U"
+text = "CARDINAL_UP_SHORT"
+horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="Cardinal Label D" type="Label" parent="MarginContainer/Control"]
@@ -132,5 +136,6 @@ offset_bottom = 14.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_font_sizes/font_size = 20
-text = "D"
+text = "CARDINAL_DOWN_SHORT"
+horizontal_alignment = 1
 vertical_alignment = 1

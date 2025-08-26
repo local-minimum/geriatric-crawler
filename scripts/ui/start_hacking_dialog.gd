@@ -4,9 +4,7 @@ class_name  StartHackingDialog
 static var _instance: StartHackingDialog
 
 @export var _difficulty: Label
-
 @export var _attempts: Label
-
 @export var _dangerous: Label
 
 @export var _danger_low_color: Color
@@ -18,15 +16,12 @@ static var _instance: StartHackingDialog
 @export var _danger_severe_color: Color
 
 @export var _worms_label: Label
-
 @export var _worms_count: Label
 
 @export var _bombs_label: Label
-
 @export var _bombs_count: Label
 
 @export var _proxies_label: Label
-
 @export var _proxies_count: Label
 
 @export var _deploy_proxies_button: Button

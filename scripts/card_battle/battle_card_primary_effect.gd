@@ -16,6 +16,7 @@ static func humanize(effect_mode: EffectMode) -> String:
             print_stack()
             return __GlobalGameState.tr("UNKNOWN_ID").format({"type": __GlobalGameState.tr("EFFECT"), "id": effect_mode})
 
+## Returns localized effect mode
 func mode_name() -> String: return humanize(mode)
 
 const TARGET_NOTHING: int = 0
@@ -110,6 +111,7 @@ static func target_range_text(target_range: Array[int]) -> String:
         "all" if target_range[1] == TARGET_RANGE_ALL_VALUE else str(target_range[1]),
     ]
 
+## Returns localized / emoji target type(s)
 func target_type_text() -> String:
     var allies: bool = targets_allies()
     var enemies: bool = targets_enemies()

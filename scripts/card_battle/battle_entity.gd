@@ -29,9 +29,10 @@ func _ready() -> void:
     if _health < 0:
         _health = max_health
 
+## Returns localized entity name
 func get_entity_name() -> String:
     push_error("%s doesn't have a name" % name)
-    return name
+    return tr(name)
 
 func get_health() -> int:
     return _health

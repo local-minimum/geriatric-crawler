@@ -17,7 +17,7 @@ func list_cards(all_cards: Array[BattleCardData]) -> void:
     var keys: Array[BattleCardData] = cards.keys()
     keys.sort_custom(
         func (a: BattleCardData, b: BattleCardData) -> bool:
-            return a.name <= b.name && a.rank <= b.rank
+            return a.localized_name() <= b.localized_name() && a.rank <= b.rank
     )
 
     for data: BattleCardData in keys:

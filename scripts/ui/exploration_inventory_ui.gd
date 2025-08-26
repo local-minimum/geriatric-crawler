@@ -24,6 +24,7 @@ func list_inventory() -> void:
             listing.amount,
             Inventory.inventory_item_id_to_unit(listing.id),
         ]
+        label.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
 
         _previous_labels.append(label)
         _chained_boxes.add_child_to_box(label)

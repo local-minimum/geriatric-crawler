@@ -7,6 +7,7 @@ static func get_shift_button(parent: Container, localized_direction: String, tex
     btn.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
     btn.expand_icon = true
     btn.tooltip_text = __GlobalGameState.tr("SHIFT_CODES").format({"direction": localized_direction.to_lower()})
+    btn.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
     size_playing_field_item(btn)
 
     container.add_child(btn)
@@ -59,6 +60,7 @@ static func add_word_ui_to_container(parent: Container, word: String, parts_assi
     label.text = word
     label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
     label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+    label.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
 
     size_playing_field_item(label)
     container.add_child(label)

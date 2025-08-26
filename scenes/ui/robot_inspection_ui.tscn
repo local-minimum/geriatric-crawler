@@ -69,10 +69,12 @@ layout_mode = 2
 theme_override_constants/separation = 8
 
 [node name="Robot Name" type="Label" parent="MarginContainer/Main/Name & Status"]
+auto_translate_mode = 2
 layout_mode = 2
 text = "Name"
 
 [node name="Robot Model" type="Label" parent="MarginContainer/Main/Name & Status"]
+auto_translate_mode = 2
 layout_mode = 2
 text = "model"
 
@@ -84,15 +86,18 @@ size_flags_horizontal = 3
 layout_mode = 2
 
 [node name="Robot Health" type="Label" parent="MarginContainer/Main/Name & Status/VBoxContainer"]
+auto_translate_mode = 2
 layout_mode = 2
 text = "Health"
 
 [node name="Robot Credits" type="Label" parent="MarginContainer/Main/Name & Status/VBoxContainer"]
+auto_translate_mode = 2
 layout_mode = 2
 text = "Credits"
 horizontal_alignment = 2
 
 [node name="CloseButton" type="Button" parent="MarginContainer/Main/Name & Status"]
+auto_translate_mode = 2
 layout_mode = 2
 icon = ExtResource("2_0f0fp")
 
@@ -101,11 +106,11 @@ layout_mode = 2
 current_tab = 0
 scrolling_enabled = false
 tab_count = 5
-tab_0/title = "Upgrades"
-tab_1/title = "Abilities"
-tab_2/title = "Cards"
-tab_3/title = "Inventory"
-tab_4/title = "Keys"
+tab_0/title = "UPGRADES"
+tab_1/title = "ABILITIES"
+tab_2/title = "CARDS"
+tab_3/title = "INVENTORY"
+tab_4/title = "KEYS"
 
 [node name="ActiveSkills" type="Control" parent="MarginContainer/Main"]
 visible = false
@@ -140,7 +145,7 @@ layout_mode = 2
 layout_mode = 2
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/font_size = 20
-text = "Active Skills"
+text = "ACTIVE_SKILLS"
 horizontal_alignment = 1
 vertical_alignment = 1
 
@@ -149,6 +154,7 @@ layout_mode = 2
 size_flags_vertical = 3
 
 [node name="Cards" type="Control" parent="MarginContainer/Main" node_paths=PackedStringArray("cards_root")]
+visible = false
 layout_mode = 2
 size_flags_vertical = 3
 script = ExtResource("3_k77c0")
@@ -182,7 +188,7 @@ layout_mode = 2
 layout_mode = 2
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/font_size = 20
-text = "Cards"
+text = "CARDS"
 horizontal_alignment = 1
 vertical_alignment = 1
 
@@ -286,7 +292,7 @@ layout_mode = 2
 layout_mode = 2
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/font_size = 20
-text = "Inventory"
+text = "INVENTORY"
 horizontal_alignment = 1
 vertical_alignment = 1
 
@@ -317,7 +323,6 @@ size_flags_horizontal = 3
 theme_override_constants/separation = 8
 
 [node name="Keys" type="Control" parent="MarginContainer/Main" node_paths=PackedStringArray("_chained_boxes")]
-visible = false
 layout_mode = 2
 size_flags_vertical = 3
 script = ExtResource("7_yfo5l")
@@ -351,7 +356,7 @@ layout_mode = 2
 layout_mode = 2
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/font_size = 20
-text = "Keys"
+text = "KEYS"
 horizontal_alignment = 1
 vertical_alignment = 1
 

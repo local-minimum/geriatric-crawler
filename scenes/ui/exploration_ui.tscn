@@ -185,18 +185,21 @@ zoom_in_button = NodePath("Zoom In Button")
 zoom_out_button = NodePath("Zoom Out Button")
 
 [node name="2D Map Button" type="Button" parent="MarginContainer/VBoxContainer/SimpleMapModule/Padding/Control/Map Controls"]
+auto_translate_mode = 2
 custom_minimum_size = Vector2(20, 0)
 layout_mode = 2
 theme_override_font_sizes/font_size = 8
 text = "2D"
 
 [node name="3D Map Button" type="Button" parent="MarginContainer/VBoxContainer/SimpleMapModule/Padding/Control/Map Controls"]
+auto_translate_mode = 2
 custom_minimum_size = Vector2(20, 0)
 layout_mode = 2
 theme_override_font_sizes/font_size = 8
 text = "3D"
 
 [node name="Zoom In Button" type="Button" parent="MarginContainer/VBoxContainer/SimpleMapModule/Padding/Control/Map Controls"]
+auto_translate_mode = 2
 custom_minimum_size = Vector2(20, 0)
 layout_mode = 2
 theme_override_font_sizes/font_size = 8
@@ -204,6 +207,7 @@ icon = ExtResource("8_wpqvq")
 expand_icon = true
 
 [node name="Zoom Out Button" type="Button" parent="MarginContainer/VBoxContainer/SimpleMapModule/Padding/Control/Map Controls"]
+auto_translate_mode = 2
 custom_minimum_size = Vector2(20, 0)
 layout_mode = 2
 theme_override_font_sizes/font_size = 8
@@ -220,6 +224,7 @@ size_flags_vertical = 3
 columns = 3
 
 [node name="Turn Left" type="Button" parent="MarginContainer/VBoxContainer/Exploration Movement Controls"]
+auto_translate_mode = 2
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -228,6 +233,7 @@ icon_alignment = 1
 expand_icon = true
 
 [node name="Forward" type="Button" parent="MarginContainer/VBoxContainer/Exploration Movement Controls"]
+auto_translate_mode = 2
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -236,6 +242,7 @@ icon_alignment = 1
 expand_icon = true
 
 [node name="Turn Right" type="Button" parent="MarginContainer/VBoxContainer/Exploration Movement Controls"]
+auto_translate_mode = 2
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -244,6 +251,7 @@ icon_alignment = 1
 expand_icon = true
 
 [node name="Strafe Left" type="Button" parent="MarginContainer/VBoxContainer/Exploration Movement Controls"]
+auto_translate_mode = 2
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -252,6 +260,7 @@ icon_alignment = 1
 expand_icon = true
 
 [node name="Back" type="Button" parent="MarginContainer/VBoxContainer/Exploration Movement Controls"]
+auto_translate_mode = 2
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -260,6 +269,7 @@ icon_alignment = 1
 expand_icon = true
 
 [node name="Strafe Right" type="Button" parent="MarginContainer/VBoxContainer/Exploration Movement Controls"]
+auto_translate_mode = 2
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3

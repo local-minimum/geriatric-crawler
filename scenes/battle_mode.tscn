@@ -445,6 +445,7 @@ layout_mode = 2
 size_flags_horizontal = 2
 
 [node name="Name" type="Label" parent="CanvasLayer/Player Entities/Players/PlayerUI/VBoxContainer"]
+auto_translate_mode = 2
 layout_mode = 2
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_colors/font_shadow_color = Color(0.321074, 0.109373, 0.262374, 1)
@@ -452,12 +453,14 @@ text = "TARGET DUMMY"
 horizontal_alignment = 1
 
 [node name="Health" type="Label" parent="CanvasLayer/Player Entities/Players/PlayerUI/VBoxContainer"]
+auto_translate_mode = 2
 layout_mode = 2
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_colors/font_shadow_color = Color(0.321074, 0.109373, 0.262374, 1)
 text = "HP:"
 
 [node name="Defence" type="Label" parent="CanvasLayer/Player Entities/Players/PlayerUI/VBoxContainer"]
+auto_translate_mode = 2
 layout_mode = 2
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_colors/font_shadow_color = Color(0.321074, 0.109373, 0.262374, 1)
@@ -501,6 +504,7 @@ size_flags_vertical = 3
 theme_override_constants/separation = 40
 
 [node name="Letter F" type="Label" parent="CanvasLayer/Fight Letters"]
+auto_translate_mode = 2
 visible = false
 layout_mode = 2
 theme_override_colors/font_color = Color(0, 0, 0, 0)
@@ -508,6 +512,7 @@ theme_override_font_sizes/font_size = 260
 text = "F"
 
 [node name="Letter I" type="Label" parent="CanvasLayer/Fight Letters"]
+auto_translate_mode = 2
 visible = false
 layout_mode = 2
 theme_override_colors/font_color = Color(0.47, 0.094, 0.094, 0)
@@ -515,6 +520,7 @@ theme_override_font_sizes/font_size = 260
 text = "I"
 
 [node name="Letter G" type="Label" parent="CanvasLayer/Fight Letters"]
+auto_translate_mode = 2
 visible = false
 layout_mode = 2
 theme_override_colors/font_color = Color(0.47, 0.094, 0.094, 0)
@@ -522,6 +528,7 @@ theme_override_font_sizes/font_size = 260
 text = "G"
 
 [node name="Letter H" type="Label" parent="CanvasLayer/Fight Letters"]
+auto_translate_mode = 2
 visible = false
 layout_mode = 2
 theme_override_colors/font_color = Color(0.47, 0.094, 0.094, 0)
@@ -529,6 +536,7 @@ theme_override_font_sizes/font_size = 260
 text = "H"
 
 [node name="Letter T" type="Label" parent="CanvasLayer/Fight Letters"]
+auto_translate_mode = 2
 visible = false
 layout_mode = 2
 theme_override_colors/font_color = Color(0.47, 0.094, 0.094, 0)
@@ -716,6 +724,7 @@ _any_slotted_image = ExtResource("10_bkkck")
 _nothing_slotted_image = ExtResource("12_jejug")
 
 [node name="NextPhaseButton" type="TextureRect" parent="CanvasLayer/Player Cards Slotted Button"]
+auto_translate_mode = 2
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -740,6 +749,7 @@ script = ExtResource("10_50o5a")
 battle = NodePath("../..")
 
 [node name="Prompt" type="Label" parent="CanvasLayer" node_paths=PackedStringArray("battle")]
+auto_translate_mode = 2
 anchors_preset = -1
 anchor_left = 0.368
 anchor_top = 0.5
@@ -762,6 +772,7 @@ script = ExtResource("12_g3sjl")
 battle = NodePath("../..")
 
 [node name="DebugStatus" type="Label" parent="CanvasLayer" node_paths=PackedStringArray("battle_mode")]
+auto_translate_mode = 2
 visible = false
 anchors_preset = -1
 anchor_left = 0.021
@@ -800,6 +811,7 @@ theme_override_constants/margin_right = 4
 theme_override_constants/margin_bottom = 4
 
 [node name="DebugMessagesLabel" type="Label" parent="CanvasLayer/Hand Debug Messages/MarginContainer" node_paths=PackedStringArray("_hand")]
+auto_translate_mode = 2
 custom_minimum_size = Vector2(400, 400)
 layout_mode = 2
 size_flags_vertical = 1
