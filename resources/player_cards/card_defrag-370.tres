@@ -18,7 +18,7 @@ metadata/_custom_type_script = "uid://b1hgbfym62rba"
 [resource]
 script = ExtResource("3_l8nx6")
 id = "defrag-370"
-name = "Defrag"
+name = "CARD_DEFRAG"
 card_owner = 0
 rank = 370
 suit = 4

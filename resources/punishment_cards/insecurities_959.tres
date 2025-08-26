@@ -6,7 +6,7 @@
 [resource]
 script = ExtResource("2_84emv")
 id = "insecurities_959"
-name = "Insecurities"
+name = "CARD_INSECURITIES"
 card_owner = 0
 rank = 959
 suit = 0

@@ -6,7 +6,7 @@
 [resource]
 script = ExtResource("2_dvwti")
 id = "insecurities_939"
-name = "Insecurities"
+name = "CARD_INSECURITIES"
 card_owner = 0
 rank = 939
 suit = 0

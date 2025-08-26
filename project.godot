@@ -98,7 +98,7 @@ crawl_turn_right={
 
 [internationalization]
 
-locale/translations=PackedStringArray("res://resources/translations.en.translation", "res://resources/translations.sv.translation", "res://resources/translations_abilities.en.translation", "res://resources/translations_abilities.sv.translation")
+locale/translations=PackedStringArray("res://resources/translations.en.translation", "res://resources/translations.sv.translation", "res://resources/translations_abilities.en.translation", "res://resources/translations_abilities.sv.translation", "res://resources/translations_cards.en.translation", "res://resources/translations_cards.sv.translation")
 
 [layer_names]
 

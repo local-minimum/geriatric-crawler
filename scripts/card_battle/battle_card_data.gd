@@ -86,7 +86,9 @@ static func get_card_by_id(category: CardCategory, card_id: String, enemy_id: St
 func base_id() -> String:
     return id.substr(0, id.rfind("-"))
 
+## Only gives the localization key for the card
 @export var name: String
+
 func localized_name() -> String: return tr(name)
 
 enum Owner { SELF, ALLY, ENEMY }

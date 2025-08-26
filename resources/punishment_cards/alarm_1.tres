@@ -17,7 +17,7 @@ metadata/_custom_type_script = "uid://b1hgbfym62rba"
 [resource]
 script = ExtResource("2_xmjqq")
 id = "alarm_1"
-name = "Alarm"
+name = "CARD_ALARM"
 card_owner = 2
 rank = 1
 suit = 5

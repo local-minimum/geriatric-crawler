@@ -6,7 +6,7 @@
 [resource]
 script = ExtResource("2_nywhf")
 id = "dummy-blank-420"
-name = "Confusion"
+name = "CARD_CONFUSION"
 card_owner = 0
 rank = 420
 suit = 0
