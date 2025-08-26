@@ -91,7 +91,7 @@ func _sync_level(robot: Robot) -> void:
 
     var slots: int = robot.available_upgrade_slots()
     if slots == 0:
-        _level_label.text = tr("FIGHTS_UNTIL_SLOTS").format({"count": robot.get_fights_required_to_level()})
+        _level_label.text = tr("FIGHTS_UNTIL_SLOT").format({"count": robot.get_fights_required_to_level()})
     else:
         _level_label.text = tr("SLOTS_AND_COUNTDOWN").format({"slots": slots, "count": robot.get_fights_required_to_level()})
 

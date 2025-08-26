@@ -71,7 +71,7 @@ DEFENCE_STAT,def,def
 EXPOSED,exposed,exponerad
 NO_ROBOT_NAME,Simon Cyberdeck,Simon Cyberdeck
 NOTICE_INSPIRATION,Inspiration,Inspiration
-LOST_PUNISHMENT,Lost punishment card \"{card}\",Förlorade straffkortet \"{card}\"
+LOST_PUNISHMENT,Lost punishment card ""{card}"",Förlorade straffkortet ""{card}""
 PERFORM_UNKNOWN_EFFECT,perform unknown effect,utför okänd effekt
 SELECT_TO_EFFECT,Select {count} {type} to {effect},Välj {count} {type} att {effect}
 HAS_SLOTTED_TOOLTIP,Click when done slotting cards,Klicka när du valt klart dina kort
@@ -92,8 +92,8 @@ USED_ITEM,Used {item},Använde {item}
 NOTICE_HACKING,Hacking,Hacking
 NOT_WORTH,Not worth the risk,Inte värt risken
 NOTICE_PUNISHMENT,Punishment,Straff
-GAINED_CARD,Gained card \"{card}\",Fick kortet \"{card}\"
-ENEMY_GAINED_CARD,An enemy gained card \"{card}\",En fiende fick koretet \"{card}\"
+GAINED_CARD,Gained card ""{card}"",Fick kortet ""{card}""
+ENEMY_GAINED_CARD,An enemy gained card ""{card}"",En fiende fick koretet ""{card}""
 NOTICE_INACCESSIBLE,Inaccessible,Otillgänglig
 CARDINAL_NONE,None,Ingen
 CARDINAL_NORTH,North,Norr
@@ -112,7 +112,7 @@ LEFT,left,vänster
 RIGHT,right,höger
 NOTICE_KEYRING,Key ring,Nyckelknippa
 GAINED_KEY_COUNT,Gained {count} {key},Plocka upp {count} {key}
-GAINED_NEW_KEY_COUNT,Gained new key \"{key}\" ({count}),Plocka upp ny nyckel \"{key}\" ({count})
+GAINED_NEW_KEY_COUNT,Gained new key ""{key}"" ({count}),Plocka upp ny nyckel ""{key}"" ({count})
 MOVEMENT_NONE,None,Ingen
 MOVEMENT_FORWARD,Forward,Framåt
 MOVEMENT_BACKWARD,Back,Bakåt
