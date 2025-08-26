@@ -6,7 +6,7 @@
 script = ExtResource("1_3q56x")
 id = "bypass"
 skill_level = 4
-skill_name = "Lock Picking"
+skill_name = "ABILITY_BYPASS_NAME"
 ability_type = 0
-description = "Open secure locks and containers"
+description = "ABILITY_BYPASS_4_DESC"
 metadata/_custom_type_script = "uid://0qri7op4mfno"

@@ -18,3 +18,12 @@ ABILITY_SUITS_NAME,Suit Bonus,Färgbonus
 ABILITY_SUITS_1_DESC,Gain slight bonus from playing suits,Få liten bonus från att spela färger
 ABILITY_SUITS_2_DESC,Gain moderate bonus from playing suits,Få medelbonus från att spela färger
 ABILITY_SUITS_3_DESC,Gain large bonus from playing suits,Få stor bonus från att spela färger
+ABILITY_BYPASS_NAME,Hacking,Hacking
+ABILITY_BYPASS_1_DESC,Minimum proficiency in hacking,Minimal hackingfärdighet
+ABILITY_BYPASS_2_DESC,Moderate hacking ability,Medelmåttig hackingkunskap
+ABILITY_BYPASS_3_DESC,Large hacking experience,Stor hackingerfarenhet
+ABILITY_BYPASS_4_DESC,God tier hacker,Gudabegåvad hacker
+ABILITY_CLIMBING_NAME,Climbing,Klättring
+ABILITY_CLIMBING_1_DESC,Can walk up stairs,Kan gå upp för trappor
+ABILITY_CLIMBING_2_DESC,Can walk on walls and up stairs,Kan klättra på väggar och upp för trappor
+ABILITY_CLIMBING_3_DESC,Can walk on walls, ceilings and up staris,Kan klättra på väggar, i taket och upp för trappor

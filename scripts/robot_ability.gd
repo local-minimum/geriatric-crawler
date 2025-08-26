@@ -1,7 +1,9 @@
 extends Resource
 class_name RobotAbility
 
+## LVL 1: Small suit bonus, LVL 2: Medium, LVL 3: Large
 const SKILL_SUIT: String = "suits"
+## LVL 1: Rank bonus, LVL 2: Also remember last round final rank, LVL 3: Larger bonus and remember until next battle
 const SKILL_RANK: String = "rank"
 
 ## LVL 0: Only floors, LVL 1: Stairs/Ladders, LVL 2: Wallwalking, LVL 3: Ceiling too
