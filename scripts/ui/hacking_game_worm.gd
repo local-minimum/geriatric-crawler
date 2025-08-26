@@ -184,7 +184,7 @@ func _draw_worm() -> void:
                 else:
                     t_rect.flip_h = false
 
-        print_debug("Worm %s is %s is rotated %s" % [idx, coords, t_rect.rotation_degrees])
+        # print_debug("Worm %s is %s is rotated %s" % [idx, coords, t_rect.rotation_degrees])
         prev_coords = coords
 
 func _on_deploy_worm_pressed() -> void:
