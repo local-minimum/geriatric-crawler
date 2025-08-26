@@ -6,7 +6,7 @@
 script = ExtResource("1_4cknv")
 id = "upgrades"
 skill_level = 3
-skill_name = "Upgrades"
+skill_name = "ABILITY_UPGRADES_NAME"
 ability_type = 2
-description = "Can buy multiple upgrades on same tier"
+description = "ABILITY_UPGRADES_3_DESC"
 metadata/_custom_type_script = "uid://0qri7op4mfno"

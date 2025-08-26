@@ -6,7 +6,7 @@
 script = ExtResource("1_srjsh")
 id = "hacking-bombs"
 skill_level = 1
-skill_name = "Advanced Logical Bombs"
+skill_name = "ABILITY_HACKING_BOMB_NAME"
 ability_type = 0
-description = "Slight chance of refunding used bombs"
+description = "ABILITY_HACKING_BOMB_1_DESC"
 metadata/_custom_type_script = "uid://0qri7op4mfno"

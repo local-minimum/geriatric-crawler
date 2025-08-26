@@ -6,7 +6,7 @@
 script = ExtResource("1_2nwqq")
 id = "mapping"
 skill_level = 3
-skill_name = "Mapping"
+skill_name = "ABILITY_MAPPING_NAME"
 ability_type = 0
-description = "Automap surroundings"
+description = "ABILITY_MAPPING_3_DESC"
 metadata/_custom_type_script = "uid://0qri7op4mfno"

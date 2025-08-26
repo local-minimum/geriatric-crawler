@@ -6,7 +6,7 @@
 script = ExtResource("1_xub2p")
 id = "sonar"
 skill_level = 2
-skill_name = "Sonar"
+skill_name = "ABILITY_SONAR_NAME"
 ability_type = 0
-description = "Detect entities & hidden features in the vicinity"
+description = "ABILITY_SONAR_2_DESC"
 metadata/_custom_type_script = "uid://0qri7op4mfno"

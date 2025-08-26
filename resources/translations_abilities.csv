@@ -26,4 +26,19 @@ ABILITY_BYPASS_4_DESC,God tier hacker,Gudabegåvad hacker
 ABILITY_CLIMBING_NAME,Climbing,Klättring
 ABILITY_CLIMBING_1_DESC,Can walk up stairs,Kan gå upp för trappor
 ABILITY_CLIMBING_2_DESC,Can walk on walls and up stairs,Kan klättra på väggar och upp för trappor
-ABILITY_CLIMBING_3_DESC,Can walk on walls, ceilings and up staris,Kan klättra på väggar, i taket och upp för trappor
+ABILITY_CLIMBING_3_DESC,"Can walk on walls, ceilings and up stairs","Kan klättra på väggar, i taket och upp för trappor"
+ABILITY_HACKING_BOMB_NAME,Advanced Logical Bombs,Avancerade Logiska Bomber
+ABILITY_HACKING_BOMB_1_DESC,Slight chance of refunding used bombs,Viss chans att återfå detonerade bomber
+ABILITY_MAPPING_NAME,Mapping,Kartografi
+ABILITY_MAPPING_1_DESC,Compass,Kompass
+ABILITY_MAPPING_2_DESC,Compass and limited 2D map of local terrain,Kompass och begränsad 2D-karta av närmsta omgivningen
+ABILITY_MAPPING_3_DESC,"Compass, 2D and 3D maps","Kompass, 2D- och 3D-kartor"
+ABILITY_MAPPING_4_DESC,"Compass, 2D and 3D maps with annotation","Kompass, 2D- och 3D-kartor med anoteringar"
+ABILITY_SONAR_NAME,Sonar,Sonar
+ABILITY_SONAR_1_DESC,Detects enemies in the vicinity,Detekterar fiender som är nära
+ABILITY_SONAR_2_DESC,Detects entities & hidden features in the vicinity,Detekterar fiender och dolda saker som är nära
+ABILITY_UPGRADES_NAME,Upgrades,Uppgraderingar
+ABILITY_UPGRADES_1_DESC,Can progress on next tier before buying upgrade,Kan samla framsteg på nästa nivå innan uppgradering köpts
+ABILITY_UPGRADES_2_DESC,Can skip buying upgrade tiers,Kan hoppa över att köpa uppgradering på en nivå
+ABILITY_UPGRADES_3_DESC,Can buy multiple upgrades on same tier,Kan köpa flera uppgraderingar på samma nivå
+ABILITY_UPGRADES_4_DESC,Can buy unlimited upgrades for unlocked tiers,Kan köpa obegränsat antal uppgraderingar

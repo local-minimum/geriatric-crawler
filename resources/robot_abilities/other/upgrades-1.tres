@@ -6,7 +6,7 @@
 script = ExtResource("1_fn6c5")
 id = "upgrades"
 skill_level = 1
-skill_name = "Upgrades"
+skill_name = "ABILITY_UPGRADES_NAME"
 ability_type = 2
-description = "Can progress on next  tier before buying upgrade"
+description = "ABILITY_UPGRADES_1_DESC"
 metadata/_custom_type_script = "uid://0qri7op4mfno"

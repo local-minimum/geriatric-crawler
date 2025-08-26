@@ -6,7 +6,7 @@
 script = ExtResource("1_5dssa")
 id = "upgrades"
 skill_level = 2
-skill_name = "Upgrades"
+skill_name = "ABILITY_UPGRADES_NAME"
 ability_type = 2
-description = "Can skip buying upgrade tiers"
+description = "ABILITY_UPGRADES_2_DESC"
 metadata/_custom_type_script = "uid://0qri7op4mfno"
