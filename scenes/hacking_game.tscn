@@ -57,39 +57,14 @@ word_bg_tex_correct = ExtResource("9_f2w7f")
 word_bg_tex_wrong_place = ExtResource("10_5yi84")
 attempt_history = NodePath("HBoxContainer/Controls/MarginContainer/VBoxContainer/Atempt History")
 most_recent_attempt = NodePath("HBoxContainer/Controls/MarginContainer/VBoxContainer/Most Recent Attempt")
-intro_tutorial = Array[String](["This shows the length of the passphrase needed
-and the the best solution in the most recent attempt", "This shows how many attempts remain", "This shows how many utilities you have left
-and buttons to deploy them", "This is the playing fields where you need to shift
-the pass code parts around to form the corret solution", "The solution must be written horizontally, 
-but can start anywhere on a line", "Click the buttons around the board to shift
-rows and columns", "Press \"Hack!\" to perform one attempt"])
-bombing_tutorial = Array[String](["Select any position to bomb.
-It and its four neighbors will be affected.", "If they are not part of a pass code,
-they will be destroyed.", "Otherwise they will be marked as
-present in the code", "You cannot shift around the board
-while bombing", "You can cancel bombing at any time
-by pressing the bombing button agian"])
-worming_tutorial = Array[String](["This is your worm", "You have a little time before it starts to move", "During this period you can cancel the worm", "You cannot shift the board while the worm is ative", "Use the arrows or navigation directions keys to
-change the direction of the worm's head", "The worm will eat and destroy all code parts
-that are not part of the pass code.
-Each time it eats, it will grow longer", "It will die when it eats one that is included
-in the solution", "It will also die if it collides with itself", "The outer walls will also end the worm"])
-correct_tutorial = Array[String](["This indicates that it is included in the passphrase
-and that it is in the correct location", "Note that since the  pass code can start anywhere
-on the line, that if a green is preceded by another
-green or orange, it may mean the detetion has
-started over again on the first letter of the pass code", "Look at the output partial solutions to see the
-exact results of the hacking attempt"])
-wrong_place_tutorial = Array[String](["Orange frames like this one indicate that they
-included in the word, but not in this location"])
-destroyed_tutorial = Array[String](["Destroyed positions like this will be jumped
-over when scanning for the pass code,
-so they can be completely ignored"])
-included_tutorial = Array[String](["When the font changes like this it indicates that
-it is known to be included in the pass code"])
-excluded_tutorial = Array[String](["When the font is greyed out it indicates that
-it is known to not be included anywhere in the
-pass code"])
+intro_tutorial = Array[String](["TUTORIAL_HACKING_INTRO_1", "TUTORIAL_HACKING_INTRO_2", "TUTORIAL_HACKING_INTRO_3", "TUTORIAL_HACKING_INTRO_4", "TUTORIAL_HACKING_INTRO_5", "TUTORIAL_HACKING_INTRO_6", "TUTORIAL_HACKING_INTRO_7"])
+bombing_tutorial = Array[String](["TUTORIAL_BOMBING_1", "TUTORIAL_BOMBING_2", "TUTORIAL_BOMBING_3", "TUTORIAL_BOMBING_4", "TUTORIAL_BOMBING_5"])
+worming_tutorial = Array[String](["TUTORIAL_WORMING_1", "TUTORIAL_WORMING_2", "TUTORIAL_WORMING_3", "TUTORIAL_WORMING_4", "TUTORIAL_WORMING_5", "TUTORIAL_WORMING_6", "TUTORIAL_WORMING_7", "TUTORIAL_WORMING_8", "TUTORIAL_WORMING_9"])
+correct_tutorial = Array[String](["TUTORIAL_HACKING_CORRECT_1", "TUTORIAL_HACKING_CORRECT_2", "TUTORIAL_HACKING_CORRECT_3"])
+wrong_place_tutorial = Array[String](["TUTORIAL_HACKING_WRONG_1"])
+destroyed_tutorial = Array[String](["TUTORIAL_HACKING_DESTROYED_1"])
+included_tutorial = Array[String](["TUTORIAL_HACKING_INCLUDED_1"])
+excluded_tutorial = Array[String](["TUTORIAL_HACKING_EXCLUDED_1"])
 
 [node name="Background" type="ColorRect" parent="Hacking Game UI"]
 anchors_preset = 15

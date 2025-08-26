@@ -77,14 +77,14 @@ const _HACKING_TUTORIAL_EXCLUDED_KEY: String = "hacking.excluded"
 
 @export var most_recent_attempt: Container
 
-@export_multiline var intro_tutorial: Array[String]
-@export_multiline var bombing_tutorial: Array[String]
-@export_multiline var worming_tutorial: Array[String]
-@export_multiline var correct_tutorial: Array[String]
-@export_multiline var wrong_place_tutorial: Array[String]
-@export_multiline var destroyed_tutorial: Array[String]
-@export_multiline var included_tutorial: Array[String]
-@export_multiline var excluded_tutorial: Array[String]
+@export var intro_tutorial: Array[String]
+@export var bombing_tutorial: Array[String]
+@export var worming_tutorial: Array[String]
+@export var correct_tutorial: Array[String]
+@export var wrong_place_tutorial: Array[String]
+@export var destroyed_tutorial: Array[String]
+@export var included_tutorial: Array[String]
+@export var excluded_tutorial: Array[String]
 
 
 const DEPLOY_BOMB_TEXT: String = "Deploy Bomb"
@@ -324,7 +324,7 @@ var on_complete_tutorial: Array[OnCompleteTutorial]
 
 func show_current_tutorial() -> void:
     _game.tutoral_ui.show_tutorial(
-        active_tutorial[tutorial_idx],
+        tr(active_tutorial[tutorial_idx]),
         null if tutorial_idx == 0 else (_show_previous_tutorial as Variant),
         _show_next_tutorial,
         _get_intro_current_targets(),

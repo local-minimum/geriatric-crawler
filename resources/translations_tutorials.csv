@@ -1,0 +1,78 @@
+keys,en,sv
+TUTORIAL_HACKING_INTRO_1,"This shows the length of the passphrase needed
+and the the best solution in the most recent attempt","Det här visar längden på koden och den bästa
+lösningen från förra försöket"
+TUTORIAL_HACKING_INTRO_2,"This shows how many attempts remain","Detta visar hur många försök du har kvar"
+TUTORIAL_HACKING_INTRO_3,"This shows how many utilities you have left
+and buttons to deploy them","Det här visar hur många verktyg du har kvar
+och knappar för att använda dom"
+TUTORIAL_HACKING_INTRO_4,"This is the playing fields where you need to shift
+the pass code parts around to form the corret solution","Det här är spelområdet där du skiftar runt
+lösenords delar för att få fram en lösning"
+TUTORIAL_HACKING_INTRO_5,"The solution must be written horizontally, 
+but can start anywhere on a line","Lösningen måste vara skriven horisontellt,
+men den kan börja var som helst på en rad"
+TUTORIAL_HACKING_INTRO_6,"Click the buttons around the board to shift
+rows and columns","Klicka på knapparna runt om brädet för att
+skifta runt rader och kolumner"
+TUTORIAL_HACKING_INTRO_7,"Press ""Hack"" to perform one attempt","Tryck på ""Hacka"" för att utföra ett försök"
+TUTORIAL_BOMBING_1,"Select any position to bomb.
+It and its four neighbors will be hit.","Välj valfri postitoin att bomba.
+Den och dess fyra grannar kommer träffas."
+TUTORIAL_BOMBING_2,"If they are not part of a pass code,
+they will be destroyed.","Om de inte är den del av lösningen
+så kommer de förstöras"
+TUTORIAL_BOMBING_3,"Otherwise they will be marked as
+present in the code","Annars kommer de markeras som
+närvarande i lösningen"
+TUTORIAL_BOMBING_4,"You cannot shift around the board
+while bombing","Du kan inte skifta runt brädet
+medan du bombar"
+TUTORIAL_BOMBING_5,"You can cancel bombing at any time
+by pressing the bombing button again","Du kan när som helst avbryta bombningen
+genom att trycka på bombningsknappen igen"
+TUTORIAL_WORMING_1,"This is your worm","Det här är din worm"
+TUTORIAL_WORMING_2,"You have a little time before it starts to move","Du har lite tid på dig innan den börjar röra på sig"
+TUTORIAL_WORMING_3,"During this period you can cancel the worm","Innan dess kan du avbryta wormen"
+TUTORIAL_WORMING_4,"You cannot shift the board while the worm is ative","Du kan inte skifta brädet medan wormen är aktiv"
+TUTORIAL_WORMING_5,"Use the arrows or navigation directions keys to
+change the direction of the worm's head","Använd navigaions pilarna
+för att ändra wormens huvuds riktning"
+TUTORIAL_WORMING_6,"The worm will eat and destroy all code parts
+that are not part of the pass code.
+Each time it eats, it will grow longer","Wormen kommer äta och förstöra alla koddelar
+som inte ingår i lösningen.
+Varje gång den äter blir den längre"
+TUTORIAL_WORMING_7,"It will die when it eats one that is included
+in the solution","Den dör när den äter upp en del som ingår i lösningen"
+TUTORIAL_WORMING_8,"It will also die if it collides with itself","Den dör också om den kolliderar med sig själv"
+TUTORIAL_WORMING_9,"The outer walls will also end the worm","Ytterväggarna dödar också wormen"
+TUTORIAL_HACKING_CORRECT_1,"This indicates that it is included in the passphrase
+and that it is in the correct location","Det här visar att delen ingår i lösningen
+och att den befinner sig på rätt plats"
+TUTORIAL_HACKING_CORRECT_2,"Note that since the pass code can start anywhere
+on the line, that if a green is preceded by another
+green or orange, it may mean the detection has
+started over again on the first letter of the pass code","Notera att eftersom lösningen kan starta var
+som helst på en linje, att om en grön markering föregåes
+av en annan grön eller orange, så kan det betyda att
+detektionen startat om och detekterat första delen i
+en ny lösning."
+TUTORIAL_HACKING_CORRECT_3,"Look at the output partial solutions to see the
+exact results of the hacking attempt","Titta på listningen av partiella lösningar
+för att se exakt hur hackningsförsöket gick"
+TUTORIAL_HACKING_WRONG_1,"Orange frames like this one indicate that they
+included in the word, but not in this location","Orange ram som den här visar att delen
+finns i lösningen, men inte på den här platsen"
+TUTORIAL_HACKING_DESTROYED_1,"Destroyed positions like this will be jumped
+over when scanning for the pass code,
+so they can be completely ignored","Förstörda positioner som den här kommer
+hoppas över när lösningar detekteras,
+så de kan helt ignoreras"
+TUTORIAL_HACKING_INCLUDED_1,"When the font changes like this it indicates that
+it is known to be included in the pass code","När texten ändras så här indikerar det att
+delen är känd som förekämmande i lösningen"
+TUTORIAL_HACKING_EXCLUDED_1,"When the font is greyed out it indicates that
+it is known to not be included anywhere in the
+pass code","När texten gråas ut betyder det att
+det är känt att delen inte finns någonstans i lösningen"
