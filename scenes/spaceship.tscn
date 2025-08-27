@@ -1,9 +1,7 @@
-[gd_scene load_steps=19 format=3 uid="uid://7flb82m2ddwe"]
+[gd_scene load_steps=16 format=3 uid="uid://7flb82m2ddwe"]
 
 [ext_resource type="Script" uid="uid://dfub4a26emjgr" path="res://scripts/spaceship.gd" id="1_ae4p7"]
-[ext_resource type="Script" uid="uid://nnoxcu366588" path="res://scripts/ui/chap_ui.gd" id="1_yqmju"]
-[ext_resource type="Resource" uid="uid://bompwr87ukvlx" path="res://stories/spaceship-chap-main.ink.json" id="3_v0rat"]
-[ext_resource type="Script" uid="uid://bb2wj0ucnido4" path="res://scripts/ink_adapter.gd" id="4_me4wu"]
+[ext_resource type="PackedScene" uid="uid://go11qx7kykx6" path="res://scenes/spaceship/chap_ai.tscn" id="2_yckko"]
 [ext_resource type="Script" uid="uid://cewp6ig7p8ec4" path="res://scripts/ui/balance_sheet_ui.gd" id="5_me4wu"]
 [ext_resource type="Script" uid="uid://cune3lm2ngiy1" path="res://scripts/ui/notifications/notifications_manager.gd" id="6_v6qj0"]
 [ext_resource type="Script" uid="uid://bkky4nqo47eiv" path="res://scripts/ui/notifications/notifications_panel_ui.gd" id="7_6i2wf"]
@@ -21,14 +19,6 @@ border_width_top = 2
 border_width_right = 2
 border_width_bottom = 2
 border_color = Color(0.936506, 0.725304, 0.872948, 1)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_p687j"]
-bg_color = Color(0.737489, 0.44525, 0.941468, 1)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.789532, 0.837777, 0.472636, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_v0rat"]
 bg_color = Color(0.138842, 0.674531, 0.733655, 1)
@@ -113,87 +103,7 @@ text = "ENGINE_ROOM"
 layout_mode = 2
 text = "BROOM_CLOSET"
 
-[node name="CHAP AI" type="PanelContainer" parent="CanvasLayer" node_paths=PackedStringArray("_ink_adapter", "title", "scroll_container", "messages", "_inactive_buttons")]
-anchors_preset = 3
-anchor_left = 1.0
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -322.0
-offset_top = -86.195
-offset_right = -40.0
-offset_bottom = -49.195
-grow_horizontal = 0
-grow_vertical = 0
-size_flags_horizontal = 2
-size_flags_vertical = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_p687j")
-script = ExtResource("1_yqmju")
-_story_main = ExtResource("3_v0rat")
-_ink_adapter = NodePath("InkAdapter")
-title = NodePath("MarginContainer/VBoxContainer/Title")
-scroll_container = NodePath("MarginContainer/VBoxContainer/ScrollContainer")
-messages = NodePath("MarginContainer/VBoxContainer/ScrollContainer/PanelContainer/MarginContainer/Messages")
-_inactive_buttons = NodePath("MarginContainer/VBoxContainer/Inactive Buttons")
-animation = 4
-letter_pause = 0.02
-
-[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/CHAP AI"]
-layout_mode = 2
-size_flags_vertical = 8
-theme_override_constants/margin_left = 8
-theme_override_constants/margin_top = 8
-theme_override_constants/margin_right = 8
-theme_override_constants/margin_bottom = 8
-
-[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/CHAP AI/MarginContainer"]
-layout_mode = 2
-size_flags_vertical = 8
-theme_override_constants/separation = 4
-
-[node name="Title" type="Label" parent="CanvasLayer/CHAP AI/MarginContainer/VBoxContainer"]
-layout_mode = 2
-theme_override_colors/font_color = Color(0, 0, 0, 1)
-theme_override_colors/font_shadow_color = Color(0.903598, 0.903598, 0.903598, 1)
-theme_override_font_sizes/font_size = 12
-text = "CHAP_LONG"
-horizontal_alignment = 1
-uppercase = true
-
-[node name="ScrollContainer" type="ScrollContainer" parent="CanvasLayer/CHAP AI/MarginContainer/VBoxContainer"]
-visible = false
-custom_minimum_size = Vector2(0, 200)
-layout_mode = 2
-horizontal_scroll_mode = 0
-
-[node name="PanelContainer" type="PanelContainer" parent="CanvasLayer/CHAP AI/MarginContainer/VBoxContainer/ScrollContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-
-[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/CHAP AI/MarginContainer/VBoxContainer/ScrollContainer/PanelContainer"]
-layout_mode = 2
-theme_override_constants/margin_left = 2
-theme_override_constants/margin_top = 4
-theme_override_constants/margin_right = 2
-theme_override_constants/margin_bottom = 4
-
-[node name="Messages" type="VBoxContainer" parent="CanvasLayer/CHAP AI/MarginContainer/VBoxContainer/ScrollContainer/PanelContainer/MarginContainer"]
-layout_mode = 2
-theme_override_constants/separation = 8
-alignment = 2
-
-[node name="Inactive Buttons" type="HBoxContainer" parent="CanvasLayer/CHAP AI/MarginContainer/VBoxContainer"]
-visible = false
-layout_mode = 2
-
-[node name="Reboot Button" type="Button" parent="CanvasLayer/CHAP AI/MarginContainer/VBoxContainer/Inactive Buttons"]
-layout_mode = 2
-text = "REBOOT"
-
-[node name="InkAdapter" type="Node" parent="CanvasLayer/CHAP AI"]
-script = ExtResource("4_me4wu")
-metadata/_custom_type_script = "uid://bb2wj0ucnido4"
+[node name="CHAP AI" parent="CanvasLayer" instance=ExtResource("2_yckko")]
 
 [node name="Balance Sheet UI" type="PanelContainer" parent="CanvasLayer" node_paths=PackedStringArray("credits_value", "loans_value", "debits_value", "interest_label", "interest_value", "rent_value", "balance_value", "due_time_value")]
 anchors_preset = 1
@@ -356,5 +266,3 @@ metadata/_custom_type_script = "uid://tgtpk0qo2xx7"
 [node name="ChapSaver" type="Node" parent="SaveSystem"]
 script = ExtResource("11_yckko")
 metadata/_custom_type_script = "uid://cewd737qkspe7"
-
-[connection signal="pressed" from="CanvasLayer/CHAP AI/MarginContainer/VBoxContainer/Inactive Buttons/Reboot Button" to="CanvasLayer/CHAP AI" method="_on_reboot_button_pressed"]

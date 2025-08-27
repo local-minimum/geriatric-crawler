@@ -1,0 +1,98 @@
+[gd_scene load_steps=5 format=3 uid="uid://go11qx7kykx6"]
+
+[ext_resource type="Script" uid="uid://nnoxcu366588" path="res://scripts/ui/chap_ui.gd" id="1_wavfj"]
+[ext_resource type="Resource" uid="uid://bompwr87ukvlx" path="res://stories/spaceship-chap-main.ink.json" id="2_iv8rt"]
+[ext_resource type="Script" uid="uid://bb2wj0ucnido4" path="res://scripts/ink_adapter.gd" id="3_dmqrf"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_p687j"]
+bg_color = Color(0.737489, 0.44525, 0.941468, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.789532, 0.837777, 0.472636, 1)
+
+[node name="CHAP AI" type="PanelContainer" node_paths=PackedStringArray("_ink_adapter", "title", "scroll_container", "messages", "_inactive_buttons")]
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -322.0
+offset_top = -86.195
+offset_right = -40.0
+offset_bottom = -49.195
+grow_horizontal = 0
+grow_vertical = 0
+size_flags_horizontal = 2
+size_flags_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_p687j")
+script = ExtResource("1_wavfj")
+_story_main = ExtResource("2_iv8rt")
+_ink_adapter = NodePath("InkAdapter")
+title = NodePath("MarginContainer/VBoxContainer/Title")
+scroll_container = NodePath("MarginContainer/VBoxContainer/ScrollContainer")
+messages = NodePath("MarginContainer/VBoxContainer/ScrollContainer/PanelContainer/MarginContainer/Messages")
+_inactive_buttons = NodePath("MarginContainer/VBoxContainer/Inactive Buttons")
+animation = 4
+letter_pause = 0.01
+word_pause = 0.075
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+size_flags_vertical = 8
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+size_flags_vertical = 8
+theme_override_constants/separation = 4
+
+[node name="Title" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_shadow_color = Color(0.903598, 0.903598, 0.903598, 1)
+theme_override_font_sizes/font_size = 12
+text = "CHAP_LONG"
+horizontal_alignment = 1
+uppercase = true
+
+[node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer/VBoxContainer"]
+visible = false
+custom_minimum_size = Vector2(0, 200)
+layout_mode = 2
+horizontal_scroll_mode = 0
+
+[node name="PanelContainer" type="PanelContainer" parent="MarginContainer/VBoxContainer/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 2
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 2
+theme_override_constants/margin_bottom = 4
+
+[node name="Messages" type="VBoxContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/PanelContainer/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 8
+alignment = 2
+
+[node name="Inactive Buttons" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+visible = false
+layout_mode = 2
+
+[node name="Reboot Button" type="Button" parent="MarginContainer/VBoxContainer/Inactive Buttons"]
+layout_mode = 2
+text = "REBOOT"
+
+[node name="InkAdapter" type="Node" parent="."]
+script = ExtResource("3_dmqrf")
+metadata/_custom_type_script = "uid://bb2wj0ucnido4"
+
+[connection signal="pressed" from="MarginContainer/VBoxContainer/Inactive Buttons/Reboot Button" to="." method="_on_reboot_button_pressed"]

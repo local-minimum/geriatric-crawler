@@ -77,8 +77,14 @@ func _ready() -> void:
     if __SignalBus.on_increment_day.connect(_handle_new_day) != OK:
         push_error("Failed to connect new day")
 
+    _initial_ui_visibilities()
     await get_tree().create_timer(1).timeout
     _start_main_story()
+
+func _initial_ui_visibilities() -> void:
+    scroll_container.custom_minimum_size.y = 0
+    scroll_container.show()
+    _inactive_buttons.hide()
 
 var _open_tween: Tween
 func _start_main_story() -> void:
@@ -88,9 +94,7 @@ func _start_main_story() -> void:
     _animating = false
     _fast_forward = false
 
-    scroll_container.custom_minimum_size.y = 0
-    scroll_container.show()
-    _inactive_buttons.hide()
+    _initial_ui_visibilities()
 
     if _closing_tween != null && _closing_tween.is_running():
         _closing_tween.kill()
@@ -439,4 +443,5 @@ func _on_reboot_button_pressed() -> void:
     if _closing_tween != null && _closing_tween.is_running():
         _closing_tween.kill()
 
+    _empty_history()
     _start_main_story()
