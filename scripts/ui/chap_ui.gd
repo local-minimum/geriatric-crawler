@@ -10,6 +10,7 @@ enum ListingCoices {NO, YES, TRUNCATING}
 @export var title: Label
 @export var scroll_container: ScrollContainer
 @export var messages: VBoxContainer
+@export var _inactive_buttons: Control
 @export var message_font_size: int = 10
 @export var animation: TextUtils.Segment
 @export var ignore_empty_messages: bool = true
@@ -17,6 +18,9 @@ enum ListingCoices {NO, YES, TRUNCATING}
 @export_range(0, 1) var word_pause: float = 0.1
 @export_range(0, 1) var sentence_pause: float = 0.3
 @export_range(0, 1) var option_pause: float = 0.5
+@export_range(0, 2) var close_animation_duration: float = 1
+@export_range(0, 1) var show_buttons_after_close_fraction: float = 0.3
+@export_range(0, 1) var show_story_animation_duration: float = 0.5
 
 var _animating: bool
 var _fast_forward: bool
@@ -27,6 +31,7 @@ var _awaiting_choice: Array[InkAdapter.Choice]
 var _option_buttons: Array[Button]
 var _story_state: Dictionary[String, Variant]
 var _choice_page: int = 0
+var _min_height: float = 0
 
 const _PAGINATION_SIZE: int = 6
 const _OPTION_KEYS: Array[Key] = [KEY_0, KEY_1, KEY_2, KEY_3, KEY_4, KEY_5, KEY_6]
@@ -47,6 +52,11 @@ var _busy: bool:
         return _animating || _choosing || _story_queue.size() > 0
 
 func _ready() -> void:
+    scroll_container.show()
+    _inactive_buttons.hide()
+
+    _min_height = scroll_container.custom_minimum_size.y
+
     TextUtils.init()
 
     if _ink_adapter.on_display_text.connect(_display_story_part) != OK:
@@ -68,6 +78,30 @@ func _ready() -> void:
         push_error("Failed to connect new day")
 
     await get_tree().create_timer(1).timeout
+    _start_main_story()
+
+var _open_tween: Tween
+func _start_main_story() -> void:
+    _choice_page = 0
+    _listing_choices = ListingCoices.NO
+    _choosing = false
+    _animating = false
+    _fast_forward = false
+
+    scroll_container.custom_minimum_size.y = 0
+    scroll_container.show()
+    _inactive_buttons.hide()
+
+    if _closing_tween != null && _closing_tween.is_running():
+        _closing_tween.kill()
+
+    if _open_tween == null || !_open_tween.is_running():
+        _open_tween = get_tree().create_tween()
+
+        @warning_ignore_start("return_value_discarded")
+        _open_tween.tween_property(scroll_container, "custom_minimum_size:y", _min_height, show_story_animation_duration).set_trans(Tween.TRANS_QUINT).set_ease(Tween.EASE_IN)
+        @warning_ignore_restore("return_value_discarded")
+
     _ink_adapter.load_story(_story_main, false, _get_main_story_state())
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -105,8 +139,27 @@ func _handle_story_loaded() -> void:
 func _handle_new_loan(amount: int) -> void:
     __GlobalGameState.take_out_loan(amount)
 
+var _closing_tween: Tween
+
 func _handle_story_ended() -> void:
     _ink_adapter.unregister_story_function(_STORY_FUNCTION_LOAN)
+
+    if _open_tween != null && _open_tween.is_running():
+        _open_tween.kill()
+
+    if _closing_tween != null && _closing_tween.is_running():
+        return
+
+    _closing_tween = get_tree().create_tween()
+
+    @warning_ignore_start("return_value_discarded")
+    _closing_tween.tween_property(scroll_container, "custom_minimum_size:y", 0, close_animation_duration).set_trans(Tween.TRANS_QUINT).set_ease(Tween.EASE_IN)
+    @warning_ignore_restore("return_value_discarded")
+
+    await get_tree().create_timer(close_animation_duration * show_buttons_after_close_fraction).timeout
+
+    if _closing_tween != null && _closing_tween.is_running():
+        _inactive_buttons.show()
 
 func _get_main_story_state() -> Dictionary[String, Variant]:
     if _story_state.is_empty():
@@ -187,7 +240,7 @@ func _display_options() -> void:
     var last_choice: InkAdapter.Choice = null if _awaiting_choice.is_empty() else _awaiting_choice[_awaiting_choice.size() - 1]
 
     if _choice_page > 0:
-        var btn: Button = _get_option_buttion()
+        var btn: Button = _get_option_button()
         btn.text = "%s. < %s <" % [hot_key, tr("PREVIOUS").to_upper()]
         btn.set_meta(_BTN_META_HOTKEY, hot_key)
         btn.set_meta(_BTN_META_PAGE_NAV, PageNav.PREVIOUS)
@@ -208,7 +261,7 @@ func _display_options() -> void:
         hot_key += 1
 
     for choice: InkAdapter.Choice in page_choices:
-        var btn: Button = _get_option_buttion()
+        var btn: Button = _get_option_button()
         btn.text = "%s. %s" % [hot_key, choice.text.strip_edges()]
         btn.set_meta(_BTN_META_CHOICE, choice)
         btn.set_meta(_BTN_META_HOTKEY, hot_key)
@@ -236,7 +289,7 @@ func _display_options() -> void:
         hot_key += 1
 
     if _choice_page == 0 && page_choices.size() < _awaiting_choice.size() || _choice_page > 0 && !page_choices.has(last_choice):
-        var btn: Button = _get_option_buttion()
+        var btn: Button = _get_option_button()
         btn.text = "%s. > %s >" % [hot_key, tr("NEXT").to_upper()]
         btn.set_meta(_BTN_META_HOTKEY, hot_key)
         btn.set_meta(_BTN_META_PAGE_NAV, PageNav.NEXT)
@@ -335,14 +388,16 @@ func _get_message_label() -> Label:
     var label: Label = Label.new()
     label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
     label.custom_minimum_size = _MIN_COMPONENT_SIZE
+    label.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
     label.add_theme_font_size_override("font_size", message_font_size)
     return label
 
-func _get_option_buttion() -> Button:
+func _get_option_button() -> Button:
     var btn: Button = Button.new()
     btn.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
     btn.custom_minimum_size = _MIN_COMPONENT_SIZE
     btn.alignment = HORIZONTAL_ALIGNMENT_LEFT
+    btn.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
     btn.add_theme_font_size_override("font_size", message_font_size)
 
     return btn
@@ -373,3 +428,15 @@ func load_save_state(state: Dictionary) -> void:
                     if value is not int:
                         continue
             _story_state[key] = value
+
+
+func _empty_history() -> void:
+    UIUtils.clear_control(messages)
+    _option_buttons.clear()
+    _awaiting_choice.clear()
+
+func _on_reboot_button_pressed() -> void:
+    if _closing_tween != null && _closing_tween.is_running():
+        _closing_tween.kill()
+
+    _start_main_story()
