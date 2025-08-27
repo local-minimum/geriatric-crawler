@@ -39,6 +39,18 @@ func higher(other: Version) -> bool:
 
     return !same(other)
 
+func higher_or_equal(other: Version) -> bool:
+    if same(other):
+        return true
+
+    if _version_tuple[0] < other._version_tuple[0]: return false
+    if _version_tuple[1] < other._version_tuple[1]: return false
+    if _version_tuple[2] < other._version_tuple[2]: return false
+
+    if _tuple_trail < other._tuple_trail: return false
+
+    return true
+
 func lower(other: Version) -> bool:
     if _version_tuple[0] > other._version_tuple[0]: return false
     if _version_tuple[1] > other._version_tuple[1]: return false
@@ -47,3 +59,15 @@ func lower(other: Version) -> bool:
     if _tuple_trail > other._tuple_trail: return false
 
     return !same(other)
+
+func lower_or_equal(other: Version) -> bool:
+    if same(other):
+        return true
+
+    if _version_tuple[0] > other._version_tuple[0]: return false
+    if _version_tuple[1] > other._version_tuple[1]: return false
+    if _version_tuple[2] > other._version_tuple[2]: return false
+
+    if _tuple_trail > other._tuple_trail: return false
+
+    return true

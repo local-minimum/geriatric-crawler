@@ -1,19 +1,40 @@
-[gd_scene load_steps=8 format=3 uid="uid://xqedv5aeal6n"]
+[gd_scene load_steps=12 format=3 uid="uid://xqedv5aeal6n"]
 
 [ext_resource type="Script" uid="uid://bkjlt23hansuv" path="res://scripts/savesystem/save_system.gd" id="1_iwv0b"]
 [ext_resource type="Script" uid="uid://bemcpr6cqtnb3" path="res://scripts/savesystem/disk_json_storage_provider.gd" id="2_7c2yx"]
+[ext_resource type="Script" uid="uid://dk1kwquttgwfc" path="res://scripts/savesystem/migrations/migrate_save_v0.0.2.gd" id="2_gk5mi"]
 [ext_resource type="Script" uid="uid://b5qjiwnmmx7i3" path="res://scripts/gridded_level/gridded_level_saver.gd" id="3_a0ogi"]
+[ext_resource type="Script" uid="uid://bjkpx0v0d0vky" path="res://scripts/convenience/version.gd" id="3_dvfyy"]
 [ext_resource type="Script" uid="uid://c2ktk27vk655o" path="res://scripts/card_battle/battle_mode_saver.gd" id="4_fhslq"]
 [ext_resource type="Script" uid="uid://qjheystlwhef" path="res://scripts/robot_mapper_saver.gd" id="6_ma5ye"]
 [ext_resource type="Script" uid="uid://clmlakb50km2n" path="res://scripts/inventory_saver.gd" id="7_681h2"]
 [ext_resource type="Script" uid="uid://tgtpk0qo2xx7" path="res://scripts/global_game_state_saver.gd" id="7_v64ur"]
 
-[node name="Exploration Save System" type="Node" node_paths=PackedStringArray("storage_provider", "level_saver", "extensions")]
+[sub_resource type="Resource" id="Resource_7s7wj"]
+script = ExtResource("3_dvfyy")
+_version = "0.0.1"
+metadata/_custom_type_script = "uid://bjkpx0v0d0vky"
+
+[sub_resource type="Resource" id="Resource_u3kui"]
+script = ExtResource("3_dvfyy")
+_version = "0.0.2"
+metadata/_custom_type_script = "uid://bjkpx0v0d0vky"
+
+[node name="Exploration Save System" type="Node" node_paths=PackedStringArray("storage_provider", "level_saver", "extensions", "migrations")]
 script = ExtResource("1_iwv0b")
 storage_provider = NodePath("StorageProvider")
 level_saver = NodePath("LevelSaver")
 extensions = [NodePath("GlobalGameStateSaver"), NodePath("BattleModeSaver"), NodePath("RobotMapperSaver"), NodePath("InventorySaver")]
+migrations = [NodePath("Migrations/v0_0_2")]
 metadata/_custom_type_script = "uid://bkjlt23hansuv"
+
+[node name="Migrations" type="Node" parent="."]
+
+[node name="v0_0_2" type="Node" parent="Migrations" node_paths=PackedStringArray("global_state_saver")]
+script = ExtResource("2_gk5mi")
+applies_to = SubResource("Resource_7s7wj")
+global_state_saver = NodePath("../../GlobalGameStateSaver")
+applies_from = SubResource("Resource_u3kui")
 
 [node name="StorageProvider" type="Node" parent="."]
 script = ExtResource("2_7c2yx")

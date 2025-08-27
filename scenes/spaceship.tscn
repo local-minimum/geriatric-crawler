@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://7flb82m2ddwe"]
+[gd_scene load_steps=19 format=3 uid="uid://7flb82m2ddwe"]
 
 [ext_resource type="Script" uid="uid://dfub4a26emjgr" path="res://scripts/spaceship.gd" id="1_ae4p7"]
 [ext_resource type="Script" uid="uid://nnoxcu366588" path="res://scripts/ui/chap_ui.gd" id="1_yqmju"]
@@ -9,6 +9,8 @@
 [ext_resource type="Script" uid="uid://bkky4nqo47eiv" path="res://scripts/ui/notifications/notifications_panel_ui.gd" id="7_6i2wf"]
 [ext_resource type="Script" uid="uid://bkjlt23hansuv" path="res://scripts/savesystem/save_system.gd" id="8_r0fvi"]
 [ext_resource type="Script" uid="uid://bemcpr6cqtnb3" path="res://scripts/savesystem/disk_json_storage_provider.gd" id="9_6wr2n"]
+[ext_resource type="Script" uid="uid://dk1kwquttgwfc" path="res://scripts/savesystem/migrations/migrate_save_v0.0.2.gd" id="9_iow36"]
+[ext_resource type="Script" uid="uid://bjkpx0v0d0vky" path="res://scripts/convenience/version.gd" id="10_5eye7"]
 [ext_resource type="Script" uid="uid://tgtpk0qo2xx7" path="res://scripts/global_game_state_saver.gd" id="10_6wr2n"]
 [ext_resource type="Script" uid="uid://cewd737qkspe7" path="res://scripts/chap_saver.gd" id="11_yckko"]
 
@@ -36,6 +38,16 @@ border_width_right = 4
 border_width_bottom = 4
 border_color = Color(0.88354, 0.749394, 0.889082, 1)
 border_blend = true
+
+[sub_resource type="Resource" id="Resource_tst1b"]
+script = ExtResource("10_5eye7")
+_version = "0.0.1"
+metadata/_custom_type_script = "uid://bjkpx0v0d0vky"
+
+[sub_resource type="Resource" id="Resource_d22a7"]
+script = ExtResource("10_5eye7")
+_version = "0.0.2"
+metadata/_custom_type_script = "uid://bjkpx0v0d0vky"
 
 [node name="Spaceshiip" type="Node2D" node_paths=PackedStringArray("chap_ui")]
 script = ExtResource("1_ae4p7")
@@ -319,11 +331,20 @@ alignment = 2
 script = ExtResource("7_6i2wf")
 _tween_notifiction_duration = 0.5
 
-[node name="SaveSystem" type="Node" parent="." node_paths=PackedStringArray("storage_provider", "extensions")]
+[node name="SaveSystem" type="Node" parent="." node_paths=PackedStringArray("storage_provider", "extensions", "migrations")]
 script = ExtResource("8_r0fvi")
 storage_provider = NodePath("StorageProvider")
 extensions = [NodePath("GlobalGameStateSaver"), NodePath("ChapSaver")]
+migrations = [NodePath("Migrations/v0_0_2")]
 metadata/_custom_type_script = "uid://bkjlt23hansuv"
+
+[node name="Migrations" type="Node" parent="SaveSystem"]
+
+[node name="v0_0_2" type="Node" parent="SaveSystem/Migrations" node_paths=PackedStringArray("global_state_saver")]
+script = ExtResource("9_iow36")
+applies_to = SubResource("Resource_tst1b")
+global_state_saver = NodePath("../../GlobalGameStateSaver")
+applies_from = SubResource("Resource_d22a7")
 
 [node name="StorageProvider" type="Node" parent="SaveSystem"]
 script = ExtResource("9_6wr2n")
