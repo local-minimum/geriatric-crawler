@@ -177,3 +177,8 @@ DIFFICULTY,Difficulty,Svårighetsgrad
 ATTEMPTS,Attempts,Försök
 ATTEMPTS_REMAINING,Attempts Remaining,Återstående Försök
 REBOOT,Reboot,Starta om
+SELECT_ROBOT,Select Robot,Välj Robot
+LOADOUT,Loadout,Utrusta
+DEPLOY,Deploy,Sänd ut
+NO_ROBOTS_AVAILABLE,No robot is available for a mission,Inga robotar fill tillgängliga för ett uppdrag
+CONSTRUCT_FIRST_ROBOT,Go to printers to construct your first robot,Gå till printers för att konstruera din första robot

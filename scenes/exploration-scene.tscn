@@ -88,9 +88,8 @@ inspect_robot_ui = NodePath("../Robot Inspection UI")
 [node name="Robot Inspection UI" parent="." instance=ExtResource("6_w7kg7")]
 visible = false
 
-[node name="ExplorationInventory" type="Node" parent="." node_paths=PackedStringArray("battle")]
+[node name="ExplorationInventory" type="Node" parent="."]
 script = ExtResource("7_hdcgk")
-battle = NodePath("../Battle Mode")
 metadata/_custom_type_script = "uid://dftf4h6eyrsio"
 
 [node name="Start Hacking Dialog" parent="." instance=ExtResource("10_n04bd")]

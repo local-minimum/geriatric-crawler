@@ -6,9 +6,6 @@ static var active_inventory: Inventory
 signal on_add_to_inventory(id: String, amount: float, total: float)
 signal on_remove_from_inventory(id: String, amount: float, total: float)
 
-
-@export var battle: BattleMode
-
 var _inventory: Dictionary[String, float] = {}
 
 static func inventory_item_id_to_text(id: String) -> String:

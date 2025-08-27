@@ -1,8 +1,11 @@
-[gd_scene load_steps=16 format=3 uid="uid://7flb82m2ddwe"]
+[gd_scene load_steps=21 format=3 uid="uid://7flb82m2ddwe"]
 
 [ext_resource type="Script" uid="uid://dfub4a26emjgr" path="res://scripts/spaceship.gd" id="1_ae4p7"]
+[ext_resource type="Texture2D" uid="uid://0ncw5fw4jr8u" path="res://sprites/spaceship/missionops.png" id="2_5eye7"]
+[ext_resource type="Script" uid="uid://2u36jp6hoedg" path="res://scripts/spaceship/mission_ops.gd" id="2_tst1b"]
 [ext_resource type="PackedScene" uid="uid://go11qx7kykx6" path="res://scenes/spaceship/chap_ai.tscn" id="2_yckko"]
-[ext_resource type="Script" uid="uid://cewp6ig7p8ec4" path="res://scripts/ui/balance_sheet_ui.gd" id="5_me4wu"]
+[ext_resource type="PackedScene" uid="uid://c5vo86nqwtiqw" path="res://scenes/spaceship/balance_sheet_ui.tscn" id="3_yckko"]
+[ext_resource type="Texture2D" uid="uid://dog5ren3gjxpj" path="res://sprites/kenny game icons/right.png" id="4_l0x72"]
 [ext_resource type="Script" uid="uid://cune3lm2ngiy1" path="res://scripts/ui/notifications/notifications_manager.gd" id="6_v6qj0"]
 [ext_resource type="Script" uid="uid://bkky4nqo47eiv" path="res://scripts/ui/notifications/notifications_panel_ui.gd" id="7_6i2wf"]
 [ext_resource type="Script" uid="uid://bkjlt23hansuv" path="res://scripts/savesystem/save_system.gd" id="8_r0fvi"]
@@ -11,6 +14,9 @@
 [ext_resource type="Script" uid="uid://bjkpx0v0d0vky" path="res://scripts/convenience/version.gd" id="10_5eye7"]
 [ext_resource type="Script" uid="uid://tgtpk0qo2xx7" path="res://scripts/global_game_state_saver.gd" id="10_6wr2n"]
 [ext_resource type="Script" uid="uid://cewd737qkspe7" path="res://scripts/chap_saver.gd" id="11_yckko"]
+[ext_resource type="Script" uid="uid://clmlakb50km2n" path="res://scripts/inventory_saver.gd" id="15_d22a7"]
+[ext_resource type="Script" uid="uid://dftf4h6eyrsio" path="res://scripts/inventory.gd" id="15_tst1b"]
+[ext_resource type="Script" uid="uid://dh2gnvehpl1wc" path="res://scripts/spaceship/robots_pool.gd" id="17_0xuuw"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ws7tf"]
 bg_color = Color(0.477872, 0.602944, 0.818495, 1)
@@ -19,15 +25,6 @@ border_width_top = 2
 border_width_right = 2
 border_width_bottom = 2
 border_color = Color(0.936506, 0.725304, 0.872948, 1)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_v0rat"]
-bg_color = Color(0.138842, 0.674531, 0.733655, 1)
-border_width_left = 4
-border_width_top = 4
-border_width_right = 4
-border_width_bottom = 4
-border_color = Color(0.88354, 0.749394, 0.889082, 1)
-border_blend = true
 
 [sub_resource type="Resource" id="Resource_tst1b"]
 script = ExtResource("10_5eye7")
@@ -39,11 +36,115 @@ script = ExtResource("10_5eye7")
 _version = "0.0.2"
 metadata/_custom_type_script = "uid://bjkpx0v0d0vky"
 
-[node name="Spaceshiip" type="Node2D" node_paths=PackedStringArray("chap_ui")]
+[node name="Spaceshiip" type="Node2D" node_paths=PackedStringArray("chap_ui", "rooms", "inventory", "robots_pool")]
 script = ExtResource("1_ae4p7")
 chap_ui = NodePath("CanvasLayer/CHAP AI")
+rooms = {
+2: NodePath("CanvasLayer/ActiveArea/MissionOpsRoom")
+}
+inventory = NodePath("Inventory")
+robots_pool = NodePath("RobotsPool")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="ActiveArea" type="AspectRatioContainer" parent="CanvasLayer"]
+anchors_preset = -1
+anchor_left = 0.166
+anchor_right = 0.824
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MissionOpsRoom" type="Control" parent="CanvasLayer/ActiveArea" node_paths=PackedStringArray("spaceship", "select_robot_btn", "loadout_btn", "deploy_btn", "robot_listing_panel", "robot_listing_container")]
+layout_mode = 2
+script = ExtResource("2_tst1b")
+spaceship = NodePath("../../..")
+select_robot_btn = NodePath("Main Buttons/Select Robot")
+loadout_btn = NodePath("Main Buttons/Loadout")
+deploy_btn = NodePath("Main Buttons/Deploy")
+robot_listing_panel = NodePath("PanelContainer")
+robot_listing_container = NodePath("PanelContainer/MarginContainer/ScrollContainer/VBoxContainer")
+metadata/_custom_type_script = "uid://2u36jp6hoedg"
+
+[node name="Mission Ops" type="TextureRect" parent="CanvasLayer/ActiveArea/MissionOpsRoom"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_5eye7")
+expand_mode = 2
+
+[node name="Main Buttons" type="HBoxContainer" parent="CanvasLayer/ActiveArea/MissionOpsRoom"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.1
+anchor_top = 0.123
+anchor_right = 0.9
+anchor_bottom = 0.123
+offset_left = -1.52588e-05
+offset_top = -15.5
+offset_bottom = 15.5
+grow_horizontal = 2
+grow_vertical = 2
+alignment = 1
+
+[node name="Select Robot" type="Button" parent="CanvasLayer/ActiveArea/MissionOpsRoom/Main Buttons"]
+layout_mode = 2
+text = "SELECT_ROBOT"
+
+[node name="Then" type="TextureRect" parent="CanvasLayer/ActiveArea/MissionOpsRoom/Main Buttons"]
+layout_mode = 2
+texture = ExtResource("4_l0x72")
+expand_mode = 2
+stretch_mode = 5
+
+[node name="Loadout" type="Button" parent="CanvasLayer/ActiveArea/MissionOpsRoom/Main Buttons"]
+layout_mode = 2
+text = "LOADOUT"
+
+[node name="Then2" type="TextureRect" parent="CanvasLayer/ActiveArea/MissionOpsRoom/Main Buttons"]
+layout_mode = 2
+texture = ExtResource("4_l0x72")
+expand_mode = 2
+stretch_mode = 5
+
+[node name="Deploy" type="Button" parent="CanvasLayer/ActiveArea/MissionOpsRoom/Main Buttons"]
+layout_mode = 2
+text = "DEPLOY"
+
+[node name="PanelContainer" type="PanelContainer" parent="CanvasLayer/ActiveArea/MissionOpsRoom"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/ActiveArea/MissionOpsRoom/PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 8
+
+[node name="ScrollContainer" type="ScrollContainer" parent="CanvasLayer/ActiveArea/MissionOpsRoom/PanelContainer/MarginContainer"]
+custom_minimum_size = Vector2(0, 150)
+layout_mode = 2
+horizontal_scroll_mode = 0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/ActiveArea/MissionOpsRoom/PanelContainer/MarginContainer/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+alignment = 1
 
 [node name="Rooms Panel" type="PanelContainer" parent="CanvasLayer"]
 offset_left = 40.0
@@ -105,124 +206,7 @@ text = "BROOM_CLOSET"
 
 [node name="CHAP AI" parent="CanvasLayer" instance=ExtResource("2_yckko")]
 
-[node name="Balance Sheet UI" type="PanelContainer" parent="CanvasLayer" node_paths=PackedStringArray("credits_value", "loans_value", "debits_value", "interest_label", "interest_value", "rent_value", "balance_value", "due_time_value")]
-anchors_preset = 1
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -40.0
-offset_top = 40.0
-offset_right = -40.0
-offset_bottom = 40.0
-grow_horizontal = 0
-theme_override_styles/panel = SubResource("StyleBoxFlat_v0rat")
-script = ExtResource("5_me4wu")
-positive_color = Color(0.783142, 0.916648, 0.899138, 1)
-negative_color = Color(0.69, 0.2553, 0.262545, 1)
-credits_value = NodePath("MarginContainer/GridContainer/Credits Value")
-loans_value = NodePath("MarginContainer/GridContainer/Loans Value")
-debits_value = NodePath("MarginContainer/GridContainer/Debit Value")
-interest_label = NodePath("MarginContainer/GridContainer/Interest Label")
-interest_value = NodePath("MarginContainer/GridContainer/Interest Value")
-rent_value = NodePath("MarginContainer/GridContainer/Rent Value")
-balance_value = NodePath("MarginContainer/GridContainer/Balance Value")
-due_time_value = NodePath("MarginContainer/GridContainer/Due Value")
-
-[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/Balance Sheet UI"]
-layout_mode = 2
-theme_override_constants/margin_left = 6
-theme_override_constants/margin_top = 6
-theme_override_constants/margin_right = 6
-theme_override_constants/margin_bottom = 6
-
-[node name="GridContainer" type="GridContainer" parent="CanvasLayer/Balance Sheet UI/MarginContainer"]
-layout_mode = 2
-theme_override_constants/h_separation = 16
-theme_override_constants/v_separation = 4
-columns = 2
-
-[node name="Credits Label" type="Label" parent="CanvasLayer/Balance Sheet UI/MarginContainer/GridContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "CREDIT"
-
-[node name="Credits Value" type="Label" parent="CanvasLayer/Balance Sheet UI/MarginContainer/GridContainer"]
-layout_mode = 2
-text = "000"
-horizontal_alignment = 2
-
-[node name="Loans Label" type="Label" parent="CanvasLayer/Balance Sheet UI/MarginContainer/GridContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 12
-text = "LOANS"
-
-[node name="Loans Value" type="Label" parent="CanvasLayer/Balance Sheet UI/MarginContainer/GridContainer"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 12
-text = "000"
-horizontal_alignment = 2
-
-[node name="Debit Label" type="Label" parent="CanvasLayer/Balance Sheet UI/MarginContainer/GridContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "DEBIT"
-
-[node name="Debit Value" type="Label" parent="CanvasLayer/Balance Sheet UI/MarginContainer/GridContainer"]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.780392, 0.164706, 0.196078, 1)
-text = "000"
-horizontal_alignment = 2
-
-[node name="Interest Label" type="Label" parent="CanvasLayer/Balance Sheet UI/MarginContainer/GridContainer"]
-auto_translate_mode = 2
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 12
-text = "INTEREST_WITH_RATE"
-
-[node name="Interest Value" type="Label" parent="CanvasLayer/Balance Sheet UI/MarginContainer/GridContainer"]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.78, 0.1638, 0.19461, 1)
-theme_override_font_sizes/font_size = 12
-text = "000"
-horizontal_alignment = 2
-
-[node name="Rent Label" type="Label" parent="CanvasLayer/Balance Sheet UI/MarginContainer/GridContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 12
-text = "RENT"
-
-[node name="Rent Value" type="Label" parent="CanvasLayer/Balance Sheet UI/MarginContainer/GridContainer"]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.78, 0.1638, 0.19461, 1)
-theme_override_font_sizes/font_size = 12
-text = "000"
-horizontal_alignment = 2
-
-[node name="Balance Label" type="Label" parent="CanvasLayer/Balance Sheet UI/MarginContainer/GridContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "BALANCE"
-
-[node name="Balance Value" type="Label" parent="CanvasLayer/Balance Sheet UI/MarginContainer/GridContainer"]
-layout_mode = 2
-text = "000"
-horizontal_alignment = 2
-
-[node name="Due Label" type="Label" parent="CanvasLayer/Balance Sheet UI/MarginContainer/GridContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_colors/font_color = Color(0.277528, 0.277528, 0.277528, 1)
-theme_override_font_sizes/font_size = 12
-text = "DUE_IN"
-
-[node name="Due Value" type="Label" parent="CanvasLayer/Balance Sheet UI/MarginContainer/GridContainer"]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.277528, 0.277528, 0.277528, 1)
-theme_override_font_sizes/font_size = 12
-text = "30 days"
-horizontal_alignment = 2
+[node name="Balance Sheet UI" parent="CanvasLayer" instance=ExtResource("3_yckko")]
 
 [node name="Spaceship Notifications" type="CanvasLayer" parent="."]
 layer = 128
@@ -266,3 +250,21 @@ metadata/_custom_type_script = "uid://tgtpk0qo2xx7"
 [node name="ChapSaver" type="Node" parent="SaveSystem"]
 script = ExtResource("11_yckko")
 metadata/_custom_type_script = "uid://cewd737qkspe7"
+
+[node name="InventorySaver" type="Node" parent="SaveSystem"]
+script = ExtResource("15_d22a7")
+_save_key = "spaceship-inventory"
+metadata/_custom_type_script = "uid://clmlakb50km2n"
+
+[node name="Inventory" type="Node" parent="."]
+script = ExtResource("15_tst1b")
+metadata/_custom_type_script = "uid://dftf4h6eyrsio"
+
+[node name="RobotsPool" type="Node" parent="."]
+script = ExtResource("17_0xuuw")
+metadata/_custom_type_script = "uid://dh2gnvehpl1wc"
+
+[connection signal="pressed" from="CanvasLayer/ActiveArea/MissionOpsRoom/Main Buttons/Select Robot" to="CanvasLayer/ActiveArea/MissionOpsRoom" method="_on_select_robot_pressed"]
+[connection signal="pressed" from="CanvasLayer/ActiveArea/MissionOpsRoom/Main Buttons/Loadout" to="CanvasLayer/ActiveArea/MissionOpsRoom" method="_on_loadout_pressed"]
+[connection signal="pressed" from="CanvasLayer/ActiveArea/MissionOpsRoom/Main Buttons/Deploy" to="CanvasLayer/ActiveArea/MissionOpsRoom" method="_on_deploy_pressed"]
+[connection signal="pressed" from="CanvasLayer/Rooms Panel/MarginContainer/VBoxContainer/Mission Ops Btn" to="." method="_on_mission_ops_btn_pressed"]
