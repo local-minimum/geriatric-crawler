@@ -27,6 +27,8 @@ class_name RobotModel
 
 @export var max_hp: int = 20
 
+@export var producions: RobotProductionCost
+
 func get_level(steps: int) -> int:
     if steps < level_1_steps:
         return 1

@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=3 uid="uid://7flb82m2ddwe"]
+[gd_scene load_steps=25 format=3 uid="uid://7flb82m2ddwe"]
 
 [ext_resource type="Script" uid="uid://dfub4a26emjgr" path="res://scripts/spaceship.gd" id="1_ae4p7"]
 [ext_resource type="Texture2D" uid="uid://0ncw5fw4jr8u" path="res://sprites/spaceship/missionops.png" id="2_5eye7"]
@@ -6,8 +6,12 @@
 [ext_resource type="PackedScene" uid="uid://go11qx7kykx6" path="res://scenes/spaceship/chap_ai.tscn" id="2_yckko"]
 [ext_resource type="PackedScene" uid="uid://c5vo86nqwtiqw" path="res://scenes/spaceship/balance_sheet_ui.tscn" id="3_yckko"]
 [ext_resource type="Texture2D" uid="uid://dog5ren3gjxpj" path="res://sprites/kenny game icons/right.png" id="4_l0x72"]
+[ext_resource type="Script" uid="uid://cudta80b35ori" path="res://scripts/spaceship/printers.gd" id="5_nosia"]
+[ext_resource type="Script" uid="uid://cy6jm0o40d2qm" path="res://scripts/robot_model.gd" id="6_i1do7"]
+[ext_resource type="Texture2D" uid="uid://dg42egjpvcjfx" path="res://sprites/spaceship/printers.png" id="6_kcotq"]
 [ext_resource type="Script" uid="uid://cune3lm2ngiy1" path="res://scripts/ui/notifications/notifications_manager.gd" id="6_v6qj0"]
 [ext_resource type="Script" uid="uid://bkky4nqo47eiv" path="res://scripts/ui/notifications/notifications_panel_ui.gd" id="7_6i2wf"]
+[ext_resource type="Resource" uid="uid://1ifcryeo70to" path="res://resources/robot_models/base-robot.tres" id="7_vue1i"]
 [ext_resource type="Script" uid="uid://bkjlt23hansuv" path="res://scripts/savesystem/save_system.gd" id="8_r0fvi"]
 [ext_resource type="Script" uid="uid://bemcpr6cqtnb3" path="res://scripts/savesystem/disk_json_storage_provider.gd" id="9_6wr2n"]
 [ext_resource type="Script" uid="uid://dk1kwquttgwfc" path="res://scripts/savesystem/migrations/migrate_save_v0.0.2.gd" id="9_iow36"]
@@ -40,7 +44,8 @@ metadata/_custom_type_script = "uid://bjkpx0v0d0vky"
 script = ExtResource("1_ae4p7")
 chap_ui = NodePath("CanvasLayer/CHAP AI")
 rooms = {
-2: NodePath("CanvasLayer/ActiveArea/MissionOpsRoom")
+2: NodePath("CanvasLayer/ActiveArea/MissionOpsRoom"),
+5: NodePath("CanvasLayer/ActiveArea/PrintersRoom")
 }
 inventory = NodePath("Inventory")
 robots_pool = NodePath("RobotsPool")
@@ -56,7 +61,9 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="MissionOpsRoom" type="Control" parent="CanvasLayer/ActiveArea" node_paths=PackedStringArray("spaceship", "select_robot_btn", "loadout_btn", "deploy_btn", "robot_listing_panel", "robot_listing_container")]
+visible = false
 layout_mode = 2
+mouse_filter = 2
 script = ExtResource("2_tst1b")
 spaceship = NodePath("../../..")
 select_robot_btn = NodePath("Main Buttons/Select Robot")
@@ -145,6 +152,23 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 alignment = 1
+
+[node name="PrintersRoom" type="Control" parent="CanvasLayer/ActiveArea"]
+layout_mode = 2
+mouse_filter = 2
+script = ExtResource("5_nosia")
+available_models = Array[ExtResource("6_i1do7")]([ExtResource("7_vue1i")])
+metadata/_custom_type_script = "uid://cudta80b35ori"
+
+[node name="Printer" type="TextureRect" parent="CanvasLayer/ActiveArea/PrintersRoom"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("6_kcotq")
+expand_mode = 2
 
 [node name="Rooms Panel" type="PanelContainer" parent="CanvasLayer"]
 offset_left = 40.0
@@ -268,3 +292,4 @@ metadata/_custom_type_script = "uid://dh2gnvehpl1wc"
 [connection signal="pressed" from="CanvasLayer/ActiveArea/MissionOpsRoom/Main Buttons/Loadout" to="CanvasLayer/ActiveArea/MissionOpsRoom" method="_on_loadout_pressed"]
 [connection signal="pressed" from="CanvasLayer/ActiveArea/MissionOpsRoom/Main Buttons/Deploy" to="CanvasLayer/ActiveArea/MissionOpsRoom" method="_on_deploy_pressed"]
 [connection signal="pressed" from="CanvasLayer/Rooms Panel/MarginContainer/VBoxContainer/Mission Ops Btn" to="." method="_on_mission_ops_btn_pressed"]
+[connection signal="pressed" from="CanvasLayer/Rooms Panel/MarginContainer/VBoxContainer/Printers Btn" to="." method="_on_printers_btn_pressed"]

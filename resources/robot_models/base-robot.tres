@@ -1,0 +1,58 @@
+[gd_resource type="Resource" script_class="RobotModel" load_steps=26 format=3 uid="uid://1ifcryeo70to"]
+
+[ext_resource type="Script" uid="uid://0qri7op4mfno" path="res://scripts/robot_ability.gd" id="1_1eohl"]
+[ext_resource type="Resource" uid="uid://bu0oc7qbq770" path="res://resources/robot_abilities/battle/slots-1.tres" id="2_sdgkc"]
+[ext_resource type="Resource" uid="uid://8aoyvdht0msx" path="res://resources/robot_abilities/exploration/sonar-2.tres" id="3_wa3qh"]
+[ext_resource type="Resource" uid="uid://bb6ggj7saxcw8" path="res://resources/robot_abilities/exploration/climbing-1.tres" id="4_sj7dq"]
+[ext_resource type="Resource" uid="uid://53fx21fdmrck" path="res://resources/robot_abilities/exploration/mapping-4.tres" id="5_4g3uc"]
+[ext_resource type="Resource" uid="uid://dpy5qucyu25fx" path="res://resources/robot_abilities/exploration/bypass-2.tres" id="6_6jabs"]
+[ext_resource type="Resource" uid="uid://brhvmnis6vtk1" path="res://resources/robot_abilities/battle/suits-1.tres" id="7_ln8q2"]
+[ext_resource type="Resource" uid="uid://bpdab343fo7cq" path="res://resources/robot_abilities/exploration/mapping-1.tres" id="8_tvy22"]
+[ext_resource type="Resource" uid="uid://br0wnot24fw1b" path="res://resources/robot_abilities/battle/memory-1.tres" id="9_mkho0"]
+[ext_resource type="Resource" uid="uid://c2kaiyaateugc" path="res://resources/robot_abilities/battle/slots-2.tres" id="10_hy16j"]
+[ext_resource type="Resource" uid="uid://duokj17pplsq" path="res://resources/robot_abilities/exploration/climbing-3.tres" id="11_fqkop"]
+[ext_resource type="Script" uid="uid://jgu3xyjxonbb" path="res://scripts/robot_production_cost.gd" id="12_tkruh"]
+[ext_resource type="Script" uid="uid://cy6jm0o40d2qm" path="res://scripts/robot_model.gd" id="13_qrlex"]
+[ext_resource type="Script" uid="uid://cqlxwfe858g4h" path="res://scripts/card_battle/battle_card_data.gd" id="14_yn8ue"]
+[ext_resource type="Resource" uid="uid://dcob2h4luvnbl" path="res://resources/player_cards/card_defrag-5.tres" id="15_xq3od"]
+[ext_resource type="Resource" uid="uid://bc3f2625tdj67" path="res://resources/player_cards/card_defrag-70.tres" id="16_uvny6"]
+[ext_resource type="Resource" uid="uid://duylk5tm5e1wb" path="res://resources/player_cards/card_defrag-120.tres" id="17_ytk6q"]
+[ext_resource type="Resource" uid="uid://ehfht5qywnnf" path="res://resources/player_cards/card_defrag-370.tres" id="18_f0ab0"]
+[ext_resource type="Resource" uid="uid://b8yrhm4ltj06q" path="res://resources/player_cards/card_fortify-55.tres" id="19_gf2x2"]
+[ext_resource type="Resource" uid="uid://xg54tmjf202g" path="res://resources/player_cards/card_fortify-200.tres" id="20_0385l"]
+[ext_resource type="Resource" uid="uid://dyw8d4pex4rg1" path="res://resources/player_cards/card_recharge-735.tres" id="21_fb3ak"]
+[ext_resource type="Resource" uid="uid://dxetlv5x2uqs5" path="res://resources/player_cards/card_slam-95.tres" id="22_yl06e"]
+[ext_resource type="Resource" uid="uid://dwadtd6nwvwd5" path="res://resources/player_cards/card_slam-150.tres" id="23_nrs8v"]
+[ext_resource type="Resource" uid="uid://cuqk7tuums5ds" path="res://resources/player_cards/card_slam-810.tres" id="24_sb7hp"]
+
+[sub_resource type="Resource" id="Resource_6uy47"]
+script = ExtResource("12_tkruh")
+credits = 100
+days = 1
+materials = Dictionary[String, float]({
+"C": 5.0,
+"Cu": 0.5,
+"Fe": 2.0,
+"Li": 0.1,
+"Ni": 0.1,
+"Si": 0.25
+})
+metadata/_custom_type_script = "uid://jgu3xyjxonbb"
+
+[resource]
+script = ExtResource("13_qrlex")
+id = "base-robot"
+model_name = "B100"
+innate_abilities = Array[ExtResource("1_1eohl")]([ExtResource("2_sdgkc"), ExtResource("3_wa3qh"), ExtResource("4_sj7dq"), ExtResource("5_4g3uc"), ExtResource("6_6jabs")])
+level_1_options = Array[ExtResource("1_1eohl")]([ExtResource("7_ln8q2")])
+level_2_options = Array[ExtResource("1_1eohl")]([ExtResource("8_tvy22"), ExtResource("3_wa3qh")])
+level_3_options = Array[ExtResource("1_1eohl")]([ExtResource("9_mkho0"), ExtResource("10_hy16j")])
+level_4_options = Array[ExtResource("1_1eohl")]([ExtResource("11_fqkop"), ExtResource("6_6jabs")])
+level_1_steps = 3
+level_2_steps = 4
+level_3_steps = 5
+level_4_steps = 6
+starter_deck = Array[ExtResource("14_yn8ue")]([ExtResource("15_xq3od"), ExtResource("16_uvny6"), ExtResource("17_ytk6q"), ExtResource("18_f0ab0"), ExtResource("19_gf2x2"), ExtResource("20_0385l"), ExtResource("21_fb3ak"), ExtResource("22_yl06e"), ExtResource("23_nrs8v"), ExtResource("24_sb7hp")])
+max_hp = 20
+producions = SubResource("Resource_6uy47")
+metadata/_custom_type_script = "uid://cy6jm0o40d2qm"

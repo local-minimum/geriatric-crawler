@@ -20,12 +20,15 @@ func _sync_rooms() -> void:
         else:
             rooms[r].deactivate()
 
-func _on_mission_ops_btn_pressed() -> void:
-    _move_to_room(Room.MISSION_OPS)
-
 func _move_to_room(new_room: Room) -> void:
     # TODO: Transition to no-room if needed
 
     # TODO: Walk over to room and then
     room = new_room
     _sync_rooms()
+
+func _on_mission_ops_btn_pressed() -> void:
+    _move_to_room(Room.MISSION_OPS)
+
+func _on_printers_btn_pressed() -> void:
+    _move_to_room(Room.PRINTERS)

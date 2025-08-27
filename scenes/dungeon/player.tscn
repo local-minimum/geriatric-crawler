@@ -5,7 +5,7 @@
 [ext_resource type="Script" uid="uid://c7chl5drkyuws" path="res://scripts/gridded_level/entities/entity_fall_behavior.gd" id="3_6bcr7"]
 [ext_resource type="Script" uid="uid://meibvvwp8mvg" path="res://scripts/gridded_level/entities/movement_planner.gd" id="4_se4x3"]
 [ext_resource type="Script" uid="uid://bsao4ssvb051r" path="res://scripts/robot.gd" id="5_se4x3"]
-[ext_resource type="Resource" uid="uid://1ifcryeo70to" path="res://resources/base-robot.tres" id="6_2f68n"]
+[ext_resource type="Resource" uid="uid://1ifcryeo70to" path="res://resources/robot_models/base-robot.tres" id="6_2f68n"]
 [ext_resource type="Script" uid="uid://b0betmw3bm0tf" path="res://scripts/gridded_level/key_ring.gd" id="7_nvxe3"]
 
 [sub_resource type="Resource" id="Resource_2f68n"]
