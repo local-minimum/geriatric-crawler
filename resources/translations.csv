@@ -3,7 +3,7 @@ NAV,Navigation,Styrhytt
 MISSION_OPS,Mission Ops.,Uppdragskontrollrum
 LIVING_QUARTERS,Living Quarters,Bostad
 MATERIALS_LAB,Materials Lab,Materiallab
-PRINTERS,Printers,Printers
+PRINTERS,Printers,3D-skrivare
 INFIRMARY,Infirmary,Sjukstuga
 STORAGE_BAY,Storage Bay,Förvaring
 ENGINE_ROOM,Engine Room,Maskinrum
@@ -182,3 +182,13 @@ LOADOUT,Loadout,Utrusta
 DEPLOY,Deploy,Sänd ut
 NO_ROBOTS_AVAILABLE,No robot is available for a mission,Inga robotar fill tillgängliga för ett uppdrag
 CONSTRUCT_FIRST_ROBOT,Go to printers to construct your first robot,Gå till printers för att konstruera din första robot
+PRINTER_ID,Printer {id},3D-skrivare {id}
+STATUS_NOT_RENTED,Not rented,Inte hyrd
+STATUS_IDLE,Idle,Stilla
+STATUS_PRINTING_DAYS,"Printing
+{days} days remain", "Skriver ut
+{days} dagar kvar"
+STATUS_PRINTING_DAY,"Printing
+Done tomorrow","Skriver ut
+Klar imorgon"
+

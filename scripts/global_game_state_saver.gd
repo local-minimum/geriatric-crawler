@@ -24,7 +24,7 @@ func retrieve_data(_extentsion_save_data: Dictionary) -> Dictionary:
         _CREDITS_KEY: __GlobalGameState._credits,
         _LOANS_KEY: __GlobalGameState._loans,
         _RENT_KEY: __GlobalGameState._rent,
-        _GAME_DAY_KEY: __GlobalGameState._game_day
+        _GAME_DAY_KEY: __GlobalGameState.game_day
     }
 
 func initial_data(_extentsion_save_data: Dictionary) -> Dictionary:
