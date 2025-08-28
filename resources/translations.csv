@@ -191,4 +191,7 @@ STATUS_PRINTING_DAYS,"Printing
 STATUS_PRINTING_DAY,"Printing
 Done tomorrow","Skriver ut
 Klar imorgon"
-
+RENT_PRINTER,Rent Printer, Hyr 3D-skrivare
+DOWN_PAYMENT,Down payment,Depositionsavgift
+MONTHLY_RENT,Monthly rent,Månadshyra
+ACTION_RENT,Rent,Hyr
