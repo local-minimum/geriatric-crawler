@@ -42,6 +42,8 @@ class SpaceshipRobot:
 @export var available_models: Array[RobotModel]
 @export var printers: int = 3
 
+# TODO: Load/Save (jobs, available, printed starter)
+var _free_starter_robot_printed: bool
 var _robots: Array[SpaceshipRobot]
 
 func available_robots() -> Array[SpaceshipRobot]:
@@ -56,7 +58,6 @@ func _ready() -> void:
 
     if __SignalBus.on_increment_day.connect(_handle_new_day) != OK:
         push_error("Failed to connect increment day")
-    # TODO: Load/Save jobs
 
 func _handle_new_day(_dom: int, _days_left_of_month: int) -> void:
     for printer: int in range(_printer_jobs.size()):
@@ -83,3 +84,26 @@ func make_printing_job(printer: int, model: RobotModel, given_name: String) -> b
 
     _printer_jobs[printer] = PrinterJob.new(model, given_name)
     return true
+
+class PrintingCost:
+    var ip_cost_credits: int
+    var printer_day_costs: int
+    var materials: Dictionary[String, float]
+    var free: bool
+
+    func _init(model: RobotModel, printer_cost: int, free_of_charge: bool = false) -> void:
+        free = free_of_charge
+        ip_cost_credits = model.production.credits if !free_of_charge else 0
+        printer_day_costs = printer_cost if !free_of_charge else 0
+        materials = model.production.materials if !free_of_charge else {}
+
+func printer_day_rate(printer: int) -> int: return printer * 100 + 200
+
+func calculate_printing_costs(model: RobotModel, printer: int) -> PrintingCost:
+    var free_of_charge: bool = model == base_robot && !_free_starter_robot_printed
+
+    return PrintingCost.new(
+        model,
+        printer_day_rate(printer) * maxi(1, model.production.days - printer),
+        free_of_charge,
+    )
