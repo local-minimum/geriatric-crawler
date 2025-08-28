@@ -1,0 +1,53 @@
+[gd_resource type="Resource" script_class="RobotModel" load_steps=21 format=3 uid="uid://bh75cac6e2j77"]
+
+[ext_resource type="Script" uid="uid://0qri7op4mfno" path="res://scripts/robot_ability.gd" id="1_gjqie"]
+[ext_resource type="Resource" uid="uid://bpdab343fo7cq" path="res://resources/robot_abilities/exploration/mapping-1.tres" id="2_5q3i8"]
+[ext_resource type="Resource" uid="uid://ckcki8npktx8i" path="res://resources/robot_abilities/exploration/mapping-2.tres" id="3_ikkqh"]
+[ext_resource type="Resource" uid="uid://bb6ggj7saxcw8" path="res://resources/robot_abilities/exploration/climbing-1.tres" id="4_uqoxv"]
+[ext_resource type="Resource" uid="uid://gqeu8xvpnfnn" path="res://resources/robot_abilities/exploration/bypass-1.tres" id="5_1ile6"]
+[ext_resource type="Resource" uid="uid://dgbiqddiw6nq4" path="res://resources/robot_abilities/battle/rank-1.tres" id="6_t43ge"]
+[ext_resource type="Script" uid="uid://jgu3xyjxonbb" path="res://scripts/robot_production_cost.gd" id="7_b2bqs"]
+[ext_resource type="Script" uid="uid://cy6jm0o40d2qm" path="res://scripts/robot_model.gd" id="8_3l7vf"]
+[ext_resource type="Script" uid="uid://cqlxwfe858g4h" path="res://scripts/card_battle/battle_card_data.gd" id="9_wgb0c"]
+[ext_resource type="Resource" uid="uid://dcob2h4luvnbl" path="res://resources/player_cards/card_defrag-5.tres" id="10_4io1t"]
+[ext_resource type="Resource" uid="uid://bc3f2625tdj67" path="res://resources/player_cards/card_defrag-70.tres" id="11_op0cu"]
+[ext_resource type="Resource" uid="uid://duylk5tm5e1wb" path="res://resources/player_cards/card_defrag-120.tres" id="12_eehbm"]
+[ext_resource type="Resource" uid="uid://ehfht5qywnnf" path="res://resources/player_cards/card_defrag-370.tres" id="13_6q2c3"]
+[ext_resource type="Resource" uid="uid://b8yrhm4ltj06q" path="res://resources/player_cards/card_fortify-55.tres" id="14_rf5br"]
+[ext_resource type="Resource" uid="uid://xg54tmjf202g" path="res://resources/player_cards/card_fortify-200.tres" id="15_aewke"]
+[ext_resource type="Resource" uid="uid://dyw8d4pex4rg1" path="res://resources/player_cards/card_recharge-735.tres" id="16_orcan"]
+[ext_resource type="Resource" uid="uid://dxetlv5x2uqs5" path="res://resources/player_cards/card_slam-95.tres" id="17_j0aqe"]
+[ext_resource type="Resource" uid="uid://dwadtd6nwvwd5" path="res://resources/player_cards/card_slam-150.tres" id="18_njsn1"]
+[ext_resource type="Resource" uid="uid://cuqk7tuums5ds" path="res://resources/player_cards/card_slam-810.tres" id="19_6duux"]
+
+[sub_resource type="Resource" id="Resource_44jdn"]
+script = ExtResource("7_b2bqs")
+credits = 200
+days = 1
+materials = Dictionary[String, float]({
+"CPU": 1.0,
+"Cu": 0.5,
+"Fe": 2.0,
+"Plastics": 20.0,
+"Rubber": 1.0,
+"Silicates": 2.0
+})
+metadata/_custom_type_script = "uid://jgu3xyjxonbb"
+
+[resource]
+script = ExtResource("8_3l7vf")
+id = "simple-one"
+model_name = "Simple One"
+innate_abilities = Array[ExtResource("1_gjqie")]([ExtResource("2_5q3i8")])
+level_1_options = Array[ExtResource("1_gjqie")]([ExtResource("3_ikkqh")])
+level_2_options = Array[ExtResource("1_gjqie")]([ExtResource("4_uqoxv")])
+level_3_options = Array[ExtResource("1_gjqie")]([ExtResource("5_1ile6")])
+level_4_options = Array[ExtResource("1_gjqie")]([ExtResource("6_t43ge")])
+level_1_steps = 3
+level_2_steps = 3
+level_3_steps = 3
+level_4_steps = 3
+starter_deck = Array[ExtResource("9_wgb0c")]([ExtResource("10_4io1t"), ExtResource("11_op0cu"), ExtResource("12_eehbm"), ExtResource("13_6q2c3"), ExtResource("14_rf5br"), ExtResource("15_aewke"), ExtResource("16_orcan"), ExtResource("17_j0aqe"), ExtResource("18_njsn1"), ExtResource("19_6duux")])
+max_hp = 20
+production = SubResource("Resource_44jdn")
+metadata/_custom_type_script = "uid://cy6jm0o40d2qm"
