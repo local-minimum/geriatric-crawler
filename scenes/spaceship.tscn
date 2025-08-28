@@ -153,11 +153,13 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 alignment = 1
 
-[node name="PrintersRoom" type="Control" parent="CanvasLayer/ActiveArea"]
+[node name="PrintersRoom" type="Control" parent="CanvasLayer/ActiveArea" node_paths=PackedStringArray("printer_buttons", "printer_statuses")]
 layout_mode = 2
 mouse_filter = 2
 script = ExtResource("5_nosia")
 available_models = Array[ExtResource("6_i1do7")]([ExtResource("7_vue1i")])
+printer_buttons = [NodePath("HBoxContainer/Printer Selection Group/Printer I Button"), NodePath("HBoxContainer/Printer Selection Group2/Printer II Button"), NodePath("HBoxContainer/Printer Selection Group3/Printer III Button")]
+printer_statuses = [NodePath("HBoxContainer/Printer Selection Group/Printer I Status"), NodePath("HBoxContainer/Printer Selection Group2/Printer II Status"), NodePath("HBoxContainer/Printer Selection Group3/Printer III Status")]
 metadata/_custom_type_script = "uid://cudta80b35ori"
 
 [node name="Printer" type="TextureRect" parent="CanvasLayer/ActiveArea/PrintersRoom"]
@@ -170,7 +172,82 @@ grow_vertical = 2
 texture = ExtResource("6_kcotq")
 expand_mode = 2
 
-[node name="Rooms Panel" type="PanelContainer" parent="CanvasLayer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/ActiveArea/PrintersRoom"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.1
+anchor_right = 0.9
+offset_top = 40.0
+grow_horizontal = 2
+alignment = 1
+
+[node name="Spacer" type="Control" parent="CanvasLayer/ActiveArea/PrintersRoom/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 2.0
+
+[node name="Printer Selection Group" type="VBoxContainer" parent="CanvasLayer/ActiveArea/PrintersRoom/HBoxContainer"]
+layout_mode = 2
+
+[node name="Printer I Button" type="Button" parent="CanvasLayer/ActiveArea/PrintersRoom/HBoxContainer/Printer Selection Group"]
+auto_translate_mode = 2
+layout_mode = 2
+text = "PRINTER_ID"
+
+[node name="Printer I Status" type="Label" parent="CanvasLayer/ActiveArea/PrintersRoom/HBoxContainer/Printer Selection Group"]
+auto_translate_mode = 2
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 10
+text = "PRINTER_STATUS"
+autowrap_mode = 1
+
+[node name="Spacer2" type="Control" parent="CanvasLayer/ActiveArea/PrintersRoom/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Printer Selection Group2" type="VBoxContainer" parent="CanvasLayer/ActiveArea/PrintersRoom/HBoxContainer"]
+layout_mode = 2
+
+[node name="Printer II Button" type="Button" parent="CanvasLayer/ActiveArea/PrintersRoom/HBoxContainer/Printer Selection Group2"]
+auto_translate_mode = 2
+layout_mode = 2
+text = "PRINTER_ID"
+
+[node name="Printer II Status" type="Label" parent="CanvasLayer/ActiveArea/PrintersRoom/HBoxContainer/Printer Selection Group2"]
+auto_translate_mode = 2
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 10
+text = "PRINTER_STATUS"
+autowrap_mode = 1
+
+[node name="Spacer3" type="Control" parent="CanvasLayer/ActiveArea/PrintersRoom/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Printer Selection Group3" type="VBoxContainer" parent="CanvasLayer/ActiveArea/PrintersRoom/HBoxContainer"]
+layout_mode = 2
+
+[node name="Printer III Button" type="Button" parent="CanvasLayer/ActiveArea/PrintersRoom/HBoxContainer/Printer Selection Group3"]
+auto_translate_mode = 2
+layout_mode = 2
+text = "PRINTER_ID"
+
+[node name="Printer III Status" type="Label" parent="CanvasLayer/ActiveArea/PrintersRoom/HBoxContainer/Printer Selection Group3"]
+auto_translate_mode = 2
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 10
+text = "PRINTER_STATUS"
+autowrap_mode = 1
+
+[node name="Spacer4" type="Control" parent="CanvasLayer/ActiveArea/PrintersRoom/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 2.0
+
+[node name="Rooms Selector Side Panel" type="PanelContainer" parent="CanvasLayer"]
 offset_left = 40.0
 offset_top = 40.0
 offset_right = 173.0
@@ -179,52 +256,52 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_ws7tf")
 
-[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/Rooms Panel"]
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/Rooms Selector Side Panel"]
 layout_mode = 2
 theme_override_constants/margin_left = 8
 theme_override_constants/margin_top = 8
 theme_override_constants/margin_right = 8
 theme_override_constants/margin_bottom = 8
 
-[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/Rooms Panel/MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/Rooms Selector Side Panel/MarginContainer"]
 layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 8
 theme_override_constants/separation = 6
 
-[node name="Nav Btn" type="Button" parent="CanvasLayer/Rooms Panel/MarginContainer/VBoxContainer"]
+[node name="Nav Btn" type="Button" parent="CanvasLayer/Rooms Selector Side Panel/MarginContainer/VBoxContainer"]
 layout_mode = 2
 text = "NAV"
 
-[node name="Mission Ops Btn" type="Button" parent="CanvasLayer/Rooms Panel/MarginContainer/VBoxContainer"]
+[node name="Mission Ops Btn" type="Button" parent="CanvasLayer/Rooms Selector Side Panel/MarginContainer/VBoxContainer"]
 layout_mode = 2
 text = "MISSION_OPS"
 
-[node name="Living Quarters Btn" type="Button" parent="CanvasLayer/Rooms Panel/MarginContainer/VBoxContainer"]
+[node name="Living Quarters Btn" type="Button" parent="CanvasLayer/Rooms Selector Side Panel/MarginContainer/VBoxContainer"]
 layout_mode = 2
 text = "LIVING_QUARTERS"
 
-[node name="Materials Lab Btn" type="Button" parent="CanvasLayer/Rooms Panel/MarginContainer/VBoxContainer"]
+[node name="Materials Lab Btn" type="Button" parent="CanvasLayer/Rooms Selector Side Panel/MarginContainer/VBoxContainer"]
 layout_mode = 2
 text = "MATERIALS_LAB"
 
-[node name="Printers Btn" type="Button" parent="CanvasLayer/Rooms Panel/MarginContainer/VBoxContainer"]
+[node name="Printers Btn" type="Button" parent="CanvasLayer/Rooms Selector Side Panel/MarginContainer/VBoxContainer"]
 layout_mode = 2
 text = "PRINTERS"
 
-[node name="Infermary Btn" type="Button" parent="CanvasLayer/Rooms Panel/MarginContainer/VBoxContainer"]
+[node name="Infermary Btn" type="Button" parent="CanvasLayer/Rooms Selector Side Panel/MarginContainer/VBoxContainer"]
 layout_mode = 2
 text = "INFIRMARY"
 
-[node name="Storage Btn" type="Button" parent="CanvasLayer/Rooms Panel/MarginContainer/VBoxContainer"]
+[node name="Storage Btn" type="Button" parent="CanvasLayer/Rooms Selector Side Panel/MarginContainer/VBoxContainer"]
 layout_mode = 2
 text = "STORAGE_BAY"
 
-[node name="Engine Btn" type="Button" parent="CanvasLayer/Rooms Panel/MarginContainer/VBoxContainer"]
+[node name="Engine Btn" type="Button" parent="CanvasLayer/Rooms Selector Side Panel/MarginContainer/VBoxContainer"]
 layout_mode = 2
 text = "ENGINE_ROOM"
 
-[node name="Broom Closet Btn" type="Button" parent="CanvasLayer/Rooms Panel/MarginContainer/VBoxContainer"]
+[node name="Broom Closet Btn" type="Button" parent="CanvasLayer/Rooms Selector Side Panel/MarginContainer/VBoxContainer"]
 layout_mode = 2
 text = "BROOM_CLOSET"
 
@@ -291,5 +368,8 @@ metadata/_custom_type_script = "uid://dh2gnvehpl1wc"
 [connection signal="pressed" from="CanvasLayer/ActiveArea/MissionOpsRoom/Main Buttons/Select Robot" to="CanvasLayer/ActiveArea/MissionOpsRoom" method="_on_select_robot_pressed"]
 [connection signal="pressed" from="CanvasLayer/ActiveArea/MissionOpsRoom/Main Buttons/Loadout" to="CanvasLayer/ActiveArea/MissionOpsRoom" method="_on_loadout_pressed"]
 [connection signal="pressed" from="CanvasLayer/ActiveArea/MissionOpsRoom/Main Buttons/Deploy" to="CanvasLayer/ActiveArea/MissionOpsRoom" method="_on_deploy_pressed"]
-[connection signal="pressed" from="CanvasLayer/Rooms Panel/MarginContainer/VBoxContainer/Mission Ops Btn" to="." method="_on_mission_ops_btn_pressed"]
-[connection signal="pressed" from="CanvasLayer/Rooms Panel/MarginContainer/VBoxContainer/Printers Btn" to="." method="_on_printers_btn_pressed"]
+[connection signal="pressed" from="CanvasLayer/ActiveArea/PrintersRoom/HBoxContainer/Printer Selection Group/Printer I Button" to="CanvasLayer/ActiveArea/PrintersRoom" method="_on_printer_i_button_pressed"]
+[connection signal="pressed" from="CanvasLayer/ActiveArea/PrintersRoom/HBoxContainer/Printer Selection Group2/Printer II Button" to="CanvasLayer/ActiveArea/PrintersRoom" method="_on_printer_ii_button_pressed"]
+[connection signal="pressed" from="CanvasLayer/ActiveArea/PrintersRoom/HBoxContainer/Printer Selection Group3/Printer III Button" to="CanvasLayer/ActiveArea/PrintersRoom" method="_on_printer_iii_button_pressed"]
+[connection signal="pressed" from="CanvasLayer/Rooms Selector Side Panel/MarginContainer/VBoxContainer/Mission Ops Btn" to="." method="_on_mission_ops_btn_pressed"]
+[connection signal="pressed" from="CanvasLayer/Rooms Selector Side Panel/MarginContainer/VBoxContainer/Printers Btn" to="." method="_on_printers_btn_pressed"]
