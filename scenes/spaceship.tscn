@@ -336,6 +336,7 @@ theme_override_constants/separation = 6
 
 [node name="Nav Btn" type="Button" parent="CanvasLayer/Rooms Selector Side Panel/MarginContainer/VBoxContainer"]
 layout_mode = 2
+disabled = true
 text = "NAV"
 
 [node name="Mission Ops Btn" type="Button" parent="CanvasLayer/Rooms Selector Side Panel/MarginContainer/VBoxContainer"]
@@ -344,10 +345,12 @@ text = "MISSION_OPS"
 
 [node name="Living Quarters Btn" type="Button" parent="CanvasLayer/Rooms Selector Side Panel/MarginContainer/VBoxContainer"]
 layout_mode = 2
+disabled = true
 text = "LIVING_QUARTERS"
 
 [node name="Materials Lab Btn" type="Button" parent="CanvasLayer/Rooms Selector Side Panel/MarginContainer/VBoxContainer"]
 layout_mode = 2
+disabled = true
 text = "MATERIALS_LAB"
 
 [node name="Printers Btn" type="Button" parent="CanvasLayer/Rooms Selector Side Panel/MarginContainer/VBoxContainer"]
@@ -356,18 +359,22 @@ text = "PRINTERS"
 
 [node name="Infermary Btn" type="Button" parent="CanvasLayer/Rooms Selector Side Panel/MarginContainer/VBoxContainer"]
 layout_mode = 2
+disabled = true
 text = "INFIRMARY"
 
 [node name="Storage Btn" type="Button" parent="CanvasLayer/Rooms Selector Side Panel/MarginContainer/VBoxContainer"]
 layout_mode = 2
+disabled = true
 text = "STORAGE_BAY"
 
 [node name="Engine Btn" type="Button" parent="CanvasLayer/Rooms Selector Side Panel/MarginContainer/VBoxContainer"]
 layout_mode = 2
+disabled = true
 text = "ENGINE_ROOM"
 
 [node name="Broom Closet Btn" type="Button" parent="CanvasLayer/Rooms Selector Side Panel/MarginContainer/VBoxContainer"]
 layout_mode = 2
+disabled = true
 text = "BROOM_CLOSET"
 
 [node name="CHAP AI" parent="CanvasLayer" instance=ExtResource("2_yckko")]
