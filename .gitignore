@@ -1,6 +1,7 @@
 # Godot 4+ specific ignores
 .godot/
 /android/
+script_templates/
 
 # Builds
 /[Bb]uilds
