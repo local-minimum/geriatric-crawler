@@ -196,5 +196,6 @@ DOWN_PAYMENT,Down payment,Depositionsavgift
 MONTHLY_RENT,Monthly rent,Månadshyra
 ACTION_RENT,Rent,Hyr
 ACTION_PRINT,Print,SKriv ut
+ACTION_PRINT_FREE_SAMPLE,Print free sample,Skriv ut gratisprov 
 ACTION_BUY_MISSING_RESOURCES,Buy missing resources,Köp de resurser som saknas
 TOTAL_COST_PRICE,Total {price},Total {price}

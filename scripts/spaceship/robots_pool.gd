@@ -73,7 +73,7 @@ func _complete_printer_job(job: PrinterJob) -> void:
     _robots.append(SpaceshipRobot.new(job.model, job.given_name))
 
 func get_printer_job(printer: int) -> PrinterJob:
-    if printer >= _printer_jobs.size():
+    if printer < 0 || printer >= _printer_jobs.size():
         return null
 
     return _printer_jobs[printer]
@@ -89,13 +89,17 @@ class PrintingCost:
     var ip_cost_credits: int
     var printer_day_costs: int
     var materials: Dictionary[String, float]
+    var total: int:
+        get(): return ip_cost_credits + printer_day_costs
+
     var free: bool
 
     func _init(model: RobotModel, printer_cost: int, free_of_charge: bool = false) -> void:
         free = free_of_charge
-        ip_cost_credits = model.production.credits if !free_of_charge else 0
-        printer_day_costs = printer_cost if !free_of_charge else 0
-        materials = model.production.materials if !free_of_charge else {}
+        ip_cost_credits = model.production.credits
+        printer_day_costs = printer_cost
+        materials = model.production.materials
+
 
 func printer_day_rate(printer: int) -> int: return printer * 100 + 200
 
@@ -107,3 +111,6 @@ func calculate_printing_costs(model: RobotModel, printer: int) -> PrintingCost:
         printer_day_rate(printer) * maxi(1, model.production.days - printer),
         free_of_charge,
     )
+
+func get_model(idx: int) -> RobotModel:
+    return available_models[idx]

@@ -48,6 +48,9 @@ var rent: int:
 static func credits_with_sign(amount: int) -> String:
     return "₳ %03d" % amount
 
+func can_afford(amount: int) -> bool:
+    return amount <= _credits
+
 func withdraw_credits(amount: int) -> bool:
     if amount < 0:
         return false

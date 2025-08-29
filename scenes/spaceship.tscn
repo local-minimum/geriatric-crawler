@@ -153,7 +153,7 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 alignment = 1
 
-[node name="PrintersRoom" type="Control" parent="CanvasLayer/ActiveArea" node_paths=PackedStringArray("robots_pool", "printer_buttons", "printer_statuses", "rent_panel", "rent_down_payment_cost", "rent_cost")]
+[node name="PrintersRoom" type="Control" parent="CanvasLayer/ActiveArea" node_paths=PackedStringArray("robots_pool", "printer_buttons", "printer_statuses", "rent_panel", "rent_down_payment_cost", "rent_cost", "models_panel", "model_title", "model_description", "model_price", "print_model_btn", "buy_materials_btn")]
 layout_mode = 2
 mouse_filter = 2
 script = ExtResource("5_nosia")
@@ -163,6 +163,12 @@ printer_statuses = [NodePath("Printer Selector/Printer Selection Group/Printer I
 rent_panel = NodePath("Rent New Printer Panel")
 rent_down_payment_cost = NodePath("Rent New Printer Panel/MarginContainer/VBoxContainer/GridContainer/Down Payment Cost")
 rent_cost = NodePath("Rent New Printer Panel/MarginContainer/VBoxContainer/GridContainer/Rent Cost")
+models_panel = NodePath("Print Robot Panel")
+model_title = NodePath("Print Robot Panel/MarginContainer/VBoxContainer/Model name")
+model_description = NodePath("Print Robot Panel/MarginContainer/VBoxContainer/Model description")
+model_price = NodePath("Print Robot Panel/MarginContainer/VBoxContainer/Total cost")
+print_model_btn = NodePath("Print Robot Panel/MarginContainer/VBoxContainer/VBoxContainer/Print")
+buy_materials_btn = NodePath("Print Robot Panel/MarginContainer/VBoxContainer/VBoxContainer/Buy Missing Resources")
 metadata/_custom_type_script = "uid://cudta80b35ori"
 
 [node name="Printer" type="TextureRect" parent="CanvasLayer/ActiveArea/PrintersRoom"]
