@@ -251,6 +251,7 @@ size_flags_horizontal = 3
 size_flags_stretch_ratio = 2.0
 
 [node name="Rent New Printer Panel" type="PanelContainer" parent="CanvasLayer/ActiveArea/PrintersRoom"]
+visible = false
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -313,6 +314,60 @@ horizontal_alignment = 3
 layout_mode = 2
 disabled = true
 text = "ACTION_RENT"
+
+[node name="Print Robot Panel" type="PanelContainer" parent="CanvasLayer/ActiveArea/PrintersRoom"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = -20.0
+offset_bottom = -20.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/ActiveArea/PrintersRoom/Print Robot Panel"]
+layout_mode = 2
+theme_override_constants/margin_left = 4
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 4
+theme_override_constants/margin_bottom = 4
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/ActiveArea/PrintersRoom/Print Robot Panel/MarginContainer"]
+layout_mode = 2
+
+[node name="Model name" type="Label" parent="CanvasLayer/ActiveArea/PrintersRoom/Print Robot Panel/MarginContainer/VBoxContainer"]
+auto_translate_mode = 2
+layout_mode = 2
+text = "MODEL_NAME"
+
+[node name="Model description" type="Label" parent="CanvasLayer/ActiveArea/PrintersRoom/Print Robot Panel/MarginContainer/VBoxContainer"]
+auto_translate_mode = 2
+custom_minimum_size = Vector2(350, 0)
+layout_mode = 2
+text = "MODEL_DESCRIPTION_EXTENDED"
+autowrap_mode = 3
+
+[node name="Total cost" type="Label" parent="CanvasLayer/ActiveArea/PrintersRoom/Print Robot Panel/MarginContainer/VBoxContainer"]
+auto_translate_mode = 2
+layout_mode = 2
+text = "TOTAL_COST_PRICE"
+horizontal_alignment = 2
+
+[node name="VBoxContainer" type="HBoxContainer" parent="CanvasLayer/ActiveArea/PrintersRoom/Print Robot Panel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="Print" type="Button" parent="CanvasLayer/ActiveArea/PrintersRoom/Print Robot Panel/MarginContainer/VBoxContainer/VBoxContainer"]
+layout_mode = 2
+text = "ACTION_PRINT"
+
+[node name="Buy Missing Resources" type="Button" parent="CanvasLayer/ActiveArea/PrintersRoom/Print Robot Panel/MarginContainer/VBoxContainer/VBoxContainer"]
+layout_mode = 2
+text = "ACTION_BUY_MISSING_RESOURCES"
 
 [node name="Rooms Selector Side Panel" type="PanelContainer" parent="CanvasLayer"]
 offset_left = 40.0

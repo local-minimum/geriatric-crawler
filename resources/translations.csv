@@ -195,3 +195,6 @@ RENT_PRINTER,Rent Printer, Hyr 3D-skrivare
 DOWN_PAYMENT,Down payment,Depositionsavgift
 MONTHLY_RENT,Monthly rent,Månadshyra
 ACTION_RENT,Rent,Hyr
+ACTION_PRINT,Print,SKriv ut
+ACTION_BUY_MISSING_RESOURCES,Buy missing resources,Köp de resurser som saknas
+TOTAL_COST_PRICE,Total {price},Total {price}
