@@ -53,6 +53,7 @@ func _sync_printer_statues() -> void:
             status = tr("STATUS_IDLE")
         else:
             var days: int = job.remaining_days()
+            print_debug("Job %s has %s days left" % [job, days])
             if days == 0:
                 status = tr("STATUS_IDLE")
             elif days == 1:
@@ -90,6 +91,9 @@ func _has_materials(cost: RobotsPool.PrintingCost) -> bool:
     # TODO: Figure this out
     return false
 
+var _selected_cost: RobotsPool.PrintingCost
+var _selected_model: RobotModel
+
 func _sync_panels() -> void:
     if _selected_printer == -1:
         models_panel.hide()
@@ -103,23 +107,23 @@ func _sync_panels() -> void:
         if busy:
             models_panel.hide()
         else:
-            var model: RobotModel = robots_pool.get_model(_model_index)
-            model_title.text = model.model_name
+            _selected_model = robots_pool.get_model(_model_index)
+            model_title.text = _selected_model.model_name
 
             # TODO: Figure out this
             model_description.text = ""
 
-            var cost: RobotsPool.PrintingCost = robots_pool.calculate_printing_costs(model, _selected_printer)
-            model_price.text = tr("TOTAL_COST_PRICE").format({"price": GlobalGameState.credits_with_sign(cost.total)})
+            _selected_cost = robots_pool.calculate_printing_costs(_selected_model, _selected_printer)
+            model_price.text = tr("TOTAL_COST_PRICE").format({"price": GlobalGameState.credits_with_sign(_selected_cost.total)})
 
-            var has_materials: bool = _has_materials(cost)
+            var has_materials: bool = _has_materials(_selected_cost)
             if has_materials:
                 buy_materials_btn.hide()
             else:
                 buy_materials_btn.show()
 
-            print_model_btn.text = tr("ACTION_PRINT_FREE_SAMPLE") if cost.free else tr("ACTION_PRINT")
-            print_model_btn.disabled = !has_materials && __GlobalGameState.can_afford(cost.total)
+            print_model_btn.text = tr("ACTION_PRINT_FREE_SAMPLE") if _selected_cost.free else tr("ACTION_PRINT")
+            print_model_btn.disabled = !has_materials && __GlobalGameState.can_afford(_selected_cost.total)
 
             models_panel.show()
         rent_panel.hide()
@@ -128,3 +132,19 @@ func _sync_panels() -> void:
         rent_cost.text = GlobalGameState.credits_with_sign(_get_rent(_selected_printer))
         rent_panel.show()
         models_panel.hide()
+
+func _on_buy_missing_resources_pressed() -> void:
+    pass # Replace with function body.
+
+func _on_print_pressed() -> void:
+    if _selected_cost != null && !_selected_cost.free:
+        if !__GlobalGameState.withdraw_credits(_selected_cost.total):
+            push_warning("Couldn't withdraw sufficient funds to start printing %s on printer %s" % [_selected_model.model_name, _selected_printer])
+            return
+
+    if !robots_pool.make_printing_job(_selected_printer, _selected_model, "Squirrel"):
+        push_warning("Failed to start printing %s on printer %s" % [_selected_model.model_name, _selected_printer])
+
+    print_debug("Started printing %s on printer %s" % [_selected_model.model_name, _selected_printer])
+    _sync_printer_statues()
+    _sync_panels()

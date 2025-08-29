@@ -14,10 +14,10 @@ class PrinterJob:
         start_day = __GlobalGameState.game_day
 
     func remaining_days() -> int:
-        return maxi(0, __GlobalGameState.game_day - start_day - model.production.days)
+        return maxi(0, model.production.days - (__GlobalGameState.game_day - start_day))
 
     func busy() -> bool:
-        return __GlobalGameState.game_day - start_day - model.production.days > 0
+        return model.production.days - (__GlobalGameState.game_day - start_day) > 0
 
 class SpaceshipRobot:
     var model: RobotModel
@@ -83,6 +83,7 @@ func make_printing_job(printer: int, model: RobotModel, given_name: String) -> b
         return false
 
     _printer_jobs[printer] = PrinterJob.new(model, given_name)
+    print_debug("[RobotsPool] started printing %s" % model.model_name)
     return true
 
 class PrintingCost:

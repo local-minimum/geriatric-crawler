@@ -508,5 +508,7 @@ metadata/_custom_type_script = "uid://dh2gnvehpl1wc"
 [connection signal="pressed" from="CanvasLayer/ActiveArea/PrintersRoom/Printer Selector/Printer Selection Group/Printer I Button" to="CanvasLayer/ActiveArea/PrintersRoom" method="_on_printer_i_button_pressed"]
 [connection signal="pressed" from="CanvasLayer/ActiveArea/PrintersRoom/Printer Selector/Printer Selection Group2/Printer II Button" to="CanvasLayer/ActiveArea/PrintersRoom" method="_on_printer_ii_button_pressed"]
 [connection signal="pressed" from="CanvasLayer/ActiveArea/PrintersRoom/Printer Selector/Printer Selection Group3/Printer III Button" to="CanvasLayer/ActiveArea/PrintersRoom" method="_on_printer_iii_button_pressed"]
+[connection signal="pressed" from="CanvasLayer/ActiveArea/PrintersRoom/Print Robot Panel/MarginContainer/VBoxContainer/VBoxContainer/Print" to="CanvasLayer/ActiveArea/PrintersRoom" method="_on_print_pressed"]
+[connection signal="pressed" from="CanvasLayer/ActiveArea/PrintersRoom/Print Robot Panel/MarginContainer/VBoxContainer/VBoxContainer/Buy Missing Resources" to="CanvasLayer/ActiveArea/PrintersRoom" method="_on_buy_missing_resources_pressed"]
 [connection signal="pressed" from="CanvasLayer/Rooms Selector Side Panel/MarginContainer/VBoxContainer/Mission Ops Btn" to="." method="_on_mission_ops_btn_pressed"]
 [connection signal="pressed" from="CanvasLayer/Rooms Selector Side Panel/MarginContainer/VBoxContainer/Printers Btn" to="." method="_on_printers_btn_pressed"]
