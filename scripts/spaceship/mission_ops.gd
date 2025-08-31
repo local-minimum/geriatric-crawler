@@ -9,6 +9,7 @@ class_name MissionOpsRoom
 @export var robot_listing_panel: Control
 @export var robot_listing_container: Control
 
+
 func activate() -> void:
     select_robot_btn.disabled = false
     loadout_btn.disabled = true
@@ -39,8 +40,12 @@ func _on_select_robot_pressed() -> void:
         robot_listing_container.add_child(label)
 
     else:
-        # TODO: List robots
-        pass
+        var template: PackedScene = load("res://scenes/spaceship/robot_select_option.tscn")
+
+        for robot: RobotsPool.SpaceshipRobot in spaceship.robots_pool.available_robots():
+            var instance: RobotSelectOption = template.instantiate()
+            instance.sync(robot)
+            robot_listing_container.add_child(instance)
 
     robot_listing_panel.show()
 

@@ -1,0 +1,37 @@
+[gd_scene load_steps=2 format=3 uid="uid://du4xj4oj03lov"]
+
+[ext_resource type="Script" uid="uid://cwsyehrsh4x7e" path="res://scripts/spaceship/robot_selection_option.gd" id="1_rukny"]
+
+[node name="Robot Select Option" type="MarginContainer" node_paths=PackedStringArray("given_name", "model_name")]
+script = ExtResource("1_rukny")
+given_name = NodePath("MarginContainer/RobotOptionLayout/RobotName")
+model_name = NodePath("MarginContainer/RobotOptionLayout/RobotModel")
+
+[node name="SelectButton" type="Button" parent="."]
+layout_mode = 2
+toggle_mode = true
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 2
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 2
+
+[node name="RobotOptionLayout" type="HBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="RobotName" type="Label" parent="MarginContainer/RobotOptionLayout"]
+auto_translate_mode = 2
+layout_mode = 2
+text = "ROBOT_NAME"
+
+[node name="Spacer" type="Control" parent="MarginContainer/RobotOptionLayout"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="RobotModel" type="Label" parent="MarginContainer/RobotOptionLayout"]
+auto_translate_mode = 2
+layout_mode = 2
+text = "ROBOT_MODEL"
