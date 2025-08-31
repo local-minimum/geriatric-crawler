@@ -25,13 +25,16 @@ func deactivate() -> void:
 var _showing_options: bool
 var _robot_options: Array[RobotSelectOption]
 
+func _hide_robot_options() -> void:
+    UIUtils.clear_control(robot_listing_container)
+    robot_listing_panel.hide()
+    _showing_options = false
+
 func _on_select_robot_pressed() -> void:
     _robot_options.clear()
 
     if _showing_options:
-        UIUtils.clear_control(robot_listing_container)
-        robot_listing_panel.hide()
-        _showing_options = false
+        _hide_robot_options()
         return
 
     _showing_options = true
@@ -71,15 +74,18 @@ func _handle_select_option(robot: RobotsPool.SpaceshipRobot) -> void:
     if robot != null:
         print_debug("Selected robot %s" % robot.given_name)
 
+    loadout_btn.disabled = _selected_robot == null
+
 func _handle_deselect_option(robot: RobotsPool.SpaceshipRobot) -> void:
     if _selected_robot == robot && _selected_robot != null:
         _selected_robot = null
 
         print_debug("Delected robot")
 
-func _on_loadout_pressed() -> void:
-    pass # Replace with function body.
+        loadout_btn.disabled = _selected_robot == null
 
+func _on_loadout_pressed() -> void:
+    _hide_robot_options()
 
 func _on_deploy_pressed() -> void:
     pass # Replace with function body.
