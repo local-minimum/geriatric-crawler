@@ -20,14 +20,14 @@ var interest_rate_points: int:
     get: return _interest_rate_points
 
 var day_of_month: int:
-    get: return posmod(game_day + _BASE_DAY, _DAYS_PER_MONTH)
+    get: return posmod(game_day + _BASE_DAY, _DAYS_PER_MONTH) + 1
 
 var days_until_end_of_month: int:
     get: return _DAYS_PER_MONTH - posmod(game_day + _BASE_DAY, _DAYS_PER_MONTH)
 
 @warning_ignore_start("integer_division")
 var month: int:
-    get: return (game_day + _BASE_DAY) / _DAYS_PER_MONTH
+    get: return posmod((game_day + _BASE_DAY) / _DAYS_PER_MONTH, _MONTS_PER_YEAR) + 1
 
 var is_first_month: bool:
     get: return month == _BASE_DAY / _DAYS_PER_MONTH
@@ -104,4 +104,9 @@ func set_rent(new_rent: int) -> void:
 
 func set_game_day(new_game_day: int) -> void:
     game_day = new_game_day
+    __SignalBus.on_update_day.emit(year, month, day_of_month, days_until_end_of_month)
+
+func go_to_next_day() -> void:
+    game_day += 1
+    __SignalBus.on_increment_day.emit(day_of_month, days_until_end_of_month)
     __SignalBus.on_update_day.emit(year, month, day_of_month, days_until_end_of_month)

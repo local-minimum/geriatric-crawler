@@ -21,6 +21,11 @@ PREVIOUS,previous,föregående
 NEXT,next,nästa
 DAY_WITH_NUMBER,1 day,1 dag
 DAYS_WITH_NUMBER,{days} days,{days} dagar
+DAYS_UNTIL_RENT, {days} until rent, {days} tills hyran
+DAY_UNTIL_RENT,Rent due tomorrow,Hyran ska betalas imorgon 
+DATE_FORMAT,{month}/{day}/{year},{year}-{month}-{day}
+IT_IS_DATE,It's {date},Det är {date}
+NOTICE_NEW_DAY,New day,Ny dag
 SELF,Self/Player,Du själv/Spelaren
 ALLY,Ally,Vän
 ALLIES,Allies,Vänner
@@ -199,3 +204,7 @@ ACTION_PRINT,Print,SKriv ut
 ACTION_PRINT_FREE_SAMPLE,Print free sample,Skriv ut gratisprov 
 ACTION_BUY_MISSING_RESOURCES,Buy missing resources,Köp de resurser som saknas
 TOTAL_COST_PRICE,Total {price},Total {price}
+ACTION_STARE_SHELF,Stare at empty shelves,Stirra på de tomma hyllorna
+ACTION_GO_TO_BED,Go to bed,Lägg dig
+SHELVES,Shelves,Hyllorna
+STARE_EMPTY_SHELVES,You really should fill those with something,Du borde verkligen fylla upp dom med nåt
