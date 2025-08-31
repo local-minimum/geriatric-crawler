@@ -23,7 +23,11 @@ func deactivate() -> void:
     hide()
 
 var _showing_options: bool
+var _robot_options: Array[RobotSelectOption]
+
 func _on_select_robot_pressed() -> void:
+    _robot_options.clear()
+
     if _showing_options:
         UIUtils.clear_control(robot_listing_container)
         robot_listing_panel.hide()
@@ -45,9 +49,33 @@ func _on_select_robot_pressed() -> void:
         for robot: RobotsPool.SpaceshipRobot in spaceship.robots_pool.available_robots():
             var instance: RobotSelectOption = template.instantiate()
             instance.sync(robot)
+            instance.sync_selection(_selected_robot)
+
+            if instance.on_select_robot.connect(_handle_select_option) != OK:
+                push_error("Failed to connect select robot")
+            if instance.on_deselect_robot.connect(_handle_deselect_option) != OK:
+                push_error("Failed to connect deselect robot")
+
             robot_listing_container.add_child(instance)
+            _robot_options.append(instance)
 
     robot_listing_panel.show()
+
+var _selected_robot: RobotsPool.SpaceshipRobot
+
+func _handle_select_option(robot: RobotsPool.SpaceshipRobot) -> void:
+    _selected_robot = robot
+    for option: RobotSelectOption in _robot_options:
+        option.sync_selection(robot)
+
+    if robot != null:
+        print_debug("Selected robot %s" % robot.given_name)
+
+func _handle_deselect_option(robot: RobotsPool.SpaceshipRobot) -> void:
+    if _selected_robot == robot && _selected_robot != null:
+        _selected_robot = null
+
+        print_debug("Delected robot")
 
 func _on_loadout_pressed() -> void:
     pass # Replace with function body.
