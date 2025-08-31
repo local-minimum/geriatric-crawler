@@ -187,6 +187,8 @@ LOADOUT,Loadout,Utrusta
 DEPLOY,Deploy,Sänd ut
 NO_ROBOTS_AVAILABLE,No robot is available for a mission,Inga robotar fill tillgängliga för ett uppdrag
 CONSTRUCT_FIRST_ROBOT,Go to printers to construct your first robot,Gå till printers för att konstruera din första robot
+NOTICE_PRINTING,Printing,Printing
+PRINTING_ITEM_DONE,Printing of "{item}" done,Utskrift av "{item}" klar
 PRINTER_ID,Printer {id},3D-skrivare {id}
 STATUS_NOT_RENTED,Not rented,Inte hyrd
 STATUS_IDLE,Idle,Stilla

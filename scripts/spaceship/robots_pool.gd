@@ -56,10 +56,10 @@ func _ready() -> void:
     for _idx: int in range(printers):
         _printer_jobs.append(null)
 
-    if __SignalBus.on_increment_day.connect(_handle_new_day) != OK:
+    if __SignalBus.on_increment_day.connect(_handle_increment_day) != OK:
         push_error("Failed to connect increment day")
 
-func _handle_new_day(_dom: int, _days_left_of_month: int) -> void:
+func _handle_increment_day(_dom: int, _days_left_of_month: int) -> void:
     for printer: int in range(_printer_jobs.size()):
         var job: PrinterJob = _printer_jobs[printer]
         if job == null:
@@ -71,6 +71,7 @@ func _handle_new_day(_dom: int, _days_left_of_month: int) -> void:
 
 func _complete_printer_job(job: PrinterJob) -> void:
     _robots.append(SpaceshipRobot.new(job.model, job.given_name))
+    NotificationsManager.info(tr("NOTICE_PRINTING"), tr("PRINTING_ITEM_DONE").format({"item": job.given_name}))
 
 func get_printer_job(printer: int) -> PrinterJob:
     if printer < 0 || printer >= _printer_jobs.size():

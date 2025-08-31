@@ -23,6 +23,9 @@ var _selected_printer: int = -1
 var _model_index: int = 0
 
 func _ready() -> void:
+    if __SignalBus.on_increment_day.connect(_handle_increment_day) != OK:
+        push_error("Failed to connect increment day")
+
     _sync_printer_buttons()
     _sync_printer_statues()
     _sync_panels()
@@ -35,6 +38,9 @@ func activate() -> void:
 
 func deactivate() -> void:
     hide()
+
+func _handle_increment_day(_day_of_month: int, _remaining_days: int) -> void:
+    _sync_printer_statues()
 
 func _sync_printer_buttons() -> void:
     for idx: int in range(printer_buttons.size()):
