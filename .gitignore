@@ -17,3 +17,6 @@ script_templates/
 
 # Vim
 *.swp
+
+# Krita
+*.kra~
