@@ -99,7 +99,7 @@ func _handle_select_option(robot: RobotsPool.SpaceshipRobot) -> void:
         option.sync_selection(robot)
 
     if robot != null:
-        print_debug("Selected robot %s" % robot.given_name)
+        print_debug("Selected robot %s: %s" % [robot.id, robot.given_name])
 
     loadout_btn.disabled = _selected_robot == null
     deploy_btn.disabled = true
@@ -173,7 +173,8 @@ func _on_deploy_without_insurance_pressed(insured: bool = false) -> void:
     _selected_robot.excursions += 1
 
     # TODO: Fix actual destinations
-    __SignalBus.on_before_deploy.emit("test-level", _selected_robot, insured)
+    var duration_days: int = 1
+    __SignalBus.on_before_deploy.emit("test-level", _selected_robot, duration_days, insured)
 
     spaceship.save()
 

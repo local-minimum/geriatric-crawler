@@ -24,7 +24,10 @@ static var _previous_session_time_at_save: int
 
 @export var level_saver: LevelSaver
 
+## Loads before level has been loaded
 @export var extensions: Array[SaveExtension] = []
+## Load after level has been loaded
+@export var late_extensions: Array[SaveExtension] = []
 
 @export var migrations: Array[SaveVersionMigration] = []
 
@@ -86,7 +89,7 @@ func _collect_save_data(save_data: Dictionary) -> Dictionary:
         _LEVEL_SAVE_KEY: _collect_levels_save_data(save_data),
     }
 
-    for extension: SaveExtension in extensions:
+    for extension: SaveExtension in extensions + late_extensions:
         var key: String = extension.get_key()
         if key.is_empty():
             continue
@@ -220,6 +223,20 @@ func load_slot(slot: int) -> bool:
     else:
         push_warning("No levels info in save %s" % data)
         level_saver.load_from_save(level_saver.get_initial_save_state())
+
+    # Load late extension save data
+    for extension: SaveExtension in late_extensions:
+        var key: String = extension.get_key()
+        if key.is_empty():
+            continue
+
+        if data.has(key):
+            var extension_save: Dictionary = data[key]
+            extension.load_from_data(extension_save)
+        elif extension.load_from_initial_if_save_missing():
+            extension.load_from_data(extension.initial_data({}))
+        else:
+            push_warning("Save extension '%s' doesn't have any data in save" % key)
 
     print_debug("Loaded save slot %s" % slot)
     return true

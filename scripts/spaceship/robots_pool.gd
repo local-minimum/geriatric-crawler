@@ -40,8 +40,13 @@ class PrinterJob:
 
         return PrinterJob.new(models[idx], _given_name, _start_day)
 
+static var _MAX_ROBOT_ID: int = 1000
+static func _get_next_robot_id() -> String:
+    _MAX_ROBOT_ID += 1
+    return "%s-%s" % [_MAX_ROBOT_ID, Time.get_ticks_msec()]
 
 class SpaceshipRobot:
+    var id: String
     var model: RobotModel
     var given_name: String
     var storage_location: Spaceship.Room
@@ -53,6 +58,7 @@ class SpaceshipRobot:
     const STORAGE_LOCATION_KEY: String = "location"
     const EXCURSIONS_KEY: String = "excursions"
     const DAMAGE_KEY: String = "damage"
+    const ID_KEY: String = "id"
 
     @warning_ignore_start("shadowed_variable")
     func _init(
@@ -68,9 +74,11 @@ class SpaceshipRobot:
         self.storage_location = storage_location
         self.excursions = excursions
         self.damage = damage
+        self.id = RobotsPool._get_next_robot_id()
 
     func to_save() -> Dictionary:
         return {
+            ID_KEY: id,
             MODEL_NAME_KEY: model.model_name,
             GIVEN_NAME_KEY: given_name,
             STORAGE_LOCATION_KEY: storage_location,
@@ -82,6 +90,10 @@ class SpaceshipRobot:
         var _given_name: String = DictionaryUtils.safe_gets(data, GIVEN_NAME_KEY)
         var _model_name: String = DictionaryUtils.safe_gets(data, MODEL_NAME_KEY)
 
+        var _id: String = DictionaryUtils.safe_gets(data, ID_KEY, RobotsPool._get_next_robot_id())
+        var _id_counter: int = int(_id.split("-")[0])
+        RobotsPool._MAX_ROBOT_ID = maxi(RobotsPool._MAX_ROBOT_ID, _id_counter)
+
         var idx: int = models.find_custom(func (mod: RobotModel) -> bool: return mod.model_name == _model_name)
         if idx < 0:
             return null
@@ -90,7 +102,10 @@ class SpaceshipRobot:
         var _damage: int = DictionaryUtils.safe_geti(data, DAMAGE_KEY)
         var room: Spaceship.Room = Spaceship.to_room(DictionaryUtils.safe_geti(data, STORAGE_LOCATION_KEY), Spaceship.Room.PRINTERS)
 
-        return SpaceshipRobot.new(models[idx], _given_name, room, _excursions, _damage)
+        var robot: SpaceshipRobot = SpaceshipRobot.new(models[idx], _given_name, room, _excursions, _damage)
+        robot.id = _id
+
+        return robot
 
 @export var base_robot: RobotModel
 @export var available_models: Array[RobotModel]
@@ -101,6 +116,15 @@ var _robots: Array[SpaceshipRobot]
 
 func available_robots() -> Array[SpaceshipRobot]:
     return _robots
+
+func get_robot(id: String) -> SpaceshipRobot:
+    if id.is_empty():
+        return null
+
+    for robot: SpaceshipRobot in _robots:
+        if robot.id == id:
+            return robot
+    return null
 
 var _printer_jobs: Array[PrinterJob]
 

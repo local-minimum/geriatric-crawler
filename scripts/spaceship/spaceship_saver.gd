@@ -2,34 +2,24 @@ extends LevelSaver
 class_name SpaceshipSaver
 
 const _ROBOTS_KEY: String = "robots"
-const _DEPLOYMENT_KEY: String = "deployment"
-const _DESTINATION_KEY: String = "destination"
-const _INSURED_KEY: String = "insured"
 
 @export var _level_name: String = "hub-spaceship"
 
 @export var robots_pool: RobotsPool
 
 var _destination_level: String
-var _insured: bool
 
 func _ready() -> void:
     if __SignalBus.on_before_deploy.connect(_handle_before_deploy) != OK:
         push_error("Failed to connect on before deploy")
 
-func _handle_before_deploy(level_id: String, _robot: RobotsPool.SpaceshipRobot, insured: bool) -> void:
+func _handle_before_deploy(level_id: String, _robot: RobotsPool.SpaceshipRobot, _duration_days: int, _insured: bool) -> void:
     _destination_level = level_id
-    _insured = insured
 
 func collect_save_state() -> Dictionary:
     var save: Dictionary = {
         _ROBOTS_KEY: robots_pool.collect_save_data(),
     }
-    if !_destination_level.is_empty():
-        save[_DEPLOYMENT_KEY] = {
-            _DESTINATION_KEY: _destination_level,
-            _INSURED_KEY: _insured
-        }
 
     return save
 

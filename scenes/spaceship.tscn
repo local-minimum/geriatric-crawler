@@ -1,4 +1,4 @@
-[gd_scene load_steps=28 format=3 uid="uid://7flb82m2ddwe"]
+[gd_scene load_steps=29 format=3 uid="uid://7flb82m2ddwe"]
 
 [ext_resource type="Script" uid="uid://dfub4a26emjgr" path="res://scripts/spaceship.gd" id="1_ae4p7"]
 [ext_resource type="Texture2D" uid="uid://0ncw5fw4jr8u" path="res://sprites/spaceship/missionops.png" id="2_5eye7"]
@@ -24,6 +24,7 @@
 [ext_resource type="Script" uid="uid://dftf4h6eyrsio" path="res://scripts/inventory.gd" id="15_tst1b"]
 [ext_resource type="Script" uid="uid://dh2gnvehpl1wc" path="res://scripts/spaceship/robots_pool.gd" id="17_0xuuw"]
 [ext_resource type="Resource" uid="uid://bh75cac6e2j77" path="res://resources/robot_models/starter.tres" id="20_i1do7"]
+[ext_resource type="Script" uid="uid://cloq81xps7tex" path="res://scripts/deployment_saver.gd" id="21_8k34q"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ws7tf"]
 bg_color = Color(0.477872, 0.602944, 0.818495, 1)
@@ -603,11 +604,12 @@ alignment = 2
 script = ExtResource("7_6i2wf")
 _tween_notifiction_duration = 0.5
 
-[node name="SaveSystem" type="Node" parent="." node_paths=PackedStringArray("storage_provider", "level_saver", "extensions", "migrations")]
+[node name="SaveSystem" type="Node" parent="." node_paths=PackedStringArray("storage_provider", "level_saver", "extensions", "late_extensions", "migrations")]
 script = ExtResource("8_r0fvi")
 storage_provider = NodePath("StorageProvider")
 level_saver = NodePath("SpaceshipSaver")
 extensions = [NodePath("Extensions/GlobalGameStateSaver"), NodePath("Extensions/ChapSaver")]
+late_extensions = [NodePath("Extensions/DeploymentSaver")]
 migrations = [NodePath("Migrations/v0_0_2")]
 metadata/_custom_type_script = "uid://bkjlt23hansuv"
 
@@ -642,6 +644,12 @@ metadata/_custom_type_script = "uid://cewd737qkspe7"
 script = ExtResource("15_d22a7")
 _save_key = "spaceship-inventory"
 metadata/_custom_type_script = "uid://clmlakb50km2n"
+
+[node name="DeploymentSaver" type="Node" parent="SaveSystem/Extensions" node_paths=PackedStringArray("_robot_pool")]
+script = ExtResource("21_8k34q")
+_robot_pool = NodePath("../../../RobotsPool")
+_tick_time_on_load = true
+metadata/_custom_type_script = "uid://cloq81xps7tex"
 
 [node name="Inventory" type="Node" parent="."]
 script = ExtResource("15_tst1b")

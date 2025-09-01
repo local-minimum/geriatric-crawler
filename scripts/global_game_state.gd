@@ -106,7 +106,10 @@ func set_game_day(new_game_day: int) -> void:
     game_day = new_game_day
     __SignalBus.on_update_day.emit(year, month, day_of_month, days_until_end_of_month)
 
-func go_to_next_day() -> void:
-    game_day += 1
+func go_to_next_day(days: int = 1) -> void:
+    if days <= 0:
+        return
+
+    game_day += days
     __SignalBus.on_increment_day.emit(day_of_month, days_until_end_of_month)
     __SignalBus.on_update_day.emit(year, month, day_of_month, days_until_end_of_month)
