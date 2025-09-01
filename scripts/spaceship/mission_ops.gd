@@ -9,6 +9,8 @@ class_name MissionOpsRoom
 @export var robot_listing_panel: Control
 @export var robot_listing_container: Control
 
+@export var loadout_panel: Control
+
 
 func activate() -> void:
     select_robot_btn.disabled = false
@@ -16,6 +18,7 @@ func activate() -> void:
     deploy_btn.disabled = true
 
     robot_listing_panel.hide()
+    loadout_panel.hide()
     _showing_options = false
     show()
 
@@ -42,6 +45,8 @@ func _hide_robot_options() -> void:
     _showing_options = false
 
 func _on_select_robot_pressed() -> void:
+    loadout_panel.hide()
+
     if _showing_options:
         _hide_robot_options()
         return
@@ -89,6 +94,7 @@ func _handle_select_option(robot: RobotsPool.SpaceshipRobot) -> void:
         print_debug("Selected robot %s" % robot.given_name)
 
     loadout_btn.disabled = _selected_robot == null
+    deploy_btn.disabled = true
 
 func _handle_deselect_option(robot: RobotsPool.SpaceshipRobot) -> void:
     if _selected_robot == robot && _selected_robot != null:
@@ -100,6 +106,15 @@ func _handle_deselect_option(robot: RobotsPool.SpaceshipRobot) -> void:
 
 func _on_loadout_pressed() -> void:
     _hide_robot_options()
+    loadout_panel.show()
 
 func _on_deploy_pressed() -> void:
-    pass # Replace with function body.
+    _hide_robot_options()
+    loadout_panel.hide()
+
+func _on_unlock_loadouts_pressed() -> void:
+    NotificationsManager.warn(tr("NOTICE_SYSTEM_ERROR"), tr("LOADOUT_SYSTEM_NOT_RESPONDING"))
+
+func _on_skip_loadout_pressed() -> void:
+    deploy_btn.disabled = false
+    _on_deploy_pressed()

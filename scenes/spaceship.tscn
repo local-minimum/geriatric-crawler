@@ -63,7 +63,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="MissionOpsRoom" type="Control" parent="CanvasLayer/ActiveArea" node_paths=PackedStringArray("spaceship", "select_robot_btn", "loadout_btn", "deploy_btn", "robot_listing_panel", "robot_listing_container")]
+[node name="MissionOpsRoom" type="Control" parent="CanvasLayer/ActiveArea" node_paths=PackedStringArray("spaceship", "select_robot_btn", "loadout_btn", "deploy_btn", "robot_listing_panel", "robot_listing_container", "loadout_panel")]
 layout_mode = 2
 mouse_filter = 2
 script = ExtResource("2_tst1b")
@@ -73,6 +73,7 @@ loadout_btn = NodePath("Main Buttons/Loadout")
 deploy_btn = NodePath("Main Buttons/Deploy")
 robot_listing_panel = NodePath("Robots Listing Panel")
 robot_listing_container = NodePath("Robots Listing Panel/MarginContainer/ScrollContainer/Robots List Container")
+loadout_panel = NodePath("Loadout Panel")
 metadata/_custom_type_script = "uid://2u36jp6hoedg"
 
 [node name="Mission Ops" type="TextureRect" parent="CanvasLayer/ActiveArea/MissionOpsRoom"]
@@ -123,7 +124,44 @@ stretch_mode = 5
 layout_mode = 2
 text = "DEPLOY"
 
+[node name="Loadout Panel" type="PanelContainer" parent="CanvasLayer/ActiveArea/MissionOpsRoom"]
+layout_mode = 2
+offset_left = 105.0
+offset_top = 291.0
+offset_right = 543.0
+offset_bottom = 357.0
+size_flags_horizontal = 4
+size_flags_vertical = 4
+
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/ActiveArea/MissionOpsRoom/Loadout Panel"]
+layout_mode = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 4
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/ActiveArea/MissionOpsRoom/Loadout Panel/MarginContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="CanvasLayer/ActiveArea/MissionOpsRoom/Loadout Panel/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(250, 0)
+layout_mode = 2
+text = "LOADOUT_ADVANCED_FEATURE"
+autowrap_mode = 3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/ActiveArea/MissionOpsRoom/Loadout Panel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Skip Loadout" type="Button" parent="CanvasLayer/ActiveArea/MissionOpsRoom/Loadout Panel/MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "ACTION_LOADOUT_SKIP"
+
+[node name="Unlock Loadouts" type="Button" parent="CanvasLayer/ActiveArea/MissionOpsRoom/Loadout Panel/MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "ACTION_LOADOUT_UNLOCK"
+
 [node name="Robots Listing Panel" type="PanelContainer" parent="CanvasLayer/ActiveArea/MissionOpsRoom"]
+visible = false
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -538,6 +576,8 @@ metadata/_custom_type_script = "uid://dh2gnvehpl1wc"
 [connection signal="pressed" from="CanvasLayer/ActiveArea/MissionOpsRoom/Main Buttons/Select Robot" to="CanvasLayer/ActiveArea/MissionOpsRoom" method="_on_select_robot_pressed"]
 [connection signal="pressed" from="CanvasLayer/ActiveArea/MissionOpsRoom/Main Buttons/Loadout" to="CanvasLayer/ActiveArea/MissionOpsRoom" method="_on_loadout_pressed"]
 [connection signal="pressed" from="CanvasLayer/ActiveArea/MissionOpsRoom/Main Buttons/Deploy" to="CanvasLayer/ActiveArea/MissionOpsRoom" method="_on_deploy_pressed"]
+[connection signal="pressed" from="CanvasLayer/ActiveArea/MissionOpsRoom/Loadout Panel/MarginContainer/VBoxContainer/HBoxContainer/Skip Loadout" to="CanvasLayer/ActiveArea/MissionOpsRoom" method="_on_skip_loadout_pressed"]
+[connection signal="pressed" from="CanvasLayer/ActiveArea/MissionOpsRoom/Loadout Panel/MarginContainer/VBoxContainer/HBoxContainer/Unlock Loadouts" to="CanvasLayer/ActiveArea/MissionOpsRoom" method="_on_unlock_loadouts_pressed"]
 [connection signal="pressed" from="CanvasLayer/ActiveArea/PrintersRoom/Printer Selector/Printer Selection Group/Printer I Button" to="CanvasLayer/ActiveArea/PrintersRoom" method="_on_printer_i_button_pressed"]
 [connection signal="pressed" from="CanvasLayer/ActiveArea/PrintersRoom/Printer Selector/Printer Selection Group2/Printer II Button" to="CanvasLayer/ActiveArea/PrintersRoom" method="_on_printer_ii_button_pressed"]
 [connection signal="pressed" from="CanvasLayer/ActiveArea/PrintersRoom/Printer Selector/Printer Selection Group3/Printer III Button" to="CanvasLayer/ActiveArea/PrintersRoom" method="_on_printer_iii_button_pressed"]
