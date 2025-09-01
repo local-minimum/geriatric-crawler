@@ -25,21 +25,34 @@ func deactivate() -> void:
 var _showing_options: bool
 var _robot_options: Array[RobotSelectOption]
 
+func _clear_previous_listing_if_needed(options: Array[RobotsPool.SpaceshipRobot]) -> bool:
+    if (
+        _robot_options.size() == 0 ||
+        robot_listing_container.get_child_count() != options.size() ||
+        _robot_options.size() != options.size() ||
+        !_robot_options.all(func (opt: RobotSelectOption) -> bool: return options.has(opt._robot))
+    ):
+        _robot_options.clear()
+        UIUtils.clear_control(robot_listing_container)
+        return true
+    return false
+
 func _hide_robot_options() -> void:
-    UIUtils.clear_control(robot_listing_container)
     robot_listing_panel.hide()
     _showing_options = false
 
 func _on_select_robot_pressed() -> void:
-    _robot_options.clear()
-
     if _showing_options:
         _hide_robot_options()
         return
 
-    _showing_options = true
-
     var options: Array[RobotsPool.SpaceshipRobot] = spaceship.robots_pool.available_robots()
+
+    if !_clear_previous_listing_if_needed(options):
+        _showing_options = true
+        robot_listing_panel.show()
+        return
+
     if options.is_empty():
         var label: Label = Label.new()
         label.text = tr("NO_ROBOTS_AVAILABLE") if !spaceship.robots_pool._robots.is_empty() else "\n".join([tr("NO_ROBOTS_AVAILABLE"), tr("CONSTRUCT_FIRST_ROBOT")])
@@ -62,6 +75,7 @@ func _on_select_robot_pressed() -> void:
             robot_listing_container.add_child(instance)
             _robot_options.append(instance)
 
+    _showing_options = true
     robot_listing_panel.show()
 
 var _selected_robot: RobotsPool.SpaceshipRobot

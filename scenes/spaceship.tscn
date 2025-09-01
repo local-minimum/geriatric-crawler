@@ -71,8 +71,8 @@ spaceship = NodePath("../../..")
 select_robot_btn = NodePath("Main Buttons/Select Robot")
 loadout_btn = NodePath("Main Buttons/Loadout")
 deploy_btn = NodePath("Main Buttons/Deploy")
-robot_listing_panel = NodePath("PanelContainer")
-robot_listing_container = NodePath("PanelContainer/MarginContainer/ScrollContainer/VBoxContainer")
+robot_listing_panel = NodePath("Robots Listing Panel")
+robot_listing_container = NodePath("Robots Listing Panel/MarginContainer/ScrollContainer/Robots List Container")
 metadata/_custom_type_script = "uid://2u36jp6hoedg"
 
 [node name="Mission Ops" type="TextureRect" parent="CanvasLayer/ActiveArea/MissionOpsRoom"]
@@ -123,7 +123,7 @@ stretch_mode = 5
 layout_mode = 2
 text = "DEPLOY"
 
-[node name="PanelContainer" type="PanelContainer" parent="CanvasLayer/ActiveArea/MissionOpsRoom"]
+[node name="Robots Listing Panel" type="PanelContainer" parent="CanvasLayer/ActiveArea/MissionOpsRoom"]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -137,19 +137,19 @@ offset_bottom = 20.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/ActiveArea/MissionOpsRoom/PanelContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/ActiveArea/MissionOpsRoom/Robots Listing Panel"]
 layout_mode = 2
-theme_override_constants/margin_left = 16
-theme_override_constants/margin_top = 8
-theme_override_constants/margin_right = 16
-theme_override_constants/margin_bottom = 8
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 4
 
-[node name="ScrollContainer" type="ScrollContainer" parent="CanvasLayer/ActiveArea/MissionOpsRoom/PanelContainer/MarginContainer"]
+[node name="ScrollContainer" type="ScrollContainer" parent="CanvasLayer/ActiveArea/MissionOpsRoom/Robots Listing Panel/MarginContainer"]
 custom_minimum_size = Vector2(350, 150)
 layout_mode = 2
 horizontal_scroll_mode = 0
 
-[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/ActiveArea/MissionOpsRoom/PanelContainer/MarginContainer/ScrollContainer"]
+[node name="Robots List Container" type="VBoxContainer" parent="CanvasLayer/ActiveArea/MissionOpsRoom/Robots Listing Panel/MarginContainer/ScrollContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
