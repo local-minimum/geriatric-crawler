@@ -183,7 +183,7 @@ func collect_save_data() -> Dictionary:
     return {
         _FREE_STARTER_PRINTED_KEY: _free_starter_robot_printed,
         _RENTED_PRINTERS_KEY: range(printers).map(func (idx: int) -> bool: return printer_is_rented(idx)),
-        _JOBS_KEY: _printer_jobs.map(func (job: PrinterJob) -> Dictionary: return job.to_save()),
+        _JOBS_KEY: _printer_jobs.map(func (job: PrinterJob) -> Dictionary: return job.to_save() if job else {}),
     }
 
 func load_from_save_data(data: Dictionary) -> void:

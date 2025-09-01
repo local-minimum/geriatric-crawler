@@ -22,7 +22,6 @@ func _handle_before_deploy(level_id: String, _robot: RobotsPool.SpaceshipRobot, 
     _insured = insured
 
 func collect_save_state() -> Dictionary:
-    push_error("Executing base class method for saving state")
     var save: Dictionary = {
         _ROBOTS_KEY: robots_pool.collect_save_data(),
     }
@@ -35,7 +34,6 @@ func collect_save_state() -> Dictionary:
     return save
 
 func get_initial_save_state() -> Dictionary:
-    push_warning("Executing base class method for initial state")
     return {}
 
 ## When saving and loading indicates the current level

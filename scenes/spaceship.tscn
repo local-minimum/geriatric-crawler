@@ -43,7 +43,7 @@ script = ExtResource("10_5eye7")
 _version = "0.0.2"
 metadata/_custom_type_script = "uid://bjkpx0v0d0vky"
 
-[node name="Spaceshiip" type="Node2D" node_paths=PackedStringArray("chap_ui", "rooms", "inventory", "robots_pool")]
+[node name="Spaceshiip" type="Node2D" node_paths=PackedStringArray("chap_ui", "rooms", "inventory", "robots_pool", "save_system")]
 script = ExtResource("1_ae4p7")
 chap_ui = NodePath("CanvasLayer/CHAP AI")
 rooms = {
@@ -53,6 +53,7 @@ rooms = {
 }
 inventory = NodePath("Inventory")
 robots_pool = NodePath("RobotsPool")
+save_system = NodePath("SaveSystem")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
@@ -606,12 +607,16 @@ _tween_notifiction_duration = 0.5
 script = ExtResource("8_r0fvi")
 storage_provider = NodePath("StorageProvider")
 level_saver = NodePath("SpaceshipSaver")
-extensions = [NodePath("GlobalGameStateSaver"), NodePath("ChapSaver")]
+extensions = [NodePath("Extensions/GlobalGameStateSaver"), NodePath("Extensions/ChapSaver")]
 migrations = [NodePath("Migrations/v0_0_2")]
 metadata/_custom_type_script = "uid://bkjlt23hansuv"
 
-[node name="SpaceshipSaver" type="Node" parent="SaveSystem"]
+[node name="StorageProvider" type="Node" parent="SaveSystem"]
+script = ExtResource("9_6wr2n")
+
+[node name="SpaceshipSaver" type="Node" parent="SaveSystem" node_paths=PackedStringArray("robots_pool")]
 script = ExtResource("14_csm47")
+robots_pool = NodePath("../../RobotsPool")
 metadata/_custom_type_script = "uid://dddgx760pvv7h"
 
 [node name="Migrations" type="Node" parent="SaveSystem"]
@@ -619,21 +624,21 @@ metadata/_custom_type_script = "uid://dddgx760pvv7h"
 [node name="v0_0_2" type="Node" parent="SaveSystem/Migrations" node_paths=PackedStringArray("global_state_saver")]
 script = ExtResource("9_iow36")
 applies_to = SubResource("Resource_tst1b")
-global_state_saver = NodePath("../../GlobalGameStateSaver")
+global_state_saver = NodePath("../../Extensions/GlobalGameStateSaver")
 applies_from = SubResource("Resource_d22a7")
 
-[node name="StorageProvider" type="Node" parent="SaveSystem"]
-script = ExtResource("9_6wr2n")
+[node name="Extensions" type="Node" parent="SaveSystem"]
 
-[node name="GlobalGameStateSaver" type="Node" parent="SaveSystem"]
+[node name="GlobalGameStateSaver" type="Node" parent="SaveSystem/Extensions"]
 script = ExtResource("10_6wr2n")
 metadata/_custom_type_script = "uid://tgtpk0qo2xx7"
 
-[node name="ChapSaver" type="Node" parent="SaveSystem"]
+[node name="ChapSaver" type="Node" parent="SaveSystem/Extensions" node_paths=PackedStringArray("chap_ui")]
 script = ExtResource("11_yckko")
+chap_ui = NodePath("../../../CanvasLayer/CHAP AI")
 metadata/_custom_type_script = "uid://cewd737qkspe7"
 
-[node name="InventorySaver" type="Node" parent="SaveSystem"]
+[node name="InventorySaver" type="Node" parent="SaveSystem/Extensions"]
 script = ExtResource("15_d22a7")
 _save_key = "spaceship-inventory"
 metadata/_custom_type_script = "uid://clmlakb50km2n"
