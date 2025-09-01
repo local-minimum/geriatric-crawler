@@ -173,6 +173,7 @@ func _on_deploy_without_insurance_pressed(insured: bool = false) -> void:
     _selected_robot.excursions += 1
 
     # TODO: Fix actual destinations
+    # TODO: Fix calculation of duration based on destination
     var duration_days: int = 1
     __SignalBus.on_before_deploy.emit("test-level", _selected_robot, duration_days, insured)
 

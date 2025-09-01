@@ -208,6 +208,7 @@ func collect_save_data() -> Dictionary:
         _FREE_STARTER_PRINTED_KEY: _free_starter_robot_printed,
         _RENTED_PRINTERS_KEY: range(printers).map(func (idx: int) -> bool: return printer_is_rented(idx)),
         _JOBS_KEY: _printer_jobs.map(func (job: PrinterJob) -> Dictionary: return job.to_save() if job else {}),
+        _ROBOTS_KEY: _robots.map(func (robot: SpaceshipRobot) -> Dictionary: return robot.to_save()),
     }
 
 func load_from_save_data(data: Dictionary) -> void:
@@ -222,3 +223,11 @@ func load_from_save_data(data: Dictionary) -> void:
             var job: PrinterJob = PrinterJob.from_save(job_data_item, available_models)
             @warning_ignore_restore("unsafe_call_argument")
             _printer_jobs.append(job)
+
+    _robots.clear()
+    for robot_data: Variant in DictionaryUtils.safe_geta(data, _ROBOTS_KEY, [], false):
+        if robot_data is Dictionary:
+            @warning_ignore_start("unsafe_call_argument")
+            var robot: SpaceshipRobot = SpaceshipRobot.from_save(robot_data, available_models)
+            @warning_ignore_restore("unsafe_call_argument")
+            _robots.append(robot)
