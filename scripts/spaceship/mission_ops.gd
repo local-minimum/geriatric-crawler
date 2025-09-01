@@ -11,6 +11,13 @@ class_name MissionOpsRoom
 
 @export var loadout_panel: Control
 
+@export var deploy_panel: Control
+@export var deploy_robot_name: Label
+@export var deploy_destination_name: Label
+@export var deploy_with_insurance_btn: Button
+
+enum PanelPhase {NONE, OPTIONS, LOADOUT, DEPLOY}
+var _phase: PanelPhase = PanelPhase.NONE
 
 func activate() -> void:
     select_robot_btn.disabled = false
@@ -19,13 +26,13 @@ func activate() -> void:
 
     robot_listing_panel.hide()
     loadout_panel.hide()
-    _showing_options = false
+    deploy_panel.hide()
+    _phase = PanelPhase.NONE
     show()
 
 func deactivate() -> void:
     hide()
 
-var _showing_options: bool
 var _robot_options: Array[RobotSelectOption]
 
 func _clear_previous_listing_if_needed(options: Array[RobotsPool.SpaceshipRobot]) -> bool:
@@ -42,19 +49,21 @@ func _clear_previous_listing_if_needed(options: Array[RobotsPool.SpaceshipRobot]
 
 func _hide_robot_options() -> void:
     robot_listing_panel.hide()
-    _showing_options = false
+    _phase = PanelPhase.NONE
 
 func _on_select_robot_pressed() -> void:
     loadout_panel.hide()
+    deploy_panel.hide()
 
-    if _showing_options:
+    if _phase == PanelPhase.OPTIONS:
         _hide_robot_options()
         return
 
     var options: Array[RobotsPool.SpaceshipRobot] = spaceship.robots_pool.available_robots()
 
+    _phase = PanelPhase.OPTIONS
+
     if !_clear_previous_listing_if_needed(options):
-        _showing_options = true
         robot_listing_panel.show()
         return
 
@@ -80,7 +89,6 @@ func _on_select_robot_pressed() -> void:
             robot_listing_container.add_child(instance)
             _robot_options.append(instance)
 
-    _showing_options = true
     robot_listing_panel.show()
 
 var _selected_robot: RobotsPool.SpaceshipRobot
@@ -95,6 +103,7 @@ func _handle_select_option(robot: RobotsPool.SpaceshipRobot) -> void:
 
     loadout_btn.disabled = _selected_robot == null
     deploy_btn.disabled = true
+    deploy_with_insurance_btn.disabled = false
 
 func _handle_deselect_option(robot: RobotsPool.SpaceshipRobot) -> void:
     if _selected_robot == robot && _selected_robot != null:
@@ -103,14 +112,43 @@ func _handle_deselect_option(robot: RobotsPool.SpaceshipRobot) -> void:
         print_debug("Delected robot")
 
         loadout_btn.disabled = _selected_robot == null
+        deploy_btn.disabled = _selected_robot == null
+        deploy_with_insurance_btn.disabled = false
 
 func _on_loadout_pressed() -> void:
+    if _phase == PanelPhase.LOADOUT:
+        loadout_panel.hide()
+        _phase = PanelPhase.NONE
+        return
+
     _hide_robot_options()
     loadout_panel.show()
+    deploy_panel.hide()
+    _phase = PanelPhase.LOADOUT
+
+func _calculate_insurance_cost() -> int:
+    # TODO: Make insurer system
+    return ceili(_selected_robot.model.production.credits * 0.7) + 50
 
 func _on_deploy_pressed() -> void:
+    if _phase == PanelPhase.DEPLOY:
+        _phase = PanelPhase.NONE
+        deploy_panel.hide()
+        return
+
     _hide_robot_options()
     loadout_panel.hide()
+
+    if _selected_robot == null:
+        NotificationsManager.warn(tr("MISSION_OPS"), tr("NO_ROBOT_SELECTED"))
+        return
+
+    deploy_robot_name.text = _selected_robot.given_name
+    # TODO: Fix actual destinations
+    deploy_destination_name.text = tr("TRAINING_GROUNDS")
+    deploy_with_insurance_btn.text = tr("DEPLOY_WITH_INSURANCE").format({"cost": GlobalGameState.credits_with_sign(_calculate_insurance_cost())})
+    deploy_panel.show()
+    _phase = PanelPhase.DEPLOY
 
 func _on_unlock_loadouts_pressed() -> void:
     NotificationsManager.warn(tr("NOTICE_SYSTEM_ERROR"), tr("LOADOUT_SYSTEM_NOT_RESPONDING"))
@@ -118,3 +156,15 @@ func _on_unlock_loadouts_pressed() -> void:
 func _on_skip_loadout_pressed() -> void:
     deploy_btn.disabled = false
     _on_deploy_pressed()
+
+func _on_deploy_with_insurance_pressed() -> void:
+    var cost: int = _calculate_insurance_cost()
+    if !__GlobalGameState.withdraw_credits(cost):
+        NotificationsManager.warn(tr("MISSION_OPS"), tr("CANNOT_AFFORD_INSURANCE"))
+        deploy_with_insurance_btn.disabled = true
+        return
+
+    _on_deploy_without_insurance_pressed()
+
+func _on_deploy_without_insurance_pressed() -> void:
+    print_debug("Make deployment")

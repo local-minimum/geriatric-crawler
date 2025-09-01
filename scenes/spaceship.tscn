@@ -63,7 +63,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="MissionOpsRoom" type="Control" parent="CanvasLayer/ActiveArea" node_paths=PackedStringArray("spaceship", "select_robot_btn", "loadout_btn", "deploy_btn", "robot_listing_panel", "robot_listing_container", "loadout_panel")]
+[node name="MissionOpsRoom" type="Control" parent="CanvasLayer/ActiveArea" node_paths=PackedStringArray("spaceship", "select_robot_btn", "loadout_btn", "deploy_btn", "robot_listing_panel", "robot_listing_container", "loadout_panel", "deploy_panel", "deploy_robot_name", "deploy_destination_name", "deploy_with_insurance_btn")]
 layout_mode = 2
 mouse_filter = 2
 script = ExtResource("2_tst1b")
@@ -74,6 +74,10 @@ deploy_btn = NodePath("Main Buttons/Deploy")
 robot_listing_panel = NodePath("Robots Listing Panel")
 robot_listing_container = NodePath("Robots Listing Panel/MarginContainer/ScrollContainer/Robots List Container")
 loadout_panel = NodePath("Loadout Panel")
+deploy_panel = NodePath("Deploy Panel")
+deploy_robot_name = NodePath("Deploy Panel/MarginContainer/VBoxContainer/GridContainer/Robot Name")
+deploy_destination_name = NodePath("Deploy Panel/MarginContainer/VBoxContainer/GridContainer/Destination Name")
+deploy_with_insurance_btn = NodePath("Deploy Panel/MarginContainer/VBoxContainer/Buttons/Deploy with insurance")
 metadata/_custom_type_script = "uid://2u36jp6hoedg"
 
 [node name="Mission Ops" type="TextureRect" parent="CanvasLayer/ActiveArea/MissionOpsRoom"]
@@ -124,7 +128,40 @@ stretch_mode = 5
 layout_mode = 2
 text = "DEPLOY"
 
+[node name="Robots Listing Panel" type="PanelContainer" parent="CanvasLayer/ActiveArea/MissionOpsRoom"]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -183.0
+offset_top = -79.0
+offset_right = 183.0
+offset_bottom = 79.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/ActiveArea/MissionOpsRoom/Robots Listing Panel"]
+layout_mode = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 4
+
+[node name="ScrollContainer" type="ScrollContainer" parent="CanvasLayer/ActiveArea/MissionOpsRoom/Robots Listing Panel/MarginContainer"]
+custom_minimum_size = Vector2(350, 150)
+layout_mode = 2
+horizontal_scroll_mode = 0
+
+[node name="Robots List Container" type="VBoxContainer" parent="CanvasLayer/ActiveArea/MissionOpsRoom/Robots Listing Panel/MarginContainer/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
 [node name="Loadout Panel" type="PanelContainer" parent="CanvasLayer/ActiveArea/MissionOpsRoom"]
+visible = false
 layout_mode = 2
 offset_left = 105.0
 offset_top = 291.0
@@ -160,8 +197,7 @@ text = "ACTION_LOADOUT_SKIP"
 layout_mode = 2
 text = "ACTION_LOADOUT_UNLOCK"
 
-[node name="Robots Listing Panel" type="PanelContainer" parent="CanvasLayer/ActiveArea/MissionOpsRoom"]
-visible = false
+[node name="Deploy Panel" type="PanelContainer" parent="CanvasLayer/ActiveArea/MissionOpsRoom"]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -175,22 +211,55 @@ offset_bottom = 20.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/ActiveArea/MissionOpsRoom/Robots Listing Panel"]
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/ActiveArea/MissionOpsRoom/Deploy Panel"]
 layout_mode = 2
 theme_override_constants/margin_left = 8
 theme_override_constants/margin_top = 4
 theme_override_constants/margin_right = 8
 theme_override_constants/margin_bottom = 4
 
-[node name="ScrollContainer" type="ScrollContainer" parent="CanvasLayer/ActiveArea/MissionOpsRoom/Robots Listing Panel/MarginContainer"]
-custom_minimum_size = Vector2(350, 150)
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/ActiveArea/MissionOpsRoom/Deploy Panel/MarginContainer"]
 layout_mode = 2
-horizontal_scroll_mode = 0
 
-[node name="Robots List Container" type="VBoxContainer" parent="CanvasLayer/ActiveArea/MissionOpsRoom/Robots Listing Panel/MarginContainer/ScrollContainer"]
+[node name="Deployment Title" type="Label" parent="CanvasLayer/ActiveArea/MissionOpsRoom/Deploy Panel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "DEPLOYMENT_PLAN"
+horizontal_alignment = 1
+
+[node name="GridContainer" type="GridContainer" parent="CanvasLayer/ActiveArea/MissionOpsRoom/Deploy Panel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+columns = 2
+
+[node name="Robot" type="Label" parent="CanvasLayer/ActiveArea/MissionOpsRoom/Deploy Panel/MarginContainer/VBoxContainer/GridContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-size_flags_vertical = 3
+text = "ROBOT"
+
+[node name="Robot Name" type="Label" parent="CanvasLayer/ActiveArea/MissionOpsRoom/Deploy Panel/MarginContainer/VBoxContainer/GridContainer"]
+auto_translate_mode = 2
+layout_mode = 2
+
+[node name="Destination" type="Label" parent="CanvasLayer/ActiveArea/MissionOpsRoom/Deploy Panel/MarginContainer/VBoxContainer/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "DESTINATION"
+
+[node name="Destination Name" type="Label" parent="CanvasLayer/ActiveArea/MissionOpsRoom/Deploy Panel/MarginContainer/VBoxContainer/GridContainer"]
+auto_translate_mode = 2
+layout_mode = 2
+
+[node name="Buttons" type="HBoxContainer" parent="CanvasLayer/ActiveArea/MissionOpsRoom/Deploy Panel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="Deploy without insurance" type="Button" parent="CanvasLayer/ActiveArea/MissionOpsRoom/Deploy Panel/MarginContainer/VBoxContainer/Buttons"]
+layout_mode = 2
+text = "DEPLOY"
+
+[node name="Deploy with insurance" type="Button" parent="CanvasLayer/ActiveArea/MissionOpsRoom/Deploy Panel/MarginContainer/VBoxContainer/Buttons"]
+auto_translate_mode = 2
+layout_mode = 2
+text = "DEPLOY_WITH_INSURANCE"
 
 [node name="PrintersRoom" type="Control" parent="CanvasLayer/ActiveArea" node_paths=PackedStringArray("robots_pool", "printer_buttons", "printer_statuses", "rent_panel", "rent_down_payment_cost", "rent_cost", "models_panel", "model_title", "model_description", "model_price", "print_model_btn", "buy_materials_btn")]
 visible = false
@@ -578,6 +647,8 @@ metadata/_custom_type_script = "uid://dh2gnvehpl1wc"
 [connection signal="pressed" from="CanvasLayer/ActiveArea/MissionOpsRoom/Main Buttons/Deploy" to="CanvasLayer/ActiveArea/MissionOpsRoom" method="_on_deploy_pressed"]
 [connection signal="pressed" from="CanvasLayer/ActiveArea/MissionOpsRoom/Loadout Panel/MarginContainer/VBoxContainer/HBoxContainer/Skip Loadout" to="CanvasLayer/ActiveArea/MissionOpsRoom" method="_on_skip_loadout_pressed"]
 [connection signal="pressed" from="CanvasLayer/ActiveArea/MissionOpsRoom/Loadout Panel/MarginContainer/VBoxContainer/HBoxContainer/Unlock Loadouts" to="CanvasLayer/ActiveArea/MissionOpsRoom" method="_on_unlock_loadouts_pressed"]
+[connection signal="pressed" from="CanvasLayer/ActiveArea/MissionOpsRoom/Deploy Panel/MarginContainer/VBoxContainer/Buttons/Deploy without insurance" to="CanvasLayer/ActiveArea/MissionOpsRoom" method="_on_deploy_without_insurance_pressed"]
+[connection signal="pressed" from="CanvasLayer/ActiveArea/MissionOpsRoom/Deploy Panel/MarginContainer/VBoxContainer/Buttons/Deploy with insurance" to="CanvasLayer/ActiveArea/MissionOpsRoom" method="_on_deploy_with_insurance_pressed"]
 [connection signal="pressed" from="CanvasLayer/ActiveArea/PrintersRoom/Printer Selector/Printer Selection Group/Printer I Button" to="CanvasLayer/ActiveArea/PrintersRoom" method="_on_printer_i_button_pressed"]
 [connection signal="pressed" from="CanvasLayer/ActiveArea/PrintersRoom/Printer Selector/Printer Selection Group2/Printer II Button" to="CanvasLayer/ActiveArea/PrintersRoom" method="_on_printer_ii_button_pressed"]
 [connection signal="pressed" from="CanvasLayer/ActiveArea/PrintersRoom/Printer Selector/Printer Selection Group3/Printer III Button" to="CanvasLayer/ActiveArea/PrintersRoom" method="_on_printer_iii_button_pressed"]

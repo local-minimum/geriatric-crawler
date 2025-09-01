@@ -182,6 +182,7 @@ DIFFICULTY,Difficulty,Svårighetsgrad
 ATTEMPTS,Attempts,Försök
 ATTEMPTS_REMAINING,Attempts Remaining,Återstående Försök
 REBOOT,Reboot,Starta om
+ROBOT,Robot,Robot
 SELECT_ROBOT,Select Robot,Välj Robot
 LOADOUT,Loadout,Utrusta
 LOADOUT_ADVANCED_FEATURE,"Unfortunately, at this moment customizing the tools you'd wish to equip your robot with is not available.
@@ -190,11 +191,17 @@ As soon as this little hick-up has been resolved, it will be made available. For
 
 Så snart den här lilla fnurran ordnat upp sig så kommer det vara möjligt. Givet en mindre donation såklart."
 ACTION_LOADOUT_SKIP,Bring no tools,Skicka utan verktyg
-ACTION_LOADOUT_UNLOCK,Unlock loadouts,Lås upp utrustnin
+ACTION_LOADOUT_UNLOCK,Unlock loadouts,Lås upp utrustning
 NOTICE_SYSTEM_ERROR,System Error,Systemfel
 LOADOUT_SYSTEM_NOT_RESPONDING,Loadout services offline or not responding,Utrustningstjänsterna är offline eller svarar inte
 DEPLOY,Deploy,Sänd ut
+DEPLOY_WITH_INSURANCE,Deploy with insurance ({cost}),Sänd ut med försäkring ({cost})
+CANNOT_AFFORD_INSURANCE,Cannot afford insurance,Har inte råd med försäkring
+TRAINING_GROUNDS,Training grounds,Träningsområdet
+NO_ROBOT_SELECTED,No robot selected for mission,Ingen robot vald för uppdraget
 NO_ROBOTS_AVAILABLE,No robot is available for a mission,Inga robotar fill tillgängliga för ett uppdrag
+DEPLOYMENT_PLAN,Deployment Plan,Utsändningsplan
+DESTINATION,Destination,Destination
 CONSTRUCT_FIRST_ROBOT,Go to printers to construct your first robot,Gå till printers för att konstruera din första robot
 NOTICE_PRINTING,Printing,Printing
 PRINTING_ITEM_DONE,Printing of "{item}" done,Utskrift av "{item}" klar
