@@ -3,10 +3,27 @@ class_name Spaceship
 
 enum Room { NONE, NAV, MISSION_OPS, LIVING_QUARTERS, MATERIALS_LAB, PRINTERS, INFIRMARY, STORAGE_BAY, ENGINE_ROOM, BROOM_CLOSET }
 
+static func to_room(room_value: int, default: Room = Room.NONE) -> Room:
+    match room_value:
+        Room.NAV: return Room.NAV
+        Room.MISSION_OPS: return Room.MISSION_OPS
+        Room.LIVING_QUARTERS: return Room.LIVING_QUARTERS
+        Room.MATERIALS_LAB: return Room.MATERIALS_LAB
+        Room.PRINTERS: return Room.PRINTERS
+        Room.INFIRMARY: return Room.INFIRMARY
+        Room.STORAGE_BAY: return Room.STORAGE_BAY
+        Room.ENGINE_ROOM: return Room.ENGINE_ROOM
+        Room.BROOM_CLOSET: return Room.BROOM_CLOSET
+
+        _:
+            push_warning("Unknown room %s using %s as defalt" % [room_value, default])
+            return default
+
 @export var chap_ui: ChapUI
 @export var rooms: Dictionary[Room, SpaceshipRoom]
 @export var inventory: Inventory
 @export var robots_pool: RobotsPool
+@export var save_system: SaveSystem
 
 var room: Room = Room.NONE
 
@@ -50,3 +67,6 @@ func _on_printers_btn_pressed() -> void:
 
 func _on_living_quarters_btn_pressed() -> void:
     _move_to_room(Room.LIVING_QUARTERS)
+
+func save() -> void:
+    save_system.save_last_slot()

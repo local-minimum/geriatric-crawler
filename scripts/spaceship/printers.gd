@@ -53,7 +53,7 @@ func _sync_printer_statues() -> void:
     for idx: int in range(printer_statuses.size()):
         var status: String = ""
         var job: RobotsPool.PrinterJob = robots_pool.get_printer_job(idx)
-        if !_is_rented(idx):
+        if !robots_pool.printer_is_rented(idx):
             status = tr("STATUS_NOT_RENTED")
         elif job == null:
             status = tr("STATUS_IDLE")
@@ -68,10 +68,6 @@ func _sync_printer_statues() -> void:
                 status = tr("STATUS_PRINTING_DAYS").format({"days": days})
 
         printer_statuses[idx].text = status
-
-func _is_rented(printer: int) -> bool: return printer == 0
-func _get_down_payement(printer: int) -> int: return 5000 + printer * 2000
-func _get_rent(printer: int) -> int: return printer * 200
 
 func _on_printer_i_button_pressed() -> void:
     _toggle_select_printer(0)
@@ -108,7 +104,7 @@ func _sync_panels() -> void:
 
     var active_job: RobotsPool.PrinterJob = robots_pool.get_printer_job(_selected_printer)
 
-    if _is_rented(_selected_printer):
+    if robots_pool.printer_is_rented(_selected_printer):
         var busy: bool = active_job != null && active_job.busy()
         if busy:
             models_panel.hide()
@@ -134,8 +130,8 @@ func _sync_panels() -> void:
             models_panel.show()
         rent_panel.hide()
     else:
-        rent_down_payment_cost.text = GlobalGameState.credits_with_sign(_get_down_payement(_selected_printer))
-        rent_cost.text = GlobalGameState.credits_with_sign(_get_rent(_selected_printer))
+        rent_down_payment_cost.text = GlobalGameState.credits_with_sign(robots_pool.get_printer_down_payement(_selected_printer))
+        rent_cost.text = GlobalGameState.credits_with_sign(robots_pool.get_printer_rent(_selected_printer))
         rent_panel.show()
         models_panel.hide()
 

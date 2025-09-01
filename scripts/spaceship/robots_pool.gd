@@ -6,18 +6,40 @@ class PrinterJob:
     var start_day: int
     var given_name: String
 
+    const MODEL_NAME_KEY: String = "model"
+    const START_DAY_KEY: String = "start"
+    const GIVEN_NAME_KEY: String = "given_name"
+
     @warning_ignore_start("shadowed_variable")
-    func _init(model: RobotModel, given_name: String) -> void:
+    func _init(model: RobotModel, given_name: String, start_day: int = -1) -> void:
         @warning_ignore_restore("shadowed_variable")
         self.model = model
         self.given_name = given_name
-        start_day = __GlobalGameState.game_day
+        self.start_day = __GlobalGameState.game_day if start_day < 0 else start_day
 
     func remaining_days() -> int:
         return maxi(0, model.production.days - (__GlobalGameState.game_day - start_day))
 
     func busy() -> bool:
         return model.production.days - (__GlobalGameState.game_day - start_day) > 0
+
+    func to_save() -> Dictionary:
+        return {
+            MODEL_NAME_KEY: model.model_name,
+            START_DAY_KEY: start_day,
+            GIVEN_NAME_KEY: given_name,
+        }
+
+    static func from_save(data: Dictionary, models: Array[RobotModel]) -> PrinterJob:
+        var _given_name: String = DictionaryUtils.safe_gets(data, GIVEN_NAME_KEY)
+        var _start_day: int = DictionaryUtils.safe_geti(data, START_DAY_KEY)
+        var _model_name: String = DictionaryUtils.safe_gets(data, MODEL_NAME_KEY)
+        var idx: int = models.find_custom(func (mod: RobotModel) -> bool: return mod.model_name == _model_name)
+        if idx < 0:
+            return null
+
+        return PrinterJob.new(models[idx], _given_name, _start_day)
+
 
 class SpaceshipRobot:
     var model: RobotModel
@@ -26,23 +48,54 @@ class SpaceshipRobot:
     var excursions: int
     var damage: int
 
+    const MODEL_NAME_KEY: String = "model"
+    const GIVEN_NAME_KEY: String = "given_name"
+    const STORAGE_LOCATION_KEY: String = "location"
+    const EXCURSIONS_KEY: String = "excursions"
+    const DAMAGE_KEY: String = "damage"
+
     @warning_ignore_start("shadowed_variable")
     func _init(
         model: RobotModel,
         given_name: String,
         storage_location: Spaceship.Room = Spaceship.Room.PRINTERS,
+        excursions: int = 0,
+        damage: int = 0,
     ) -> void:
         @warning_ignore_restore("shadowed_variable")
         self.model = model
         self.given_name = given_name
         self.storage_location = storage_location
+        self.excursions = excursions
+        self.damage = damage
 
+    func to_save() -> Dictionary:
+        return {
+            MODEL_NAME_KEY: model.model_name,
+            GIVEN_NAME_KEY: given_name,
+            STORAGE_LOCATION_KEY: storage_location,
+            EXCURSIONS_KEY: excursions,
+            DAMAGE_KEY: damage,
+        }
+
+    static func from_save(data: Dictionary, models: Array[RobotModel]) -> SpaceshipRobot:
+        var _given_name: String = DictionaryUtils.safe_gets(data, GIVEN_NAME_KEY)
+        var _model_name: String = DictionaryUtils.safe_gets(data, MODEL_NAME_KEY)
+
+        var idx: int = models.find_custom(func (mod: RobotModel) -> bool: return mod.model_name == _model_name)
+        if idx < 0:
+            return null
+
+        var _excursions: int = DictionaryUtils.safe_geti(data, EXCURSIONS_KEY)
+        var _damage: int = DictionaryUtils.safe_geti(data, DAMAGE_KEY)
+        var room: Spaceship.Room = Spaceship.to_room(DictionaryUtils.safe_geti(data, STORAGE_LOCATION_KEY), Spaceship.Room.PRINTERS)
+
+        return SpaceshipRobot.new(models[idx], _given_name, room, _excursions, _damage)
 
 @export var base_robot: RobotModel
 @export var available_models: Array[RobotModel]
 @export var printers: int = 3
 
-# TODO: Load/Save (jobs, available, printed starter)
 var _free_starter_robot_printed: bool
 var _robots: Array[SpaceshipRobot]
 
@@ -72,6 +125,10 @@ func _handle_increment_day(_dom: int, _days_left_of_month: int) -> void:
 func _complete_printer_job(job: PrinterJob) -> void:
     _robots.append(SpaceshipRobot.new(job.model, job.given_name))
     NotificationsManager.info(tr("NOTICE_PRINTING"), tr("PRINTING_ITEM_DONE").format({"item": job.given_name}))
+
+func printer_is_rented(printer: int) -> bool: return printer == 0
+func get_printer_down_payement(printer: int) -> int: return 5000 + printer * 2000
+func get_printer_rent(printer: int) -> int: return printer * 200
 
 func get_printer_job(printer: int) -> PrinterJob:
     if printer < 0 || printer >= _printer_jobs.size():
@@ -116,3 +173,28 @@ func calculate_printing_costs(model: RobotModel, printer: int) -> PrintingCost:
 
 func get_model(idx: int) -> RobotModel:
     return available_models[idx]
+
+const _RENTED_PRINTERS_KEY: String = "rented-printer"
+const _JOBS_KEY: String = "jobs"
+const _FREE_STARTER_PRINTED_KEY: String = "free-printed"
+const _ROBOTS_KEY: String = "robots"
+
+func collect_save_data() -> Dictionary:
+    return {
+        _FREE_STARTER_PRINTED_KEY: _free_starter_robot_printed,
+        _RENTED_PRINTERS_KEY: range(printers).map(func (idx: int) -> bool: return printer_is_rented(idx)),
+        _JOBS_KEY: _printer_jobs.map(func (job: PrinterJob) -> Dictionary: return job.to_save()),
+    }
+
+func load_from_save_data(data: Dictionary) -> void:
+    _free_starter_robot_printed = DictionaryUtils.safe_getb(data, _RENTED_PRINTERS_KEY, false)
+    # TODO: When we can unlock printers do load them here
+
+    # Note that available models need to be loaded first
+    _printer_jobs.clear()
+    for job_data_item: Variant in DictionaryUtils.safe_geta(data, _JOBS_KEY, [], false):
+        if job_data_item is Dictionary:
+            @warning_ignore_start("unsafe_call_argument")
+            var job: PrinterJob = PrinterJob.from_save(job_data_item, available_models)
+            @warning_ignore_restore("unsafe_call_argument")
+            _printer_jobs.append(job)

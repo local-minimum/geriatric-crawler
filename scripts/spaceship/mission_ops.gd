@@ -164,7 +164,17 @@ func _on_deploy_with_insurance_pressed() -> void:
         deploy_with_insurance_btn.disabled = true
         return
 
-    _on_deploy_without_insurance_pressed()
+    _on_deploy_without_insurance_pressed(true)
 
-func _on_deploy_without_insurance_pressed() -> void:
+func _on_deploy_without_insurance_pressed(insured: bool = false) -> void:
     print_debug("Make deployment")
+    # Out on a mission
+    _selected_robot.storage_location = Spaceship.Room.NONE
+    _selected_robot.excursions += 1
+
+    # TODO: Fix actual destinations
+    __SignalBus.on_before_deploy.emit("test-level", _selected_robot, insured)
+
+    spaceship.save()
+
+    # TODO: Load onto level somehow
