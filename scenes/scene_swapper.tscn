@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=3 uid="uid://c35sk3gu5few6"]
+[gd_scene load_steps=4 format=3 uid="uid://c35sk3gu5few6"]
 
 [ext_resource type="Script" uid="uid://dwl1o53cp3rtt" path="res://scripts/savesystem/scene_swapper.gd" id="1_fxn2q"]
 [ext_resource type="Script" uid="uid://d1vlor2ns4wjc" path="res://scripts/ui/scene_swapper_ui.gd" id="2_x6hfr"]
+[ext_resource type="Texture2D" uid="uid://dwrtpfvcdhnx0" path="res://sprites/spaceship/tmp-robot.png" id="3_c3mxo"]
 
 [node name="SceneSwapper" type="Node"]
 script = ExtResource("1_fxn2q")
@@ -25,20 +26,22 @@ grow_vertical = 2
 color = Color(0, 0, 0, 1)
 
 [node name="RobotSprite" type="TextureRect" parent="LoadingOverlay"]
-custom_minimum_size = Vector2(200, 200)
+custom_minimum_size = Vector2(400, 400)
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -100.0
-offset_top = -100.0
-offset_right = 100.0
-offset_bottom = 100.0
+offset_left = -200.0
+offset_top = -200.0
+offset_right = 200.0
+offset_bottom = 200.0
 grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
+texture = ExtResource("3_c3mxo")
+expand_mode = 2
 
 [node name="MarginContainer" type="MarginContainer" parent="LoadingOverlay"]
 anchors_preset = 15
@@ -65,4 +68,7 @@ offset_left = -42.0
 offset_top = -23.0
 grow_horizontal = 0
 grow_vertical = 0
+theme_override_font_sizes/font_size = 42
 text = "100%"
+horizontal_alignment = 2
+vertical_alignment = 2
