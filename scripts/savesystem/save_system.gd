@@ -32,8 +32,6 @@ static var instance: SaveSystem
 
 @export var migrations: Array[SaveVersionMigration] = []
 
-@export var scene_loader: SaveSceneLoader
-
 ## Emitted if loading fails
 signal load_fail(slot: int)
 
@@ -202,9 +200,8 @@ func load_slot(slot: int) -> bool:
 
     _current_save = data
 
-    var wanted_level: String = data[_GLOBAL_GAME_STATE_KEY][_LEVEL_TO_LOAD_KEY]
-    if level_saver == null || wanted_level != level_saver.get_level_name():
-        return _load_new_root_scene_by_level_name(wanted_level)
+    if level_saver == null || get_next_scene_id() != level_saver.get_level_name():
+        return false
 
     if load_cached_save():
         print_debug("Loaded save slot %s" % slot)
@@ -259,21 +256,9 @@ func load_cached_save() -> bool:
 
     return true
 
-func load_next_scene() -> bool:
+func get_next_scene_id() -> String:
     var global_state: Dictionary = DictionaryUtils.safe_getd(_current_save, _GLOBAL_GAME_STATE_KEY, {}, false)
-    var wanted_level: String = DictionaryUtils.safe_gets(global_state, _LEVEL_TO_LOAD_KEY, "", false)
-    if wanted_level.is_empty():
-        return false
-    if _load_new_root_scene_by_level_name(wanted_level):
-        return load_cached_save()
-    return false
-
-func _load_new_root_scene_by_level_name(wanted_level: String) -> bool:
-    if scene_loader == null:
-        push_error("Cannot load level %s because missing scene loader" % wanted_level)
-        return false
-
-    return scene_loader.load_root_scene_by_id(wanted_level)
+    return DictionaryUtils.safe_gets(global_state, _LEVEL_TO_LOAD_KEY, "", false)
 
 func load_last_save() -> bool:
     return load_slot(_current_save_slot)

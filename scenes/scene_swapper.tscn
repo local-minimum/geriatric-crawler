@@ -1,0 +1,38 @@
+[gd_scene load_steps=2 format=3 uid="uid://c35sk3gu5few6"]
+
+[ext_resource type="Script" uid="uid://dwl1o53cp3rtt" path="res://scripts/scene_swapper.gd" id="1_fxn2q"]
+
+[node name="SceneSwapper" type="Node"]
+script = ExtResource("1_fxn2q")
+scenes = Dictionary[String, String]({
+"hub-spaceship": "res://scenes/spaceship.tscn",
+"test-level": "res://scenes/exploration-scene.tscn"
+})
+metadata/_custom_type_script = "uid://dwl1o53cp3rtt"
+
+[node name="LoadingOverlay" type="CanvasLayer" parent="."]
+layer = 120
+
+[node name="Backdrop" type="ColorRect" parent="LoadingOverlay"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 1)
+
+[node name="RobotSprite" type="TextureRect" parent="LoadingOverlay"]
+custom_minimum_size = Vector2(200, 200)
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -100.0
+offset_top = -100.0
+offset_right = 100.0
+offset_bottom = 100.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4

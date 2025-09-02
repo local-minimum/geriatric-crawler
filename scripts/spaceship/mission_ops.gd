@@ -203,6 +203,9 @@ func _handle_failed_load() -> void:
 func _handle_deploy_saved() -> void:
     __SignalBus.on_save_complete.disconnect(_handle_deploy_saved)
 
-    __SaveSystemWrapper.swap_scene_and_load_cached_save()
+    __SaveSystemWrapper.autosave()
+    # TODO: Handle failing to transition scenes
+    if !__SceneSwapper.transition_to_next_scene():
+        _handle_failed_load()
 
     __SignalBus.on_fail_load.disconnect(_handle_failed_load)

@@ -27,18 +27,7 @@ func load_last_save() -> void:
 
     __SignalBus.on_load_complete.emit()
 
-func swap_scene_and_load_cached_save() -> void:
-    if SaveSystem.instance == null:
-        push_error("No save system loaded")
-        __SignalBus.on_fail_load.emit()
-        return
-
-    __SignalBus.on_before_load.emit()
-
-    if !SaveSystem.instance.load_next_scene():
-        __SignalBus.on_fail_load.emit()
-        return
-
+func load_cached_save() -> void:
     if !SaveSystem.instance.load_cached_save():
         push_error("Failed to load last save")
         __SignalBus.on_fail_load.emit()
