@@ -10,6 +10,10 @@ var _phase: Phase = Phase.IDLE
 var _loading_scene_id: String
 var _loading_resource_path: String
 
+func _ready() -> void:
+    if __SignalBus.on_scene_transition_new_scene_ready.connect(_handle_new_scene_ready) != OK:
+        push_error("Failed to connect new scene ready")
+
 func _process(_delta: float) -> void:
     match _phase:
         Phase.LOADING_PACKED_SCENE:
@@ -17,6 +21,9 @@ func _process(_delta: float) -> void:
         Phase.SWAPPING_COMPLETE:
             __SignalBus.on_scene_transition_complete.emit(_loading_scene_id)
             _reset_phase()
+
+func _handle_new_scene_ready() -> void:
+    _phase = Phase.SWAPPING_COMPLETE
 
 func transition_to_next_scene() -> bool:
     if _phase != Phase.IDLE:

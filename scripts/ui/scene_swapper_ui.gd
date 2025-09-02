@@ -29,4 +29,4 @@ func _hide_ui(_target_scene: String) -> void:
     hide()
 
 func _update_progress(progress: float) -> void:
-    _progress_label.text = "%03f%" % ceili(progress * 100)
+    _progress_label.text = "%03d%%" % ceili(progress * 100)

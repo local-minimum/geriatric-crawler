@@ -1,4 +1,4 @@
-[gd_scene load_steps=29 format=3 uid="uid://7flb82m2ddwe"]
+[gd_scene load_steps=30 format=3 uid="uid://7flb82m2ddwe"]
 
 [ext_resource type="Script" uid="uid://dfub4a26emjgr" path="res://scripts/spaceship.gd" id="1_ae4p7"]
 [ext_resource type="Texture2D" uid="uid://0ncw5fw4jr8u" path="res://sprites/spaceship/missionops.png" id="2_5eye7"]
@@ -25,6 +25,7 @@
 [ext_resource type="Script" uid="uid://dh2gnvehpl1wc" path="res://scripts/spaceship/robots_pool.gd" id="17_0xuuw"]
 [ext_resource type="Resource" uid="uid://bh75cac6e2j77" path="res://resources/robot_models/starter.tres" id="20_i1do7"]
 [ext_resource type="Script" uid="uid://cloq81xps7tex" path="res://scripts/deployment_saver.gd" id="21_8k34q"]
+[ext_resource type="Script" uid="uid://bi0uqcrvingk5" path="res://scripts/savesystem/scene_swapper_sentinel.gd" id="26_plmhy"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ws7tf"]
 bg_color = Color(0.477872, 0.602944, 0.818495, 1)
@@ -672,6 +673,11 @@ script = ExtResource("17_0xuuw")
 base_robot = ExtResource("20_i1do7")
 available_models = Array[ExtResource("6_i1do7")]([ExtResource("20_i1do7")])
 metadata/_custom_type_script = "uid://dh2gnvehpl1wc"
+
+[node name="SceneSwapperSentinel" type="Node" parent="." node_paths=PackedStringArray("_save_system")]
+script = ExtResource("26_plmhy")
+_save_system = NodePath("../SaveSystem")
+metadata/_custom_type_script = "uid://bi0uqcrvingk5"
 
 [connection signal="pressed" from="CanvasLayer/ActiveArea/MissionOpsRoom/Main Buttons/Select Robot" to="CanvasLayer/ActiveArea/MissionOpsRoom" method="_on_select_robot_pressed"]
 [connection signal="pressed" from="CanvasLayer/ActiveArea/MissionOpsRoom/Main Buttons/Loadout" to="CanvasLayer/ActiveArea/MissionOpsRoom" method="_on_loadout_pressed"]
