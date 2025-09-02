@@ -31,14 +31,21 @@ func _process(_delta: float) -> void:
 
 func _handle_new_level_load_complete() -> void:
     if _wait_for_new_level_load && _phase == Phase.WAIT_TO_LOAD_NEW_SCENE:
+        print_debug("[SceneSwapper] Loaded into new level, swapping complete")
         _phase = Phase.SWAPPING_COMPLETE
+    else:
+        print_debug("[SceneSwapper] Loaded other level out of phase %s != %s or autoload %s" % [_phase, Phase.WAIT_TO_LOAD_NEW_SCENE, _wait_for_new_level_load])
 
 func _handle_new_level_load_fail() -> void:
     if _wait_for_new_level_load && _phase == Phase.WAIT_TO_LOAD_NEW_SCENE:
         _handle_fail_and_reset()
 
 func _handle_new_scene_ready() -> void:
-    if !_wait_for_new_level_load:
+    if _wait_for_new_level_load:
+        print_debug("[SceneSwapper] New scene ready, loading cached save")
+        __SaveSystemWrapper.load_cached_save()
+    else:
+        print_debug("[SceneSwapper] Scene swap complete")
         _phase = Phase.SWAPPING_COMPLETE
 
 func transition_to_next_scene(wait_for_new_level_load: bool = true) -> bool:
@@ -47,7 +54,7 @@ func transition_to_next_scene(wait_for_new_level_load: bool = true) -> bool:
 
     _loading_scene_id = ""
     if SaveSystem.instance != null:
-        _loading_scene_id = SaveSystem.instance.get_next_scene_id()
+        _loading_scene_id = SaveSystem.get_next_scene_id()
 
     if _loading_scene_id.is_empty():
         _loading_scene_id = fallback_scene_id
@@ -66,6 +73,7 @@ func transition_to_next_scene(wait_for_new_level_load: bool = true) -> bool:
         _handle_fail_and_reset()
         return false
 
+    print_debug("[SceneSwapper] Loading packed scene")
     _phase = Phase.LOADING_PACKED_SCENE
     return true
 
@@ -77,6 +85,7 @@ func _check_loading_next_scene() -> void:
             if progress.size() == 1:
                 __SignalBus.on_scene_transition_progress.emit(progress[0])
         ResourceLoader.ThreadLoadStatus.THREAD_LOAD_LOADED:
+            print_debug("[SceneSwapper] Packed scene loaded")
             var scene: PackedScene = ResourceLoader.load_threaded_get(_loading_resource_path)
             _phase = Phase.SWAPPING_ROOT
             match get_tree().change_scene_to_packed(scene):

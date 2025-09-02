@@ -195,30 +195,22 @@ func _on_deploy_without_insurance_pressed(insured: bool = false) -> void:
 
 
 func _handle_failed_load() -> void:
+    print_debug("[Mission Ops] Loading failed")
     NotificationsManager.warn(tr("NOTICE_SYSTEM_ERROR"), tr("DEPLOYMENT_FAILED"))
     if __SignalBus.on_save_complete.is_connected(_handle_deploy_saved):
         __SignalBus.on_save_complete.disconnect(_handle_deploy_saved)
 
-    if __SignalBus.on_scene_transition_new_scene_ready.is_connected(_handle_load_in_new_scene):
-        __SignalBus.on_scene_transition_new_scene_ready.disconnect(_handle_load_in_new_scene)
-
     __SignalBus.on_load_fail.disconnect(_handle_failed_load)
+
+func _handle_fail_transition() -> void:
+    _handle_failed_load()
 
 func _handle_deploy_saved() -> void:
     __SignalBus.on_save_complete.disconnect(_handle_deploy_saved)
 
-    __SaveSystemWrapper.autosave()
     # TODO: Handle failing to transition scenes
-    if __SignalBus.on_scene_transition_new_scene_ready.connect(_handle_load_in_new_scene) != OK:
-        push_error("Failed to connect new scene ready")
-
+    print_debug("[Mission Ops] Trigger scene swapping")
     if !__SceneSwapper.transition_to_next_scene():
-        _handle_failed_load()
+        _handle_fail_transition()
 
     __SignalBus.on_load_fail.disconnect(_handle_failed_load)
-
-func _handle_load_in_new_scene() -> void:
-    __SaveSystemWrapper.load_cached_save()
-
-    if __SignalBus.on_scene_transition_new_scene_ready.is_connected(_handle_load_in_new_scene):
-        __SignalBus.on_scene_transition_new_scene_ready.disconnect(_handle_load_in_new_scene)

@@ -15,8 +15,8 @@ const _SAVE_TIME_KEY: String = "save_datetime"
 
 const _LEVEL_SAVE_KEY: String = "levels"
 
-var _current_save_slot: int
-var _current_save: Dictionary
+static var _current_save_slot: int
+static var _current_save: Dictionary
 static var _session_start: int
 static var _previous_session_time_at_save: int
 static var instance: SaveSystem
@@ -256,7 +256,7 @@ func load_cached_save() -> bool:
 
     return true
 
-func get_next_scene_id() -> String:
+static func get_next_scene_id() -> String:
     var global_state: Dictionary = DictionaryUtils.safe_getd(_current_save, _GLOBAL_GAME_STATE_KEY, {}, false)
     return DictionaryUtils.safe_gets(global_state, _LEVEL_TO_LOAD_KEY, "", false)
 
