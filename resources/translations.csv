@@ -198,6 +198,7 @@ LOADOUT_SYSTEM_NOT_RESPONDING,Loadout services offline or not responding,Utrustn
 DEPLOY,Deploy,Sänd ut
 DEPLOY_WITH_INSURANCE,Deploy with insurance ({cost}),Sänd ut med försäkring ({cost})
 CANNOT_AFFORD_INSURANCE,Cannot afford insurance,Har inte råd med försäkring
+DEPLOYMENT_FAILED,Failed to deploy robot,Misslyckades att skicka ut robot
 TRAINING_GROUNDS,Training grounds,Träningsområdet
 NO_ROBOT_SELECTED,No robot selected for mission,Ingen robot vald för uppdraget
 NO_ROBOTS_AVAILABLE,No robot is available for a mission,Inga robotar fill tillgängliga för ett uppdrag

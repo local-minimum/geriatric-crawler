@@ -120,6 +120,9 @@ func _handle_deselect_option(robot: RobotsPool.SpaceshipRobot) -> void:
         deploy_btn.disabled = _selected_robot == null
         deploy_with_insurance_btn.disabled = false
 
+func _on_robot_selected_btn_pressed() -> void:
+    _on_loadout_pressed()
+
 func _on_loadout_pressed() -> void:
     if _phase == PanelPhase.LOADOUT:
         loadout_panel.hide()
@@ -182,9 +185,24 @@ func _on_deploy_without_insurance_pressed(insured: bool = false) -> void:
     var duration_days: int = 1
     __SignalBus.on_before_deploy.emit("test-level", _selected_robot, duration_days, insured)
 
+    if __SignalBus.on_save_complete.connect(_handle_deploy_saved) != OK:
+        push_warning("Will not be able to swap scenes after save")
+
+    if __SignalBus.on_fail_load.connect(_handle_failed_load) != OK:
+        push_warning("Failed to connect fail load")
+
     spaceship.save()
 
-    # TODO: Load onto level somehow
 
-func _on_robot_selected_btn_pressed() -> void:
-    _on_loadout_pressed()
+func _handle_failed_load() -> void:
+    NotificationsManager.warn(tr("NOTICE_SYSTEM_ERROR"), tr("DEPLOYMENT_FAILED"))
+    if __SignalBus.on_save_complete.is_connected(_handle_deploy_saved):
+        __SignalBus.on_save_complete.disconnect(_handle_deploy_saved)
+    __SignalBus.on_fail_load.disconnect(_handle_failed_load)
+
+func _handle_deploy_saved() -> void:
+    __SignalBus.on_save_complete.disconnect(_handle_deploy_saved)
+
+    __SaveSystemWrapper.swap_scene_and_load_cached_save()
+
+    __SignalBus.on_fail_load.disconnect(_handle_failed_load)
