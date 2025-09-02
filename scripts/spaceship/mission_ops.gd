@@ -198,6 +198,10 @@ func _handle_failed_load() -> void:
     NotificationsManager.warn(tr("NOTICE_SYSTEM_ERROR"), tr("DEPLOYMENT_FAILED"))
     if __SignalBus.on_save_complete.is_connected(_handle_deploy_saved):
         __SignalBus.on_save_complete.disconnect(_handle_deploy_saved)
+
+    if __SignalBus.on_scene_transition_new_scene_ready.is_connected(_handle_load_in_new_scene):
+        __SignalBus.on_scene_transition_new_scene_ready.disconnect(_handle_load_in_new_scene)
+
     __SignalBus.on_fail_load.disconnect(_handle_failed_load)
 
 func _handle_deploy_saved() -> void:
@@ -205,7 +209,16 @@ func _handle_deploy_saved() -> void:
 
     __SaveSystemWrapper.autosave()
     # TODO: Handle failing to transition scenes
+    if __SignalBus.on_scene_transition_new_scene_ready.connect(_handle_load_in_new_scene) != OK:
+        push_error("Failed to connect new scene ready")
+
     if !__SceneSwapper.transition_to_next_scene():
         _handle_failed_load()
 
     __SignalBus.on_fail_load.disconnect(_handle_failed_load)
+
+func _handle_load_in_new_scene() -> void:
+    __SaveSystemWrapper.load_cached_save()
+
+    if __SignalBus.on_scene_transition_new_scene_ready.is_connected(_handle_load_in_new_scene):
+        __SignalBus.on_scene_transition_new_scene_ready.disconnect(_handle_load_in_new_scene)
