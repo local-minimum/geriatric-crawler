@@ -188,7 +188,7 @@ func _on_deploy_without_insurance_pressed(insured: bool = false) -> void:
     if __SignalBus.on_save_complete.connect(_handle_deploy_saved) != OK:
         push_warning("Will not be able to swap scenes after save")
 
-    if __SignalBus.on_fail_load.connect(_handle_failed_load) != OK:
+    if __SignalBus.on_load_fail.connect(_handle_failed_load) != OK:
         push_warning("Failed to connect fail load")
 
     spaceship.save()
@@ -202,7 +202,7 @@ func _handle_failed_load() -> void:
     if __SignalBus.on_scene_transition_new_scene_ready.is_connected(_handle_load_in_new_scene):
         __SignalBus.on_scene_transition_new_scene_ready.disconnect(_handle_load_in_new_scene)
 
-    __SignalBus.on_fail_load.disconnect(_handle_failed_load)
+    __SignalBus.on_load_fail.disconnect(_handle_failed_load)
 
 func _handle_deploy_saved() -> void:
     __SignalBus.on_save_complete.disconnect(_handle_deploy_saved)
@@ -215,7 +215,7 @@ func _handle_deploy_saved() -> void:
     if !__SceneSwapper.transition_to_next_scene():
         _handle_failed_load()
 
-    __SignalBus.on_fail_load.disconnect(_handle_failed_load)
+    __SignalBus.on_load_fail.disconnect(_handle_failed_load)
 
 func _handle_load_in_new_scene() -> void:
     __SaveSystemWrapper.load_cached_save()

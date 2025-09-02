@@ -9,10 +9,17 @@ enum Phase { IDLE, LOADING_PACKED_SCENE, SWAPPING_ROOT, WAIT_TO_LOAD_NEW_SCENE, 
 var _phase: Phase = Phase.IDLE
 var _loading_scene_id: String
 var _loading_resource_path: String
+var _wait_for_new_level_load: bool
 
 func _ready() -> void:
     if __SignalBus.on_scene_transition_new_scene_ready.connect(_handle_new_scene_ready) != OK:
         push_error("Failed to connect new scene ready")
+
+    if __SignalBus.on_load_complete.connect(_handle_new_level_load_complete) != OK:
+        push_error("Could not connect to load complete")
+
+    if __SignalBus.on_load_fail.connect(_handle_new_level_load_fail) != OK:
+        push_error("Could not connect to load fail")
 
 func _process(_delta: float) -> void:
     match _phase:
@@ -22,10 +29,19 @@ func _process(_delta: float) -> void:
             __SignalBus.on_scene_transition_complete.emit(_loading_scene_id)
             _reset_phase()
 
-func _handle_new_scene_ready() -> void:
-    _phase = Phase.SWAPPING_COMPLETE
+func _handle_new_level_load_complete() -> void:
+    if _wait_for_new_level_load && _phase == Phase.WAIT_TO_LOAD_NEW_SCENE:
+        _phase = Phase.SWAPPING_COMPLETE
 
-func transition_to_next_scene() -> bool:
+func _handle_new_level_load_fail() -> void:
+    if _wait_for_new_level_load && _phase == Phase.WAIT_TO_LOAD_NEW_SCENE:
+        _handle_fail_and_reset()
+
+func _handle_new_scene_ready() -> void:
+    if !_wait_for_new_level_load:
+        _phase = Phase.SWAPPING_COMPLETE
+
+func transition_to_next_scene(wait_for_new_level_load: bool = true) -> bool:
     if _phase != Phase.IDLE:
         return false
 
@@ -37,6 +53,7 @@ func transition_to_next_scene() -> bool:
         _loading_scene_id = fallback_scene_id
 
     __SignalBus.on_scene_transition_initiate.emit(_loading_scene_id)
+    _wait_for_new_level_load = wait_for_new_level_load
 
     if !scenes.has(_loading_scene_id):
         push_error("Failed to initiate root swapping to scene id '%s', not known" % _loading_scene_id)

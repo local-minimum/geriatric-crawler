@@ -19,7 +19,7 @@ signal on_before_save()
 signal on_save_complete()
 signal on_before_load()
 signal on_load_complete()
-signal on_fail_load()
+signal on_load_fail()
 
 # Scene transition
 signal on_scene_transition_initiate(target_scene: String)
