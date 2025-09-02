@@ -204,7 +204,7 @@ func load_slot(slot: int) -> bool:
 
     var wanted_level: String = data[_GLOBAL_GAME_STATE_KEY][_LEVEL_TO_LOAD_KEY]
     if level_saver == null || wanted_level != level_saver.get_level_name():
-        return load_new_root_scene_by_level_name(wanted_level)
+        return _load_new_root_scene_by_level_name(wanted_level)
 
     if load_cached_save():
         print_debug("Loaded save slot %s" % slot)
@@ -264,9 +264,11 @@ func load_next_scene() -> bool:
     var wanted_level: String = DictionaryUtils.safe_gets(global_state, _LEVEL_TO_LOAD_KEY, "", false)
     if wanted_level.is_empty():
         return false
-    return load_new_root_scene_by_level_name(wanted_level)
+    if _load_new_root_scene_by_level_name(wanted_level):
+        return load_cached_save()
+    return false
 
-func load_new_root_scene_by_level_name(wanted_level: String) -> bool:
+func _load_new_root_scene_by_level_name(wanted_level: String) -> bool:
     if scene_loader == null:
         push_error("Cannot load level %s because missing scene loader" % wanted_level)
         return false

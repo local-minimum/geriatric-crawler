@@ -18,6 +18,7 @@ signal on_before_deploy(level_id: String, robot: RobotsPool.SpaceshipRobot, dura
 signal on_before_save()
 signal on_save_complete()
 signal on_before_load()
+signal on_load_scene_progress(progress: float)
 signal on_load_complete()
 signal on_fail_load()
 @warning_ignore_restore("unused_signal")

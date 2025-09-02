@@ -91,6 +91,7 @@ size = Vector2(0.8, 1.2)
 
 [node name="TestLevel" type="Node3D" node_paths=PackedStringArray("player", "level_geometry", "punishments")]
 script = ExtResource("1_dd1ob")
+level_id = "test-level"
 node_size = Vector3(2.5, 2.5, 2.5)
 player = NodePath("Player")
 level_geometry = NodePath("LevelGeometry")
