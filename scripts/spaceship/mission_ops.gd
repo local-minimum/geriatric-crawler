@@ -8,6 +8,7 @@ class_name MissionOpsRoom
 
 @export var robot_listing_panel: Control
 @export var robot_listing_container: Control
+@export var robot_selected_button: Button
 
 @export var loadout_panel: Control
 
@@ -15,6 +16,7 @@ class_name MissionOpsRoom
 @export var deploy_robot_name: Label
 @export var deploy_destination_name: Label
 @export var deploy_with_insurance_btn: Button
+
 
 enum PanelPhase {NONE, OPTIONS, LOADOUT, DEPLOY}
 var _phase: PanelPhase = PanelPhase.NONE
@@ -62,6 +64,7 @@ func _on_select_robot_pressed() -> void:
     var options: Array[RobotsPool.SpaceshipRobot] = spaceship.robots_pool.available_robots()
 
     _phase = PanelPhase.OPTIONS
+    robot_selected_button.disabled = _selected_robot == null
 
     if !_clear_previous_listing_if_needed(options):
         robot_listing_panel.show()
@@ -102,6 +105,7 @@ func _handle_select_option(robot: RobotsPool.SpaceshipRobot) -> void:
         print_debug("Selected robot %s: %s" % [robot.id, robot.given_name])
 
     loadout_btn.disabled = _selected_robot == null
+    robot_selected_button.disabled = loadout_btn.disabled
     deploy_btn.disabled = true
     deploy_with_insurance_btn.disabled = false
 
@@ -112,6 +116,7 @@ func _handle_deselect_option(robot: RobotsPool.SpaceshipRobot) -> void:
         print_debug("Delected robot")
 
         loadout_btn.disabled = _selected_robot == null
+        robot_selected_button.disabled = loadout_btn.disabled
         deploy_btn.disabled = _selected_robot == null
         deploy_with_insurance_btn.disabled = false
 
@@ -180,3 +185,6 @@ func _on_deploy_without_insurance_pressed(insured: bool = false) -> void:
     spaceship.save()
 
     # TODO: Load onto level somehow
+
+func _on_robot_selected_btn_pressed() -> void:
+    _on_loadout_pressed()

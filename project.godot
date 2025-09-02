@@ -23,6 +23,7 @@ config/icon="res://icon.svg"
 __InkRuntime="*res://addons/inkgd/ink_runtime.gd"
 __GlobalGameState="*res://scripts/global_game_state.gd"
 __SignalBus="*res://scripts/signal_bus.gd"
+__SaveSystemWrapper="*res://scripts/save_system_wrapper.gd"
 
 [debug]
 

@@ -184,6 +184,7 @@ ATTEMPTS_REMAINING,Attempts Remaining,Återstående Försök
 REBOOT,Reboot,Starta om
 ROBOT,Robot,Robot
 SELECT_ROBOT,Select Robot,Välj Robot
+ACTION_SELECT,Select,Välj
 LOADOUT,Loadout,Utrusta
 LOADOUT_ADVANCED_FEATURE,"Unfortunately, at this moment customizing the tools you'd wish to equip your robot with is not available.
 

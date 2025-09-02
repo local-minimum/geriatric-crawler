@@ -44,7 +44,7 @@ script = ExtResource("10_5eye7")
 _version = "0.0.2"
 metadata/_custom_type_script = "uid://bjkpx0v0d0vky"
 
-[node name="Spaceshiip" type="Node2D" node_paths=PackedStringArray("chap_ui", "rooms", "inventory", "robots_pool", "save_system")]
+[node name="Spaceshiip" type="Node2D" node_paths=PackedStringArray("chap_ui", "rooms", "inventory", "robots_pool")]
 script = ExtResource("1_ae4p7")
 chap_ui = NodePath("CanvasLayer/CHAP AI")
 rooms = {
@@ -54,7 +54,6 @@ rooms = {
 }
 inventory = NodePath("Inventory")
 robots_pool = NodePath("RobotsPool")
-save_system = NodePath("SaveSystem")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
@@ -66,7 +65,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="MissionOpsRoom" type="Control" parent="CanvasLayer/ActiveArea" node_paths=PackedStringArray("spaceship", "select_robot_btn", "loadout_btn", "deploy_btn", "robot_listing_panel", "robot_listing_container", "loadout_panel", "deploy_panel", "deploy_robot_name", "deploy_destination_name", "deploy_with_insurance_btn")]
+[node name="MissionOpsRoom" type="Control" parent="CanvasLayer/ActiveArea" node_paths=PackedStringArray("spaceship", "select_robot_btn", "loadout_btn", "deploy_btn", "robot_listing_panel", "robot_listing_container", "robot_selected_button", "loadout_panel", "deploy_panel", "deploy_robot_name", "deploy_destination_name", "deploy_with_insurance_btn")]
 layout_mode = 2
 mouse_filter = 2
 script = ExtResource("2_tst1b")
@@ -75,7 +74,8 @@ select_robot_btn = NodePath("Main Buttons/Select Robot")
 loadout_btn = NodePath("Main Buttons/Loadout")
 deploy_btn = NodePath("Main Buttons/Deploy")
 robot_listing_panel = NodePath("Robots Listing Panel")
-robot_listing_container = NodePath("Robots Listing Panel/MarginContainer/ScrollContainer/Robots List Container")
+robot_listing_container = NodePath("Robots Listing Panel/MarginContainer/VBoxContainer/ScrollContainer/Robots List Container")
+robot_selected_button = NodePath("Robots Listing Panel/MarginContainer/VBoxContainer/HBoxContainer/Robot Selected Btn")
 loadout_panel = NodePath("Loadout Panel")
 deploy_panel = NodePath("Deploy Panel")
 deploy_robot_name = NodePath("Deploy Panel/MarginContainer/VBoxContainer/GridContainer/Robot Name")
@@ -132,7 +132,6 @@ layout_mode = 2
 text = "DEPLOY"
 
 [node name="Robots Listing Panel" type="PanelContainer" parent="CanvasLayer/ActiveArea/MissionOpsRoom"]
-visible = false
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -153,15 +152,27 @@ theme_override_constants/margin_top = 4
 theme_override_constants/margin_right = 8
 theme_override_constants/margin_bottom = 4
 
-[node name="ScrollContainer" type="ScrollContainer" parent="CanvasLayer/ActiveArea/MissionOpsRoom/Robots Listing Panel/MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/ActiveArea/MissionOpsRoom/Robots Listing Panel/MarginContainer"]
+layout_mode = 2
+
+[node name="ScrollContainer" type="ScrollContainer" parent="CanvasLayer/ActiveArea/MissionOpsRoom/Robots Listing Panel/MarginContainer/VBoxContainer"]
 custom_minimum_size = Vector2(350, 150)
 layout_mode = 2
+size_flags_vertical = 3
 horizontal_scroll_mode = 0
 
-[node name="Robots List Container" type="VBoxContainer" parent="CanvasLayer/ActiveArea/MissionOpsRoom/Robots Listing Panel/MarginContainer/ScrollContainer"]
+[node name="Robots List Container" type="VBoxContainer" parent="CanvasLayer/ActiveArea/MissionOpsRoom/Robots Listing Panel/MarginContainer/VBoxContainer/ScrollContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/ActiveArea/MissionOpsRoom/Robots Listing Panel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+alignment = 2
+
+[node name="Robot Selected Btn" type="Button" parent="CanvasLayer/ActiveArea/MissionOpsRoom/Robots Listing Panel/MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "ACTION_SELECT"
 
 [node name="Loadout Panel" type="PanelContainer" parent="CanvasLayer/ActiveArea/MissionOpsRoom"]
 visible = false
@@ -201,6 +212,7 @@ layout_mode = 2
 text = "ACTION_LOADOUT_UNLOCK"
 
 [node name="Deploy Panel" type="PanelContainer" parent="CanvasLayer/ActiveArea/MissionOpsRoom"]
+visible = false
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -664,6 +676,7 @@ metadata/_custom_type_script = "uid://dh2gnvehpl1wc"
 [connection signal="pressed" from="CanvasLayer/ActiveArea/MissionOpsRoom/Main Buttons/Select Robot" to="CanvasLayer/ActiveArea/MissionOpsRoom" method="_on_select_robot_pressed"]
 [connection signal="pressed" from="CanvasLayer/ActiveArea/MissionOpsRoom/Main Buttons/Loadout" to="CanvasLayer/ActiveArea/MissionOpsRoom" method="_on_loadout_pressed"]
 [connection signal="pressed" from="CanvasLayer/ActiveArea/MissionOpsRoom/Main Buttons/Deploy" to="CanvasLayer/ActiveArea/MissionOpsRoom" method="_on_deploy_pressed"]
+[connection signal="pressed" from="CanvasLayer/ActiveArea/MissionOpsRoom/Robots Listing Panel/MarginContainer/VBoxContainer/HBoxContainer/Robot Selected Btn" to="CanvasLayer/ActiveArea/MissionOpsRoom" method="_on_robot_selected_btn_pressed"]
 [connection signal="pressed" from="CanvasLayer/ActiveArea/MissionOpsRoom/Loadout Panel/MarginContainer/VBoxContainer/HBoxContainer/Skip Loadout" to="CanvasLayer/ActiveArea/MissionOpsRoom" method="_on_skip_loadout_pressed"]
 [connection signal="pressed" from="CanvasLayer/ActiveArea/MissionOpsRoom/Loadout Panel/MarginContainer/VBoxContainer/HBoxContainer/Unlock Loadouts" to="CanvasLayer/ActiveArea/MissionOpsRoom" method="_on_unlock_loadouts_pressed"]
 [connection signal="pressed" from="CanvasLayer/ActiveArea/MissionOpsRoom/Deploy Panel/MarginContainer/VBoxContainer/Buttons/Deploy without insurance" to="CanvasLayer/ActiveArea/MissionOpsRoom" method="_on_deploy_without_insurance_pressed"]

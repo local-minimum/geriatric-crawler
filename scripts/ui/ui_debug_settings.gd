@@ -33,8 +33,6 @@ extends Node
 
 @export var jump_off: CheckButton
 
-@export var save_system: SaveSystem
-
 @export var settings: GameSettings
 
 var inited: bool
@@ -128,12 +126,11 @@ func _on_fov_slider_value_changed(value: float) -> void:
     level.player.camera.fov = value
 
 func _on_save_button_pressed() -> void:
-    save_system.save_last_slot()
+    __SaveSystemWrapper.autosave()
 
 
 func _on_load_button_pressed() -> void:
-    if !save_system.load_last_save():
-        pass
+    __SaveSystemWrapper.load_last_save()
 
 func _on_handedness_toggled(toggled_on:bool) -> void:
     settings.accessibility.set_handedness(AccessibilitySettings.Handedness.RIGHT if toggled_on else AccessibilitySettings.Handedness.LEFT)

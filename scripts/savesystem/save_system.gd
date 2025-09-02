@@ -19,6 +19,7 @@ var _current_save_slot: int
 var _current_save: Dictionary
 static var _session_start: int
 static var _previous_session_time_at_save: int
+static var instance: SaveSystem
 
 @export var storage_provider: SaveStorageProvider
 
@@ -45,6 +46,13 @@ func _init() -> void:
 
     if _session_start == 0:
         _session_start = Time.get_ticks_msec()
+
+func _enter_tree() -> void:
+    instance = self
+
+func _exit_tree() -> void:
+    if instance == self:
+        instance = null
 
 func save_slot(slot: int) -> void:
     if _current_save == null || _current_save.is_empty():

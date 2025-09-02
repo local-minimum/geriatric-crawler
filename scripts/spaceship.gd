@@ -23,7 +23,6 @@ static func to_room(room_value: int, default: Room = Room.NONE) -> Room:
 @export var rooms: Dictionary[Room, SpaceshipRoom]
 @export var inventory: Inventory
 @export var robots_pool: RobotsPool
-@export var save_system: SaveSystem
 
 var room: Room = Room.NONE
 
@@ -69,4 +68,4 @@ func _on_living_quarters_btn_pressed() -> void:
     _move_to_room(Room.LIVING_QUARTERS)
 
 func save() -> void:
-    save_system.save_last_slot()
+    __SaveSystemWrapper.autosave()
