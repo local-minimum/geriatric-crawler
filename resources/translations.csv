@@ -228,3 +228,4 @@ ACTION_STARE_SHELF,Stare at empty shelves,Stirra på de tomma hyllorna
 ACTION_GO_TO_BED,Go to bed,Lägg dig
 SHELVES,Shelves,Hyllorna
 STARE_EMPTY_SHELVES,You really should fill those with something,Du borde verkligen fylla upp dom med nåt
+FAILED_TO_CHANGE_SCENE,Failed to change scene,Kunde inte byta scen

@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://c35sk3gu5few6"]
+[gd_scene load_steps=3 format=3 uid="uid://c35sk3gu5few6"]
 
-[ext_resource type="Script" uid="uid://dwl1o53cp3rtt" path="res://scripts/scene_swapper.gd" id="1_fxn2q"]
+[ext_resource type="Script" uid="uid://dwl1o53cp3rtt" path="res://scripts/savesystem/scene_swapper.gd" id="1_fxn2q"]
+[ext_resource type="Script" uid="uid://d1vlor2ns4wjc" path="res://scripts/ui/scene_swapper_ui.gd" id="2_x6hfr"]
 
 [node name="SceneSwapper" type="Node"]
 script = ExtResource("1_fxn2q")
@@ -10,8 +11,10 @@ scenes = Dictionary[String, String]({
 })
 metadata/_custom_type_script = "uid://dwl1o53cp3rtt"
 
-[node name="LoadingOverlay" type="CanvasLayer" parent="."]
+[node name="LoadingOverlay" type="CanvasLayer" parent="." node_paths=PackedStringArray("_progress_label")]
 layer = 120
+script = ExtResource("2_x6hfr")
+_progress_label = NodePath("MarginContainer/Control/Loading Percentage")
 
 [node name="Backdrop" type="ColorRect" parent="LoadingOverlay"]
 anchors_preset = 15
@@ -36,3 +39,30 @@ grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
+
+[node name="MarginContainer" type="MarginContainer" parent="LoadingOverlay"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="Control" type="Control" parent="LoadingOverlay/MarginContainer"]
+layout_mode = 2
+
+[node name="Loading Percentage" type="Label" parent="LoadingOverlay/MarginContainer/Control"]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -42.0
+offset_top = -23.0
+grow_horizontal = 0
+grow_vertical = 0
+text = "100%"
