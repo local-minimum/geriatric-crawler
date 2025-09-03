@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://xqedv5aeal6n"]
+[gd_scene load_steps=14 format=3 uid="uid://xqedv5aeal6n"]
 
 [ext_resource type="Script" uid="uid://bkjlt23hansuv" path="res://scripts/savesystem/save_system.gd" id="1_iwv0b"]
 [ext_resource type="Script" uid="uid://bemcpr6cqtnb3" path="res://scripts/savesystem/disk_json_storage_provider.gd" id="2_7c2yx"]
@@ -6,9 +6,11 @@
 [ext_resource type="Script" uid="uid://b5qjiwnmmx7i3" path="res://scripts/gridded_level/gridded_level_saver.gd" id="3_a0ogi"]
 [ext_resource type="Script" uid="uid://bjkpx0v0d0vky" path="res://scripts/convenience/version.gd" id="3_dvfyy"]
 [ext_resource type="Script" uid="uid://c2ktk27vk655o" path="res://scripts/card_battle/battle_mode_saver.gd" id="4_fhslq"]
-[ext_resource type="Script" uid="uid://qjheystlwhef" path="res://scripts/robot_mapper_saver.gd" id="6_ma5ye"]
-[ext_resource type="Script" uid="uid://clmlakb50km2n" path="res://scripts/inventory_saver.gd" id="7_681h2"]
-[ext_resource type="Script" uid="uid://tgtpk0qo2xx7" path="res://scripts/global_game_state_saver.gd" id="7_v64ur"]
+[ext_resource type="Script" uid="uid://qjheystlwhef" path="res://scripts/savesystem/extensions/robot_mapper_saver.gd" id="6_ma5ye"]
+[ext_resource type="Script" uid="uid://clmlakb50km2n" path="res://scripts/savesystem/extensions/inventory_saver.gd" id="7_681h2"]
+[ext_resource type="Script" uid="uid://tgtpk0qo2xx7" path="res://scripts/savesystem/extensions/global_game_state_saver.gd" id="7_v64ur"]
+[ext_resource type="Script" uid="uid://c6mrkx24mpkww" path="res://scripts/savesystem/extensions/robots_pool_saver.gd" id="10_7s7wj"]
+[ext_resource type="Script" uid="uid://cloq81xps7tex" path="res://scripts/savesystem/extensions/deployment_saver.gd" id="11_u3kui"]
 
 [sub_resource type="Resource" id="Resource_7s7wj"]
 script = ExtResource("3_dvfyy")
@@ -20,11 +22,12 @@ script = ExtResource("3_dvfyy")
 _version = "0.0.2"
 metadata/_custom_type_script = "uid://bjkpx0v0d0vky"
 
-[node name="Exploration Save System" type="Node" node_paths=PackedStringArray("storage_provider", "level_saver", "extensions", "migrations")]
+[node name="Exploration Save System" type="Node" node_paths=PackedStringArray("storage_provider", "level_saver", "extensions", "late_extensions", "migrations")]
 script = ExtResource("1_iwv0b")
 storage_provider = NodePath("StorageProvider")
 level_saver = NodePath("LevelSaver")
-extensions = [NodePath("GlobalGameStateSaver"), NodePath("BattleModeSaver"), NodePath("RobotMapperSaver"), NodePath("InventorySaver")]
+extensions = [NodePath("GlobalGameStateSaver"), NodePath("BattleModeSaver"), NodePath("RobotMapperSaver"), NodePath("InventorySaver"), NodePath("RobotsPoolsSaver")]
+late_extensions = [NodePath("DeploymentSaver")]
 migrations = [NodePath("Migrations/v0_0_2")]
 metadata/_custom_type_script = "uid://bkjlt23hansuv"
 
@@ -56,3 +59,11 @@ script = ExtResource("7_681h2")
 [node name="GlobalGameStateSaver" type="Node" parent="."]
 script = ExtResource("7_v64ur")
 metadata/_custom_type_script = "uid://tgtpk0qo2xx7"
+
+[node name="RobotsPoolsSaver" type="Node" parent="."]
+script = ExtResource("10_7s7wj")
+metadata/_custom_type_script = "uid://c6mrkx24mpkww"
+
+[node name="DeploymentSaver" type="Node" parent="."]
+script = ExtResource("11_u3kui")
+metadata/_custom_type_script = "uid://cloq81xps7tex"

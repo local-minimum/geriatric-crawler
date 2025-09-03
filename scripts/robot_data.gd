@@ -47,13 +47,15 @@ func to_save() -> Dictionary:
         OBTAINED_CARDS_KEY: obtained_cards.map(func (card: BattleCardData) -> String: return card.id),
     }
 
+func get_id_counter() -> int:
+    return int(id.split("-")[0])
+
+
 static func from_save(data: Dictionary) -> RobotData:
     var _given_name: String = DictionaryUtils.safe_gets(data, GIVEN_NAME_KEY)
     var _model_name: String = DictionaryUtils.safe_gets(data, MODEL_NAME_KEY)
 
     var _id: String = DictionaryUtils.safe_gets(data, ID_KEY, RobotsPool._get_next_robot_id())
-    var _id_counter: int = int(_id.split("-")[0])
-    RobotsPool._MAX_ROBOT_ID = maxi(RobotsPool._MAX_ROBOT_ID, _id_counter)
 
     var _model: RobotModel = RobotModel.get_model(_model_name)
     if _model == null:

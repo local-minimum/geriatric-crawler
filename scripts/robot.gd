@@ -7,21 +7,35 @@ signal on_robot_loaded(robot: Robot)
 
 @export var _player: GridPlayer
 
-var _data: RobotData
+var _has_data: bool
 
-@export var model: RobotModel:
-    get(): return _data.model if _data != null else model
+var _data: RobotData:
+    get():
+        if _data == null:
+            _data = RobotData.new(_fallback_model, "Robbie", robot_id)
+            _has_data = true
+        return _data
+    set(value):
+        _has_data = value != null
+        _data = value
+
+
+@export var _fallback_model: RobotModel
+
+var model: RobotModel:
+    get(): return _data.model
 
 var given_name: String:
-    get(): return _data.given_name if _data != null else "Robbie"
+    get(): return _data.given_name
 
+## Unique identifier of this particular robot
 @export var robot_id: String:
     get():
-        if _data != null:
+        if _has_data:
             return _data.id
         return robot_id
     set(value):
-        if _data == null:
+        if !_has_data:
             robot_id = value
 
 func _ready() -> void:
@@ -116,8 +130,8 @@ func remove_all_punishment_cards() -> void:
 func collect_save_data() -> Dictionary:
     return _data.to_save()
 
-func load_from_save(data: Dictionary) -> void:
-    _data = RobotData.from_save(data)
+func load_from_data(data: RobotData) -> void:
+    _data = data
 
     _sync_player_transportation_mode()
 

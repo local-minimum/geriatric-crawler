@@ -14,6 +14,8 @@ var _robots: Array[RobotData]
 
 func count() -> int: return _robots.size()
 
+func max_id_counter() -> int: return _robots.reduce(func (acc: int, robot: RobotData) -> int: return maxi(acc, robot.get_id_counter()), 1000)
+
 func available_robots() -> Array[RobotData]:
     return _robots
 
@@ -57,3 +59,5 @@ func load_from_save_data(data: Dictionary) -> void:
             var robot: RobotData = RobotData.from_save(robot_save)
             if robot != null:
                 _robots.append(robot)
+
+    _MAX_ROBOT_ID = max_id_counter()

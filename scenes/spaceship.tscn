@@ -1,4 +1,4 @@
-[gd_scene load_steps=31 format=3 uid="uid://7flb82m2ddwe"]
+[gd_scene load_steps=32 format=3 uid="uid://7flb82m2ddwe"]
 
 [ext_resource type="Script" uid="uid://dfub4a26emjgr" path="res://scripts/spaceship.gd" id="1_ae4p7"]
 [ext_resource type="Texture2D" uid="uid://0ncw5fw4jr8u" path="res://sprites/spaceship/missionops.png" id="2_5eye7"]
@@ -17,14 +17,15 @@
 [ext_resource type="Script" uid="uid://bemcpr6cqtnb3" path="res://scripts/savesystem/disk_json_storage_provider.gd" id="9_6wr2n"]
 [ext_resource type="Script" uid="uid://dk1kwquttgwfc" path="res://scripts/savesystem/migrations/migrate_save_v0.0.2.gd" id="9_iow36"]
 [ext_resource type="Script" uid="uid://bjkpx0v0d0vky" path="res://scripts/convenience/version.gd" id="10_5eye7"]
-[ext_resource type="Script" uid="uid://tgtpk0qo2xx7" path="res://scripts/global_game_state_saver.gd" id="10_6wr2n"]
-[ext_resource type="Script" uid="uid://cewd737qkspe7" path="res://scripts/chap_saver.gd" id="11_yckko"]
+[ext_resource type="Script" uid="uid://tgtpk0qo2xx7" path="res://scripts/savesystem/extensions/global_game_state_saver.gd" id="10_6wr2n"]
+[ext_resource type="Script" uid="uid://cewd737qkspe7" path="res://scripts/savesystem/extensions/chap_saver.gd" id="11_yckko"]
 [ext_resource type="Script" uid="uid://dddgx760pvv7h" path="res://scripts/spaceship/spaceship_saver.gd" id="14_csm47"]
-[ext_resource type="Script" uid="uid://clmlakb50km2n" path="res://scripts/inventory_saver.gd" id="15_d22a7"]
+[ext_resource type="Script" uid="uid://clmlakb50km2n" path="res://scripts/savesystem/extensions/inventory_saver.gd" id="15_d22a7"]
 [ext_resource type="Script" uid="uid://dftf4h6eyrsio" path="res://scripts/inventory.gd" id="15_tst1b"]
 [ext_resource type="Script" uid="uid://dh2gnvehpl1wc" path="res://scripts/spaceship/robots_pool.gd" id="17_0xuuw"]
 [ext_resource type="Resource" uid="uid://bh75cac6e2j77" path="res://resources/robot_models/starter.tres" id="20_i1do7"]
-[ext_resource type="Script" uid="uid://cloq81xps7tex" path="res://scripts/deployment_saver.gd" id="21_8k34q"]
+[ext_resource type="Script" uid="uid://cloq81xps7tex" path="res://scripts/savesystem/extensions/deployment_saver.gd" id="21_8k34q"]
+[ext_resource type="Script" uid="uid://c6mrkx24mpkww" path="res://scripts/savesystem/extensions/robots_pool_saver.gd" id="22_nqwxm"]
 [ext_resource type="Script" uid="uid://bi0uqcrvingk5" path="res://scripts/savesystem/scene_swapper_sentinel.gd" id="26_plmhy"]
 [ext_resource type="Script" uid="uid://cvprjpggj7xyr" path="res://scripts/spaceship/printers_manager.gd" id="27_q2lbv"]
 
@@ -623,7 +624,7 @@ _tween_notifiction_duration = 0.5
 script = ExtResource("8_r0fvi")
 storage_provider = NodePath("StorageProvider")
 level_saver = NodePath("SpaceshipSaver")
-extensions = [NodePath("Extensions/GlobalGameStateSaver"), NodePath("Extensions/ChapSaver")]
+extensions = [NodePath("Extensions/GlobalGameStateSaver"), NodePath("Extensions/ChapSaver"), NodePath("Extensions/RobotsPoolsSaver"), NodePath("Extensions/InventorySaver")]
 late_extensions = [NodePath("Extensions/DeploymentSaver")]
 migrations = [NodePath("Migrations/v0_0_2")]
 metadata/_custom_type_script = "uid://bkjlt23hansuv"
@@ -631,9 +632,8 @@ metadata/_custom_type_script = "uid://bkjlt23hansuv"
 [node name="StorageProvider" type="Node" parent="SaveSystem"]
 script = ExtResource("9_6wr2n")
 
-[node name="SpaceshipSaver" type="Node" parent="SaveSystem" node_paths=PackedStringArray("robots_pool")]
+[node name="SpaceshipSaver" type="Node" parent="SaveSystem"]
 script = ExtResource("14_csm47")
-robots_pool = NodePath("../../RobotsPool")
 metadata/_custom_type_script = "uid://dddgx760pvv7h"
 
 [node name="Migrations" type="Node" parent="SaveSystem"]
@@ -664,6 +664,10 @@ metadata/_custom_type_script = "uid://clmlakb50km2n"
 script = ExtResource("21_8k34q")
 _tick_time_on_load = true
 metadata/_custom_type_script = "uid://cloq81xps7tex"
+
+[node name="RobotsPoolsSaver" type="Node" parent="SaveSystem/Extensions"]
+script = ExtResource("22_nqwxm")
+metadata/_custom_type_script = "uid://c6mrkx24mpkww"
 
 [node name="Inventory" type="Node" parent="."]
 script = ExtResource("15_tst1b")

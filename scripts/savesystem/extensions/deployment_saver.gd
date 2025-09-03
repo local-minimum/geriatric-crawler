@@ -4,6 +4,7 @@ class_name DeploymentSaver
 
 @export var _save_key: String = "deployment"
 @export var _tick_time_on_load: bool
+@export var _tick_excursions_on_load: bool
 
 func _enter_tree() -> void:
     if __SignalBus.on_increment_day.connect(_handle_day_increment) != OK:
@@ -69,13 +70,16 @@ func load_from_data(extentsion_save_data: Dictionary) -> void:
 
     if RobotsPool.instance != null:
         var robot: RobotData = RobotsPool.instance.get_robot(robot_id)
-        if robot != null:
+        if robot != null && _tick_excursions_on_load:
             robot.excursions += 1
 
     if ExplorationScene.instance != null:
         var level: GridLevel = ExplorationScene.instance.level
         var player: GridPlayer = level.player
-        player.robot.robot_id = robot_id
+        if RobotsPool.instance != null:
+            player.robot.load_from_data(RobotsPool.instance.get_robot(robot_id))
+        else:
+            player.robot.robot_id = robot_id
 
         level.on_change_player.emit()
 

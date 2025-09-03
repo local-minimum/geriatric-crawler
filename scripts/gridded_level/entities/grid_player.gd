@@ -144,7 +144,6 @@ func _process(_delta: float) -> void:
         _next_move_repeat = Time.get_ticks_msec() + repeat_move_delay
 
 
-const _ROBOT_KEY: String = "robot"
 const _KEY_RING_KEY: String = "keys"
 
 func save() -> Dictionary:
@@ -153,7 +152,6 @@ func save() -> Dictionary:
         _ANCHOR_KEY: get_grid_anchor_direction(),
         _COORDINATES_KEY: coordinates(),
         _DOWN_KEY: down,
-        _ROBOT_KEY: robot.collect_save_data(),
         _KEY_RING_KEY: key_ring.collect_save_data(),
     }
 
@@ -166,7 +164,6 @@ func initial_state() -> Dictionary:
 
         _COORDINATES_KEY: spawn_node.coordinates,
 
-        _ROBOT_KEY: robot.collect_save_data(),
         _KEY_RING_KEY: {},
     }
 
@@ -181,17 +178,6 @@ func load_from_save(level: GridLevel, save_data: Dictionary) -> void:
     if !_valid_save_data(save_data):
         push_error("Player save data is not valid %s" % save_data)
         return
-
-    if save_data.has(_ROBOT_KEY):
-        var robot_save: Variant = save_data[_ROBOT_KEY]
-        if robot_save is Dictionary:
-            @warning_ignore_start("unsafe_call_argument")
-            robot.load_from_save(robot_save)
-            @warning_ignore_restore("unsafe_call_argument")
-        else:
-            push_warning("No save present for robot save on %s isn't a dictionary but %s" % [_ROBOT_KEY, robot_save])
-    else:
-        push_warning("Save lacks robot save on %s in %s" % [_ROBOT_KEY, save_data])
 
     var key_ring_save: Dictionary = DictionaryUtils.safe_getd(save_data, _KEY_RING_KEY, {})
     key_ring.load_from_save(key_ring_save)
