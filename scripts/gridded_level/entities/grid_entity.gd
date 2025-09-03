@@ -281,7 +281,6 @@ func orient() -> void:
             CardinalDirections.name(look_direction),
             CardinalDirections.name(down)
         ])
-        print_stack()
         return
 
     look_at(

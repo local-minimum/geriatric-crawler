@@ -250,7 +250,7 @@ func _handle_gain_shield(_battle_entity: BattleEntity, shields: Array[int], new_
 
 func _set_shield(shields: Array[int]) -> void:
     if shields.is_empty():
-        defenceUI.text = "%: %" % [tr("DEFENCE_STAT"), tr("EXPOSED")]
+        defenceUI.text = "%s: %s" % [tr("DEFENCE_STAT"), tr("EXPOSED")]
         return
 
     var shields_text: Array  = shields.map(
