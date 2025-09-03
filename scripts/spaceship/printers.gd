@@ -1,7 +1,7 @@
 extends SpaceshipRoom
 class_name PrintersRoom
 
-@export var robots_pool: RobotsPool
+@export var ship: Spaceship
 
 @export var available_models: Array[RobotModel]
 
@@ -45,15 +45,15 @@ func _handle_increment_day(_day_of_month: int, _remaining_days: int) -> void:
 func _sync_printer_buttons() -> void:
     for idx: int in range(printer_buttons.size()):
         printer_buttons[idx].text = tr("PRINTER_ID").format({"id": IntUtils.to_roman(idx + 1)})
-        if idx >= robots_pool.printers:
+        if idx >= ship.printers.printers:
             var parent: Control = printer_buttons[idx].get_parent()
             parent.hide()
 
 func _sync_printer_statues() -> void:
     for idx: int in range(printer_statuses.size()):
         var status: String = ""
-        var job: RobotsPool.PrinterJob = robots_pool.get_printer_job(idx)
-        if !robots_pool.printer_is_rented(idx):
+        var job: PrintersManager.PrinterJob = ship.printers.get_printer_job(idx)
+        if !ship.printers.printer_is_rented(idx):
             status = tr("STATUS_NOT_RENTED")
         elif job == null:
             status = tr("STATUS_IDLE")
@@ -86,14 +86,14 @@ func _toggle_select_printer(idx: int) -> void:
 
     _sync_panels()
 
-func _has_materials(cost: RobotsPool.PrintingCost) -> bool:
+func _has_materials(cost: PrintersManager.PrintingCost) -> bool:
     if cost.free:
         return true
 
     # TODO: Figure this out
     return false
 
-var _selected_cost: RobotsPool.PrintingCost
+var _selected_cost: PrintersManager.PrintingCost
 var _selected_model: RobotModel
 
 func _sync_panels() -> void:
@@ -102,20 +102,20 @@ func _sync_panels() -> void:
         rent_panel.hide()
         return
 
-    var active_job: RobotsPool.PrinterJob = robots_pool.get_printer_job(_selected_printer)
+    var active_job: PrintersManager.PrinterJob = ship.printers.get_printer_job(_selected_printer)
 
-    if robots_pool.printer_is_rented(_selected_printer):
+    if ship.printers.printer_is_rented(_selected_printer):
         var busy: bool = active_job != null && active_job.busy()
         if busy:
             models_panel.hide()
         else:
-            _selected_model = robots_pool.get_model(_model_index)
+            _selected_model = ship.robots_pool.get_model(_model_index)
             model_title.text = _selected_model.model_name
 
             # TODO: Figure out this
             model_description.text = ""
 
-            _selected_cost = robots_pool.calculate_printing_costs(_selected_model, _selected_printer)
+            _selected_cost = ship.printers.calculate_printing_costs(_selected_model, _selected_printer)
             model_price.text = tr("TOTAL_COST_PRICE").format({"price": GlobalGameState.credits_with_sign(_selected_cost.total)})
 
             var has_materials: bool = _has_materials(_selected_cost)
@@ -130,8 +130,8 @@ func _sync_panels() -> void:
             models_panel.show()
         rent_panel.hide()
     else:
-        rent_down_payment_cost.text = GlobalGameState.credits_with_sign(robots_pool.get_printer_down_payement(_selected_printer))
-        rent_cost.text = GlobalGameState.credits_with_sign(robots_pool.get_printer_rent(_selected_printer))
+        rent_down_payment_cost.text = GlobalGameState.credits_with_sign(ship.printers.get_printer_down_payement(_selected_printer))
+        rent_cost.text = GlobalGameState.credits_with_sign(ship.printers.get_printer_rent(_selected_printer))
         rent_panel.show()
         models_panel.hide()
 
@@ -144,7 +144,7 @@ func _on_print_pressed() -> void:
             push_warning("Couldn't withdraw sufficient funds to start printing %s on printer %s" % [_selected_model.model_name, _selected_printer])
             return
 
-    if !robots_pool.make_printing_job(_selected_printer, _selected_model, "Squirrel"):
+    if !ship.printers.make_printing_job(_selected_printer, _selected_model, "Squirrel"):
         push_warning("Failed to start printing %s on printer %s" % [_selected_model.model_name, _selected_printer])
 
     print_debug("Started printing %s on printer %s" % [_selected_model.model_name, _selected_printer])

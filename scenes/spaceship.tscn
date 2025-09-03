@@ -1,4 +1,4 @@
-[gd_scene load_steps=30 format=3 uid="uid://7flb82m2ddwe"]
+[gd_scene load_steps=31 format=3 uid="uid://7flb82m2ddwe"]
 
 [ext_resource type="Script" uid="uid://dfub4a26emjgr" path="res://scripts/spaceship.gd" id="1_ae4p7"]
 [ext_resource type="Texture2D" uid="uid://0ncw5fw4jr8u" path="res://sprites/spaceship/missionops.png" id="2_5eye7"]
@@ -26,6 +26,7 @@
 [ext_resource type="Resource" uid="uid://bh75cac6e2j77" path="res://resources/robot_models/starter.tres" id="20_i1do7"]
 [ext_resource type="Script" uid="uid://cloq81xps7tex" path="res://scripts/deployment_saver.gd" id="21_8k34q"]
 [ext_resource type="Script" uid="uid://bi0uqcrvingk5" path="res://scripts/savesystem/scene_swapper_sentinel.gd" id="26_plmhy"]
+[ext_resource type="Script" uid="uid://cvprjpggj7xyr" path="res://scripts/spaceship/printers_manager.gd" id="27_q2lbv"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ws7tf"]
 bg_color = Color(0.477872, 0.602944, 0.818495, 1)
@@ -45,7 +46,7 @@ script = ExtResource("10_5eye7")
 _version = "0.0.2"
 metadata/_custom_type_script = "uid://bjkpx0v0d0vky"
 
-[node name="Spaceshiip" type="Node2D" node_paths=PackedStringArray("chap_ui", "rooms", "inventory", "robots_pool")]
+[node name="Spaceshiip" type="Node2D" node_paths=PackedStringArray("chap_ui", "rooms", "inventory", "robots_pool", "printers")]
 script = ExtResource("1_ae4p7")
 chap_ui = NodePath("CanvasLayer/CHAP AI")
 rooms = {
@@ -55,6 +56,7 @@ rooms = {
 }
 inventory = NodePath("Inventory")
 robots_pool = NodePath("RobotsPool")
+printers = NodePath("PrintersManager")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
@@ -277,12 +279,12 @@ auto_translate_mode = 2
 layout_mode = 2
 text = "DEPLOY_WITH_INSURANCE"
 
-[node name="PrintersRoom" type="Control" parent="CanvasLayer/ActiveArea" node_paths=PackedStringArray("robots_pool", "printer_buttons", "printer_statuses", "rent_panel", "rent_down_payment_cost", "rent_cost", "models_panel", "model_title", "model_description", "model_price", "print_model_btn", "buy_materials_btn")]
+[node name="PrintersRoom" type="Control" parent="CanvasLayer/ActiveArea" node_paths=PackedStringArray("ship", "printer_buttons", "printer_statuses", "rent_panel", "rent_down_payment_cost", "rent_cost", "models_panel", "model_title", "model_description", "model_price", "print_model_btn", "buy_materials_btn")]
 visible = false
 layout_mode = 2
 mouse_filter = 2
 script = ExtResource("5_nosia")
-robots_pool = NodePath("../../../RobotsPool")
+ship = NodePath("../../..")
 printer_buttons = [NodePath("Printer Selector/Printer Selection Group/Printer I Button"), NodePath("Printer Selector/Printer Selection Group2/Printer II Button"), NodePath("Printer Selector/Printer Selection Group3/Printer III Button")]
 printer_statuses = [NodePath("Printer Selector/Printer Selection Group/Printer I Status"), NodePath("Printer Selector/Printer Selection Group2/Printer II Status"), NodePath("Printer Selector/Printer Selection Group3/Printer III Status")]
 rent_panel = NodePath("Rent New Printer Panel")
@@ -677,6 +679,11 @@ metadata/_custom_type_script = "uid://dh2gnvehpl1wc"
 script = ExtResource("26_plmhy")
 _save_system = NodePath("../SaveSystem")
 metadata/_custom_type_script = "uid://bi0uqcrvingk5"
+
+[node name="PrintersManager" type="Node" parent="." node_paths=PackedStringArray("robots")]
+script = ExtResource("27_q2lbv")
+robots = NodePath("../RobotsPool")
+metadata/_custom_type_script = "uid://cvprjpggj7xyr"
 
 [connection signal="pressed" from="CanvasLayer/ActiveArea/MissionOpsRoom/Main Buttons/Select Robot" to="CanvasLayer/ActiveArea/MissionOpsRoom" method="_on_select_robot_pressed"]
 [connection signal="pressed" from="CanvasLayer/ActiveArea/MissionOpsRoom/Main Buttons/Loadout" to="CanvasLayer/ActiveArea/MissionOpsRoom" method="_on_loadout_pressed"]

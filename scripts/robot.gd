@@ -7,14 +7,22 @@ signal on_robot_loaded(robot: Robot)
 
 @export var _player: GridPlayer
 
-@export var model: RobotModel
+var _data: RobotData
+
+@export var model: RobotModel:
+    get(): return _data.model if _data != null else model
 
 var given_name: String:
     get(): return _data.given_name if _data != null else "Robbie"
 
-var _data: RobotData
-
-var _alive: bool = true
+@export var robot_id: String:
+    get():
+        if _data != null:
+            return _data.id
+        return robot_id
+    set(value):
+        if _data == null:
+            robot_id = value
 
 func _ready() -> void:
     _sync_player_transportation_mode()
@@ -24,7 +32,7 @@ func _ready() -> void:
     if battle_player != null:
         battle_player.use_robot(self)
 
-func is_alive() -> bool: return _alive
+func is_alive() -> bool: return _data.alive
 
 func obtained_upgrades() -> int: return _data.obtained_upgrades.size()
 
@@ -143,7 +151,7 @@ func _sync_player_transportation_mode() -> void:
             push_error("We don't know of the %s climbing skill level" % climbing)
 
 func complete_fight() -> void:
-    if _alive:
+    if _data.alive:
         var can_progress_without_upgrade: bool = get_skill_level(RobotAbility.SKILL_UPGRADES) >= 1
         var current_level: int = model.get_level(_data.fights)
         if current_level < 5:
@@ -154,8 +162,8 @@ func complete_fight() -> void:
         on_robot_complete_fight.emit(self)
 
 func killed_in_fight() -> void:
-    if _alive:
-        _alive = false
+    if _data.alive:
+        _data.alive = false
         on_robot_death.emit(self)
 
 func get_deck() -> Array[BattleCardData]:
