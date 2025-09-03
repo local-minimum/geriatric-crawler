@@ -1,6 +1,8 @@
 extends Resource
 class_name RobotModel
 
+const UNKNOWN_MODEL: String = "NO-NAME"
+
 static var _ALL_MODELS: Dictionary[String, RobotModel] = {}
 
 const _MODELS_ROOT: String = "res://resources/robot_models"
@@ -17,6 +19,9 @@ static func get_model(model_id: String) -> RobotModel:
             if resource is RobotModel:
                 var model: RobotModel = resource
                 _ALL_MODELS[model.id] = model
+
+    if !_ALL_MODELS.has(model_id):
+        push_error("Attempted to get model '%s', not known in %s" % [model_id, _ALL_MODELS.keys()])
 
     return _ALL_MODELS.get(model_id)
 

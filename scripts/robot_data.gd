@@ -11,7 +11,7 @@ var alive: bool = true
 var obtained_upgrades: Array[RobotAbility]
 var obtained_cards: Array[BattleCardData]
 
-const MODEL_NAME_KEY: String = "model"
+const MODEL_ID_KEY: String = "model"
 const GIVEN_NAME_KEY: String = "given_name"
 const STORAGE_LOCATION_KEY: String = "location"
 const EXCURSIONS_KEY: String = "excursions"
@@ -36,7 +36,7 @@ func _init(
 func to_save() -> Dictionary:
     return {
         ID_KEY: id,
-        MODEL_NAME_KEY: model.model_name,
+        MODEL_ID_KEY: model.id,
         GIVEN_NAME_KEY: given_name,
         STORAGE_LOCATION_KEY: storage_location,
         ALIVE_KEY: alive,
@@ -53,11 +53,11 @@ func get_id_counter() -> int:
 
 static func from_save(data: Dictionary) -> RobotData:
     var _given_name: String = DictionaryUtils.safe_gets(data, GIVEN_NAME_KEY)
-    var _model_name: String = DictionaryUtils.safe_gets(data, MODEL_NAME_KEY)
+    var _model_id: String = DictionaryUtils.safe_gets(data, MODEL_ID_KEY)
 
     var _id: String = DictionaryUtils.safe_gets(data, ID_KEY, RobotsPool._get_next_robot_id())
 
-    var _model: RobotModel = RobotModel.get_model(_model_name)
+    var _model: RobotModel = RobotModel.get_model(_model_id)
     if _model == null:
         return null
 

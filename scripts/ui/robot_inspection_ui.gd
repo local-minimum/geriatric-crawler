@@ -24,7 +24,7 @@ func _ready() -> void:
 
 func inspect(robot: Robot, battle_player: BattlePlayer, credits: int) -> void:
     _name_label.text = robot.given_name
-    _model_label.text = "%s: %s" % [tr("MODEL"), robot.model.model_name]
+    _model_label.text = "%s: %s" % [tr("MODEL"), robot.model.model_name if robot.model.model_name else RobotModel.UNKNOWN_MODEL]
 
     if battle_player.is_alive():
         _health_label.text = "%s/%s %s" % [battle_player.get_health(), battle_player.max_health, tr("HEALTH_POINTS")]

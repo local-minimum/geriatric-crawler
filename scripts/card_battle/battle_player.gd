@@ -261,7 +261,7 @@ var _robot: Robot
 func use_robot(robot: Robot) -> void:
     _robot = robot
 
-    if _robot != null:
+    if _robot != null && _robot.model != null:
         max_health = _robot.model.max_hp
     else:
         max_health = 0

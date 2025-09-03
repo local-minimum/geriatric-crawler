@@ -13,8 +13,8 @@ func sync(robot: Robot, credits: int) -> void:
     for level_idx: int in range(_levels.size()):
         var level_number: int = level_idx + 1
         var level: RobotSkillLevelUI = _levels[level_idx]
-        var options: Array[RobotAbility] = robot.model.get_level_options(level_number)
-        var selected_option: Array[RobotAbility] = robot.get_obtained_abilities(level_number)
+        var options: Array[RobotAbility] = robot.model.get_level_options(level_number) if robot.model != null else []
+        var selected_option: Array[RobotAbility] = robot.get_obtained_abilities(level_number) if robot.model != null else []
         var completed_fights: int = robot.get_fights_done_on_level(level_number)
         var total_fights: int = robot.model.get_level_required_steps(level_number)
 

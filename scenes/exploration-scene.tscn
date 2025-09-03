@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3 uid="uid://5mvkmlsl4h3x"]
+[gd_scene load_steps=20 format=3 uid="uid://5mvkmlsl4h3x"]
 
 [ext_resource type="PackedScene" uid="uid://dx6ngxriyyq7l" path="res://scenes/ui/ui_debug_settings.tscn" id="1_6lmoa"]
 [ext_resource type="Script" uid="uid://da6tnwd64dup6" path="res://scripts/exploration_scene.gd" id="1_w7kg7"]
@@ -18,6 +18,7 @@
 [ext_resource type="Script" uid="uid://b6t7ddd2s4oo" path="res://scripts/settings/tutorial_settings.gd" id="16_gl6i3"]
 [ext_resource type="PackedScene" uid="uid://tdh164rk30bx" path="res://scenes/ui/tutorials.tscn" id="17_t2qw5"]
 [ext_resource type="Script" uid="uid://bi0uqcrvingk5" path="res://scripts/savesystem/scene_swapper_sentinel.gd" id="18_kdmba"]
+[ext_resource type="Script" uid="uid://dh2gnvehpl1wc" path="res://scripts/spaceship/robots_pool.gd" id="19_hd6rl"]
 
 [node name="Exploration" type="Control" node_paths=PackedStringArray("settings", "subviewport", "exploration_ui")]
 layout_mode = 3
@@ -126,3 +127,7 @@ _save_system = NodePath("../SaveSystem")
 _check_nodes = [NodePath("..")]
 _check_properties = Array[String](["level_ready"])
 metadata/_custom_type_script = "uid://bi0uqcrvingk5"
+
+[node name="RobotsPool" type="Node" parent="."]
+script = ExtResource("19_hd6rl")
+metadata/_custom_type_script = "uid://dh2gnvehpl1wc"

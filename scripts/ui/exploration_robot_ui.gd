@@ -70,11 +70,13 @@ func _connect_player(grid_player: GridPlayer, battle_player: BattlePlayer, omit_
 
 func _sync_robot(robot: Robot, battle_player: BattlePlayer) -> void:
     _name_label.text = robot.given_name
-    _model_label.text = robot.model.model_name
+    _model_label.text = robot.model.model_name if robot.model != null else RobotModel.UNKNOWN_MODEL
 
     _sync_level(robot)
 
-    if battle_player == null:
+    if robot.model == null:
+        _health_label.text = "0/0 %s" % [tr("HEALTH_POINTS")]
+    elif battle_player == null:
         push_warning("Assuming full health because battle player not set")
         _health_label.text = "%s/%s %s" % [robot.model.max_hp, robot.model.max_hp, tr("HEALTH_POINTS")]
     else:

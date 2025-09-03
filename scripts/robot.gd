@@ -51,6 +51,9 @@ func is_alive() -> bool: return _data.alive
 func obtained_upgrades() -> int: return _data.obtained_upgrades.size()
 
 func available_upgrade_slots() -> int:
+    if model == null:
+        return 0
+
     var level: int = model.get_completed_level(_data.fights)
     if get_skill_level(RobotAbility.SKILL_UPGRADES) >= 4:
         return model.count_available_options(level, _data.obtained_upgrades)
@@ -64,23 +67,26 @@ func keys() -> KeyRing:
 
 ## Number of fights completed on the current level
 func get_fights_done_on_current_level() -> int:
-    return model.get_completed_steps_on_current_level(_data.fights)
+    return model.get_completed_steps_on_current_level(_data.fights) if model != null else 0
 
 ## Number of fights completed on the level
 func get_fights_done_on_level(level: int) -> int:
-    return model.get_completed_steps_on_level(_data.fights, level)
+    return model.get_completed_steps_on_level(_data.fights, level) if model != null else 0
 
 ## Number of fights needed to complete the level
 func get_fights_required_to_level() -> int:
-    return model.get_remaining_steps_on_current_level(_data.fights)
+    return model.get_remaining_steps_on_current_level(_data.fights) if model != null else -1
 
 func fully_upgraded() -> bool:
-    return model.get_level(_data.fights) == 5 && available_upgrade_slots() == 0
+    return model != null && model.get_level(_data.fights) == 5 && available_upgrade_slots() == 0
 
 func must_upgrade() -> bool:
-    return get_skill_level(RobotAbility.SKILL_UPGRADES) == 0 && model.get_remaining_steps_on_current_level(_data.fights) == 0
+    return model != null && get_skill_level(RobotAbility.SKILL_UPGRADES) == 0 && model.get_remaining_steps_on_current_level(_data.fights) == 0
 
 func get_active_abilities() -> Array[RobotAbility]:
+    if model == null:
+        return []
+
     var abilites: Dictionary[String, RobotAbility] = {}
     for ability: RobotAbility in model.innate_abilities + _data.obtained_upgrades:
         if !abilites.has(ability.id):
@@ -106,6 +112,10 @@ func get_active_skill_level(skill: String) -> RobotAbility:
     )
 
 func obtain_upgrade(reward_full_id: String) -> void:
+    if model == null:
+        push_error("Robot has no model")
+        return
+
     var reward: RobotAbility = model.find_skill(reward_full_id)
     if reward == null:
         push_error("Reward %s not present in model %s" % [reward_full_id, model])
@@ -165,7 +175,7 @@ func _sync_player_transportation_mode() -> void:
             push_error("We don't know of the %s climbing skill level" % climbing)
 
 func complete_fight() -> void:
-    if _data.alive:
+    if _data.alive && model != null:
         var can_progress_without_upgrade: bool = get_skill_level(RobotAbility.SKILL_UPGRADES) >= 1
         var current_level: int = model.get_level(_data.fights)
         if current_level < 5:
@@ -181,4 +191,7 @@ func killed_in_fight() -> void:
         on_robot_death.emit(self)
 
 func get_deck() -> Array[BattleCardData]:
+    if model == null:
+        return _data.obtained_cards
+
     return model.starter_deck + _data.obtained_cards

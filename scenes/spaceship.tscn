@@ -632,8 +632,9 @@ metadata/_custom_type_script = "uid://bkjlt23hansuv"
 [node name="StorageProvider" type="Node" parent="SaveSystem"]
 script = ExtResource("9_6wr2n")
 
-[node name="SpaceshipSaver" type="Node" parent="SaveSystem"]
+[node name="SpaceshipSaver" type="Node" parent="SaveSystem" node_paths=PackedStringArray("ship")]
 script = ExtResource("14_csm47")
+ship = NodePath("../..")
 metadata/_custom_type_script = "uid://dddgx760pvv7h"
 
 [node name="Migrations" type="Node" parent="SaveSystem"]

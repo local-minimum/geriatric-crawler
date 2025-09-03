@@ -59,5 +59,7 @@ func load_from_save_data(data: Dictionary) -> void:
             var robot: RobotData = RobotData.from_save(robot_save)
             if robot != null:
                 _robots.append(robot)
+                if !available_models.has(robot.model):
+                    available_models.append(robot.model)
 
     _MAX_ROBOT_ID = max_id_counter()
