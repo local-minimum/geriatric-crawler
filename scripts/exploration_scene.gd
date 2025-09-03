@@ -1,6 +1,8 @@
 extends Node
 class_name ExplorationScene
 
+static var instance: ExplorationScene
+
 @export var settings: GameSettings
 
 @export var subviewport: Control
@@ -8,7 +10,17 @@ class_name ExplorationScene
 
 var _view_split: float
 
-var level_ready: bool
+var level: GridLevel
+var level_ready: bool:
+    get():
+        return level != null
+
+func _enter_tree() -> void:
+    instance = self
+
+func _exit_tree() -> void:
+    if instance == self:
+        instance = null
 
 func _ready() -> void:
     _view_split = subviewport.anchor_right

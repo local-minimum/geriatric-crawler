@@ -1,6 +1,25 @@
 extends Resource
 class_name RobotModel
 
+static var _ALL_MODELS: Dictionary[String, RobotModel] = {}
+
+const _MODELS_ROOT: String = "res://resources/robot_models"
+
+static func get_model(model_id: String) -> RobotModel:
+    if _ALL_MODELS.is_empty():
+        for file_name: String in DirAccess.get_files_at(_MODELS_ROOT):
+            # print_debug("Loading robot models considering %s" % file_name)
+
+            if file_name.get_extension() != "tres":
+                continue
+
+            var resource: Resource = ResourceLoader.load("%s/%s" % [_MODELS_ROOT, file_name])
+            if resource is RobotModel:
+                var model: RobotModel = resource
+                _ALL_MODELS[model.id] = model
+
+    return _ALL_MODELS.get(model_id)
+
 @export var id: String
 
 @export var model_name: String

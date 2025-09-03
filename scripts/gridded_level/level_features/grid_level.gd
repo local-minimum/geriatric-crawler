@@ -53,7 +53,7 @@ func _ready() -> void:
 
     var exploration: ExplorationScene = ExplorationScene.find_exploration_scene(self)
     if exploration != null:
-        exploration.level_ready = true
+        exploration.level = self
 
 func _enter_tree() -> void:
     if active_level != null && active_level != self:

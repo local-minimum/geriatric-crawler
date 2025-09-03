@@ -1,6 +1,8 @@
 extends Node
 class_name RobotsPool
 
+static var instance: RobotsPool
+
 class PrinterJob:
     var model: RobotModel
     var start_day: int
@@ -127,6 +129,13 @@ func get_robot(id: String) -> SpaceshipRobot:
     return null
 
 var _printer_jobs: Array[PrinterJob]
+
+func _enter_tree() -> void:
+    instance = self
+
+func _exit_tree() -> void:
+    if instance == self:
+        instance = null
 
 func _ready() -> void:
     _printer_jobs.clear()

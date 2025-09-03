@@ -91,6 +91,7 @@ func _check_loading_next_scene() -> void:
             match get_tree().change_scene_to_packed(scene):
                 OK:
                     _phase = Phase.WAIT_TO_LOAD_NEW_SCENE
+                    __SignalBus.on_scene_transition_progress.emit(1.0)
                 ERR_CANT_CREATE:
                     push_error("Cannot create new root scene '%s'" % _loading_resource_path)
                     _handle_fail_and_reset()
