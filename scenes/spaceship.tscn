@@ -658,9 +658,8 @@ script = ExtResource("15_d22a7")
 _save_key = "spaceship-inventory"
 metadata/_custom_type_script = "uid://clmlakb50km2n"
 
-[node name="DeploymentSaver" type="Node" parent="SaveSystem/Extensions" node_paths=PackedStringArray("_robot_pool")]
+[node name="DeploymentSaver" type="Node" parent="SaveSystem/Extensions"]
 script = ExtResource("21_8k34q")
-_robot_pool = NodePath("../../../RobotsPool")
 _tick_time_on_load = true
 metadata/_custom_type_script = "uid://cloq81xps7tex"
 

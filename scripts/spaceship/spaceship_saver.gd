@@ -13,7 +13,7 @@ func _ready() -> void:
     if __SignalBus.on_before_deploy.connect(_handle_before_deploy) != OK:
         push_error("Failed to connect on before deploy")
 
-func _handle_before_deploy(level_id: String, _robot: RobotsPool.SpaceshipRobot, _duration_days: int, _insured: bool) -> void:
+func _handle_before_deploy(level_id: String, _robot: RobotData, _duration_days: int, _insured: bool) -> void:
     _destination_level = level_id
 
 func collect_save_state() -> Dictionary:

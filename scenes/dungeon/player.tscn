@@ -69,7 +69,6 @@ metadata/_custom_type_script = "uid://meibvvwp8mvg"
 script = ExtResource("5_se4x3")
 _player = NodePath("..")
 model = ExtResource("6_2f68n")
-given_name = "Robbie"
 metadata/_custom_type_script = "uid://bsao4ssvb051r"
 
 [node name="KeyRing" type="Node" parent="."]

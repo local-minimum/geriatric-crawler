@@ -29,7 +29,7 @@ func _handle_day_increment(_day_of_month: int, _days_remaining_of_month: int) ->
     _deploying = false
     _incurred_damage = 0
 
-func _handle_before_deploy(level_id: String, robot: RobotsPool.SpaceshipRobot, duration_days: int, insured: bool) -> void:
+func _handle_before_deploy(level_id: String, robot: RobotData, duration_days: int, insured: bool) -> void:
     _level_id = level_id
 
     _robot_id = robot.id
@@ -79,6 +79,7 @@ func initial_data(_extentsion_save_data: Dictionary) -> Dictionary:
     return {}
 
 func load_from_data(extentsion_save_data: Dictionary) -> void:
+    #TODO: Should not load all things robot, just its id!
     var robot_id: String = DictionaryUtils.safe_gets(extentsion_save_data, ROBOT_ID_KEY, "", false)
     var robot_model_id: String = DictionaryUtils.safe_gets(extentsion_save_data, ROBOT_MODEL_KEY, "", false)
     var robot_given_name: String = DictionaryUtils.safe_gets(extentsion_save_data, ROBOT_GIVEN_NAME_KEY, "", false)
@@ -86,10 +87,10 @@ func load_from_data(extentsion_save_data: Dictionary) -> void:
     var damage: int = DictionaryUtils.safe_geti(extentsion_save_data, INCURRED_DAMAGE_KEY, 0, false)
 
     if RobotsPool.instance != null:
-        var robot: RobotsPool.SpaceshipRobot = RobotsPool.instance.get_robot(robot_id)
+        var robot: RobotData = RobotsPool.instance.get_robot(robot_id)
         if robot != null:
             if damage > 0:
-                robot.damage += damage
+                robot.accumualated_damage += damage
 
             robot.excursions += 1
 

@@ -32,98 +32,36 @@ class PrinterJob:
             GIVEN_NAME_KEY: given_name,
         }
 
-    static func from_save(data: Dictionary, models: Array[RobotModel]) -> PrinterJob:
+    static func from_save(data: Dictionary) -> PrinterJob:
         var _given_name: String = DictionaryUtils.safe_gets(data, GIVEN_NAME_KEY)
         var _start_day: int = DictionaryUtils.safe_geti(data, START_DAY_KEY)
         var _model_name: String = DictionaryUtils.safe_gets(data, MODEL_NAME_KEY)
-        var idx: int = models.find_custom(func (mod: RobotModel) -> bool: return mod.model_name == _model_name)
-        if idx < 0:
+        var _model: RobotModel = RobotModel.get_model(_model_name)
+        if _model == null:
             return null
 
-        return PrinterJob.new(models[idx], _given_name, _start_day)
+        return PrinterJob.new(_model, _given_name, _start_day)
 
 static var _MAX_ROBOT_ID: int = 1000
 static func _get_next_robot_id() -> String:
     _MAX_ROBOT_ID += 1
     return "%s-%s" % [_MAX_ROBOT_ID, Time.get_ticks_msec()]
 
-class SpaceshipRobot:
-    var id: String
-    var model: RobotModel
-    var given_name: String
-    var storage_location: Spaceship.Room
-    var excursions: int
-    var damage: int
-
-    const MODEL_NAME_KEY: String = "model"
-    const GIVEN_NAME_KEY: String = "given_name"
-    const STORAGE_LOCATION_KEY: String = "location"
-    const EXCURSIONS_KEY: String = "excursions"
-    const DAMAGE_KEY: String = "damage"
-    const ID_KEY: String = "id"
-
-    @warning_ignore_start("shadowed_variable")
-    func _init(
-        model: RobotModel,
-        given_name: String,
-        storage_location: Spaceship.Room = Spaceship.Room.PRINTERS,
-        excursions: int = 0,
-        damage: int = 0,
-    ) -> void:
-        @warning_ignore_restore("shadowed_variable")
-        self.model = model
-        self.given_name = given_name
-        self.storage_location = storage_location
-        self.excursions = excursions
-        self.damage = damage
-        self.id = RobotsPool._get_next_robot_id()
-
-    func to_save() -> Dictionary:
-        return {
-            ID_KEY: id,
-            MODEL_NAME_KEY: model.model_name,
-            GIVEN_NAME_KEY: given_name,
-            STORAGE_LOCATION_KEY: storage_location,
-            EXCURSIONS_KEY: excursions,
-            DAMAGE_KEY: damage,
-        }
-
-    static func from_save(data: Dictionary, models: Array[RobotModel]) -> SpaceshipRobot:
-        var _given_name: String = DictionaryUtils.safe_gets(data, GIVEN_NAME_KEY)
-        var _model_name: String = DictionaryUtils.safe_gets(data, MODEL_NAME_KEY)
-
-        var _id: String = DictionaryUtils.safe_gets(data, ID_KEY, RobotsPool._get_next_robot_id())
-        var _id_counter: int = int(_id.split("-")[0])
-        RobotsPool._MAX_ROBOT_ID = maxi(RobotsPool._MAX_ROBOT_ID, _id_counter)
-
-        var idx: int = models.find_custom(func (mod: RobotModel) -> bool: return mod.model_name == _model_name)
-        if idx < 0:
-            return null
-
-        var _excursions: int = DictionaryUtils.safe_geti(data, EXCURSIONS_KEY)
-        var _damage: int = DictionaryUtils.safe_geti(data, DAMAGE_KEY)
-        var room: Spaceship.Room = Spaceship.to_room(DictionaryUtils.safe_geti(data, STORAGE_LOCATION_KEY), Spaceship.Room.PRINTERS)
-
-        var robot: SpaceshipRobot = SpaceshipRobot.new(models[idx], _given_name, room, _excursions, _damage)
-        robot.id = _id
-
-        return robot
-
 @export var base_robot: RobotModel
 @export var available_models: Array[RobotModel]
 @export var printers: int = 3
 
 var _free_starter_robot_printed: bool
-var _robots: Array[SpaceshipRobot]
+var _robots: Array[RobotData]
 
-func available_robots() -> Array[SpaceshipRobot]:
+func available_robots() -> Array[RobotData]:
     return _robots
 
-func get_robot(id: String) -> SpaceshipRobot:
+func get_robot(id: String) -> RobotData:
     if id.is_empty():
         return null
 
-    for robot: SpaceshipRobot in _robots:
+    for robot: RobotData in _robots:
         if robot.id == id:
             return robot
     return null
@@ -156,7 +94,7 @@ func _handle_increment_day(_dom: int, _days_left_of_month: int) -> void:
             _complete_printer_job(job)
 
 func _complete_printer_job(job: PrinterJob) -> void:
-    _robots.append(SpaceshipRobot.new(job.model, job.given_name))
+    _robots.append(RobotData.new(job.model, job.given_name))
     NotificationsManager.info(tr("NOTICE_PRINTING"), tr("PRINTING_ITEM_DONE").format({"item": job.given_name}))
 
 func printer_is_rented(printer: int) -> bool: return printer == 0
@@ -217,7 +155,7 @@ func collect_save_data() -> Dictionary:
         _FREE_STARTER_PRINTED_KEY: _free_starter_robot_printed,
         _RENTED_PRINTERS_KEY: range(printers).map(func (idx: int) -> bool: return printer_is_rented(idx)),
         _JOBS_KEY: _printer_jobs.map(func (job: PrinterJob) -> Dictionary: return job.to_save() if job else {}),
-        _ROBOTS_KEY: _robots.map(func (robot: SpaceshipRobot) -> Dictionary: return robot.to_save()),
+        _ROBOTS_KEY: _robots.map(func (robot: RobotData) -> Dictionary: return robot.to_save()),
     }
 
 func load_from_save_data(data: Dictionary) -> void:
@@ -229,7 +167,7 @@ func load_from_save_data(data: Dictionary) -> void:
     for job_data_item: Variant in DictionaryUtils.safe_geta(data, _JOBS_KEY, [], false):
         if job_data_item is Dictionary:
             @warning_ignore_start("unsafe_call_argument")
-            var job: PrinterJob = PrinterJob.from_save(job_data_item, available_models)
+            var job: PrinterJob = PrinterJob.from_save(job_data_item)
             @warning_ignore_restore("unsafe_call_argument")
             _printer_jobs.append(job)
 
@@ -237,6 +175,6 @@ func load_from_save_data(data: Dictionary) -> void:
     for robot_data: Variant in DictionaryUtils.safe_geta(data, _ROBOTS_KEY, [], false):
         if robot_data is Dictionary:
             @warning_ignore_start("unsafe_call_argument")
-            var robot: SpaceshipRobot = SpaceshipRobot.from_save(robot_data, available_models)
+            var robot: RobotData = RobotData.from_save(robot_data)
             @warning_ignore_restore("unsafe_call_argument")
             _robots.append(robot)

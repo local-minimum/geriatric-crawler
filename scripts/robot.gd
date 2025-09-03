@@ -105,12 +105,6 @@ func remove_all_punishment_cards() -> void:
     while remove_one_punishment_card() != null:
         pass
 
-const _NAME_KEY: String = "name"
-const _FIGHTS_KEY: String = "fights"
-const _ABILITIES_KEY: String = "abilites"
-const _ALIVE_KEY: String = "alive"
-const _OBTAINED_CARDS_KEY: String = "bonus-cards"
-
 func collect_save_data() -> Dictionary:
     return _data.to_save()
 

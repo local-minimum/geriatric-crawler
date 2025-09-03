@@ -37,7 +37,7 @@ func deactivate() -> void:
 
 var _robot_options: Array[RobotSelectOption]
 
-func _clear_previous_listing_if_needed(options: Array[RobotsPool.SpaceshipRobot]) -> bool:
+func _clear_previous_listing_if_needed(options: Array[RobotData]) -> bool:
     if (
         _robot_options.size() == 0 ||
         robot_listing_container.get_child_count() != options.size() ||
@@ -61,7 +61,7 @@ func _on_select_robot_pressed() -> void:
         _hide_robot_options()
         return
 
-    var options: Array[RobotsPool.SpaceshipRobot] = spaceship.robots_pool.available_robots()
+    var options: Array[RobotData] = spaceship.robots_pool.available_robots()
 
     _phase = PanelPhase.OPTIONS
     robot_selected_button.disabled = _selected_robot == null
@@ -79,7 +79,7 @@ func _on_select_robot_pressed() -> void:
     else:
         var template: PackedScene = load("res://scenes/spaceship/robot_select_option.tscn")
 
-        for robot: RobotsPool.SpaceshipRobot in spaceship.robots_pool.available_robots():
+        for robot: RobotData in spaceship.robots_pool.available_robots():
             var instance: RobotSelectOption = template.instantiate()
             instance.sync(robot)
             instance.sync_selection(_selected_robot)
@@ -94,9 +94,9 @@ func _on_select_robot_pressed() -> void:
 
     robot_listing_panel.show()
 
-var _selected_robot: RobotsPool.SpaceshipRobot
+var _selected_robot: RobotData
 
-func _handle_select_option(robot: RobotsPool.SpaceshipRobot) -> void:
+func _handle_select_option(robot: RobotData) -> void:
     _selected_robot = robot
     for option: RobotSelectOption in _robot_options:
         option.sync_selection(robot)
@@ -109,7 +109,7 @@ func _handle_select_option(robot: RobotsPool.SpaceshipRobot) -> void:
     deploy_btn.disabled = true
     deploy_with_insurance_btn.disabled = false
 
-func _handle_deselect_option(robot: RobotsPool.SpaceshipRobot) -> void:
+func _handle_deselect_option(robot: RobotData) -> void:
     if _selected_robot == robot && _selected_robot != null:
         _selected_robot = null
 
