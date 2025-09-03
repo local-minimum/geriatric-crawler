@@ -1,11 +1,11 @@
 extends LevelSaver
 class_name SpaceshipSaver
 
-const _ROBOTS_KEY: String = "robots"
+const _PRINTERS_KEY: String = "printers"
 
 @export var _level_name: String = "hub-spaceship"
 
-@export var robots_pool: RobotsPool
+@export var ship: Spaceship
 
 var _destination_level: String
 
@@ -18,7 +18,7 @@ func _handle_before_deploy(level_id: String, _robot: RobotData, _duration_days: 
 
 func collect_save_state() -> Dictionary:
     var save: Dictionary = {
-        _ROBOTS_KEY: robots_pool.collect_save_data(),
+        _PRINTERS_KEY: ship.printers.collect_save_data(),
     }
 
     return save
@@ -37,4 +37,4 @@ func get_level_to_load() -> String:
 
 ## Only the save data for the particular level
 func load_from_save(save_data: Dictionary) -> void:
-    robots_pool.load_from_save_data(DictionaryUtils.safe_getd(save_data, _ROBOTS_KEY))
+    ship.printers.load_from_save_data(DictionaryUtils.safe_getd(save_data, _PRINTERS_KEY))
