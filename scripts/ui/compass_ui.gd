@@ -22,8 +22,10 @@ func _ready() -> void:
 
 func _handle_new_player() -> void:
     var player: GridPlayer = exploration_ui.level.player
-    if player.on_update_orientation.connect(_handle_update_orientation) != OK:
-        push_error("Failed to connect on move start")
+
+    if !player.on_update_orientation.is_connected(_handle_update_orientation):
+        if player.on_update_orientation.connect(_handle_update_orientation) != OK:
+            push_error("Failed to connect on move start")
 
     _sync_robot.call_deferred(player, player.robot)
 

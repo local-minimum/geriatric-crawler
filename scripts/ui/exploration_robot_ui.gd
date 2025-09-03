@@ -55,12 +55,17 @@ func _handle_new_player() -> void:
     _sync_robot.call_deferred(grid_player.robot, _exploration_ui.battle.battle_player)
 
 func _connect_player(grid_player: GridPlayer, battle_player: BattlePlayer, omit_connecting_robot: bool = false) -> void:
-    if battle_player.on_heal.connect(_handle_on_heal) != OK:
-        push_error("Failed to connect on heal")
-    if battle_player.on_hurt.connect(_handle_on_hurt) != OK:
-        push_error("Failed to connect on hurt")
-    if battle_player.on_death.connect(_handle_on_death) != OK:
-        push_error("Failed to connect on death")
+    if !battle_player.on_heal.is_connected(_handle_on_heal):
+        if battle_player.on_heal.connect(_handle_on_heal) != OK:
+            push_error("Failed to connect on heal")
+
+    if !battle_player.on_hurt.is_connected(_handle_on_hurt):
+        if battle_player.on_hurt.connect(_handle_on_hurt) != OK:
+            push_error("Failed to connect on hurt")
+
+    if !battle_player.on_death.is_connected(_handle_on_death):
+        if battle_player.on_death.connect(_handle_on_death) != OK:
+            push_error("Failed to connect on death")
 
     if !omit_connecting_robot:
         # sync robot also called from new player

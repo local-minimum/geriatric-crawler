@@ -1,6 +1,8 @@
 extends Node
 class_name SaveExtension
 
+@export var warn_missing: bool = true
+
 func get_key() -> String:
     return ""
 

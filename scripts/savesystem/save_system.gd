@@ -224,7 +224,7 @@ func load_cached_save() -> bool:
             extension.load_from_data(extension_save)
         elif extension.load_from_initial_if_save_missing():
             extension.load_from_data(extension.initial_data({}))
-        else:
+        elif extension.warn_missing:
             push_warning("Save extension '%s' doesn't have any data in save" % key)
 
     # Load save for current level

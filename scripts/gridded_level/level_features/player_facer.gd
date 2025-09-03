@@ -33,10 +33,13 @@ func _connect_player_tracking() -> void:
         push_error("%s is not part of a level" % name)
         return
 
-    if level.player.on_move_start.connect(_track_player) != OK:
-        push_error("%s cannot track player during movement" % name)
-    if level.player.on_move_end.connect(_end_track_player) != OK:
-        push_error("%s cannot end player tracking during movement" % name)
+    if !level.player.on_move_start.is_connected(_track_player):
+        if level.player.on_move_start.connect(_track_player) != OK:
+            push_error("%s cannot track player during movement" % name)
+
+    if !level.player.on_move_end.is_connected(_end_track_player):
+        if level.player.on_move_end.connect(_end_track_player) != OK:
+            push_error("%s cannot end player tracking during movement" % name)
 
     _update_position_and_rotation.call_deferred(false)
 

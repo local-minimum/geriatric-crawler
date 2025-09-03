@@ -14,7 +14,7 @@ static func to_room(room_value: int, default: Room = Room.NONE) -> Room:
         Room.STORAGE_BAY: return Room.STORAGE_BAY
         Room.ENGINE_ROOM: return Room.ENGINE_ROOM
         Room.BROOM_CLOSET: return Room.BROOM_CLOSET
-
+        Room.NONE: return Room.NONE
         _:
             push_warning("Unknown room %s using %s as defalt" % [room_value, default])
             return default

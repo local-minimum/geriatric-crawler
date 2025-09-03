@@ -89,8 +89,9 @@ func _handle_teleport(_teleporter: GridTeleporter, entity: GridEntity) -> void:
 
 func _connect_new_player() -> void:
     _player = _level.player
-    if _player.on_move_end.connect(_handle_move_end) != OK:
-        push_error("Failed to connect on move end")
+    if !_player.on_move_end.is_connected(_handle_move_end):
+        if _player.on_move_end.connect(_handle_move_end) != OK:
+            push_error("Failed to connect on move end")
 
     print_debug("Connected %s to map" % _player)
 

@@ -47,14 +47,17 @@ script = ExtResource("3_a0ogi")
 
 [node name="BattleModeSaver" type="Node" parent="."]
 script = ExtResource("4_fhslq")
+warn_missing = false
 metadata/_custom_type_script = "uid://c2ktk27vk655o"
 
 [node name="RobotMapperSaver" type="Node" parent="."]
 script = ExtResource("6_ma5ye")
+warn_missing = false
 metadata/_custom_type_script = "uid://qjheystlwhef"
 
 [node name="InventorySaver" type="Node" parent="."]
 script = ExtResource("7_681h2")
+warn_missing = false
 
 [node name="GlobalGameStateSaver" type="Node" parent="."]
 script = ExtResource("7_v64ur")
