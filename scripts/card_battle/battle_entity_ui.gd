@@ -15,6 +15,24 @@ var _target_ease_duration: float = 0.1
 func _ready() -> void:
     visible = false
 
+    if __SignalBus.on_heal.connect(_handle_heal) != OK:
+        push_error("Failed to connect %s on_heal to UI" % _entity)
+    if __SignalBus.on_hurt.connect(_handle_hurt) != OK:
+        push_error("Failed to connect %s on_hurt to UI" % _entity)
+    if __SignalBus.on_death.connect(_handle_death) != OK:
+        push_error("Failed to connect %s on_death to UI" % _entity)
+
+
+    if __SignalBus.on_gain_shield.connect(_handle_gain_shield) != OK:
+        push_error("Failed to connect %s on_gain_shield to UI" % _entity)
+    if __SignalBus.on_break_shield.connect(_handle_break_shield) != OK:
+        push_error("Failed to connect %s on_break_shield to UI" % _entity)
+
+    if __SignalBus.on_start_turn.connect(_handle_turn_start) != OK:
+        push_error("Failed to connect %s on_start_turn to UI" % _entity)
+    if __SignalBus.on_end_turn.connect(_handle_turn_end) != OK:
+        push_error("Failed to connect %s on_turn_done to UI" % _entity)
+
 var interactable: bool:
     set(value):
         interactable = value
@@ -50,23 +68,6 @@ func connect_entity(entity: BattleEntity) -> void:
     _is_monster = entity is BattleEnemy
     _is_player_ally = entity is BattlePlayer
 
-    if entity.on_heal.connect(_handle_heal) != OK:
-        push_error("Failed to connect %s on_heal to UI" % entity)
-    if entity.on_hurt.connect(_handle_hurt) != OK:
-        push_error("Failed to connect %s on_hurt to UI" % entity)
-    if entity.on_death.connect(_handle_death) != OK:
-        push_error("Failed to connect %s on_death to UI" % entity)
-
-    if entity.on_gain_shield.connect(_handle_gain_shield) != OK:
-        push_error("Failed to connect %s on_gain_shield to UI" % entity)
-    if entity.on_break_shield.connect(_handle_break_shield) != OK:
-        push_error("Failed to connect %s on_break_shield to UI" % entity)
-
-    if entity.on_start_turn.connect(_handle_turn_start) != OK:
-        push_error("Failed to connect %s on_start_turn to UI" % entity)
-    if entity.on_end_turn.connect(_handle_turn_end) != OK:
-        push_error("Failed to connect %s on_turn_done to UI" % entity)
-
     _set_health(entity.get_health())
     _set_shield(entity.get_shields())
 
@@ -81,14 +82,6 @@ func connect_entity(entity: BattleEntity) -> void:
 func disconnect_entity(entity: BattleEntity) -> void:
     if entity != _entity:
         return
-    entity.on_heal.disconnect(_handle_heal)
-    entity.on_hurt.disconnect(_handle_hurt)
-    entity.on_death.disconnect(_handle_death)
-
-    entity.on_gain_shield.disconnect(_handle_gain_shield)
-    entity.on_break_shield.disconnect(_handle_break_shield)
-    entity.on_start_turn.disconnect(_handle_turn_start)
-    entity.on_end_turn.disconnect(_handle_turn_end)
 
     visible = false
     selected = false
@@ -184,20 +177,29 @@ func _handle_defocus() -> void:
     if nameUI != null:
         nameUI.text = _entity.get_entity_name()
 
-func _handle_death(_battle_entity: BattleEntity) -> void:
+func _handle_death(battle_entity: BattleEntity) -> void:
+    if battle_entity != _entity:
+        return
+
     healthUI.text = "XXX %s XXX" % tr("DEAD")
     await get_tree().create_timer(SHOW_CHANGE_TIME).timeout
 
-    disconnect_entity(_battle_entity)
+    disconnect_entity(battle_entity)
 
-func _handle_heal(_battle_entity: BattleEntity, amount: int, new_health: int, _overheal: bool) -> void:
+func _handle_heal(battle_entity: BattleEntity, amount: int, new_health: int, _overheal: bool) -> void:
+    if battle_entity != _entity:
+        return
+
     if amount > 0:
         healthUI.text = tr("HEALING_HP").format({"hp": tr("HEALTH_POINTS"), "count":  amount}).to_upper()
         await get_tree().create_timer(SHOW_CHANGE_TIME).timeout
 
     _set_health(new_health)
 
-func _handle_hurt(_battle_entity: BattleEntity, amount: int, new_health: int) -> void:
+func _handle_hurt(battle_entity: BattleEntity, amount: int, new_health: int) -> void:
+    if battle_entity != _entity:
+        return
+
     if amount > 0:
         healthUI.text = tr("HURT_HP").format({"hp": tr("HEALTH_POINTS"), "count": amount}).to_upper()
         await get_tree().create_timer(SHOW_CHANGE_TIME).timeout
@@ -234,14 +236,20 @@ func _set_health(health: int) -> void:
     var remain: int = health % 5
     healthUI.text = "%s: %s%s" % [tr("HEALTH_POINTS").to_upper(), "♥".repeat(fivers), "♡".repeat(remain)]
 
-func _handle_break_shield(_battle_entity: BattleEntity, shields: Array[int], broken_shield: int) -> void:
+func _handle_break_shield(battle_entity: BattleEntity, shields: Array[int], broken_shield: int) -> void:
+    if _entity != battle_entity:
+        return
+
     if broken_shield > 0:
         defenceUI.text = tr("BROKE").format({"amount": broken_shield}).to_upper()
         await get_tree().create_timer(SHOW_CHANGE_TIME).timeout
 
     _set_shield(shields)
 
-func _handle_gain_shield(_battle_entity: BattleEntity, shields: Array[int], new_shield: int) -> void:
+func _handle_gain_shield(battle_entity: BattleEntity, shields: Array[int], new_shield: int) -> void:
+    if _entity != battle_entity:
+        return
+
     if new_shield > 0:
         defenceUI.text = tr("SHIELDING").format({"amount": new_shield})
         await get_tree().create_timer(SHOW_CHANGE_TIME).timeout

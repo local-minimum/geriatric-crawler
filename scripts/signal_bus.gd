@@ -27,4 +27,18 @@ signal on_scene_transition_progress(progress: float)
 signal on_scene_transition_complete(target_scene: String)
 signal on_scene_transition_fail(target_scene: String)
 signal on_scene_transition_new_scene_ready()
+
+# Battle Entities
+# -> Shields
+signal on_gain_shield(battle_entitiy: BattleEntity, shields: Array[int], new_shield: int)
+signal on_break_shield(battle_entity: BattleEntity, shields: Array[int], broken_shield: int)
+
+# -> Health
+signal on_heal(battle_entity: BattleEntity, amount: int, new_health: int, overheal: bool)
+signal on_hurt(battle_entity: BattleEntity, amount: int, new_health: int)
+signal on_death(battle_entity: BattleEntity)
+
+# -> Turns
+signal on_start_turn(entity: BattleEntity)
+signal on_end_turn(entity: BattleEntity)
 @warning_ignore_restore("unused_signal")

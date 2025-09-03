@@ -1,19 +1,6 @@
 extends Node
 class_name BattleEntity
 
-signal on_gain_shield(battle_entitiy: BattleEntity, shields: Array[int], new_shield: int)
-signal on_break_shield(battle_entity: BattleEntity, shields: Array[int], broken_shield: int)
-
-signal on_heal(battle_entity: BattleEntity, amount: int, new_health: int, overheal: bool)
-signal on_hurt(battle_entity: BattleEntity, amount: int, new_health: int)
-signal on_death(battle_entity: BattleEntity)
-
-# Used by subclasses
-@warning_ignore_start("unused_signal")
-signal on_start_turn(entity: BattleEntity)
-signal on_end_turn(entity: BattleEntity)
-@warning_ignore_restore("unused_signal")
-
 static var _HEALTH_KEY: String = "health"
 
 var _health: int = -1:
@@ -43,11 +30,11 @@ func get_healthiness() -> float:
 func validate_health() -> void:
     if _health < 0:
         _health = max_health
-        on_heal.emit(self, 0, _health, false)
+        __SignalBus.on_heal.emit(self, 0, _health, false)
 
     if _health > max_health:
         _health = max_health
-        on_heal.emit(self, 0, _health, false)
+        __SignalBus.on_heal.emit(self, 0, _health, false)
 
 func is_alive() -> bool:
     return _health > 0
@@ -59,14 +46,17 @@ func get_shields() -> Array[int]:
 
 func add_shield(shield: int) -> void:
     _shields.append(shield)
-    on_gain_shield.emit(self, _shields, shield)
+    __SignalBus.on_gain_shield.emit(self, _shields, shield)
 
 func hurt(amount: int) -> void:
+    if amount <= 0:
+        return
+
     while  _shields.size():
         var shield: int = _shields.pop_front()
         amount = max(0, amount - shield)
 
-        on_break_shield.emit(self, _shields, shield)
+        __SignalBus.on_break_shield.emit(self, _shields, shield)
         print_debug("Broke shield %s, %s damage remaining" % [shield, amount])
         await get_tree().create_timer(0.2).timeout
 
@@ -74,10 +64,10 @@ func hurt(amount: int) -> void:
             break
 
     _health = max(0, _health - amount)
-    on_hurt.emit(self, amount, _health)
+    __SignalBus.on_hurt.emit(self, amount, _health)
 
     if _health == 0:
-        on_death.emit(self)
+        __SignalBus.on_death.emit(self)
 
 func heal(amount: int) -> void:
     if amount < 0:
@@ -89,7 +79,7 @@ func heal(amount: int) -> void:
     var overshoot: bool = raw_new > max_health
     _health = min(raw_new, max_health)
 
-    on_heal.emit(self, amount - (raw_new - _health), _health, overshoot)
+    __SignalBus.on_heal.emit(self, amount - (raw_new - _health), _health, overshoot)
 
 func _get_imposing_effects(
     hand: Array[BattleCardData],
