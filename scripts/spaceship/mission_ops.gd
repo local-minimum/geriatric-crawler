@@ -72,7 +72,7 @@ func _on_select_robot_pressed() -> void:
 
     if options.is_empty():
         var label: Label = Label.new()
-        label.text = tr("NO_ROBOTS_AVAILABLE") if !spaceship.robots_pool._robots.is_empty() else "\n".join([tr("NO_ROBOTS_AVAILABLE"), tr("CONSTRUCT_FIRST_ROBOT")])
+        label.text = tr("NO_ROBOTS_AVAILABLE") if !spaceship.robots_pool.count() == 0 else "\n".join([tr("NO_ROBOTS_AVAILABLE"), tr("CONSTRUCT_FIRST_ROBOT")])
         label.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
         robot_listing_container.add_child(label)
 

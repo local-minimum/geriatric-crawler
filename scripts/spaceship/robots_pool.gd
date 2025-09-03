@@ -12,6 +12,8 @@ static func _get_next_robot_id() -> String:
 
 var _robots: Array[RobotData]
 
+func count() -> int: return _robots.size()
+
 func available_robots() -> Array[RobotData]:
     return _robots
 
@@ -34,22 +36,24 @@ func _exit_tree() -> void:
     if instance == self:
         instance = null
 
-
 func get_model(idx: int) -> RobotModel:
     return available_models[idx]
 
 const _ROBOTS_KEY: String = "robots"
 
 func collect_save_data() -> Dictionary:
-    return {
-        _ROBOTS_KEY: _robots.map(func (robot: RobotData) -> Dictionary: return robot.to_save()),
-    }
+    var save: Dictionary[String, Dictionary] = {}
+    for robot: RobotData in _robots:
+        save[robot.id] = robot.to_save()
+
+    return save
 
 func load_from_save_data(data: Dictionary) -> void:
     _robots.clear()
-    for robot_data: Variant in DictionaryUtils.safe_geta(data, _ROBOTS_KEY, [], false):
-        if robot_data is Dictionary:
-            @warning_ignore_start("unsafe_call_argument")
-            var robot: RobotData = RobotData.from_save(robot_data)
-            @warning_ignore_restore("unsafe_call_argument")
-            _robots.append(robot)
+    for _id: Variant in data:
+        if _id is String:
+            var id: String = _id
+            var robot_save: Dictionary = DictionaryUtils.safe_getd(data, id)
+            var robot: RobotData = RobotData.from_save(robot_save)
+            if robot != null:
+                _robots.append(robot)
