@@ -261,13 +261,43 @@ var _robot: Robot
 func use_robot(robot: Robot) -> void:
     _robot = robot
 
-    if _robot != null && _robot.model != null:
-        max_health = _robot.model.max_hp
-    else:
-        max_health = 0
-
     validate_health()
 
+func get_health() -> int:
+    return _robot._data.health
+
+func get_max_health() -> int:
+    return _robot.model.max_hp
+
+func get_healthiness() -> float:
+    return 0
+
+func validate_health() -> void:
+    if _robot._data.health > _robot.model.max_hp:
+        _robot._data.health = _robot.model.max_hp
+        __SignalBus.on_heal.emit(self, 0, _robot._data.health, false)
+    elif !_robot._data.alive:
+        _robot._data.health = 0
+
+func is_alive() -> bool:
+    return _robot._data.alive && _robot._data.health > 0
+
+func _hurt(amount: int) -> void:
+    amount = mini(_robot._data.health, amount)
+    _robot._data.health = amount
+    _robot._data.accumualated_damage += amount
+    __SignalBus.on_hurt.emit(self, amount, _robot._data.health)
+
+    if _robot._data.health == 0:
+        _robot._data.alive = false
+        __SignalBus.on_death.emit(self)
+
+func _heal(amount: int) -> void:
+    var raw_new: int = _robot._data.health + amount
+    var overshoot: bool = raw_new > _robot.model.max_hp
+    _robot._data.health = min(raw_new, _robot.model.max_hp)
+
+    __SignalBus.on_heal.emit(self, amount - (raw_new - _robot._data.health), _robot._data.health, overshoot)
 
 func get_entity_name() -> String:
     return tr("NO_ROBOT_NAME") if _robot == null else _robot.given_name
@@ -286,17 +316,3 @@ func clean_up_battle() -> void:
     if card != null:
         NotificationsManager.important(tr("NOTICE_INSPIRATION"), tr("LOST_PUNISHMENT").format({"card": card.localized_name()}))
         PunishmentDeck.instance.return_card(card)
-
-func collect_save_data() -> Dictionary:
-    var data: Dictionary = super.collect_save_data()
-    data.merge({
-        _ID_KEY: character_id,
-    }, true)
-    return data
-
-func load_from_save(data: Dictionary) -> void:
-    if data.has(_ID_KEY) && data[_ID_KEY] != character_id:
-        push_error("Attmpted to load %s onto %s" % [data[_ID_KEY], character_id])
-        return
-
-    _health = maxi(0, DictionaryUtils.safe_geti(data, _HEALTH_KEY, max_health))

@@ -102,7 +102,7 @@ func _get_shield_order(
 
         var shielding_factor: float = shielding.size() * ArrayUtils.sumi(shielding) + 1
 
-        var need: float = missing_health_factor + target.max_health / shielding_factor
+        var need: float = missing_health_factor + target.get_max_health() / shielding_factor
 
         var is_self: bool = target == _self
 

@@ -132,7 +132,7 @@ func enter_battle(battle_trigger: BattleModeTrigger, player_robot: Robot) -> voi
     # Show all enemies and their stats
     _enemies.append_array(battle_trigger.enemies)
     for enemy: BattleEnemy in _enemies:
-
+        enemy.ready_for_battle()
         on_entity_join_battle.emit(enemy)
 
     await get_tree().create_timer(0.5).timeout

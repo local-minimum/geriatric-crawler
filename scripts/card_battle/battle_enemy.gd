@@ -20,6 +20,8 @@ static var _LEVEL_KEY: String = "level"
 
 @export var difficulty: int = 0
 
+@export var max_health: int = 20
+
 @export var carried_credits: int = 0
 
 @export var hand_size: int = 3
@@ -40,6 +42,51 @@ static var _LEVEL_KEY: String = "level"
 
 var _hand: Array[BattleCardData]
 var _slotted: Array[BattleCardData]
+
+func ready_for_battle() -> void:
+    _health = max_health
+
+#region HEALTH
+var _health: int = -1:
+    set (value):
+        print_debug("%s health %s -> %s" % [name, _health, value])
+        _health = value
+
+func get_health() -> int:
+    return _health
+
+func get_max_health() -> int:
+    return max_health
+
+func get_healthiness() -> float:
+    return _health as float / max_health
+
+func validate_health() -> void:
+    if _health < 0:
+        _health = max_health
+        __SignalBus.on_heal.emit(self, 0, _health, false)
+
+    if _health > max_health:
+        _health = max_health
+        __SignalBus.on_heal.emit(self, 0, _health, false)
+
+func is_alive() -> bool:
+    return _health > 0
+
+func _hurt(amount: int) -> void:
+    _health = max(0, _health - amount)
+    __SignalBus.on_hurt.emit(self, amount, _health)
+
+    if _health == 0:
+        __SignalBus.on_death.emit(self)
+
+func _heal(amount: int) -> void:
+    var raw_new: int = _health + amount
+    var overshoot: bool = raw_new > max_health
+    _health = min(raw_new, max_health)
+
+    __SignalBus.on_heal.emit(self, amount - (raw_new - _health), _health, overshoot)
+#endregion HEALTH
 
 func get_entity_name() -> String:
     return variant_name
@@ -178,11 +225,3 @@ func clean_up_battle() -> void:
 
     for card_id: String in gained_cards:
         PunishmentDeck.instance.return_card_id(card_id)
-
-func collect_save_data() -> Dictionary:
-    var data: Dictionary = super.collect_save_data()
-    data.merge({
-        _VARIANT_KEY: variant_id,
-        _LEVEL_KEY: level,
-    }, true)
-    return data

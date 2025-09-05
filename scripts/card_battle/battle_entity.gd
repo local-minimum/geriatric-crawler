@@ -1,20 +1,7 @@
 extends Node
 class_name BattleEntity
 
-static var _HEALTH_KEY: String = "health"
-
-var _health: int = -1:
-    set (value):
-        print_debug("%s health %s -> %s" % [name, _health, value])
-        _health = value
-
-@export var max_health: int = 20
-
 @export var sprite: Texture
-
-func _ready() -> void:
-    if _health < 0:
-        _health = max_health
 
 ## Returns localized entity name
 func get_entity_name() -> String:
@@ -22,22 +9,19 @@ func get_entity_name() -> String:
     return tr(name)
 
 func get_health() -> int:
-    return _health
+    return 0
+
+func get_max_health() -> int:
+    return 0
 
 func get_healthiness() -> float:
-    return _health as float / max_health
+    return 0
 
 func validate_health() -> void:
-    if _health < 0:
-        _health = max_health
-        __SignalBus.on_heal.emit(self, 0, _health, false)
-
-    if _health > max_health:
-        _health = max_health
-        __SignalBus.on_heal.emit(self, 0, _health, false)
+    pass
 
 func is_alive() -> bool:
-    return _health > 0
+    return false
 
 var _shields: Array[int] = []
 
@@ -63,11 +47,10 @@ func hurt(amount: int) -> void:
         if amount == 0:
             break
 
-    _health = max(0, _health - amount)
-    __SignalBus.on_hurt.emit(self, amount, _health)
+    _hurt(amount)
 
-    if _health == 0:
-        __SignalBus.on_death.emit(self)
+func _hurt(_amount: int) -> void:
+    pass
 
 func heal(amount: int) -> void:
     if amount < 0:
@@ -75,11 +58,10 @@ func heal(amount: int) -> void:
         print_stack()
         return
 
-    var raw_new: int = _health + amount
-    var overshoot: bool = raw_new > max_health
-    _health = min(raw_new, max_health)
+    _heal(amount)
 
-    __SignalBus.on_heal.emit(self, amount - (raw_new - _health), _health, overshoot)
+func _heal(_amount: int) -> void:
+    pass
 
 func _get_imposing_effects(
     hand: Array[BattleCardData],
@@ -176,8 +158,3 @@ func clean_up_round() -> void:
 
 func clean_up_battle() -> void:
     _shields.clear()
-
-func collect_save_data() -> Dictionary:
-    return {
-        _HEALTH_KEY: _health,
-    }

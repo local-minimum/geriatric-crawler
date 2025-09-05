@@ -5,6 +5,7 @@ var model: RobotModel
 var given_name: String
 var storage_location: Spaceship.Room
 var excursions: int
+var health: int
 var accumualated_damage: int
 var fights: int
 var alive: bool = true
@@ -16,6 +17,7 @@ const GIVEN_NAME_KEY: String = "given_name"
 const STORAGE_LOCATION_KEY: String = "location"
 const EXCURSIONS_KEY: String = "excursions"
 const FIGHTS_KEY: String = "fights"
+const HEALTH_KEY: String = "health"
 const ACCUMULATED_DAMAGE_KEY: String = "accumulated_damage"
 const ID_KEY: String = "id"
 const ABILITIES_KEY: String = "abilites"
@@ -32,6 +34,7 @@ func _init(
     self.model = model
     self.given_name = given_name
     self.id = RobotsPool._get_next_robot_id() if id.is_empty() else id
+    self.health = model.max_hp
 
 func to_save() -> Dictionary:
     return {
@@ -42,6 +45,7 @@ func to_save() -> Dictionary:
         ALIVE_KEY: alive,
         FIGHTS_KEY: fights,
         EXCURSIONS_KEY: excursions,
+        HEALTH_KEY: health,
         ACCUMULATED_DAMAGE_KEY: accumualated_damage,
         ABILITIES_KEY: obtained_upgrades.map(func (ability: RobotAbility) -> String: return ability.full_id()),
         OBTAINED_CARDS_KEY: obtained_cards.map(func (card: BattleCardData) -> String: return card.id),
@@ -61,16 +65,18 @@ static func from_save(data: Dictionary) -> RobotData:
     if _model == null:
         return null
 
-    var _excursions: int = DictionaryUtils.safe_geti(data, EXCURSIONS_KEY)
-    var _accumulated_damage: int = DictionaryUtils.safe_geti(data, ACCUMULATED_DAMAGE_KEY)
+    var _excursions: int = DictionaryUtils.safe_geti(data, EXCURSIONS_KEY, 0, false)
+    var _health: int = DictionaryUtils.safe_geti(data, HEALTH_KEY, 0, false)
+    var _accumulated_damage: int = DictionaryUtils.safe_geti(data, ACCUMULATED_DAMAGE_KEY, 0, false)
     var _storage_location: Spaceship.Room = Spaceship.to_room(DictionaryUtils.safe_geti(data, STORAGE_LOCATION_KEY), Spaceship.Room.PRINTERS)
     var _fights: int = DictionaryUtils.safe_geti(data, FIGHTS_KEY, 0, false)
-    var _alive: bool = DictionaryUtils.safe_getb(data, ALIVE_KEY, true)
+    var _alive: bool = DictionaryUtils.safe_getb(data, ALIVE_KEY, true) && _health > 0
 
     var robot: RobotData = RobotData.new(_model, _given_name, _id)
 
     robot.storage_location = _storage_location
     robot.excursions = _excursions
+    robot.health = _health
     robot.accumualated_damage = _accumulated_damage
     robot.fights = _fights
     robot.alive = _alive
