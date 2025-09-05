@@ -81,7 +81,7 @@ func play_actions(
 
     print_debug("%s starts its turn with %s cards" % [name, _slotted.size() - _slotted.count(null)])
 
-    on_start_turn.emit(self)
+    __SignalBus.on_start_turn.emit(self)
 
     await get_tree().create_timer(1).timeout
 
@@ -132,7 +132,7 @@ func play_actions(
 
     print_debug("%s ends its turn" % name)
 
-    on_end_turn.emit(self)
+    __SignalBus.on_end_turn.emit(self)
 
 func _execute_effect(
     effect: BattleCardPrimaryEffect,

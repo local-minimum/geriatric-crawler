@@ -65,6 +65,12 @@ func _ready() -> void:
     if battle_hand.on_hand_actions_complete.connect(_start_playing_cards):
         push_error("Failed to connect callback to hand actions completed")
 
+    if __SignalBus.on_end_turn.connect(_next_agent_turn) != OK:
+        push_error("Failed to connect turn done")
+
+    if __SignalBus.on_death.connect(_handle_entity_death) != OK:
+        push_error("Failed to connect death")
+
     _ui.visible = false
     _inited = true
     if GridLevel.active_level != null:
@@ -121,21 +127,11 @@ func enter_battle(battle_trigger: BattleModeTrigger, player_robot: Robot) -> voi
 
     player_deck.load_deck(robot.get_deck())
 
-
     on_entity_join_battle.emit(battle_player)
-    if battle_player.on_end_turn.connect(_next_agent_turn) != OK:
-        push_error("Failed to connect player %s turn done" % battle_player)
-
-    if battle_player.on_death.connect(_handle_player_death) != OK:
-        push_error("Failed to connect player %s death" % battle_player)
 
     # Show all enemies and their stats
     _enemies.append_array(battle_trigger.enemies)
     for enemy: BattleEnemy in _enemies:
-        if enemy.on_end_turn.connect(_next_agent_turn) != OK:
-            push_error("Failed to connect enemy %s turn done" % enemy)
-        if enemy.on_death.connect(_handle_enemy_death) != OK:
-            push_error("Failed to connect enemy %s death" % enemy)
 
         on_entity_join_battle.emit(enemy)
 
@@ -343,6 +339,12 @@ func _next_enemy_initiative() -> int:
 
     return enemy.initiative()
 
+func _handle_entity_death(entity: BattleEntity) -> void:
+    if entity is BattlePlayer:
+        _handle_player_death(entity)
+    elif entity is BattleEnemy:
+        _handle_enemy_death(entity)
+
 func _handle_player_death(entity: BattleEntity) -> void:
     if entity == battle_player:
         for enemy: BattleEnemy in _enemies:
@@ -388,8 +390,6 @@ func _clean_up_round(exit_battle_cleanup: bool = false) -> void:
                 return true
 
             on_entity_leave_battle.emit(enemy)
-            enemy.on_end_turn.disconnect(_next_agent_turn)
-            enemy.on_death.disconnect(_handle_enemy_death)
             enemy.clean_up_battle()
 
             return false
@@ -434,13 +434,9 @@ func exit_battle() -> void:
     for enemy: BattleEnemy in _enemies:
         on_entity_leave_battle.emit(enemy)
         enemy.clean_up_battle()
-        enemy.on_end_turn.disconnect(_next_agent_turn)
-        enemy.on_death.disconnect(_handle_enemy_death)
 
     on_entity_leave_battle.emit(battle_player)
     battle_player.clean_up_battle()
-    battle_player.on_end_turn.disconnect(_next_agent_turn)
-    battle_player.on_death.disconnect(_handle_player_death)
 
     _enemies.clear()
 

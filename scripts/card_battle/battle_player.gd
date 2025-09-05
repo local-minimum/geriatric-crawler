@@ -25,7 +25,7 @@ func play_actions(
     hand: Array[BattleCardData] = [],
 ) -> void:
     _halted = false
-    on_start_turn.emit(self)
+    __SignalBus.on_start_turn.emit(self)
     print_debug("Start player turn")
 
     _slots.show_slotted_cards()
@@ -48,12 +48,12 @@ func _execute_next_card() -> void:
         return
 
     if _active_card_index >= _slots.slotted_cards.size():
-        on_end_turn.emit(self)
+        __SignalBus.on_end_turn.emit(self)
         return
 
     var card: BattleCard = _slots.slotted_cards[_active_card_index]
     if card == null:
-        on_end_turn.emit(self)
+        __SignalBus.on_end_turn.emit(self)
         return
 
     var battle: BattleMode = BattleMode.find_battle_parent(self)

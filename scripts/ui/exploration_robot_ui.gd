@@ -18,6 +18,15 @@ func _ready() -> void:
     if _exploration_ui.level.on_level_loaded.connect(_handle_new_level) != OK:
         push_error("Failed to connect on new level")
 
+    if __SignalBus.on_heal.connect(_handle_on_heal) != OK:
+        push_error("Failed to connect on heal")
+
+    if __SignalBus.on_hurt.connect(_handle_on_hurt) != OK:
+        push_error("Failed to connect on hurt")
+
+    if __SignalBus.on_death.connect(_handle_on_death) != OK:
+        push_error("Failed to connect on death")
+
     _connect_player(_exploration_ui.level.player, _exploration_ui.battle.battle_player)
 
 func _gui_input(event: InputEvent) -> void:
@@ -55,17 +64,6 @@ func _handle_new_player() -> void:
     _sync_robot.call_deferred(grid_player.robot, _exploration_ui.battle.battle_player)
 
 func _connect_player(grid_player: GridPlayer, battle_player: BattlePlayer, omit_connecting_robot: bool = false) -> void:
-    if !battle_player.on_heal.is_connected(_handle_on_heal):
-        if battle_player.on_heal.connect(_handle_on_heal) != OK:
-            push_error("Failed to connect on heal")
-
-    if !battle_player.on_hurt.is_connected(_handle_on_hurt):
-        if battle_player.on_hurt.connect(_handle_on_hurt) != OK:
-            push_error("Failed to connect on hurt")
-
-    if !battle_player.on_death.is_connected(_handle_on_death):
-        if battle_player.on_death.connect(_handle_on_death) != OK:
-            push_error("Failed to connect on death")
 
     if !omit_connecting_robot:
         # sync robot also called from new player
@@ -112,13 +110,16 @@ func _sync_health(battle_player: BattleEntity) -> void:
         _health_label.text = tr("DISEASED").to_upper()
 
 func _handle_on_heal(entity: BattleEntity, _amount: int, _new_health: int, _overheal: bool) -> void:
-    _sync_health(entity)
+    if entity is BattlePlayer:
+        _sync_health(entity)
 
 func _handle_on_hurt(entity: BattleEntity, _amount: int, _new_health: int) -> void:
-    _sync_health(entity)
+    if entity is BattlePlayer:
+        _sync_health(entity)
 
 func _handle_on_death(entity: BattleEntity) -> void:
-    _sync_health(entity)
+    if entity is BattlePlayer:
+        _sync_health(entity)
 
 func _handle_on_complete_fight(robot: Robot) -> void:
     _sync_level(robot)
