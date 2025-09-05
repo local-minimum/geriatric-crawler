@@ -65,7 +65,7 @@ func collect_save_state() -> Dictionary:
 
             events_save[event.save_key()] = event.collect_save_data()
 
-    print_debug("Saved level %s" % get_level_name())
+    print_debug("[GriddedLevelSaver] Saved level %s" % get_level_name())
 
     return save_state
 
@@ -110,7 +110,7 @@ func load_from_save(save_data: Dictionary) -> void:
                     encounter.load_from_save(level, encounters_save[encounter.encounter_id])
                 else:
                     push_warning("Encounter '%s' not present in save" % [encounter.encounter_id])
-    else:
+    elif !encounters_data.is_empty():
         push_warning("Level has encounters save data is in wrong format %s is %s" % [encounters_data, type_string(typeof(encounters_data))])
 
     var events_save: Dictionary = DictionaryUtils.safe_getd(save_data, _EVENTS_KEY, {}, false)
@@ -127,7 +127,7 @@ func load_from_save(save_data: Dictionary) -> void:
                 elif event.needs_saving():
                     push_warning("Event '%s' not present in save" % event.save_key())
     else:
-        push_warning("No events on level")
+        print_debug("[GriddedLevelSaver] No events on level")
 
     level.punishments.load_from_save(DictionaryUtils.safe_geta(save_data, _PUNISHMENT_DECK_KEY, []))
 

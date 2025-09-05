@@ -234,7 +234,7 @@ func load_cached_save() -> bool:
             var level_data: Dictionary = levels_data[wanted_level]
             level_saver.load_from_save(level_data)
         else:
-            push_warning("Level %s not in %s" % [wanted_level, levels_data])
+            print_debug("Level %s has not been visited before, spawning in at start")
             level_saver.load_from_save(level_saver.get_initial_save_state())
     else:
         push_warning("No levels info in save %s" % data)
