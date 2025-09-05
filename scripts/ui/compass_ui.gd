@@ -70,9 +70,12 @@ func _sync_robot(player: GridPlayer, robot: Robot) -> void:
     var left: CardinalDirections.CardinalDirection = CardinalDirections.yaw_ccw(player.look_direction, player.down)[0]
     var right: CardinalDirections.CardinalDirection = CardinalDirections.yaw_cw(player.look_direction, player.down)[0]
 
-    _get_cardinal(mid).global_position = mid_coords
-    _get_cardinal(left).global_position = left_coords
-    _get_cardinal(right).global_position = right_coords
+    if mid != CardinalDirections.CardinalDirection.NONE:
+        _get_cardinal(mid).global_position = mid_coords
+    if left != CardinalDirections.CardinalDirection.NONE:
+        _get_cardinal(left).global_position = left_coords
+    if right != CardinalDirections.CardinalDirection.NONE:
+        _get_cardinal(right).global_position = right_coords
 
     var up_coords: Vector2 = _get_coordinates(CompassCardinalLabelPosition.UP)
     for direction: CardinalDirections.CardinalDirection in CardinalDirections.ALL_DIRECTIONS:
@@ -199,6 +202,7 @@ func _get_cardinal(direction: CardinalDirections.CardinalDirection) -> Control:
         CardinalDirections.CardinalDirection.UP: return cardinal_up
         CardinalDirections.CardinalDirection.DOWN: return cardinal_down
 
+    push_error("Direction %s not part of compass" % CardinalDirections.name(direction))
     return null
 
 enum CompassCardinalLabelPosition {FAR_LEFT, LEFT, MID, RIGHT, FAR_RIGHT, UP, DOWN, RIGHT_UP, RIGHT_DOWN, LEFT_UP, LEFT_DOWN}

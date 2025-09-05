@@ -55,7 +55,7 @@ duration_days = 1
 destination_id = "test-level"
 metadata/_custom_type_script = "uid://pel3ag6k5kse"
 
-[node name="Spaceshiip" type="Node2D" node_paths=PackedStringArray("chap_ui", "rooms", "inventory", "robots_pool", "printers")]
+[node name="Spaceshiip" type="Node2D" node_paths=PackedStringArray("chap_ui", "rooms", "inventory", "robots_pool", "printers", "nav")]
 script = ExtResource("1_ae4p7")
 chap_ui = NodePath("CanvasLayer/CHAP AI")
 rooms = {
@@ -66,6 +66,7 @@ rooms = {
 inventory = NodePath("Inventory")
 robots_pool = NodePath("RobotsPool")
 printers = NodePath("PrintersManager")
+nav = NodePath("NavManager")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 

@@ -157,15 +157,18 @@ func save() -> Dictionary:
 
 func initial_state() -> Dictionary:
     # TODO: Note safely used on player that has moved
-    return {
+    var data: Dictionary = {
         _LOOK_DIRECTION_KEY: look_direction,
         _DOWN_KEY: down,
         _ANCHOR_KEY: down,
 
-        _COORDINATES_KEY: spawn_node.coordinates,
-
         _KEY_RING_KEY: {},
     }
+
+    if spawn_node != null:
+        data[_COORDINATES_KEY] = spawn_node.coordinates
+
+    return data
 
 func _valid_save_data(save_data: Dictionary) -> bool:
     return (
