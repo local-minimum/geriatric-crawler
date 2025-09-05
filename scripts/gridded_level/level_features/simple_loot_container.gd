@@ -8,6 +8,7 @@ var _looted: bool
 @export var _mesh: MeshInstance3D
 
 @export var _open_tex: Texture
+@export var _close_tex: Texture
 
 var _looting: bool
 
@@ -60,16 +61,28 @@ func _handle_loooting(entity: GridEntity) -> void:
 
     _looting = false
 
-func collect_save_data() -> Dictionary:
-    return {}
+const TRIGGERED_KEY: String = "triggered"
 
-func load_save_data(_data: Dictionary) -> void:
-    # If we exist in the save we are looted no matter what
-    _triggered = true
-    _looted = true
-    _set_open_graphics()
+func collect_save_data() -> Dictionary:
+    return {
+        TRIGGERED_KEY: true
+    }
+
+func load_save_data(data: Dictionary) -> void:
+    var triggered: bool = DictionaryUtils.safe_getb(data, TRIGGERED_KEY, false, false)
+    _triggered = triggered
+    _looted = triggered
+    if triggered:
+        _set_open_graphics()
+    else:
+        _set_close_graphics()
 
 func _set_open_graphics() -> void:
     var mat: StandardMaterial3D = _mesh.get_active_material(0)
     mat.albedo_texture = _open_tex
+    mat.albedo_color = Color.WHITE
+
+func _set_close_graphics() -> void:
+    var mat: StandardMaterial3D = _mesh.get_active_material(0)
+    mat.albedo_texture = _close_tex
     mat.albedo_color = Color.WHITE

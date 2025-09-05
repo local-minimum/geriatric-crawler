@@ -17,6 +17,8 @@ var camera_resting_rotation: Quaternion
 
 @export var key_ring: KeyRing
 
+static var _spawn_node_coordinates: Vector3i
+
 var override_wall_walking: bool:
     set(value):
         override_wall_walking = value
@@ -45,6 +47,9 @@ var override_ceiling_walking: bool:
                 transportation_abilities.set_flag(TransportationMode.CEILING_WALKING)
 
 func _ready() -> void:
+    if spawn_node != null:
+        _spawn_node_coordinates = spawn_node.coordinates
+
     camera_resting_position = camera.position
     camera_resting_rotation = camera.basis.get_rotation_quaternion()
 
@@ -167,6 +172,8 @@ func initial_state() -> Dictionary:
 
     if spawn_node != null:
         data[_COORDINATES_KEY] = spawn_node.coordinates
+    else:
+        data[_COORDINATES_KEY] = _spawn_node_coordinates
 
     return data
 

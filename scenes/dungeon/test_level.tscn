@@ -101,7 +101,6 @@ punishments = NodePath("PunishmentDeck")
 process_mode = 3
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0145968, -0.00857759, 0.00070858)
 spawn_node = NodePath("../LevelGeometry/Elevation 0/Node (0, 0, 1)")
-look_direction = 1
 transportation_abilities = SubResource("Resource_c0fn3")
 transportation_mode = SubResource("Resource_pgxau")
 
@@ -153,6 +152,7 @@ _contents = Dictionary[String, float]({
 })
 _mesh = NodePath("MeshInstance3D")
 _open_tex = ExtResource("9_7gan6")
+_close_tex = ExtResource("10_7gan6")
 _repeatable = false
 _trigger_sides = Array[int]([6])
 metadata/_custom_type_script = "uid://4tbbs5wj6vj7"
@@ -1304,6 +1304,7 @@ _contents = Dictionary[String, float]({
 })
 _mesh = NodePath("MeshInstance3D")
 _open_tex = ExtResource("9_7gan6")
+_close_tex = ExtResource("10_7gan6")
 _repeatable = false
 _trigger_sides = Array[int]([6])
 metadata/_custom_type_script = "uid://4tbbs5wj6vj7"

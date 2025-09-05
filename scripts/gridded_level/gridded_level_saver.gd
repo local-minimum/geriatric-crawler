@@ -114,20 +114,17 @@ func load_from_save(save_data: Dictionary) -> void:
         push_warning("Level has encounters save data is in wrong format %s is %s" % [encounters_data, type_string(typeof(encounters_data))])
 
     var events_save: Dictionary = DictionaryUtils.safe_getd(save_data, _EVENTS_KEY, {}, false)
-    if !events_save.is_empty():
-        for event_node: Node in get_tree().get_nodes_in_group(GridEvent.GRID_EVENT_GROUP):
-            if event_node is GridEvent:
-                var event: GridEvent = event_node
-                if events_save.has(event.save_key()):
-                    var event_save: Variant = events_save[event.save_key()]
-                    if event_save is Dictionary:
-                        @warning_ignore_start("unsafe_cast")
-                        event.load_save_data(event_save as Dictionary)
-                        @warning_ignore_restore("unsafe_cast")
-                elif event.needs_saving():
-                    push_warning("Event '%s' not present in save" % event.save_key())
-    else:
-        print_debug("[GriddedLevelSaver] No events on level")
+    for event_node: Node in get_tree().get_nodes_in_group(GridEvent.GRID_EVENT_GROUP):
+        if event_node is GridEvent:
+            var event: GridEvent = event_node
+            var event_save: Variant = events_save.get(event.save_key())
+            if event_save is Dictionary:
+                @warning_ignore_start("unsafe_cast")
+                event.load_save_data(event_save as Dictionary)
+                @warning_ignore_restore("unsafe_cast")
+            elif event.needs_saving():
+                event.load_save_data({})
+                push_warning("Event '%s' not present in save" % event.save_key())
 
     level.punishments.load_from_save(DictionaryUtils.safe_geta(save_data, _PUNISHMENT_DECK_KEY, []))
 

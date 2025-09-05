@@ -32,11 +32,15 @@ func needs_saving() -> bool:
 func save_key() -> String:
     return "tp-%s" % coordinates()
 
+const _TRIGGERED_KEY: String = "triggered"
 func collect_save_data() -> Dictionary:
-    return {}
+    return {
+        _TRIGGERED_KEY: _triggered
+    }
 
-func load_save_data(_data: Dictionary) -> void:
-    _triggered = true
+func load_save_data(data: Dictionary) -> void:
+    var triggered: bool = DictionaryUtils.safe_getb(data, _TRIGGERED_KEY, false, false)
+    _triggered = triggered
 
 func should_trigger(
     _entity: GridEntity,
@@ -150,8 +154,6 @@ func _handle_teleport(entity: GridEntity) -> void:
 
     if entity.on_move_end.is_connected(_handle_teleport):
         entity.on_move_end.disconnect(_handle_teleport)
-
-
 
 func _process(delta: float) -> void:
     if effect == null || !effect.visible || !_teleporting.is_empty():

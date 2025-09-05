@@ -417,11 +417,11 @@ func _deserialize_lockstate(state: int) -> LockState:
 
 func load_save_data(data: Dictionary) -> void:
     print_debug("Door %s loads from %s" % [self, data])
-    _triggered = DictionaryUtils.safe_getb(data, _TRIGGERED_KEY)
-    _hacking_alphabet = DictionaryUtils.safe_get_packed_string_array(data, _HACKING_ALPHABET_KEY)
-    _hacking_passphrase = DictionaryUtils.safe_get_packed_string_array(data, _HACKING_PASSPHRASE_KEY)
+    _triggered = DictionaryUtils.safe_getb(data, _TRIGGERED_KEY, false, false)
+    _hacking_alphabet = DictionaryUtils.safe_get_packed_string_array(data, _HACKING_ALPHABET_KEY, [], false)
+    _hacking_passphrase = DictionaryUtils.safe_get_packed_string_array(data, _HACKING_PASSPHRASE_KEY, [], false)
 
-    var lock_state_int: int = DictionaryUtils.safe_geti(data, _LOCK_STATE_KEY)
+    var lock_state_int: int = DictionaryUtils.safe_geti(data, _LOCK_STATE_KEY, _inital_lock_state, false)
     lock_state = _deserialize_lockstate(lock_state_int)
 
     print_debug("Door %s loads with state %s" % [self, lock_state_name(lock_state)])

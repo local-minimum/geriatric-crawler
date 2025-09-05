@@ -31,6 +31,7 @@ camera = NodePath("Camera3D")
 persist_repeat_moves = true
 robot = NodePath("Robot")
 key_ring = NodePath("KeyRing")
+look_direction = 1
 transportation_abilities = SubResource("Resource_2f68n")
 transportation_mode = SubResource("Resource_nvxe3")
 can_jump_off_walls = true
