@@ -44,12 +44,17 @@ class PrinterJob:
 @export var robots: RobotsPool
 
 var _printer_jobs: Array[PrinterJob]
+var _unlocked_printers: Array[bool]
+
 var _free_starter_robot_printed: bool
 
 func _ready() -> void:
     _printer_jobs.clear()
-    for _idx: int in range(printers):
+    _unlocked_printers.clear()
+
+    for idx: int in range(printers):
         _printer_jobs.append(null)
+        _unlocked_printers.append(idx == 0)
 
     if __SignalBus.on_increment_day.connect(_handle_increment_day) != OK:
         push_error("Failed to connect increment day")
@@ -126,8 +131,19 @@ func collect_save_data() -> Dictionary:
     }
 
 func load_from_save_data(data: Dictionary) -> void:
-    _free_starter_robot_printed = DictionaryUtils.safe_getb(data, _RENTED_PRINTERS_KEY, false)
-    # TODO: When we can unlock printers do load them here
+    _free_starter_robot_printed = DictionaryUtils.safe_getb(data, _FREE_STARTER_PRINTED_KEY, false, false)
+
+    _unlocked_printers.clear()
+    for printer_status: Variant in DictionaryUtils.safe_geta(data, _RENTED_PRINTERS_KEY, [], false):
+        if printer_status is bool:
+            _unlocked_printers.append(printer_status)
+        else:
+            _unlocked_printers.append(false)
+
+    for idx: int in range(printers):
+        if idx < _unlocked_printers.size():
+            continue
+        _unlocked_printers.append(idx == 0)
 
     _printer_jobs.clear()
     for job_data_item: Variant in DictionaryUtils.safe_geta(data, _JOBS_KEY, [], false):
@@ -136,3 +152,8 @@ func load_from_save_data(data: Dictionary) -> void:
             var job: PrinterJob = PrinterJob.from_save(job_data_item)
             @warning_ignore_restore("unsafe_call_argument")
             _printer_jobs.append(job)
+
+    for idx: int in range(printers):
+        if idx < _printer_jobs.size():
+            continue
+        _printer_jobs.append(null)

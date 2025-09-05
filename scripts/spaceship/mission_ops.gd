@@ -134,10 +134,6 @@ func _on_loadout_pressed() -> void:
     deploy_panel.hide()
     _phase = PanelPhase.LOADOUT
 
-func _calculate_insurance_cost() -> int:
-    # TODO: Make insurer system
-    return ceili(_selected_robot.model.production.credits * 0.7) + 50
-
 func _on_deploy_pressed() -> void:
     if _phase == PanelPhase.DEPLOY:
         _phase = PanelPhase.NONE
@@ -152,9 +148,10 @@ func _on_deploy_pressed() -> void:
         return
 
     deploy_robot_name.text = _selected_robot.given_name
-    # TODO: Fix actual destinations
     deploy_destination_name.text = tr("TRAINING_GROUNDS")
-    deploy_with_insurance_btn.text = tr("DEPLOY_WITH_INSURANCE").format({"cost": GlobalGameState.credits_with_sign(_calculate_insurance_cost())})
+    deploy_with_insurance_btn.text = tr("DEPLOY_WITH_INSURANCE").format({
+        "cost": GlobalGameState.credits_with_sign(Insurer.calculate_insurance_cost(_selected_robot))
+    })
     deploy_panel.show()
     _phase = PanelPhase.DEPLOY
 
@@ -166,7 +163,7 @@ func _on_skip_loadout_pressed() -> void:
     _on_deploy_pressed()
 
 func _on_deploy_with_insurance_pressed() -> void:
-    var cost: int = _calculate_insurance_cost()
+    var cost: int = Insurer.calculate_insurance_cost(_selected_robot)
     if !__GlobalGameState.withdraw_credits(cost):
         NotificationsManager.warn(tr("MISSION_OPS"), tr("CANNOT_AFFORD_INSURANCE"))
         deploy_with_insurance_btn.disabled = true
@@ -180,10 +177,8 @@ func _on_deploy_without_insurance_pressed(insured: bool = false) -> void:
     _selected_robot.storage_location = Spaceship.Room.NONE
     _selected_robot.excursions += 1
 
-    # TODO: Fix actual destinations
-    # TODO: Fix calculation of duration based on destination
-    var duration_days: int = 1
-    __SignalBus.on_before_deploy.emit("test-level", _selected_robot, duration_days, insured)
+    var destination: DestinationData = spaceship.nav.get_current_destination()
+    __SignalBus.on_before_deploy.emit(destination.destination_id, _selected_robot, destination.duration_days, insured)
 
     if __SignalBus.on_save_complete.connect(_handle_deploy_saved) != OK:
         push_warning("Will not be able to swap scenes after save")

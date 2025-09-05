@@ -64,7 +64,6 @@ func initial_data(_extentsion_save_data: Dictionary) -> Dictionary:
     return {}
 
 func load_from_data(extentsion_save_data: Dictionary) -> void:
-    #TODO: Should not load all things robot, just its id!
     var robot_id: String = DictionaryUtils.safe_gets(extentsion_save_data, ROBOT_ID_KEY, "", false)
     var level_id: String = DictionaryUtils.safe_gets(extentsion_save_data, LEVEL_ID_KEY, "", false)
 

@@ -112,7 +112,7 @@ func trigger(entity: GridEntity, movement: Movement.MovementType) -> void:
             rotations.kill()
             return
 
-        # TODO: Easings and such
+        # Easings and such
         @warning_ignore_start("return_value_discarded")
         translations.tween_property(entity, "global_position", mid_point, animation_duration * lower_duration_fraction)
         if animation_mode == AnimationMode.Ramp:
@@ -179,7 +179,7 @@ func trigger(entity: GridEntity, movement: Movement.MovementType) -> void:
             rotations.kill()
             return
 
-        # TODO: Easings and such
+        # Easings and such
         @warning_ignore_start("return_value_discarded")
         translations.tween_property(entity, "global_position", lower_point, animation_duration * lower_duration_fraction)
         if animation_mode == AnimationMode.Ramp:
@@ -240,7 +240,7 @@ func trigger(entity: GridEntity, movement: Movement.MovementType) -> void:
             rotations.kill()
             return
 
-        # TODO: Easings and such
+        # Easings and such
         @warning_ignore_start("return_value_discarded")
         translations.tween_property(entity, "global_position", upper_point, animation_duration * ramp_upper_duration_fraction)
         if animation_mode == AnimationMode.Ramp:

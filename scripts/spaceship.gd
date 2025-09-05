@@ -24,6 +24,7 @@ static func to_room(room_value: int, default: Room = Room.NONE) -> Room:
 @export var inventory: Inventory
 @export var robots_pool: RobotsPool
 @export var printers: PrintersManager
+@export var nav: NavManager
 
 var room: Room = Room.NONE
 
