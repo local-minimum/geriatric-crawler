@@ -127,7 +127,7 @@ func _valid_save_data(save_data: Dictionary) -> bool:
 
 func load_from_save(level: GridLevel, save_data: Dictionary) -> void:
     if !_valid_save_data(save_data):
-        push_error("%s (%s) cannot load from %s because data not valid" % [name, encounter_id, save_data])
+        _reset_starting_condition()
         return
 
     if save_data[_ID_KEY] != encounter_id:
@@ -139,6 +139,7 @@ func load_from_save(level: GridLevel, save_data: Dictionary) -> void:
 
     if node == null:
         push_error("Trying to load player onto coordinates %s but there's no node there." % coords)
+        _reset_starting_condition()
         return
 
     var look: CardinalDirections.CardinalDirection = save_data[_LOOK_DIRECTION_KEY]
@@ -169,6 +170,11 @@ func load_from_save(level: GridLevel, save_data: Dictionary) -> void:
     _connect_player_callbacks(level)
 
     print_debug("Loaded %s from %s" % [encounter_id, save_data])
+
+func _reset_starting_condition() -> void:
+    set_grid_node(_spawn_node)
+    _triggered = false
+    # TODO: Continue here!
 
 func _load_enemy_cards(enemy_cards: Dictionary) -> void:
     if effect is not BattleModeTrigger:

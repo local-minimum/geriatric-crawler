@@ -99,19 +99,19 @@ func load_from_save(save_data: Dictionary) -> void:
         level.player = player_node
 
     var encounters_data: Dictionary = DictionaryUtils.safe_getd(save_data, _ENCOUNTERS_KEY, {}, false)
+    var encounters_save: Dictionary[String, Dictionary] = {}
     if encounters_data is Dictionary[String, Dictionary]:
-        var encounters_save: Dictionary[String, Dictionary] = encounters_data
+        encounters_save = encounters_data
 
-        for encounter_node: Node in get_tree().get_nodes_in_group(encounter_group):
-            if encounter_node is GridEncounter:
-                var encounter: GridEncounter = encounter_node
-                if encounters_save.has(encounter.encounter_id):
-                    # This requires that the new player instance has been loaded and set on the level
-                    encounter.load_from_save(level, encounters_save[encounter.encounter_id])
-                else:
-                    push_warning("Encounter '%s' not present in save" % [encounter.encounter_id])
-    elif !encounters_data.is_empty():
-        push_warning("Level has encounters save data is in wrong format %s is %s" % [encounters_data, type_string(typeof(encounters_data))])
+    for encounter_node: Node in get_tree().get_nodes_in_group(encounter_group):
+        if encounter_node is GridEncounter:
+            var encounter: GridEncounter = encounter_node
+            if encounters_save.has(encounter.encounter_id):
+                # This requires that the new player instance has been loaded and set on the level
+                encounter.load_from_save(level, encounters_save[encounter.encounter_id])
+            else:
+                encounter.load_from_save(level, {})
+                push_warning("Encounter '%s' not present in save" % [encounter.encounter_id])
 
     var events_save: Dictionary = DictionaryUtils.safe_getd(save_data, _EVENTS_KEY, {}, false)
     for event_node: Node in get_tree().get_nodes_in_group(GridEvent.GRID_EVENT_GROUP):
