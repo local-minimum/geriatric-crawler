@@ -4,9 +4,6 @@ class_name BattleEnemy
 signal on_prepare_hand(battle_enemy: BattleEnemy, slotted_cards: Array[BattleCard])
 signal on_play_card(card: BattleCardData, suit_bonus: int, rank_bonus: int, pause: float)
 
-static var _VARIANT_KEY: String = "variant"
-static var _LEVEL_KEY: String = "level"
-
 ## This should be a unique ID within each battle mode trigger / group of enemies
 @export var id: String
 
