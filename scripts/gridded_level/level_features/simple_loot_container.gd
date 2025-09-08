@@ -11,6 +11,10 @@ var _looted: bool
 @export var _close_tex: Texture
 
 var _looting: bool
+var _inv: Inventory.InventorySubscriber
+
+func _enter_tree() -> void:
+    _inv = Inventory.InventorySubscriber.new()
 
 func _ready() -> void:
     var mat: Material = _mesh.get_active_material(0)
@@ -24,7 +28,7 @@ func save_key() -> String:
     return "slc-%s" % coordinates()
 
 func trigger(entity: GridEntity, movement: Movement.MovementType) -> void:
-    if _triggered || Inventory.active_inventory == null:
+    if _triggered || _inv.inventory == null:
         return
 
     super.trigger(entity, movement)
@@ -46,7 +50,7 @@ func _handle_loooting(entity: GridEntity) -> void:
     await get_tree().create_timer(0.2).timeout
 
 
-    _looted = Inventory.active_inventory.add_many_to_inventory(_contents)
+    _looted = _inv.inventory.add_many_to_inventory(_contents)
 
 
     var key_ring: KeyRing = get_level().player.key_ring

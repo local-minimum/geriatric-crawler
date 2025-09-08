@@ -32,6 +32,8 @@ var _on_hack: Callable
 var _danger: HackingGame.Danger
 var _on_change_danger: Callable
 
+var _inv: Inventory.InventorySubscriber
+
 static func show_dialog(
     dialog_title: String,
     difficulty: int,
@@ -53,6 +55,9 @@ static func show_dialog(
     _instance._on_change_danger = on_change_danger
 
     _instance.show()
+
+func _enter_tree() -> void:
+    _inv = Inventory.InventorySubscriber.new()
 
 func _ready() -> void:
     _worms_label.text = HackingGame.item_id_to_text(HackingGame.ITEM_HACKING_WORM)
@@ -78,14 +83,11 @@ func _sync_player_info(attempts: int) -> void:
     _sync()
 
 func _sync() -> void:
+    _worms_count.text = "%03d" % roundi(_inv.inventory.get_item_count(HackingGame.ITEM_HACKING_WORM))
 
-    var inventory: Inventory = Inventory.active_inventory
+    _bombs_count.text = "%03d" % roundi(_inv.inventory.get_item_count(HackingGame.ITEM_HACKING_BOMB))
 
-    _worms_count.text = "%03d" % roundi(inventory.get_item_count(HackingGame.ITEM_HACKING_WORM))
-
-    _bombs_count.text = "%03d" % roundi(inventory.get_item_count(HackingGame.ITEM_HACKING_BOMB))
-
-    var proxies: int = roundi(inventory.get_item_count(HackingGame.ITEM_HACKING_PROXY))
+    var proxies: int = roundi(_inv.inventory.get_item_count(HackingGame.ITEM_HACKING_PROXY))
     _proxies_count.text = "%03d" % proxies
     _deploy_proxies_button.disabled = proxies == 0 || _danger == HackingGame.Danger.LOW
 
@@ -101,8 +103,7 @@ func _on_confirmed() -> void:
     _on_hack.call()
 
 func _on_deploy_proxy_button_pressed() -> void:
-    var inventory: Inventory = Inventory.active_inventory
-    if inventory.remove_from_inventory(HackingGame.ITEM_HACKING_PROXY, 1.0) != 1.0:
+    if _inv.inventory.remove_from_inventory(HackingGame.ITEM_HACKING_PROXY, 1.0) != 1.0:
         NotificationsManager.warn(tr("NOTICE_HACKING_PROXY"), tr("HACKING_PROXY_FAILED_DEPLOY"))
         _sync()
         return

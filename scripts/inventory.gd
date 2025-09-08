@@ -3,8 +3,29 @@ class_name Inventory
 
 static var active_inventory: Inventory
 
-signal on_add_to_inventory(id: String, amount: float, total: float)
-signal on_remove_from_inventory(id: String, amount: float, total: float)
+## Create this helper in enter tree so it happens before the actual inventory is ready
+class InventorySubscriber:
+    var inventory: Inventory
+    var _persist: bool
+
+    func _init(persist: bool = true) -> void:
+        _persist = persist
+
+        if __SignalBus.on_activate_inventory.connect(_handle_activate_inventory) != OK:
+            push_error("Failed to connect to activate inventory")
+        if __SignalBus.on_deactivate_inventory.connect(_handle_deactivate_inventory) != OK:
+            push_error("Failed to connect to deactivate inventory")
+
+    func _handle_activate_inventory(inv: Inventory) -> void:
+        if inventory == null || !_persist:
+            inventory = inv
+
+    func _handle_deactivate_inventory(inv: Inventory) -> void:
+        if inventory == inv:
+            inventory = null
+
+            if Inventory.active_inventory != inv:
+                inventory = Inventory.active_inventory
 
 var _inventory: Dictionary[String, float] = {}
 
@@ -28,6 +49,11 @@ func _enter_tree() -> void:
 func _exit_tree() -> void:
     if active_inventory == self:
         active_inventory = null
+
+    __SignalBus.on_deactivate_inventory.emit(self)
+
+func _ready() -> void:
+    __SignalBus.on_activate_inventory.emit(self)
 
 class InventoryListing:
     var id: String
@@ -58,7 +84,7 @@ func add_to_inventory(id: String, amount: float, notify: bool = true) -> bool:
     else:
         _inventory[id] = amount
 
-    on_add_to_inventory.emit(id, amount, _inventory[id])
+    __SignalBus.on_add_to_inventory.emit(self, id, amount, _inventory[id])
     if notify:
         NotificationsManager.info(
             tr("NOTICE_INVENTORY"),
@@ -91,7 +117,7 @@ func remove_from_inventory(id: String, amount: float, accept_less: bool = false,
     var withdraw: float = min(total, amount)
 
     _inventory[id] = total - withdraw
-    on_remove_from_inventory.emit(id, withdraw, _inventory[id])
+    __SignalBus.on_remove_from_inventory.emit(self, id, withdraw, _inventory[id])
     if notify:
         NotificationsManager.info(
             tr("NOTICE_INVENTORY"),
@@ -121,6 +147,7 @@ func transfer_inventory(receiver: Inventory) -> void:
 
 func load_from_save(save: Dictionary[String, float]) -> void:
     _inventory = save
+    __SignalBus.on_load_inventory.emit(self)
 
 func collect_save_data() -> Dictionary[String, float]:
     return _inventory

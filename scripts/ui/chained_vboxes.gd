@@ -8,22 +8,9 @@ enum _Check { NOTHING, GROWTH, SHRINKAGE, HAS_SPACE, STAYS }
 @export var _static_child_height: bool
 
 var _check: Dictionary[VBoxContainer, _Check]
-
-func _get_last_control(box: VBoxContainer) -> Control:
-    for idx: int in range(box.get_child_count() - 1, -1, -1):
-        var child: Node = box.get_child(idx)
-        if child is Control:
-            return child as Control
-
-    return null
-
-func _get_first_control(box: VBoxContainer) -> Control:
-    for idx: int in range(box.get_child_count()):
-        var child: Node = box.get_child(idx)
-        if child is Control:
-            return child as Control
-
-    return null
+var _heights: Dictionary[VBoxContainer, float]
+var _waiting: Array[Control]
+var _filling_box: VBoxContainer
 
 func _process(_delta: float) -> void:
     if !is_visible_in_tree():
@@ -54,8 +41,6 @@ func _old_reparenting() -> void:
         var next_first_child: Node = next_box.get_child(0) if next_box.get_child_count() > 0 else null
         if next_first_child != null && next_first_child is Control:
             next_first_child.reparent(box, false)
-
-var _heights: Dictionary[VBoxContainer, float]
 
 func _do_height_checks() -> void:
     var idx: int = 0
@@ -91,12 +76,12 @@ func _reset_box_height_check(box: VBoxContainer) -> void:
     _heights.erase(box)
     @warning_ignore_restore("return_value_discarded")
 
-func _move_last_to_next_box(box: VBoxContainer, idx: int) -> bool:
+func _move_my_last_to_next_box(box: VBoxContainer, idx: int) -> bool:
     if idx + 1 >= _boxes.size():
         return false
 
     var next_box: VBoxContainer = _boxes[idx + 1]
-    var last_child: Node = _get_last_control(box)
+    var last_child: Node = UIUtils.get_last_control(box)
 
     if last_child == null:
         _reset_box_height_check(box)
@@ -109,6 +94,10 @@ func _move_last_to_next_box(box: VBoxContainer, idx: int) -> bool:
     last_child.reparent(next_box, false)
     next_box.move_child(last_child, 0)
 
+    print_debug("[Chained VBoxes] swapping filling box to next %s -> %s" % [_filling_box.name as String if _filling_box else "[nothing]", next_box.name])
+    print_stack()
+    _filling_box = next_box
+
     return true
 
 func _move_first_in_next_to_me(box: VBoxContainer, idx: int) -> bool:
@@ -116,7 +105,7 @@ func _move_first_in_next_to_me(box: VBoxContainer, idx: int) -> bool:
         return false
 
     var next_box: VBoxContainer = _boxes[idx + 1]
-    var first_child: Node = _get_first_control(next_box)
+    var first_child: Node = UIUtils.get_first_control(next_box)
 
     if first_child == null:
         _reset_box_height_check(box)
@@ -128,6 +117,9 @@ func _move_first_in_next_to_me(box: VBoxContainer, idx: int) -> bool:
 
     first_child.reparent(box, false)
     box.move_child(first_child, box.get_child_count() - 1)
+    if UIUtils.get_first_control(next_box) == null:
+        print_debug("[Chained VBoxes] swapping filling box to this %s -> %s" % [_filling_box.name as String if _filling_box else "[nothing]", box.name])
+        _filling_box = box
 
     return true
 
@@ -137,13 +129,14 @@ func _check_growth(box: VBoxContainer, idx: int) -> bool:
         # print_debug("Box %s growth check didn't have any recorded height" % box)
         return true
 
-    if box.get_global_rect().size.y <= _heights[box]:
+    if box.get_global_rect().size.y <= _heights[box] || _heights[box] == 0:
         # print_debug("Box %s growth check didn't grow (%s vs %s)" % [box, box.get_global_rect().size.y, _heights[box]])
         _reset_box_height_check(box)
         return true
 
-    if _move_last_to_next_box(box, idx):
-        # print_debug("Box %s grew from %s and moved last child to next" % [box, _heights[box]])
+    # print_debug("Box %s grew from %s -> %s trying to move my last child to next" % [box, _heights[box], box.get_global_rect().size.y])
+
+    if _move_my_last_to_next_box(box, idx):
         _check[box] = _Check.SHRINKAGE
         return false
 
@@ -175,7 +168,7 @@ func _check_shrinkage(box: VBoxContainer, idx: int) -> bool:
         _reset_box_height_check(box)
         return true
 
-    if _move_last_to_next_box(box, idx):
+    if _move_my_last_to_next_box(box, idx):
         # print_debug("Box %s shrink moved another child" % box)
         return false
 
@@ -195,7 +188,7 @@ func _check_stays(box: VBoxContainer, idx: int) -> bool:
         _reset_box_height_check(box)
         return true
 
-    if _move_last_to_next_box(box, idx):
+    if _move_my_last_to_next_box(box, idx):
         # print_debug("Box %s stay moved back one child" % box)
         _reset_box_height_check(box)
         return false
@@ -205,10 +198,11 @@ func _check_stays(box: VBoxContainer, idx: int) -> bool:
     return true
 
 func _check_has_space(box: VBoxContainer, idx: int) -> bool:
-    var last_child: Control = _get_last_control(box)
+    var last_child: Control = UIUtils.get_last_control(box)
     if !_heights.has(box):
         _heights[box] = box.get_global_rect().size.y
 
+    # We are empty so lets see if we can get something from next box
     if last_child == null:
         if _move_first_in_next_to_me(box, idx):
             # print_debug("Box %s has space had no child but got one" % box)
@@ -221,13 +215,16 @@ func _check_has_space(box: VBoxContainer, idx: int) -> bool:
 
     var child_y: float = last_child.get_global_rect().end.y
     var rect: Rect2 = box.get_global_rect()
+
+    # Our last child is our rect end
     if child_y == rect.end.y:
         # print_debug("Box %s has space perfectly filled up, end check" % box)
         _reset_box_height_check(box)
         return true
 
+    # Looks like we are overflowing
     if sign(child_y - rect.position.y) == sign(child_y - rect.end.y):
-        if _move_last_to_next_box(box, idx):
+        if _move_my_last_to_next_box(box, idx):
             _check[box] = _Check.SHRINKAGE
             # print_debug("Box %s has space overflows, moved child to next" % box)
             return false
@@ -262,39 +259,44 @@ func _fits(box: VBoxContainer, last_child_rect: Rect2, new_rect: Rect2) -> bool:
 
     return box_end - last_rect_end >= extra_height
 
-var _waiting: Array[Control]
-
 func add_child_to_box(child: Control) -> void:
     if _check.values().any(func (c: _Check) -> bool: return c != _Check.NOTHING):
+        print_debug("[Chained VBoxes] Adding %s to waiting because some boxes are checking" % child)
         _waiting.append(child)
         return
 
     if !_add_child(child):
+        print_debug("[Chained VBoxes] Adding %s to waiting" % child)
         _waiting.append(child)
 
 func _add_child(child: Control) -> bool:
-    var prev_box: VBoxContainer = null
-    for idx: int in range(_boxes.size()):
-        var box: VBoxContainer = _boxes[idx]
-        if box.get_global_rect().size.y == 0:
-            prev_box = null
-            continue
+    if _filling_box == null:
+        if _boxes.is_empty():
+            return false
+        else:
+            _filling_box = _boxes[0]
 
-        if box.get_child_count() == 0:
-            if prev_box == null:
-                _heights[box] = box.get_global_rect().size.y
-                box.add_child(child)
-                _check[box] = _Check.GROWTH
-            else:
-                _heights[prev_box] = prev_box.get_global_rect().size.y
-                prev_box.add_child(child)
-                _check[prev_box] = _Check.GROWTH
-            return true
+    _heights[_filling_box] = _filling_box.get_global_rect().size.y
+    _filling_box.add_child(child)
+    print_debug("[Chained VBoxes] Adding %s to %s because it's where we fill in new" % [child, _filling_box.name])
+    _check[_filling_box] = _Check.GROWTH
 
-        prev_box = box
+    return true
 
-    if prev_box != null:
-        prev_box.add_child(child)
-        return true
+func clear_boxes() -> void:
+    print_debug("[Chained VBoxes] Clear %s" % name)
+    _waiting.clear()
 
-    return false
+    var idx: int = 0
+    for box: VBoxContainer in _boxes:
+        UIUtils.clear_control(box)
+
+        @warning_ignore_start("return_value_discarded")
+        _check_shrinkage(box, idx)
+        @warning_ignore_restore("return_value_discarded")
+
+        _reset_box_height_check(box)
+
+        idx += 1
+
+    _filling_box = null

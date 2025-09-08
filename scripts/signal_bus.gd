@@ -2,6 +2,7 @@ extends Node
 class_name SignalBus
 
 @warning_ignore_start("unused_signal")
+
 # Time
 signal on_update_day(year: int, month: int, day_of_month: int, days_until_end_of_month: int)
 signal on_increment_day(day_of_month: int, days_until_end_of_month: int)
@@ -41,4 +42,12 @@ signal on_death(battle_entity: BattleEntity)
 # -> Turns
 signal on_start_turn(entity: BattleEntity)
 signal on_end_turn(entity: BattleEntity)
+
+# Inventory
+signal on_add_to_inventory(inventory: Inventory, id: String, amount: float, total: float)
+signal on_remove_from_inventory(inventory: Inventory, id: String, amount: float, total: float)
+signal on_load_inventory(inventory: Inventory)
+signal on_activate_inventory(inventory: Inventory)
+signal on_deactivate_inventory(inventory: Inventory)
+
 @warning_ignore_restore("unused_signal")

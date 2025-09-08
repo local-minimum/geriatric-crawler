@@ -90,6 +90,11 @@ const _HACKING_TUTORIAL_EXCLUDED_KEY: String = "hacking.excluded"
 const DEPLOY_BOMB_TEXT: String = "Deploy Bomb"
 const CANCEL_BOMB_TEXT: String = "Abort Bomb Deployment"
 
+var _inv: Inventory.InventorySubscriber
+
+func _enter_tree() -> void:
+    _inv = Inventory.InventorySubscriber.new()
+
 func _ready() -> void:
     hide()
 
@@ -417,9 +422,8 @@ func _show_next_tutorial() -> void:
         on_complete_tutorial.clear()
 
 func sync_inventory_actions() -> void:
-    var inventory: Inventory = Inventory.active_inventory
-    var bombs: int = roundi(inventory.get_item_count(HackingGame.ITEM_HACKING_BOMB))
-    var worms: int = roundi(inventory.get_item_count(HackingGame.ITEM_HACKING_WORM))
+    var bombs: int = roundi(_inv.inventory.get_item_count(HackingGame.ITEM_HACKING_BOMB))
+    var worms: int = roundi(_inv.inventory.get_item_count(HackingGame.ITEM_HACKING_WORM))
 
     _bombs_counter.text = "%03d" % bombs
     _deploy_bomb_button.text = DEPLOY_BOMB_TEXT
