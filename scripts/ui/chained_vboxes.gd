@@ -94,8 +94,7 @@ func _move_my_last_to_next_box(box: VBoxContainer, idx: int) -> bool:
     last_child.reparent(next_box, false)
     next_box.move_child(last_child, 0)
 
-    print_debug("[Chained VBoxes] swapping filling box to next %s -> %s" % [_filling_box.name as String if _filling_box else "[nothing]", next_box.name])
-    print_stack()
+    # print_debug("[Chained VBoxes] swapping filling box to next %s -> %s" % [_filling_box.name as String if _filling_box else "[nothing]", next_box.name])
     _filling_box = next_box
 
     return true
@@ -118,7 +117,7 @@ func _move_first_in_next_to_me(box: VBoxContainer, idx: int) -> bool:
     first_child.reparent(box, false)
     box.move_child(first_child, box.get_child_count() - 1)
     if UIUtils.get_first_control(next_box) == null:
-        print_debug("[Chained VBoxes] swapping filling box to this %s -> %s" % [_filling_box.name as String if _filling_box else "[nothing]", box.name])
+        # print_debug("[Chained VBoxes] swapping filling box to this %s -> %s" % [_filling_box.name as String if _filling_box else "[nothing]", box.name])
         _filling_box = box
 
     return true
@@ -261,12 +260,12 @@ func _fits(box: VBoxContainer, last_child_rect: Rect2, new_rect: Rect2) -> bool:
 
 func add_child_to_box(child: Control) -> void:
     if _check.values().any(func (c: _Check) -> bool: return c != _Check.NOTHING):
-        print_debug("[Chained VBoxes] Adding %s to waiting because some boxes are checking" % child)
+        # print_debug("[Chained VBoxes] Adding %s to waiting because some boxes are checking" % child)
         _waiting.append(child)
         return
 
     if !_add_child(child):
-        print_debug("[Chained VBoxes] Adding %s to waiting" % child)
+        # print_debug("[Chained VBoxes] Adding %s to waiting" % child)
         _waiting.append(child)
 
 func _add_child(child: Control) -> bool:
@@ -278,7 +277,7 @@ func _add_child(child: Control) -> bool:
 
     _heights[_filling_box] = _filling_box.get_global_rect().size.y
     _filling_box.add_child(child)
-    print_debug("[Chained VBoxes] Adding %s to %s because it's where we fill in new" % [child, _filling_box.name])
+    # print_debug("[Chained VBoxes] Adding %s to %s because it's where we fill in new" % [child, _filling_box.name])
     _check[_filling_box] = _Check.GROWTH
 
     return true

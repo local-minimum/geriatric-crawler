@@ -57,3 +57,5 @@ func _list_inventory() -> void:
         label.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
 
         _chained_boxes.add_child_to_box(label)
+
+    _need_to_update_listing = false
