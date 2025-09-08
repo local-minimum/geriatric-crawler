@@ -1,0 +1,14 @@
+[gd_scene load_steps=3 format=3 uid="uid://ci70efr3ftt6k"]
+
+[ext_resource type="Script" uid="uid://c6733p4qj68p" path="res://scripts/gridded_level/level_features/grid_node_side.gd" id="1_1a7ct"]
+[ext_resource type="PackedScene" uid="uid://cmmumrllwixa" path="res://models/airlockdoor.fbx" id="2_6weax"]
+
+[node name="Airlock" type="Node3D"]
+script = ExtResource("1_1a7ct")
+direction = 2
+
+[node name="airlockdoor" parent="." instance=ExtResource("2_6weax")]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0, 1.25)
+
+[node name="Airlock Event" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1.15391)

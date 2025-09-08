@@ -1,4 +1,4 @@
-[gd_scene load_steps=62 format=3 uid="uid://dwqcwbgj8p6q0"]
+[gd_scene load_steps=63 format=3 uid="uid://dwqcwbgj8p6q0"]
 
 [ext_resource type="Script" uid="uid://dqe42q7uub84r" path="res://scripts/gridded_level/level_features/grid_level.gd" id="1_dd1ob"]
 [ext_resource type="PackedScene" uid="uid://bfoog3fb4v5ij" path="res://scenes/dungeon/player.tscn" id="3_m6mav"]
@@ -27,6 +27,7 @@
 [ext_resource type="Resource" uid="uid://cbhpqqpyr05fu" path="res://resources/enemy_cards/target-dummy_cards/dummy-blank-200.tres" id="16_n55gf"]
 [ext_resource type="Script" uid="uid://vhd085que0kg" path="res://scripts/gridded_level/level_features/grid_node.gd" id="17_24aia"]
 [ext_resource type="Resource" uid="uid://jqj3jm50pkqs" path="res://resources/enemy_cards/target-dummy_cards/dummy-blank-420.tres" id="17_idbts"]
+[ext_resource type="PackedScene" uid="uid://ci70efr3ftt6k" path="res://scenes/dungeon/airlock.tscn" id="18_24aia"]
 [ext_resource type="Resource" uid="uid://bodhea2xa1exq" path="res://resources/enemy_cards/target-dummy_cards/dummy-blank-700.tres" id="18_j1mj1"]
 [ext_resource type="Resource" uid="uid://cgq448x54hl2k" path="res://resources/enemy_cards/target-dummy_cards/dummy-shield-up-65.tres" id="19_7gan6"]
 [ext_resource type="Resource" uid="uid://ea7mbheiqimg" path="res://resources/enemy_cards/target-dummy_cards/dummy-shield-up-330.tres" id="20_sn1co"]
@@ -864,12 +865,6 @@ coordinates = Vector3i(0, 0, 2)
 entry_requires_anchor = false
 metadata/_custom_type_script = "uid://vhd085que0kg"
 
-[node name="Side SOUTH" type="Node3D" parent="LevelGeometry/Elevation 0/Node (0, 0, 2)" node_paths=PackedStringArray("anchor") instance=ExtResource("6_5axwy")]
-transform = Transform3D(-1, 0, -1.50996e-07, 0, 1, 0, 1.50996e-07, 0, -1, 0, 0, 0)
-script = ExtResource("15_gbgif")
-direction = 2
-anchor = NodePath("GridAnchor")
-
 [node name="Side WEST" type="Node3D" parent="LevelGeometry/Elevation 0/Node (0, 0, 2)" node_paths=PackedStringArray("anchor") instance=ExtResource("6_5axwy")]
 transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0, 0)
 script = ExtResource("15_gbgif")
@@ -892,6 +887,9 @@ anchor = NodePath("GridAnchor")
 script = ExtResource("15_gbgif")
 infer_direction_from_rotation = false
 anchor = NodePath("Anchor")
+
+[node name="Airlock" parent="LevelGeometry/Elevation 0/Node (0, 0, 2)" instance=ExtResource("18_24aia")]
+direction = 1
 
 [node name="Elevation 1" type="Node3D" parent="LevelGeometry"]
 
@@ -1159,12 +1157,6 @@ script = ExtResource("15_gbgif")
 direction = 2
 anchor = NodePath("GridAnchor")
 
-[node name="Side EAST" type="Node3D" parent="LevelGeometry/Elevation 1/Node (5, 1, -2)" node_paths=PackedStringArray("anchor") instance=ExtResource("6_5axwy")]
-transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 0, 0, 0)
-script = ExtResource("15_gbgif")
-direction = 4
-anchor = NodePath("GridAnchor")
-
 [node name="Side UP" type="Node3D" parent="LevelGeometry/Elevation 1/Node (5, 1, -2)" node_paths=PackedStringArray("anchor") instance=ExtResource("8_72dvb")]
 script = ExtResource("15_gbgif")
 direction = 5
@@ -1175,6 +1167,10 @@ anchor = NodePath("GridAnchor")
 script = ExtResource("15_gbgif")
 infer_direction_from_rotation = false
 anchor = NodePath("Anchor")
+
+[node name="Airlock" parent="LevelGeometry/Elevation 1/Node (5, 1, -2)" instance=ExtResource("18_24aia")]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0, 0)
+direction = 1
 
 [node name="Elevation 2" type="Node3D" parent="LevelGeometry"]
 
