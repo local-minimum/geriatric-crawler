@@ -36,5 +36,5 @@ func get_level_to_load() -> String:
     return get_level_name() if _destination_level.is_empty() else _destination_level
 
 ## Only the save data for the particular level
-func load_from_save(save_data: Dictionary) -> void:
+func load_from_save(save_data: Dictionary, _entry_portal_id: String) -> void:
     ship.printers.load_from_save_data(DictionaryUtils.safe_getd(save_data, _PRINTERS_KEY))

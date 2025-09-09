@@ -39,6 +39,12 @@ func get_level_to_load() -> String:
 
     return get_level_name()
 
+func get_level_to_load_entry_portal_id() -> String:
+    if level.activated_exit_portal != null:
+        return level.activated_exit_portal.exit_level_target_portal
+
+    return ""
+
 ## Collect save information for this particular level
 func collect_save_state() -> Dictionary:
     var encounters_save: Dictionary[String, Dictionary] = {}
@@ -54,7 +60,11 @@ func collect_save_state() -> Dictionary:
         if persistable is GridPlayer:
             if save_state.has(_PLAYER_KEY):
                 push_error("Level can only save one player, ignoring %s" % persistable.name)
-            save_state[_PLAYER_KEY] = (persistable as GridPlayer).save()
+
+            var player_save: Dictionary = (persistable as GridPlayer).save()
+            if level.activated_exit_portal != null:
+                GridPlayer.strip_save_of_transform_data(player_save)
+            save_state[_PLAYER_KEY] = player_save
 
 
     for encounter_node: Node in get_tree().get_nodes_in_group(encounter_group):
@@ -79,9 +89,13 @@ func collect_save_state() -> Dictionary:
     return save_state
 
 func get_initial_save_state() -> Dictionary:
+    var player_save: Dictionary = level.player.initial_state()
+    if level.activated_exit_portal != null:
+        GridPlayer.strip_save_of_transform_data(player_save)
+
     var save_state: Dictionary = {
         _LEVEL_ID_KEY: null,
-        _PLAYER_KEY: level.player.initial_state(),
+        _PLAYER_KEY: player_save,
         _ENCOUNTERS_KEY: {}, # We just assume they are as they should be
         _EVENTS_KEY: {},
         _PUNISHMENT_DECK_KEY: []
@@ -90,7 +104,23 @@ func get_initial_save_state() -> Dictionary:
     return save_state
 
 ## Load part of save that holds this particular level
-func load_from_save(save_data: Dictionary) -> void:
+func load_from_save(save_data: Dictionary, entry_portal_id: String) -> void:
+    level.activated_exit_portal = null
+
+    if entry_portal_id.is_empty():
+        level.entry_portal = level.primary_entry_portal
+    else:
+        var portal_idx: int = level.level_portals.find_custom(func (port: LevelPortal) -> bool: return port.id == entry_portal_id)
+        if portal_idx >= 0:
+            level.entry_portal = level.level_portals[portal_idx]
+        else:
+            push_warning("Portal '%s' not among level portals %s" % [
+                entry_portal_id,
+                level.level_portals.map(func (port: LevelPortal) -> String: return port.id),
+            ])
+
+            level.entry_portal = level.primary_entry_portal
+
     for persistable: Node in get_tree().get_nodes_in_group(persistant_group):
         if level.grid_entities.has(persistable):
             level.grid_entities.erase(persistable)
@@ -99,13 +129,20 @@ func load_from_save(save_data: Dictionary) -> void:
 
     var player_node: GridPlayer = null
 
-    if save_data.has(_PLAYER_KEY):
-        var player_save: Dictionary = DictionaryUtils.safe_getd(save_data, _PLAYER_KEY)
+    var player_save: Dictionary = DictionaryUtils.safe_getd(save_data, _PLAYER_KEY)
+    if !GridPlayer.valid_save_data(player_save):
+        GridPlayer.extend_save_with_portal_entry(player_save, level.entry_portal)
+
+    if !player_save.is_empty():
         player_node = preload(_PLAYER_SCENE).instantiate()
         player_node.name = "Player Blob"
         level.add_child(player_node)
         player_node.load_from_save(level, player_save)
         level.player = player_node
+    else:
+        push_error("There was no player to load, this can't be handled")
+        __SignalBus.on_critical_level_corrupt.emit(level.level_id)
+        return
 
     var encounters_data: Dictionary = DictionaryUtils.safe_getd(save_data, _ENCOUNTERS_KEY, {}, false)
     var encounters_save: Dictionary[String, Dictionary] = {}

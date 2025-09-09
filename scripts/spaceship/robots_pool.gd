@@ -21,11 +21,18 @@ func available_robots() -> Array[RobotData]:
 
 func get_robot(id: String) -> RobotData:
     if id.is_empty():
+        push_error("Asking for a robot without name")
         return null
 
     for robot: RobotData in _robots:
         if robot.id == id:
             return robot
+
+    push_error("Asking for a robot '%s' which isn't known among %s" % [
+        id,
+        _robots.map(func (mod: RobotData) -> String: return mod.id)
+    ])
+
     return null
 
 func add_new_robot(robot: RobotData) -> void:

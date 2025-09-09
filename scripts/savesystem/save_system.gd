@@ -9,6 +9,7 @@ const _PLATFORM_KEY: String = "platform"
 const _GLOBAL_GAME_STATE_KEY: String = "global_state"
 const _LEVEL_HISTORY_KEY: String = "level_history"
 const _LEVEL_TO_LOAD_KEY: String = "level_to_load"
+const _LEVEL_TO_LOAD_PORTAL_KEY: String = "level_to_load_portal"
 const _TOTAL_PLAYTIME_KEY: String = "total_playtime"
 const _SESSION_PLAYTIME_KEY: String = "session_playtime"
 const _SAVE_TIME_KEY: String = "save_datetime"
@@ -135,6 +136,7 @@ func _collect_global_game_save_data(save_data: Dictionary) -> Dictionary:
     return {
         _LEVEL_HISTORY_KEY: level_history,
         _LEVEL_TO_LOAD_KEY: save_data.get(_LEVEL_TO_LOAD_KEY, "") if level_saver == null else level_saver.get_level_to_load(),
+        _LEVEL_TO_LOAD_PORTAL_KEY: save_data.get(_LEVEL_TO_LOAD_PORTAL_KEY, "") if level_saver == null else level_saver.get_level_to_load_entry_portal_id(),
         _TOTAL_PLAYTIME_KEY: total_playtime,
         _SESSION_PLAYTIME_KEY: session_playtime,
         _SAVE_TIME_KEY: Time.get_datetime_string_from_system(true),
@@ -147,6 +149,7 @@ func _collect_inital_global_game_save_data() -> Dictionary:
     return {
         _LEVEL_HISTORY_KEY: [] as Array[String],
         _LEVEL_TO_LOAD_KEY: "" if level_saver == null else level_saver.get_level_to_load(),
+        _LEVEL_TO_LOAD_PORTAL_KEY: "" if level_saver == null else level_saver.get_level_to_load_entry_portal_id(),
         _TOTAL_PLAYTIME_KEY: 0,
         _SESSION_PLAYTIME_KEY: 0,
         _SAVE_TIME_KEY: Time.get_date_string_from_system(true),
@@ -211,7 +214,9 @@ func load_slot(slot: int) -> bool:
 
 func load_cached_save() -> bool:
     var data: Dictionary = _current_save
-    var wanted_level: String = data[_GLOBAL_GAME_STATE_KEY][_LEVEL_TO_LOAD_KEY]
+    var global_state: Dictionary = DictionaryUtils.safe_getd(_current_save, _GLOBAL_GAME_STATE_KEY, {}, false)
+    var wanted_level: String = DictionaryUtils.safe_gets(global_state, _LEVEL_TO_LOAD_KEY, "", false)
+    var wanted_level_portal: String = DictionaryUtils.safe_gets(global_state, _LEVEL_TO_LOAD_PORTAL_KEY, "", false)
 
     # Load extension save data
     for extension: SaveExtension in extensions:
@@ -232,13 +237,13 @@ func load_cached_save() -> bool:
         var levels_data: Dictionary = data[_LEVEL_SAVE_KEY]
         if levels_data.has(wanted_level):
             var level_data: Dictionary = levels_data[wanted_level]
-            level_saver.load_from_save(level_data)
+            level_saver.load_from_save(level_data, wanted_level_portal)
         else:
             print_debug("Level %s has not been visited before, spawning in at start")
-            level_saver.load_from_save(level_saver.get_initial_save_state())
+            level_saver.load_from_save(level_saver.get_initial_save_state(), wanted_level_portal)
     else:
         push_warning("No levels info in save %s" % data)
-        level_saver.load_from_save(level_saver.get_initial_save_state())
+        level_saver.load_from_save(level_saver.get_initial_save_state(), wanted_level_portal)
 
     # Load late extension save data
     for extension: SaveExtension in late_extensions:

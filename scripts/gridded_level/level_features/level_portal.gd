@@ -3,7 +3,9 @@ class_name LevelPortal
 
 @export var id: String
 @export var exit_level_target: String
+@export var exit_level_target_portal: String
 @export var entry_down: CardinalDirections.CardinalDirection = CardinalDirections.CardinalDirection.DOWN
+@export var entry_anchor: CardinalDirections.CardinalDirection = CardinalDirections.CardinalDirection.DOWN
 @export var entry_lookdirection: CardinalDirections.CardinalDirection
 @export var allow_exit: bool
 @export var fail_exit_notice_title: String = "NOTICE_AIRLOCK"

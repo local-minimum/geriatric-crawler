@@ -95,6 +95,9 @@ var facing_detected: bool
 
 func _calculate_detection() -> void:
     var level: GridLevel = exploration_ui.level
+    if level.player == null:
+        return
+
     var player_coords: Vector3i = level.player.coordinates()
     var look_vector: Vector3i = CardinalDirections.direction_to_vector(level.player.look_direction)
 

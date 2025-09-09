@@ -90,18 +90,19 @@ transparency = 1
 material = SubResource("StandardMaterial3D_632b7")
 size = Vector2(0.8, 1.2)
 
-[node name="TestLevel" type="Node3D" node_paths=PackedStringArray("player", "level_geometry", "punishments")]
+[node name="TestLevel" type="Node3D" node_paths=PackedStringArray("player", "level_geometry", "punishments", "primary_entry_portal", "level_portals")]
 script = ExtResource("1_dd1ob")
 level_id = "test-level"
 node_size = Vector3(2.5, 2.5, 2.5)
 player = NodePath("Player")
 level_geometry = NodePath("LevelGeometry")
 punishments = NodePath("PunishmentDeck")
+primary_entry_portal = NodePath("LevelGeometry/Elevation 0/Node (0, 0, 2)/Airlock")
+level_portals = [NodePath("LevelGeometry/Elevation 0/Node (0, 0, 2)/Airlock"), NodePath("LevelGeometry/Elevation 1/Node (5, 1, -2)/Airlock")]
 
-[node name="Player" parent="." node_paths=PackedStringArray("spawn_node") instance=ExtResource("3_m6mav")]
+[node name="Player" parent="." instance=ExtResource("3_m6mav")]
 process_mode = 3
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0145968, -0.00857759, 0.00070858)
-spawn_node = NodePath("../LevelGeometry/Elevation 0/Node (0, 0, 2)")
 transportation_abilities = SubResource("Resource_7crhe")
 transportation_mode = SubResource("Resource_pgxau")
 
@@ -867,6 +868,7 @@ direction = 4
 [node name="Side DOWN" parent="LevelGeometry/Elevation 0/Node (0, 0, 2)" instance=ExtResource("9_4mxkc")]
 
 [node name="Airlock" parent="LevelGeometry/Elevation 0/Node (0, 0, 2)" instance=ExtResource("18_24aia")]
+id = "lower_airlock"
 exit_level_target = "hub-spaceship"
 entry_lookdirection = 1
 allow_exit = true

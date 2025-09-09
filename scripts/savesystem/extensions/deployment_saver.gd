@@ -67,9 +67,9 @@ func load_from_data(extentsion_save_data: Dictionary) -> void:
     var robot_id: String = DictionaryUtils.safe_gets(extentsion_save_data, ROBOT_ID_KEY, "", false)
     var level_id: String = DictionaryUtils.safe_gets(extentsion_save_data, LEVEL_ID_KEY, "", false)
 
-    if RobotsPool.instance != null:
+    if RobotsPool.instance != null && robot_id != null && _tick_excursions_on_load:
         var robot: RobotData = RobotsPool.instance.get_robot(robot_id)
-        if robot != null && _tick_excursions_on_load:
+        if robot != null:
             robot.excursions += 1
 
     if ExplorationScene.instance != null:
@@ -78,7 +78,8 @@ func load_from_data(extentsion_save_data: Dictionary) -> void:
         if RobotsPool.instance != null:
             player.robot.load_from_data(RobotsPool.instance.get_robot(robot_id))
         else:
-            player.robot.robot_id = robot_id
+            __SignalBus.on_critical_level_corrupt.emit(level.level_id)
+            return
 
         level.on_change_player.emit()
 

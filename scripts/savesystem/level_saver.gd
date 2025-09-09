@@ -19,9 +19,13 @@ func get_level_name() -> String:
 func get_level_to_load() -> String:
     return get_level_name()
 
+## When saving indicates at which level portal to enter the level
+func get_level_to_load_entry_portal_id() -> String:
+    return ""
+
 @warning_ignore_start("unused_parameter")
 ## Only the save data for the particular level
-func load_from_save(save_data: Dictionary) -> void:
+func load_from_save(save_data: Dictionary, entry_portal_id: String) -> void:
     push_error("Executing base class method for loading level")
     pass
 @warning_ignore_restore("unused_parameter")

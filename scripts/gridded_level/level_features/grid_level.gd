@@ -29,6 +29,12 @@ var grid_entities: Array[GridEntity]
 @export var primary_entry_portal: LevelPortal
 @export var level_portals: Array[LevelPortal]
 
+var entry_portal: LevelPortal:
+    get():
+        if entry_portal == null:
+            return primary_entry_portal
+        return entry_portal
+
 var activated_exit_portal: LevelPortal
 
 
@@ -48,6 +54,7 @@ func _init() -> void:
 var emit_loaded: bool = true
 
 func _ready() -> void:
+    entry_portal = primary_entry_portal
     emit_loaded = true
 
     _sync_nodes()
