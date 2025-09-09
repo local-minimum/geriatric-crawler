@@ -3,8 +3,6 @@ class_name GridEncounterEffect
 
 var encounter: GridEncounter
 
-@export var encounter_id: String
-
 @export var hide_encounter_on_trigger: bool
 
 ## Called when the encounter is ready

@@ -5,7 +5,7 @@ signal on_prepare_hand(battle_enemy: BattleEnemy, slotted_cards: Array[BattleCar
 signal on_play_card(card: BattleCardData, suit_bonus: int, rank_bonus: int, pause: float)
 
 ## This should be a unique ID within each battle mode trigger / group of enemies
-@export var id: String
+@export var id: String = "first"
 
 ## This is the variant ID of the enemy character in the blob, e.g. "space-slug". It shouldn't be unique. But if there are variants like "space-slug-lvl2" it should be named as such
 @export var variant_id: String

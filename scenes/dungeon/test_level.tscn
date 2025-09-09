@@ -1,4 +1,4 @@
-[gd_scene load_steps=61 format=3 uid="uid://dwqcwbgj8p6q0"]
+[gd_scene load_steps=66 format=3 uid="uid://dwqcwbgj8p6q0"]
 
 [ext_resource type="Script" uid="uid://dqe42q7uub84r" path="res://scripts/gridded_level/level_features/grid_level.gd" id="1_dd1ob"]
 [ext_resource type="PackedScene" uid="uid://bfoog3fb4v5ij" path="res://scenes/dungeon/player.tscn" id="3_m6mav"]
@@ -34,11 +34,16 @@
 [ext_resource type="Script" uid="uid://qbk2psf0rmnw" path="res://scripts/card_battle/battle_strategy.gd" id="22_sy7nh"]
 [ext_resource type="Script" uid="uid://6vnrccj8frlq" path="res://scripts/card_battle/battle_enemy_target_system.gd" id="25_s5loo"]
 [ext_resource type="Script" uid="uid://bl72bpxm44td8" path="res://scripts/key_master.gd" id="32_wymjw"]
+[ext_resource type="Resource" uid="uid://ctc6pq4wyhidi" path="res://resources/enemy_cards/killer_cards/killer-cleanup-130.tres" id="34_dnq43"]
 [ext_resource type="Script" uid="uid://bk8s8268riiuc" path="res://scripts/card_battle/punishment_deck.gd" id="34_dw5j8"]
 [ext_resource type="Resource" uid="uid://crnuafh88gx8a" path="res://resources/punishment_cards/alarm_1.tres" id="35_8b3qi"]
+[ext_resource type="Resource" uid="uid://cnymccjlh67ss" path="res://resources/enemy_cards/killer_cards/killer-cleanup-270.tres" id="35_rljv5"]
+[ext_resource type="Resource" uid="uid://bdnot7xdosh2t" path="res://resources/enemy_cards/killer_cards/killer-evicerate-450.tres" id="36_jmfrw"]
 [ext_resource type="Resource" uid="uid://dqrl7x4ecjyqx" path="res://resources/punishment_cards/alarm_11.tres" id="36_n7uqk"]
+[ext_resource type="Resource" uid="uid://ckpa6ddu18j1c" path="res://resources/enemy_cards/killer_cards/killer-evicerate-660.tres" id="37_jqdjk"]
 [ext_resource type="Resource" uid="uid://nwxqceckw4tr" path="res://resources/punishment_cards/alarm_31.tres" id="37_lod2g"]
 [ext_resource type="Resource" uid="uid://by4xdck17bsal" path="res://resources/punishment_cards/alarm_51.tres" id="38_5d85i"]
+[ext_resource type="Resource" uid="uid://cquqwjb7mkt0b" path="res://resources/enemy_cards/killer_cards/killer-evicerate-970.tres" id="38_ub21w"]
 [ext_resource type="Resource" uid="uid://ctyg51kk8tgg4" path="res://resources/punishment_cards/alarm_71.tres" id="39_y5a4i"]
 [ext_resource type="Resource" uid="uid://ba1yxsodqept7" path="res://resources/punishment_cards/prepared_22.tres" id="40_c0fn3"]
 [ext_resource type="Resource" uid="uid://doopslgdl8hj2" path="res://resources/punishment_cards/prepared_32.tres" id="41_7crhe"]
@@ -1390,7 +1395,6 @@ metadata/_custom_type_script = "uid://b3kob7bivk342"
 
 [node name="Target Dummy AI" type="Node" parent="Encounters/Target Dummy Blob/Battle Trigger" node_paths=PackedStringArray("deck", "brain", "_target_system")]
 script = ExtResource("11_fxt0s")
-id = "first"
 variant_id = "target-dummy"
 variant_name = "Target Dummy"
 level = 1
@@ -1440,7 +1444,6 @@ metadata/_custom_type_script = "uid://b3kob7bivk342"
 
 [node name="Target Dummy AI" type="Node" parent="Encounters/Multi Encounter Repeat/Repeat Battle Trigger" node_paths=PackedStringArray("deck", "brain", "_target_system")]
 script = ExtResource("11_fxt0s")
-id = "first"
 variant_id = "target-dummy"
 variant_name = "Target Dummy"
 level = 1
@@ -1490,6 +1493,56 @@ script = ExtResource("22_sy7nh")
 [node name="BattleEnemyTargetSystem" type="Node" parent="Encounters/Multi Encounter Repeat/Repeat Battle Trigger/Target Dummy AI (2)" node_paths=PackedStringArray("_self")]
 script = ExtResource("25_s5loo")
 _self = NodePath("..")
+metadata/_custom_type_script = "uid://6vnrccj8frlq"
+
+[node name="Killer Moving Encounter" type="Node3D" parent="Encounters" node_paths=PackedStringArray("effect", "_spawn_node")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.49959, 5.02006, -4.86732)
+script = ExtResource("8_kmgg5")
+encounter_id = "killer-one"
+effect = NodePath("BattleModeTrigger")
+_spawn_node = NodePath("../../LevelGeometry/Elevation 2/Node (2, 2, -2)")
+metadata/_custom_type_script = "uid://bqahhkn6dpex"
+
+[node name="Avatar" type="Node3D" parent="Encounters/Killer Moving Encounter"]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Encounters/Killer Moving Encounter/Avatar"]
+
+[node name="BattleModeTrigger" type="Node" parent="Encounters/Killer Moving Encounter" node_paths=PackedStringArray("enemies")]
+script = ExtResource("10_rvj20")
+enemies = [NodePath("Killer AI")]
+hide_encounter_on_trigger = true
+metadata/_custom_type_script = "uid://dmpqfljj24gh6"
+
+[node name="Killer AI" type="Node" parent="Encounters/Killer Moving Encounter/BattleModeTrigger" node_paths=PackedStringArray("deck", "brain", "_target_system")]
+script = ExtResource("11_fxt0s")
+variant_id = "killer"
+variant_name = "Killer"
+level = 3
+difficulty = 9
+max_health = 70
+carried_credits = 2000
+play_slots = 2
+deck = NodePath("EnemyBattleDeck")
+brain = NodePath("BattleBrain")
+_target_system = NodePath("BattleEnemyTargetSystem")
+metadata/_custom_type_script = "uid://ccsqys7ldqoh"
+
+[node name="EnemyBattleDeck" type="Node" parent="Encounters/Killer Moving Encounter/BattleModeTrigger/Killer AI"]
+script = ExtResource("13_632b7")
+_start_deck = Array[ExtResource("13_26eu7")]([ExtResource("34_dnq43"), ExtResource("35_rljv5"), ExtResource("36_jmfrw"), ExtResource("37_jqdjk"), ExtResource("38_ub21w")])
+metadata/_custom_type_script = "uid://c4gjxrt0ydalx"
+
+[node name="BattleBrain" type="Node" parent="Encounters/Killer Moving Encounter/BattleModeTrigger/Killer AI" node_paths=PackedStringArray("strategies")]
+script = ExtResource("22_rcxcv")
+strategies = [NodePath("BattleStrategy")]
+metadata/_custom_type_script = "uid://dtq2v31avcen2"
+
+[node name="BattleStrategy" type="Node" parent="Encounters/Killer Moving Encounter/BattleModeTrigger/Killer AI/BattleBrain"]
+script = ExtResource("22_sy7nh")
+metadata/_custom_type_script = "uid://qbk2psf0rmnw"
+
+[node name="BattleEnemyTargetSystem" type="Node" parent="Encounters/Killer Moving Encounter/BattleModeTrigger/Killer AI"]
+script = ExtResource("25_s5loo")
 metadata/_custom_type_script = "uid://6vnrccj8frlq"
 
 [node name="KeyMaster" type="Node" parent="."]
