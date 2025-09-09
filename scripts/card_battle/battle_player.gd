@@ -284,7 +284,7 @@ func is_alive() -> bool:
 
 func _hurt(amount: int) -> void:
     amount = mini(_robot._data.health, amount)
-    _robot._data.health = amount
+    _robot._data.health -= amount
     _robot._data.accumualated_damage += amount
     __SignalBus.on_hurt.emit(self, amount, _robot._data.health)
 
