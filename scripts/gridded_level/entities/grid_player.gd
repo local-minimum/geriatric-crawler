@@ -43,6 +43,9 @@ var override_ceiling_walking: bool:
                 transportation_abilities.set_flag(TransportationMode.CEILING_WALKING)
 
 func _ready() -> void:
+    if __SignalBus.on_robot_death.connect(_handle_robot_death) != OK:
+        push_error("Failed to connect to robot death")
+
     camera_resting_position = camera.position
     camera_resting_rotation = camera.basis.get_rotation_quaternion()
 
@@ -51,6 +54,11 @@ func _ready() -> void:
     # We do super afterwards to not get uneccesary warning about player not being
     # preset as a child of a node
     super()
+
+func _handle_robot_death(dead_robot: Robot) -> void:
+    if robot == dead_robot:
+        print_debug("[Grid Player] We are dead")
+        cinematic = true
 
 func _sync_level_entry() -> void:
     var entry: LevelPortal = get_level().entry_portal

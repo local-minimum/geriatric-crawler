@@ -97,10 +97,12 @@ material = SubResource("StandardMaterial3D_632b7")
 size = Vector2(0.8, 1.2)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_jmfrw"]
+transparency = 1
 albedo_texture = ExtResource("34_rljv5")
 
 [sub_resource type="QuadMesh" id="QuadMesh_jqdjk"]
 material = SubResource("StandardMaterial3D_jmfrw")
+size = Vector2(1.5, 1.5)
 
 [node name="TestLevel" type="Node3D" node_paths=PackedStringArray("player", "level_geometry", "punishments", "primary_entry_portal", "level_portals")]
 script = ExtResource("1_dd1ob")
@@ -1503,7 +1505,7 @@ _self = NodePath("..")
 metadata/_custom_type_script = "uid://6vnrccj8frlq"
 
 [node name="Killer Moving Encounter" type="Node3D" parent="Encounters" node_paths=PackedStringArray("effect", "graphics", "_spawn_node")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.49959, 5.02006, -4.86732)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.94378, 5.02006, -4.86732)
 script = ExtResource("8_kmgg5")
 encounter_id = "killer-one"
 effect = NodePath("BattleModeTrigger")
@@ -1515,6 +1517,7 @@ metadata/_custom_type_script = "uid://bqahhkn6dpex"
 [node name="Avatar" type="Node3D" parent="Encounters/Killer Moving Encounter"]
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Encounters/Killer Moving Encounter/Avatar"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.706822, 0)
 mesh = SubResource("QuadMesh_jqdjk")
 
 [node name="BattleModeTrigger" type="Node" parent="Encounters/Killer Moving Encounter" node_paths=PackedStringArray("enemies")]

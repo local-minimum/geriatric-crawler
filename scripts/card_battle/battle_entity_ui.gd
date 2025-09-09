@@ -258,13 +258,13 @@ func _handle_gain_shield(battle_entity: BattleEntity, shields: Array[int], new_s
 
 func _set_shield(shields: Array[int]) -> void:
     if shields.is_empty():
-        defenceUI.text = "%s: %s" % [tr("DEFENCE_STAT"), tr("EXPOSED")]
+        defenceUI.text = "%s: %s" % [tr("DEFENCE_STAT").to_upper(), tr("EXPOSED").to_upper()]
         return
 
     var shields_text: Array  = shields.map(
         func (shield: int) -> String:
             return "%s⛨" % shield)
-    defenceUI.text = "%s: %s" % [tr("DEFENCE_STAT"), " | ".join(shields_text)]
+    defenceUI.text = "%s: %s" % [tr("DEFENCE_STAT").to_upper(), " | ".join(shields_text)]
 
 func _gui_input(event: InputEvent) -> void:
     if !interactable:

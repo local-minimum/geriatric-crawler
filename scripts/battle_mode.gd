@@ -37,6 +37,7 @@ var previous_card: BattleCardData
 var rank_direction: int
 var suit_bonus: int
 var rank_bonus: int
+var battling: bool
 
 static func find_battle_parent(current: Node, inclusive: bool = true) ->  BattleMode:
     if inclusive && current is BattleMode:
@@ -102,7 +103,7 @@ var _next_active_enemy: int
 var _player_initiative: int
 
 func get_battling() -> bool:
-    return _ui.visible && _inited
+    return _ui.visible && _inited && battling
 
 var _enemies: Array[BattleEnemy]
 func get_enemies() -> Array[BattleEnemy]:
@@ -116,6 +117,7 @@ func enter_battle(battle_trigger: BattleModeTrigger, player_robot: Robot) -> voi
     on_battle_start.emit()
 
     _ui.visible = true
+    battling = true
 
     # TODO: Gather proximate battle triggers too and pull them into the fight!
     # TODO: Consider need to wait for enemy to animate death before lettning new enter...
@@ -302,6 +304,9 @@ func _start_playing_cards() -> void:
     _next_agent_turn(null)
 
 func _next_agent_turn(_entity: BattleEntity) -> void:
+    if !battling:
+        return
+
     if !(await  _pass_action_turn()):
         _clean_up_round()
 
@@ -318,9 +323,10 @@ func _pass_action_turn() -> bool:
     var player_party: Array[BattleEntity] = [battle_player]
 
     if _player_initiative >= enemy_initiative:
-        await get_tree().create_timer(next_entity_timeout).timeout
-        battle_player.play_actions(player_party, enemies, battle_hand.cards_in_hand())
-        _player_initiative = -1
+        if robot.is_alive():
+            await get_tree().create_timer(next_entity_timeout).timeout
+            battle_player.play_actions(player_party, enemies, battle_hand.cards_in_hand())
+            _player_initiative = -1
         return true
 
     await get_tree().create_timer(next_entity_timeout).timeout
@@ -346,6 +352,7 @@ func _handle_entity_death(entity: BattleEntity) -> void:
         _handle_enemy_death(entity)
 
 func _handle_player_death(entity: BattleEntity) -> void:
+    print_debug("[BATTLE MODE] player died")
     if entity == battle_player:
         for enemy: BattleEnemy in _enemies:
             enemy.end_turn_early()
@@ -400,7 +407,7 @@ func _clean_up_round(exit_battle_cleanup: bool = false) -> void:
         return
 
     if !battle_player.is_alive():
-        print_debug("WE DIES")
+        print_debug("[Battle Mode] WE DEAD, no cleanup")
         return
 
     battle_hand.slots.hide_slotted_cards(exit_battle_cleanup)
@@ -420,6 +427,8 @@ func _clean_up_round(exit_battle_cleanup: bool = false) -> void:
 
 #region END BATTLE
 func exit_battle() -> void:
+    battling = false
+
     if _ending_player_turn_early:
         battle_player.on_after_execute_card.disconnect(exit_battle)
         _ending_player_turn_early = false
@@ -449,7 +458,7 @@ func exit_battle() -> void:
     if battle_player.is_alive():
         robot.complete_fight()
     else:
-        robot.killed_in_fight()
+        robot.kill()
     robot = null
 
     on_battle_end.emit()

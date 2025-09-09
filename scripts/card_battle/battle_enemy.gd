@@ -153,16 +153,16 @@ func play_actions(
             var had_effect: bool = false
 
             if effect.targets_enemies() && effect.targets_allies():
-                await _execute_effect(effect, suit_bonus + rank_bonus, enemies + allies, n_targets, allies)
+                await _execute_effect(card, effect, suit_bonus + rank_bonus, enemies + allies, n_targets, allies)
                 had_effect = true
             elif effect.targets_enemies():
-                await _execute_effect(effect, suit_bonus + rank_bonus, enemies, n_targets, allies)
+                await _execute_effect(card, effect, suit_bonus + rank_bonus, enemies, n_targets, allies)
                 had_effect = true
             elif effect.targets_allies():
-                await _execute_effect(effect, suit_bonus + rank_bonus, allies , n_targets, allies)
+                await _execute_effect(card, effect, suit_bonus + rank_bonus, allies , n_targets, allies)
                 had_effect = true
             elif effect.targets_self():
-                await _execute_effect(effect, suit_bonus + rank_bonus, [self], n_targets, allies)
+                await _execute_effect(card, effect, suit_bonus + rank_bonus, [self], n_targets, allies)
                 had_effect = true
 
             if !had_effect:
@@ -179,6 +179,7 @@ func play_actions(
     __SignalBus.on_end_turn.emit(self)
 
 func _execute_effect(
+    card: BattleCardData,
     effect: BattleCardPrimaryEffect,
     bonus: int,
     targets: Array[BattleEntity],
@@ -198,7 +199,7 @@ func _execute_effect(
 
         var value: int = effect.calculate_effect(bonus, allies.has(target))
 
-        print_debug("Doing %s %s to %s" % [value, effect.mode_name(), target.name])
+        print_debug("[Battle Enemy] %s doing %s %s to %s" % [card.id, value, effect.mode_name(), target.name])
 
         match effect.mode:
             BattleCardPrimaryEffect.EffectMode.Damage:

@@ -33,6 +33,11 @@ signal on_scene_transition_complete(target_scene: String)
 signal on_scene_transition_fail(target_scene: String)
 signal on_scene_transition_new_scene_ready()
 
+# Robot
+signal on_robot_death(robot: Robot)
+signal on_robot_complete_fight(robot: Robot)
+signal on_robot_loaded(robot: Robot)
+
 # Battle Entities
 # -> Shields
 signal on_gain_shield(battle_entitiy: BattleEntity, shields: Array[int], new_shield: int)

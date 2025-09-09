@@ -1,10 +1,6 @@
 extends Node
 class_name Robot
 
-signal on_robot_death(robot: Robot)
-signal on_robot_complete_fight(robot: Robot)
-signal on_robot_loaded(robot: Robot)
-
 @export var _player: GridPlayer
 
 var _has_data: bool
@@ -151,7 +147,7 @@ func load_from_data(data: RobotData) -> void:
     else:
         push_warning("Cannot configure battle robot for battle since there's none in scene")
 
-    on_robot_loaded.emit(self)
+    __SignalBus.on_robot_loaded.emit(self)
 
 func _sync_player_transportation_mode() -> void:
     if _player == null:
@@ -183,12 +179,14 @@ func complete_fight() -> void:
             var done: int = model.get_completed_steps_on_level(_data.fights, current_level)
             if can_progress_without_upgrade || done < required:
                 _data.fights += 1
-        on_robot_complete_fight.emit(self)
+        __SignalBus.on_robot_complete_fight.emit(self)
 
-func killed_in_fight() -> void:
+func kill() -> void:
     if _data.alive:
+        _data.health = 0
         _data.alive = false
-        on_robot_death.emit(self)
+        print_debug("[Robot] Robot is dead")
+        __SignalBus.on_robot_death.emit(self)
 
 func get_deck() -> Array[BattleCardData]:
     if model == null:

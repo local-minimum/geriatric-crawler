@@ -289,7 +289,7 @@ func _hurt(amount: int) -> void:
     __SignalBus.on_hurt.emit(self, amount, _robot._data.health)
 
     if _robot._data.health == 0:
-        _robot._data.alive = false
+        # We don't set alive to false here, instead we kill the robot manually when we get to end of battle
         __SignalBus.on_death.emit(self)
 
 func _heal(amount: int) -> void:

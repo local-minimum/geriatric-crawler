@@ -11,4 +11,11 @@ func select_cards(hand: Array[BattleCardData], max_cards: int) -> Array[BattleCa
     if hand_size == 0 || max_cards == 0:
         return []
 
-    return [hand[randi_range(0, hand_size - 1)]]
+    var indicies: Array[int] = ArrayUtils.int_range(hand_size)
+    ArrayUtils.shuffle_array(indicies)
+
+    var cards: Array[BattleCardData]
+    for idx: int in indicies.slice(0, mini(hand_size, max_cards)):
+        cards.append(hand[idx])
+
+    return cards
