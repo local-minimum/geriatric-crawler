@@ -144,7 +144,7 @@ func _on_print_pressed() -> void:
             push_warning("Couldn't withdraw sufficient funds to start printing %s on printer %s" % [_selected_model.model_name, _selected_printer])
             return
 
-    if !ship.printers.make_printing_job(_selected_printer, _selected_model, "Squirrel"):
+    if !ship.printers.make_printing_job(_selected_printer, _selected_model, "Squirrel", _selected_cost.free):
         push_warning("Failed to start printing %s on printer %s" % [_selected_model.model_name, _selected_printer])
 
     print_debug("Started printing %s on printer %s" % [_selected_model.model_name, _selected_printer])

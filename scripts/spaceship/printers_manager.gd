@@ -90,11 +90,14 @@ func get_printer_job(printer: int) -> PrinterJob:
 
     return _printer_jobs[printer]
 
-func make_printing_job(printer: int, model: RobotModel, given_name: String) -> bool:
+func make_printing_job(printer: int, model: RobotModel, given_name: String, free_print: bool) -> bool:
     if printer >= printers || _printer_jobs[printer] != null && _printer_jobs[printer].busy():
         return false
 
     _printer_jobs[printer] = PrinterJob.new(model, given_name)
+    if free_print:
+        _free_starter_robot_printed = true
+
     print_debug("[RobotsPool] started printing %s" % model.model_name)
     return true
 
