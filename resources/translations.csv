@@ -229,3 +229,6 @@ ACTION_GO_TO_BED,Go to bed,Lägg dig
 SHELVES,Shelves,Hyllorna
 STARE_EMPTY_SHELVES,You really should fill those with something,Du borde verkligen fylla upp dom med nåt
 FAILED_TO_CHANGE_SCENE,Failed to change scene,Kunde inte byta scen
+NOTICE_AIRLOCK,Airlock,Luftsluss
+AIRLOCK_NOT_OPERATIONAL,Airlock is not operational,Luftslussen är ur funktion
+AIRLOCK_FAIL_TO_CYCLE,Airlock failed to cycle,Luftslussen misslyckades att öppna yttre dörren

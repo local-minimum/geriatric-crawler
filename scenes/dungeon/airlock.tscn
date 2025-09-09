@@ -1,14 +1,29 @@
-[gd_scene load_steps=3 format=3 uid="uid://ci70efr3ftt6k"]
+[gd_scene load_steps=5 format=3 uid="uid://ci70efr3ftt6k"]
 
-[ext_resource type="Script" uid="uid://c6733p4qj68p" path="res://scripts/gridded_level/level_features/grid_node_side.gd" id="1_1a7ct"]
+[ext_resource type="Script" uid="uid://cjhediv47ntbx" path="res://scripts/gridded_level/level_features/level_portal.gd" id="1_1a7ct"]
 [ext_resource type="PackedScene" uid="uid://cmmumrllwixa" path="res://models/airlockdoor.fbx" id="2_6weax"]
+[ext_resource type="Script" uid="uid://ca24gxv56p7a" path="res://scripts/gridded_level/level_features/airlock_button.gd" id="3_6weax"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_6weax"]
 
 [node name="Airlock" type="Node3D"]
 script = ExtResource("1_1a7ct")
-direction = 2
 
 [node name="airlockdoor" parent="." instance=ExtResource("2_6weax")]
 transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0, 1.25)
 
 [node name="Airlock Event" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1.15391)
+
+[node name="AirlockButton" type="Node" parent="." node_paths=PackedStringArray("portal")]
+script = ExtResource("3_6weax")
+portal = NodePath("..")
+metadata/_custom_type_script = "uid://ca24gxv56p7a"
+
+[node name="StaticBody3D" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2513, 1.26593)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
+shape = SubResource("BoxShape3D_6weax")
+
+[connection signal="input_event" from="StaticBody3D" to="AirlockButton" method="_on_static_body_3d_input_event"]

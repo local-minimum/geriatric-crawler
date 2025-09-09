@@ -26,6 +26,10 @@ var grid_entities: Array[GridEntity]
 
 @export var punishments: PunishmentDeck
 
+@export var primary_entry_portal: LevelPortal
+@export var level_portals: Array[LevelPortal]
+
+
 var paused: bool:
     set(value):
         paused = value
