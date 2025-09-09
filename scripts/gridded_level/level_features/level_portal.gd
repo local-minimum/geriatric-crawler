@@ -9,13 +9,12 @@ class_name LevelPortal
 @export var fail_exit_notice_title: String = "NOTICE_AIRLOCK"
 @export var fail_exit_notice_message: String = "AIRLOCK_FAIL_TO_CYCLE"
 
-func _ready() -> void:
-    _triggered = false
-
 func exit_level() -> void:
     _triggered = true
 
-    get_level().player.cinematic = true
+    var level: GridLevel = get_level()
+    level.player.cinematic = true
+    level.activated_exit_portal = self
 
     var setup: bool = true
     if __SignalBus.on_save_complete.connect(_handle_saved) != OK:
@@ -38,12 +37,17 @@ func _handle_saved() -> void:
         _fail_exit_level()
         return
 
-    __SignalBus.on_load_fail.disconnect(_fail_exit_level)
+    if __SignalBus.on_load_fail.is_connected(_fail_exit_level):
+        __SignalBus.on_load_fail.disconnect(_fail_exit_level)
 
 func _fail_exit_level() -> void:
+    var level: GridLevel = get_level()
     NotificationsManager.warn(tr(fail_exit_notice_title), tr(fail_exit_notice_message))
 
-    get_level().player.cinematic = true
+    if level.activated_exit_portal == self:
+        level.activated_exit_portal = null
+
+    level.player.cinematic = false
 
     if __SignalBus.on_load_fail.is_connected(_fail_exit_level):
         __SignalBus.on_load_fail.disconnect(_fail_exit_level)

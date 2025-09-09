@@ -31,9 +31,15 @@ class PrinterJob:
         }
 
     static func from_save(data: Dictionary) -> PrinterJob:
-        var _given_name: String = DictionaryUtils.safe_gets(data, GIVEN_NAME_KEY)
-        var _start_day: int = DictionaryUtils.safe_geti(data, START_DAY_KEY)
-        var _model_name: String = DictionaryUtils.safe_gets(data, MODEL_NAME_KEY)
+        if data.is_empty():
+            return null
+
+        var _given_name: String = DictionaryUtils.safe_gets(data, GIVEN_NAME_KEY, "", false)
+        var _start_day: int = DictionaryUtils.safe_geti(data, START_DAY_KEY, -1, false)
+        var _model_name: String = DictionaryUtils.safe_gets(data, MODEL_NAME_KEY, "", false)
+        if _start_day == -1 || _model_name.is_empty():
+            return null
+
         var _model: RobotModel = RobotModel.get_model(_model_name)
         if _model == null:
             return null

@@ -1,4 +1,4 @@
-[gd_scene load_steps=35 format=3 uid="uid://7flb82m2ddwe"]
+[gd_scene load_steps=36 format=3 uid="uid://7flb82m2ddwe"]
 
 [ext_resource type="Script" uid="uid://dfub4a26emjgr" path="res://scripts/spaceship.gd" id="1_ae4p7"]
 [ext_resource type="Texture2D" uid="uid://0ncw5fw4jr8u" path="res://sprites/spaceship/missionops.png" id="2_5eye7"]
@@ -26,6 +26,7 @@
 [ext_resource type="Resource" uid="uid://bh75cac6e2j77" path="res://resources/robot_models/starter.tres" id="20_i1do7"]
 [ext_resource type="Script" uid="uid://cloq81xps7tex" path="res://scripts/savesystem/extensions/deployment_saver.gd" id="21_8k34q"]
 [ext_resource type="Script" uid="uid://c6mrkx24mpkww" path="res://scripts/savesystem/extensions/robots_pool_saver.gd" id="22_nqwxm"]
+[ext_resource type="Script" uid="uid://bywxn8sxvt2kg" path="res://scripts/savesystem/extensions/inventory_transfer_saver.gd" id="23_m7q4g"]
 [ext_resource type="Script" uid="uid://bi0uqcrvingk5" path="res://scripts/savesystem/scene_swapper_sentinel.gd" id="26_plmhy"]
 [ext_resource type="Script" uid="uid://cvprjpggj7xyr" path="res://scripts/spaceship/printers_manager.gd" id="27_q2lbv"]
 [ext_resource type="Script" uid="uid://l84hgmlhvq4m" path="res://scripts/spaceship/nav_manager.gd" id="29_r15p1"]
@@ -633,7 +634,7 @@ _tween_notifiction_duration = 0.5
 script = ExtResource("8_r0fvi")
 storage_provider = NodePath("StorageProvider")
 level_saver = NodePath("SpaceshipSaver")
-extensions = [NodePath("Extensions/GlobalGameStateSaver"), NodePath("Extensions/ChapSaver"), NodePath("Extensions/RobotsPoolsSaver"), NodePath("Extensions/InventorySaver")]
+extensions = [NodePath("Extensions/GlobalGameStateSaver"), NodePath("Extensions/ChapSaver"), NodePath("Extensions/RobotsPoolsSaver"), NodePath("Extensions/InventorySaver"), NodePath("Extensions/InventoryTransferSaver")]
 late_extensions = [NodePath("Extensions/DeploymentSaver")]
 migrations = [NodePath("Migrations/v0_0_2")]
 metadata/_custom_type_script = "uid://bkjlt23hansuv"
@@ -663,11 +664,13 @@ metadata/_custom_type_script = "uid://tgtpk0qo2xx7"
 [node name="ChapSaver" type="Node" parent="SaveSystem/Extensions" node_paths=PackedStringArray("chap_ui")]
 script = ExtResource("11_yckko")
 chap_ui = NodePath("../../../CanvasLayer/CHAP AI")
+warn_missing = false
 metadata/_custom_type_script = "uid://cewd737qkspe7"
 
 [node name="InventorySaver" type="Node" parent="SaveSystem/Extensions"]
 script = ExtResource("15_d22a7")
 _save_key = "spaceship-inventory"
+warn_missing = false
 metadata/_custom_type_script = "uid://clmlakb50km2n"
 
 [node name="DeploymentSaver" type="Node" parent="SaveSystem/Extensions"]
@@ -678,6 +681,11 @@ metadata/_custom_type_script = "uid://cloq81xps7tex"
 [node name="RobotsPoolsSaver" type="Node" parent="SaveSystem/Extensions"]
 script = ExtResource("22_nqwxm")
 metadata/_custom_type_script = "uid://c6mrkx24mpkww"
+
+[node name="InventoryTransferSaver" type="Node" parent="SaveSystem/Extensions"]
+script = ExtResource("23_m7q4g")
+warn_missing = false
+metadata/_custom_type_script = "uid://bywxn8sxvt2kg"
 
 [node name="Inventory" type="Node" parent="."]
 script = ExtResource("15_tst1b")

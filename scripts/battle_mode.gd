@@ -442,7 +442,8 @@ func exit_battle() -> void:
 
     animator.play("fade_out_battle")
     await get_tree().create_timer(0.5).timeout
-    trigger.complete()
+    if trigger != null:
+        trigger.complete()
 
     trigger = null
     if battle_player.is_alive():

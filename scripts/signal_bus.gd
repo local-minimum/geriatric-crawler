@@ -13,6 +13,7 @@ signal on_update_interest_rate(rate_points: int)
 signal on_update_rent(rent: int)
 
 # Spaceship
+signal on_finalize_loadout(loadout: Dictionary)
 signal on_before_deploy(level_id: String, robot: RobotData, duration_days: int, insured: bool)
 
 # Saving and loading

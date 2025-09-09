@@ -30,6 +30,7 @@ static func notify(message: NotificationData) -> void:
     if active_manager == null:
         push_warning("Notification %s may be lost because there's no active notifications system" % message)
 
+    print_debug("[Notifications Manager] recieved message \"%s: %s\"" % [message.title, message.message])
     _queue.append(message)
     if active_manager != null:
         active_manager.on_queue_updated.emit(_queue.size())

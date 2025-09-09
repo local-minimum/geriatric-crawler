@@ -29,5 +29,8 @@ func load_from_data(extentsion_save_data: Dictionary) -> void:
 
     if extentsion_save_data is Dictionary[String, float]:
         _inv.inventory.load_from_save(extentsion_save_data)
+    elif extentsion_save_data is Dictionary && (extentsion_save_data as Dictionary).is_empty():
+        _inv.inventory.load_from_save({})
     else:
         push_error("Couldn't load %s as %s inventory because it's not the expected type" % [extentsion_save_data, _save_key])
+        _inv.inventory.load_from_save({})

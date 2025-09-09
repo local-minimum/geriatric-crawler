@@ -19,7 +19,7 @@ func _handle_update_manager(old_manager: NotificationsManager, new_manager: Noti
         old_manager.on_queue_updated.disconnect(_handle_update_queue)
         old_manager.on_show_message.disconnect(_show_message)
         old_manager.on_hide_message.disconnect(_hide_message)
-        print_debug("Disconnected from %s" % old_manager)
+        print_debug("[Notifications Panel UI] Disconnected from %s" % old_manager)
 
     if new_manager.on_update_manager.connect(_handle_update_manager) != OK:
         push_warning("Failed to connect on update manager")
@@ -33,14 +33,14 @@ func _handle_update_manager(old_manager: NotificationsManager, new_manager: Noti
     if new_manager.on_hide_message.connect(_hide_message) != OK:
         push_warning("Failed to connect on hide message")
 
-    print_debug("Connected to %s" % old_manager)
+    print_debug("[Notifications Panel UI] Connected to %s" % old_manager)
 
 
 var _active_notifications: Array[NotificationUI] = []
 
 func _handle_update_queue(queue_size: int) -> void:
     if queue_size > 0:
-        print_debug("%s messages waiting" % queue_size)
+        print_debug("[Notifications Panel UI] %s messages waiting" % queue_size)
 
 func _get_tween_offset() -> float:
     # TODO: Offset side direction should be based on settings

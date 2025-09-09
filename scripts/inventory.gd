@@ -54,6 +54,12 @@ func _exit_tree() -> void:
 
 func _ready() -> void:
     __SignalBus.on_activate_inventory.emit(self)
+    if __SignalBus.on_finalize_loadout.connect(_handle_loadout) != OK:
+        push_error("Failed to connect finalize loadout")
+
+func _handle_loadout(loadout: Dictionary[String, float]) -> void:
+    if !remove_many_from_inventory(loadout):
+        push_error("Failed to remove loadout from inventory, this will cause item duplications of something in %s" % loadout)
 
 class InventoryListing:
     var id: String

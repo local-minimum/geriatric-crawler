@@ -29,6 +29,8 @@ var grid_entities: Array[GridEntity]
 @export var primary_entry_portal: LevelPortal
 @export var level_portals: Array[LevelPortal]
 
+var activated_exit_portal: LevelPortal
+
 
 var paused: bool:
     set(value):

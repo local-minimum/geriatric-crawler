@@ -867,7 +867,9 @@ direction = 4
 [node name="Side DOWN" parent="LevelGeometry/Elevation 0/Node (0, 0, 2)" instance=ExtResource("9_4mxkc")]
 
 [node name="Airlock" parent="LevelGeometry/Elevation 0/Node (0, 0, 2)" instance=ExtResource("18_24aia")]
+exit_level_target = "hub-spaceship"
 entry_lookdirection = 1
+allow_exit = true
 _blocks_sides = Array[int]([2])
 
 [node name="Elevation 1" type="Node3D" parent="LevelGeometry"]
@@ -1105,6 +1107,7 @@ direction = 2
 [node name="Airlock" parent="LevelGeometry/Elevation 1/Node (5, 1, -2)" instance=ExtResource("18_24aia")]
 transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0, 0)
 id = "upper_airlock"
+exit_level_target = "hub-spaceship"
 entry_lookdirection = 3
 allow_exit = true
 _blocks_sides = Array[int]([4])

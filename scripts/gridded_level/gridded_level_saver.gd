@@ -30,6 +30,15 @@ func get_level_name() -> String:
 
     return level.level_id
 
+func get_level_to_load() -> String:
+    if level.activated_exit_portal != null:
+        var target: String = level.activated_exit_portal.exit_level_target
+        if target.is_empty():
+            return get_level_name()
+        return target
+
+    return get_level_name()
+
 ## Collect save information for this particular level
 func collect_save_state() -> Dictionary:
     var encounters_save: Dictionary[String, Dictionary] = {}

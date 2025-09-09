@@ -20,6 +20,7 @@ class_name MissionOpsRoom
 
 enum PanelPhase {NONE, OPTIONS, LOADOUT, DEPLOY}
 var _phase: PanelPhase = PanelPhase.NONE
+var _loadout: Dictionary[String, float]
 
 func activate() -> void:
     select_robot_btn.disabled = false
@@ -156,9 +157,11 @@ func _on_deploy_pressed() -> void:
     _phase = PanelPhase.DEPLOY
 
 func _on_unlock_loadouts_pressed() -> void:
+    _loadout = {}
     NotificationsManager.warn(tr("NOTICE_SYSTEM_ERROR"), tr("LOADOUT_SYSTEM_NOT_RESPONDING"))
 
 func _on_skip_loadout_pressed() -> void:
+    _loadout = {}
     deploy_btn.disabled = false
     _on_deploy_pressed()
 
@@ -179,6 +182,7 @@ func _on_deploy_without_insurance_pressed(insured: bool = false) -> void:
 
     var destination: DestinationData = spaceship.nav.get_current_destination()
     __SignalBus.on_before_deploy.emit(destination.destination_id, _selected_robot, destination.duration_days, insured)
+    __SignalBus.on_finalize_loadout.emit(_loadout)
 
     if __SignalBus.on_save_complete.connect(_handle_deploy_saved) != OK:
         push_warning("Will not be able to swap scenes after save")

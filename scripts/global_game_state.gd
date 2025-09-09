@@ -102,9 +102,9 @@ func set_rent(new_rent: int) -> void:
     _rent = new_rent
     __SignalBus.on_update_rent.emit(_rent)
 
+## Note that setting game day this way doesn't notify anything
 func set_game_day(new_game_day: int) -> void:
     game_day = new_game_day
-    __SignalBus.on_update_day.emit(year, month, day_of_month, days_until_end_of_month)
 
 func go_to_next_day(days: int = 1) -> void:
     if days <= 0:
