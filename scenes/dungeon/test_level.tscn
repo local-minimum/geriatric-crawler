@@ -1,4 +1,4 @@
-[gd_scene load_steps=66 format=3 uid="uid://dwqcwbgj8p6q0"]
+[gd_scene load_steps=69 format=3 uid="uid://dwqcwbgj8p6q0"]
 
 [ext_resource type="Script" uid="uid://dqe42q7uub84r" path="res://scripts/gridded_level/level_features/grid_level.gd" id="1_dd1ob"]
 [ext_resource type="PackedScene" uid="uid://bfoog3fb4v5ij" path="res://scenes/dungeon/player.tscn" id="3_m6mav"]
@@ -36,6 +36,7 @@
 [ext_resource type="Script" uid="uid://bl72bpxm44td8" path="res://scripts/key_master.gd" id="32_wymjw"]
 [ext_resource type="Resource" uid="uid://ctc6pq4wyhidi" path="res://resources/enemy_cards/killer_cards/killer-cleanup-130.tres" id="34_dnq43"]
 [ext_resource type="Script" uid="uid://bk8s8268riiuc" path="res://scripts/card_battle/punishment_deck.gd" id="34_dw5j8"]
+[ext_resource type="Texture2D" uid="uid://bykk6cgl118r1" path="res://sprites/enemies/killer.png" id="34_rljv5"]
 [ext_resource type="Resource" uid="uid://crnuafh88gx8a" path="res://resources/punishment_cards/alarm_1.tres" id="35_8b3qi"]
 [ext_resource type="Resource" uid="uid://cnymccjlh67ss" path="res://resources/enemy_cards/killer_cards/killer-cleanup-270.tres" id="35_rljv5"]
 [ext_resource type="Resource" uid="uid://bdnot7xdosh2t" path="res://resources/enemy_cards/killer_cards/killer-evicerate-450.tres" id="36_jmfrw"]
@@ -94,6 +95,12 @@ transparency = 1
 [sub_resource type="QuadMesh" id="QuadMesh_kmgg5"]
 material = SubResource("StandardMaterial3D_632b7")
 size = Vector2(0.8, 1.2)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_jmfrw"]
+albedo_texture = ExtResource("34_rljv5")
+
+[sub_resource type="QuadMesh" id="QuadMesh_jqdjk"]
+material = SubResource("StandardMaterial3D_jmfrw")
 
 [node name="TestLevel" type="Node3D" node_paths=PackedStringArray("player", "level_geometry", "punishments", "primary_entry_portal", "level_portals")]
 script = ExtResource("1_dd1ob")
@@ -1495,17 +1502,20 @@ script = ExtResource("25_s5loo")
 _self = NodePath("..")
 metadata/_custom_type_script = "uid://6vnrccj8frlq"
 
-[node name="Killer Moving Encounter" type="Node3D" parent="Encounters" node_paths=PackedStringArray("effect", "_spawn_node")]
+[node name="Killer Moving Encounter" type="Node3D" parent="Encounters" node_paths=PackedStringArray("effect", "graphics", "_spawn_node")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.49959, 5.02006, -4.86732)
 script = ExtResource("8_kmgg5")
 encounter_id = "killer-one"
 effect = NodePath("BattleModeTrigger")
+graphics = NodePath("Avatar/MeshInstance3D")
 _spawn_node = NodePath("../../LevelGeometry/Elevation 2/Node (2, 2, -2)")
+look_direction = 1
 metadata/_custom_type_script = "uid://bqahhkn6dpex"
 
 [node name="Avatar" type="Node3D" parent="Encounters/Killer Moving Encounter"]
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Encounters/Killer Moving Encounter/Avatar"]
+mesh = SubResource("QuadMesh_jqdjk")
 
 [node name="BattleModeTrigger" type="Node" parent="Encounters/Killer Moving Encounter" node_paths=PackedStringArray("enemies")]
 script = ExtResource("10_rvj20")
@@ -1525,6 +1535,7 @@ play_slots = 2
 deck = NodePath("EnemyBattleDeck")
 brain = NodePath("BattleBrain")
 _target_system = NodePath("BattleEnemyTargetSystem")
+sprite = ExtResource("34_rljv5")
 metadata/_custom_type_script = "uid://ccsqys7ldqoh"
 
 [node name="EnemyBattleDeck" type="Node" parent="Encounters/Killer Moving Encounter/BattleModeTrigger/Killer AI"]
