@@ -321,16 +321,18 @@ func _pass_action_turn() -> bool:
     if enemy_initiative == -1 && _player_initiative == -1:
         return false
 
+    if !robot.is_alive() || !_has_alive_enemies():
+        return false
+
     var enemies: Array[BattleEntity] = []
     enemies.append_array(_enemies)
     # TODO: Here's a HACK we are always only one player
     var player_party: Array[BattleEntity] = [battle_player]
 
     if _player_initiative >= enemy_initiative:
-        if robot.is_alive():
-            await get_tree().create_timer(next_entity_timeout).timeout
-            battle_player.play_actions(player_party, enemies, battle_hand.cards_in_hand())
-            _player_initiative = -1
+        await get_tree().create_timer(next_entity_timeout).timeout
+        battle_player.play_actions(player_party, enemies, battle_hand.cards_in_hand())
+        _player_initiative = -1
         return true
 
     await get_tree().create_timer(next_entity_timeout).timeout
@@ -361,20 +363,23 @@ func _handle_player_death(entity: BattleEntity) -> void:
         for enemy: BattleEnemy in _enemies:
             enemy.end_turn_early()
 
-func _handle_enemy_death(entity: BattleEntity) -> void:
-    var remaining_enemies: bool = _enemies.any(
+func _has_alive_enemies() -> bool:
+    return _enemies.any(
         func (e: BattleEnemy) -> bool:
             return e.is_alive()
     )
 
-    print_debug("%s died, any remaining %s" % [entity.name, remaining_enemies])
+func _handle_enemy_death(entity: BattleEntity) -> void:
+    var any_enemy_alive: bool = _has_alive_enemies()
+
+    print_debug("%s died, any remaining %s" % [entity.name, any_enemy_alive])
 
     if entity is BattleEnemy:
         var enemy: BattleEnemy = entity
         var credit_gain: int = base_slaying_income + maxi(0, enemy.level - 1) * enemy_level_bonus + enemy.carried_credits
         __GlobalGameState.deposit_credits(credit_gain)
 
-    if !remaining_enemies:
+    if !any_enemy_alive:
         battle_player.end_turn_early()
 #endregion PHASE PLAY CARD
 

@@ -42,7 +42,7 @@ func _ready() -> void:
     if battle_player != null:
         battle_player.use_robot(self)
 
-func is_alive() -> bool: return _data.alive
+func is_alive() -> bool: return _data.alive && _data.health > 0
 
 func obtained_upgrades() -> int: return _data.obtained_upgrades.size()
 

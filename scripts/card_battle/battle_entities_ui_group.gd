@@ -48,7 +48,7 @@ func _handle_join_entity(entity: BattleEntity) -> void:
     # TODO: Fancy entry into battle, some delays
 
     if _connected_entities.has(entity):
-        push_error("%s already in battle" % entity)
+        push_error("%s already in battle group" % entity)
         return
 
     var ui: BattleEntityUI = _get_unused_ui()
