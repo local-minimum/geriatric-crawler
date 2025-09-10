@@ -52,6 +52,12 @@ signal on_death(battle_entity: BattleEntity)
 signal on_start_turn(entity: BattleEntity)
 signal on_end_turn(entity: BattleEntity)
 
+# -> Enemy
+signal on_prepare_enemy_hand(battle_enemy: BattleEnemy, slotted_cards: Array[BattleCardData])
+signal on_show_enemy_card(battle_enemy: BattleEnemy, card_index: int, card: BattleCardData, suit_bonus: int, rank_bonus: int)
+signal on_play_enemy_card(battle_enemy: BattleEnemy, card_index: int)
+signal on_hide_enemy_card(battle_enemy: BattleEnemy, card_index: int)
+
 # Inventory
 signal on_add_to_inventory(inventory: Inventory, id: String, amount: float, total: float)
 signal on_remove_from_inventory(inventory: Inventory, id: String, amount: float, total: float)

@@ -1,9 +1,6 @@
 extends BattleEntity
 class_name BattleEnemy
 
-signal on_prepare_hand(battle_enemy: BattleEnemy, slotted_cards: Array[BattleCard])
-signal on_play_card(card: BattleCardData, suit_bonus: int, rank_bonus: int, pause: float)
-
 ## This should be a unique ID within each battle mode trigger / group of enemies
 @export var id: String = "first"
 
@@ -106,7 +103,7 @@ func prepare_hand() -> void:
     for card: BattleCardData in _slotted:
         _hand.erase(card)
 
-    on_prepare_hand.emit(self, _slotted)
+    __SignalBus.on_prepare_enemy_hand.emit(self, _slotted)
 
 func play_actions(
     allies: Array[BattleEntity],
@@ -116,10 +113,12 @@ func play_actions(
     _halted = false
     var previous: BattleCardData = null
     var idx: int = 0
-    var suit_bonus: int
-    var rank_bonus: int
+    var suit_bonuses: Array[int]
+    var rank_bonuses: Array[int]
+    var suit_bonus: int = 0
+    var rank_bonus: int = 0
     var rank_direction: int
-    var card_pause: float = 3
+    var card_pause: float = 2
 
     ArrayUtils.shift_nulls_to_end(_slotted)
 
@@ -127,25 +126,38 @@ func play_actions(
 
     __SignalBus.on_start_turn.emit(self)
 
-    await get_tree().create_timer(1).timeout
-
-    for card: BattleCardData in _slotted:
-        if card == null:
-            break
-
-        print_debug("%s playes card %s with %s effects" % [name, card.name, card.primary_effects.size()])
+    await get_tree().create_timer(0.3).timeout
+    for card_idx: int in range(_slotted.size()):
+        var card: BattleCardData = _slotted[card_idx]
 
         var next: BattleCardData = _slotted[idx + 1] if idx < _slotted.size() - 1 else null
 
-        suit_bonus = get_suit_bonus(card, suit_bonus, _suit_bonus_step_size, previous, next, idx == 0, _hand)
-        rank_bonus = get_rank_bonus(card, rank_bonus, _rank_bonus_step_size, previous, rank_direction, next, idx == 0, _suit_bonus_on_descending, _hand)
+        suit_bonuses.append(get_suit_bonus(card, suit_bonus, _suit_bonus_step_size, previous, next, idx == 0, _hand))
+        rank_bonuses.append(get_rank_bonus(card, rank_bonus, _rank_bonus_step_size, previous, rank_direction, next, idx == 0, _suit_bonus_on_descending, _hand))
+
+        __SignalBus.on_show_enemy_card.emit(self, card_idx, card, suit_bonus, rank_bonus)
+
+        await get_tree().create_timer(0.1).timeout
+
+    await get_tree().create_timer(0.5).timeout
+
+    for card_idx: int in range(_slotted.size()):
+        var card: BattleCardData = _slotted[card_idx]
+
+        if card == null:
+            continue
+
+        suit_bonus = suit_bonuses[card_idx]
+        rank_bonus = rank_bonuses[card_idx]
+
+        print_debug("%s playes card %s with %s effects" % [name, card.name, card.primary_effects.size()])
 
         if previous != null:
             rank_direction = signi(card.rank - previous.rank)
 
-        on_play_card.emit(card, suit_bonus, rank_bonus, card_pause)
+        __SignalBus.on_play_enemy_card.emit(self, card_idx)
 
-        await get_tree().create_timer(card_pause).timeout
+        await get_tree().create_timer(card_pause * 0.3).timeout
 
         for effect: BattleCardPrimaryEffect in card.primary_effects:
             var targets_range: Array[int] = effect.get_target_range()
@@ -173,6 +185,9 @@ func play_actions(
 
         idx += 1
         previous = card
+
+        await get_tree().create_timer(card_pause * 0.7).timeout
+        __SignalBus.on_hide_enemy_card.emit(self, card_idx)
 
     print_debug("%s ends its turn" % name)
 

@@ -735,18 +735,46 @@ texture = ExtResource("10_bkkck")
 expand_mode = 3
 stretch_mode = 5
 
-[node name="EnemyPlayedCardUI" type="Control" parent="CanvasLayer" node_paths=PackedStringArray("battle")]
-layout_mode = 3
-anchor_left = 0.324
-anchor_top = 0.441
-anchor_right = 0.327
-anchor_bottom = 0.441
+[node name="Enemy Played Hand" type="HBoxContainer" parent="CanvasLayer"]
+anchors_preset = -1
+anchor_left = 0.1
+anchor_top = 0.5
+anchor_right = 0.6
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = -72.0
+offset_bottom = -20.0
 grow_horizontal = 2
 grow_vertical = 2
-size_flags_horizontal = 4
+mouse_filter = 2
+alignment = 1
+
+[node name="EnemyPlayedCardUI1" type="Control" parent="CanvasLayer/Enemy Played Hand" node_paths=PackedStringArray("battle")]
+layout_mode = 2
+size_flags_horizontal = 6
 localize_numeral_system = false
 script = ExtResource("10_50o5a")
-battle = NodePath("../..")
+battle = NodePath("../../..")
+tween_play_duration = 0.4
+
+[node name="EnemyPlayedCardUI2" type="Control" parent="CanvasLayer/Enemy Played Hand" node_paths=PackedStringArray("battle")]
+layout_mode = 2
+size_flags_horizontal = 6
+localize_numeral_system = false
+script = ExtResource("10_50o5a")
+battle = NodePath("../../..")
+show_index = 1
+tween_play_duration = 0.4
+
+[node name="EnemyPlayedCardUI3" type="Control" parent="CanvasLayer/Enemy Played Hand" node_paths=PackedStringArray("battle")]
+layout_mode = 2
+size_flags_horizontal = 6
+localize_numeral_system = false
+script = ExtResource("10_50o5a")
+battle = NodePath("../../..")
+show_index = 2
+tween_play_duration = 0.4
 
 [node name="Prompt" type="Label" parent="CanvasLayer" node_paths=PackedStringArray("battle")]
 auto_translate_mode = 2
