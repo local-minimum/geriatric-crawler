@@ -103,7 +103,7 @@ func _hide_card(_battle_enemy: BattleEnemy, card_idx: int) -> void:
         _battle_card,
         "scale",
         Vector2.ZERO,
-        tween_out_duration).set_trans(Tween.TRANS_ELASTIC) #.set_ease(Tween.EASE_OUT_IN)
+        tween_out_duration).set_trans(Tween.TRANS_QUART).set_ease(Tween.EASE_IN)
     @warning_ignore_restore("return_value_discarded")
 
     if _tween.connect(
