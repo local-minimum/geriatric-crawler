@@ -9,7 +9,6 @@ class_name EnemyPlayedCardUI
 @export var show_size: float = 1.25
 @export var play_size: float = 1.5
 
-
 var _battle_card: BattleCard
 
 func _ready() -> void:
@@ -33,7 +32,6 @@ func _load_card() -> void:
     _battle_card.visible = false
     _battle_card.interactable = false
     self.add_child(_battle_card)
-    # _battle_card.owner = self.get_tree().root
 
 var _tween: Tween
 

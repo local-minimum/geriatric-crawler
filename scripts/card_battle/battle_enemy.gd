@@ -142,6 +142,9 @@ func play_actions(
     await get_tree().create_timer(0.5).timeout
 
     for card_idx: int in range(_slotted.size()):
+        if _halted:
+            break
+
         var card: BattleCardData = _slotted[card_idx]
 
         if card == null:
@@ -160,6 +163,9 @@ func play_actions(
         await get_tree().create_timer(card_pause * 0.3).timeout
 
         for effect: BattleCardPrimaryEffect in card.primary_effects:
+            if _halted:
+                continue
+
             var targets_range: Array[int] = effect.get_target_range()
             var n_targets: int = randi_range(targets_range[0], targets_range[1])
             var had_effect: bool = false

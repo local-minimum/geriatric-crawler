@@ -177,7 +177,6 @@ func hide_ui() -> void:
     _done_slotting_cards_button.visible = false
     visible = false
 
-
 func _on_player_cards_slotted_button_pressed() -> void:
     _done_slotting_cards_button.visible = false
     for card: BattleCard in slotted_cards:

@@ -11,7 +11,6 @@ signal on_player_select_targets(
 signal on_player_select_targets_complete()
 signal on_before_execute_effect_on_target(target: BattleEntity)
 signal on_after_execute_effect_on_target(target: BattleEntity)
-signal on_after_execute_card()
 
 const _ID_KEY: String = "id"
 
@@ -45,6 +44,7 @@ var _active_card_effect_index: int
 
 func _execute_next_card() -> void:
     if _halted:
+        __SignalBus.on_end_turn.emit(self)
         return
 
     if _active_card_index >= _slots.slotted_cards.size():
@@ -131,11 +131,13 @@ func _restore_card_size() -> void:
     tween.play()
 
 func _execute_next_effect() -> void:
+    if _halted:
+        __SignalBus.on_end_turn.emit(self)
+        return
+
     var card: BattleCard = _slots.slotted_cards[_active_card_index]
     if card == null:
         push_warning("We should probably be halted %s, slot idx %s doesn't have a card" % [_halted, _active_card_index])
-
-        on_after_execute_card.emit()
 
         _active_card_index += 1
         _execute_next_card()
@@ -143,8 +145,6 @@ func _execute_next_effect() -> void:
 
     if _active_card_effect_index >= card.data.primary_effects.size():
         _restore_card_size()
-
-        on_after_execute_card.emit()
 
         _active_card_index += 1
         _execute_next_card()

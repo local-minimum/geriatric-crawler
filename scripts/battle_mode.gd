@@ -33,11 +33,18 @@ var robot: Robot
 const _battle_card_resource: PackedScene = preload("res://scenes/battle_card.tscn")
 var _cards: Array[BattleCard] = []
 
+var _enemies: Array[BattleEnemy]
+var _next_active_enemy: int
+
+var _player_initiative: int
+
 var previous_card: BattleCardData
 var rank_direction: int
 var suit_bonus: int
 var rank_bonus: int
+
 var battling: bool
+var _inited: bool
 
 static func find_battle_parent(current: Node, inclusive: bool = true) ->  BattleMode:
     if inclusive && current is BattleMode:
@@ -55,8 +62,6 @@ static func find_battle_parent(current: Node, inclusive: bool = true) ->  Battle
 
 func _init() -> void:
     add_to_group(LEVEL_GROUP)
-
-var _inited: bool
 
 func _ready() -> void:
     if battle_hand.on_hand_drawn.connect(_after_deal) != OK:
@@ -99,13 +104,9 @@ func _handle_new_level() -> void:
         robot = GridLevel.active_level.player.robot
         battle_player.use_robot(robot)
 
-var _next_active_enemy: int
-var _player_initiative: int
-
 func get_battling() -> bool:
     return _ui.visible && _inited && battling
 
-var _enemies: Array[BattleEnemy]
 func get_enemies() -> Array[BattleEnemy]:
     return _enemies.duplicate()
 
@@ -357,11 +358,6 @@ func _handle_player_death(entity: BattleEntity) -> void:
         for enemy: BattleEnemy in _enemies:
             enemy.end_turn_early()
 
-    # TODO Handle party wipe better
-    exit_battle()
-
-var _ending_player_turn_early: bool
-
 func _handle_enemy_death(entity: BattleEntity) -> void:
     var remaining_enemies: bool = _enemies.any(
         func (e: BattleEnemy) -> bool:
@@ -369,6 +365,7 @@ func _handle_enemy_death(entity: BattleEntity) -> void:
     )
 
     print_debug("%s died, any remaining %s" % [entity.name, remaining_enemies])
+
     if entity is BattleEnemy:
         var enemy: BattleEnemy = entity
         var credit_gain: int = base_slaying_income + maxi(0, enemy.level - 1) * enemy_level_bonus + enemy.carried_credits
@@ -376,11 +373,6 @@ func _handle_enemy_death(entity: BattleEntity) -> void:
 
     if !remaining_enemies:
         battle_player.end_turn_early()
-        if battle_player.on_after_execute_card.connect(exit_battle) == OK:
-            _ending_player_turn_early = true
-        else:
-            push_error("Failed to connect after execute card on player %s" % battle_player)
-            exit_battle()
 #endregion PHASE PLAY CARD
 
 #region PHASE CLEANUP
@@ -390,7 +382,7 @@ func _remembers_previous_end_of_round() -> bool: return robot.get_skill_level(Ro
 
 func _remembers_to_next_battle() -> bool: return robot.get_skill_level(RobotAbility.SKILL_HAND_MEMORY) > 2
 
-func _clean_up_round(exit_battle_cleanup: bool = false) -> void:
+func _clean_up_round() -> void:
     _enemies = _enemies.filter(
         func (enemy: BattleEnemy) -> bool:
             if enemy.is_alive():
@@ -402,17 +394,13 @@ func _clean_up_round(exit_battle_cleanup: bool = false) -> void:
             return false
     )
 
-    if !exit_battle_cleanup && _enemies.is_empty():
-        exit_battle()
-        return
-
-    if !battle_player.is_alive():
-        print_debug("[Battle Mode] WE DEAD, no cleanup")
-        return
-
-    battle_hand.slots.hide_slotted_cards(exit_battle_cleanup)
+    battle_hand.slots.hide_slotted_cards()
     battle_player.clean_up_round()
     player_deck.discard_from_hand(battle_hand.round_end_cleanup())
+
+    if _enemies.is_empty() || !battle_player.is_alive():
+        exit_battle()
+        return
 
     if !_remembers_bonus_end_of_round():
         suit_bonus = 0
@@ -421,19 +409,16 @@ func _clean_up_round(exit_battle_cleanup: bool = false) -> void:
     if !_remembers_previous_end_of_round():
         previous_card = null
 
-    if !exit_battle_cleanup:
-        round_start_prepare_hands()
+    round_start_prepare_hands()
+
 #endregion PHASE CLEANUP
 
 #region END BATTLE
 func exit_battle() -> void:
+    if !battling:
+        return
+
     battling = false
-
-    if _ending_player_turn_early:
-        battle_player.on_after_execute_card.disconnect(exit_battle)
-        _ending_player_turn_early = false
-
-    _clean_up_round(true)
 
     if !_remembers_to_next_battle():
         suit_bonus = 0
@@ -445,12 +430,19 @@ func exit_battle() -> void:
         enemy.clean_up_battle()
 
     on_entity_leave_battle.emit(battle_player)
+
     battle_player.clean_up_battle()
+
+    @warning_ignore_start("return_value_discarded")
+    battle_hand.clear_hand()
+    @warning_ignore_restore("return_value_discarded")
 
     _enemies.clear()
 
     animator.play("fade_out_battle")
-    await get_tree().create_timer(0.5).timeout
+
+    await get_tree().create_timer(0.75).timeout
+
     if trigger != null:
         trigger.complete()
 
