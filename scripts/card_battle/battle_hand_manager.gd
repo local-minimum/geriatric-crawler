@@ -99,8 +99,6 @@ func draw_hand(
     emit_event: bool = true,
     draw_from_origin: bool = true
 ) -> void:
-    # print_debug("\nNew hand")
-    # print_stack()
     visible = true
 
     for tween: Tween in _card_tweens.values():
@@ -335,18 +333,24 @@ func _resque_collision(card: BattleCard) -> void:
 
 func _handle_card_drag_end(card: BattleCard) -> void:
     if slots.is_over_slots(card):
+        print_debug("[Battle Hand Manager] %s is over some slot" % card.name)
         hand.erase(card)
         _remove_from_lookups(card)
-        if !slots.take(card):
+
+        if slots.take(card):
+            print_debug("[Battle Hand Manager] %s was accepted by slot" % card.name)
+        else:
             _return_card_to_hand(card, null)
+            print_debug("[Battle Hand Manager] %s refused by slot" % card.name)
 
         # If there was a card in the slot it will organize hand twice in a row
-        _organize_hand()
+        _organize_hand.call_deferred()
 
     else:
         var card_idx: int = _get_card_position_index(card)
 
         if slots.has_card(card):
+            print_debug("[Battle Hand Manager] %s was slotted but no more" % card.name)
             @warning_ignore_start("return_value_discarded")
             slots.unslot_card(card)
             @warning_ignore_restore("return_value_discarded")
@@ -359,9 +363,10 @@ func _handle_card_drag_end(card: BattleCard) -> void:
             else:
                 _reverse_card_positions[card_idx] = card
 
-            _organize_hand()
+            _organize_hand.call_deferred()
             return
 
+        print_debug("[Battle Hand Manager] %s swapping position to %s" % [card.name, card_idx])
         __SignalBus.on_player_hand_debug.emit("Releasing card %s onto index %s" % [card.data.id, card_idx])
         var action: Callable = func () -> void:
             tween_card_to_position(card, card_idx, 0.05).play()
@@ -397,13 +402,19 @@ func _return_card_to_hand(card: BattleCard, _position_holder: BattleCard) -> voi
     _organize_hand()
 
 func _organize_hand() -> void:
-    var positions: Array[int] =_reverse_card_positions.keys()
+    var positions: Array[int] = _reverse_card_positions.keys()
     positions.sort()
 
     var cards: Array[BattleCard] = []
     for pos: int in positions:
         if _reverse_card_positions[pos] != null:
-            cards.append(_reverse_card_positions[pos])
+            var card: BattleCard = _reverse_card_positions[pos]
+            if slots.has_card(card):
+                print_debug("[Battle Hand Manager] Hand thinks %s is in hand but is slotted" % [_reverse_card_positions[pos].name])
+                _remove_from_lookups(card)
+                hand.erase(card)
+            else:
+                cards.append(_reverse_card_positions[pos])
 
     for card: BattleCard in hand:
         if !cards.has(card):

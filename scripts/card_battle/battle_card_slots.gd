@@ -67,28 +67,30 @@ func take(card: BattleCard, first_empty: bool = false) -> bool:
     var slot_idx: int = 0
     for slot: Control in _slot_rects:
         if !slot.visible:
-            break
+            continue
 
         if first_empty:
-            if slotted_cards[slot_idx] == null:
+            if slotted_cards[slot_idx] == null || slotted_cards[slot_idx] == card:
                 best_slot = slot
                 break
-            else:
-                slot_idx += 1
-                continue
-
-        var slot_rect: Rect2 = slot.get_global_rect()
-        if card_rect.intersects(slot_rect):
-            var dist_sq: float = slot_rect.get_center().distance_squared_to(card_rect.get_center())
-            var y_delta: float = card_rect.get_center().y - slot_rect.get_center().y
-            if (best_slot == null || dist_sq < best_dist_sq) && y_delta < _max_y_delta:
-                best_slot = slot
-                best_dist_sq = dist_sq
+        else:
+            var slot_rect: Rect2 = slot.get_global_rect()
+            if card_rect.intersects(slot_rect):
+                var dist_sq: float = slot_rect.get_center().distance_squared_to(card_rect.get_center())
+                var y_delta: float = card_rect.get_center().y - slot_rect.get_center().y
+                if (best_slot == null || dist_sq < best_dist_sq) && y_delta < _max_y_delta:
+                    best_slot = slot
+                    best_dist_sq = dist_sq
 
         slot_idx += 1
 
     if best_slot == null:
+        var idx: int = unslot_card(card)
+
+        print_debug("[Battle Card Slots] Card %s not overlapping any slot (was %s)" % [card.name, idx])
         return false
+
+    print_debug("[Battle Card Slots] Best slot is %s for %s" % [best_slot.name, card.name])
 
     tween_card_to_slot(card, best_slot, 0.1).play()
 
@@ -114,18 +116,32 @@ func tween_card_to_slot(card: BattleCard, target: Control, duration: float) -> T
 
     var slot_idx: int = _slot_rects.find(target)
     var old_slot: int = unslot_card(card)
+    if old_slot >= 0:
+        slotted_cards[old_slot] = null
+
     if slotted_cards[slot_idx] != null:
         var prev_slotted: BattleCard = slotted_cards[slot_idx]
 
+        print_debug("[Battle Card Slots] Attempt swap of cards %s (index %s) %s (index %s)" % [
+            card.name,
+            old_slot,
+            prev_slotted.name,
+            slot_idx,
+        ])
         # Swap slotted cards
         if old_slot >= 0:
-            tween_card_to_slot(
+            tween_card_to_slot.call_deferred(
                 prev_slotted,
                 _slot_rects[old_slot],
                 duration,
-            ).play()
+            )
         else:
             # Cards in hand shouldn't show their bonus
+            print_debug("[Battle Card Slots] returning %s to hand from slot %s because %s needs it" % [
+                prev_slotted.name,
+                slot_idx,
+                card.name,
+            ])
             prev_slotted.sync_display(0)
             __SignalBus.on_card_debug.emit(prev_slotted, "Returning to hand")
             __SignalBus.on_return_player_card_to_hand.emit(prev_slotted, card)
