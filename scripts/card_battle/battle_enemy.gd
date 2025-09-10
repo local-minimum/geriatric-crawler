@@ -58,28 +58,28 @@ func get_healthiness() -> float:
 func validate_health() -> void:
     if _health < 0:
         _health = max_health
-        __SignalBus.on_heal.emit(self, 0, _health, false)
+        __SignalBus.on_entity_heal.emit(self, 0, _health, false)
 
     if _health > max_health:
         _health = max_health
-        __SignalBus.on_heal.emit(self, 0, _health, false)
+        __SignalBus.on_entity_heal.emit(self, 0, _health, false)
 
 func is_alive() -> bool:
     return _health > 0
 
 func _hurt(amount: int) -> void:
     _health = max(0, _health - amount)
-    __SignalBus.on_hurt.emit(self, amount, _health)
+    __SignalBus.on_entity_hurt.emit(self, amount, _health)
 
     if _health == 0:
-        __SignalBus.on_death.emit(self)
+        __SignalBus.on_entity_death.emit(self)
 
 func _heal(amount: int) -> void:
     var raw_new: int = _health + amount
     var overshoot: bool = raw_new > max_health
     _health = min(raw_new, max_health)
 
-    __SignalBus.on_heal.emit(self, amount - (raw_new - _health), _health, overshoot)
+    __SignalBus.on_entity_heal.emit(self, amount - (raw_new - _health), _health, overshoot)
 #endregion HEALTH
 
 func get_entity_name() -> String:

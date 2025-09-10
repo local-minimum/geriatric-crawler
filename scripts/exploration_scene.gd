@@ -30,6 +30,43 @@ func _ready() -> void:
 
     _handle_handedness_change(AccessibilitySettings.handedness)
 
+    if __SignalBus.on_robot_death.connect(_handle_robot_death) != OK:
+        push_error("Failed to connect to robot death")
+
+    _disable_robot_death_effect()
+
+func _disable_robot_death_effect() -> void:
+    subviewport.set_instance_shader_parameter("pixels", -1)
+    print_debug("[Exploration Scene] Disabled pixelating effect")
+
+func _handle_robot_death(_robot: Robot) -> void:
+    print_debug("[Exploration Scene] Produce signal loss pixelating effect")
+    subviewport.set_instance_shader_parameter("pixels", 200)
+    subviewport.set_instance_shader_parameter("max_lerp", 0.1)
+
+    var duration: float = 1.0
+
+    var tween: Tween = create_tween()
+    tween.set_parallel()
+
+    tween.tween_method(
+        func (progress: float) -> void:
+            subviewport.set_instance_shader_parameter("max_lerp", progress)
+            ,
+        0.1,
+        0.8,
+        duration
+    )
+
+    tween.tween_method(
+        func (progress: int) -> void:
+            subviewport.set_instance_shader_parameter("pixels", progress)
+            ,
+        100,
+        8,
+        duration
+    ).set_trans(Tween.TRANS_QUART).set_ease(Tween.EASE_OUT)
+
 static func find_exploration_scene(current: Node, inclusive: bool = true) ->  ExplorationScene:
     if inclusive && current is ExplorationScene:
         return current as ExplorationScene

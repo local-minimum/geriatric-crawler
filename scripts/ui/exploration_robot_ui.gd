@@ -18,13 +18,13 @@ func _ready() -> void:
     if _exploration_ui.level.on_level_loaded.connect(_handle_new_level) != OK:
         push_error("Failed to connect on new level")
 
-    if __SignalBus.on_heal.connect(_handle_on_heal) != OK:
+    if __SignalBus.on_entity_heal.connect(_handle_on_heal) != OK:
         push_error("Failed to connect on heal")
 
-    if __SignalBus.on_hurt.connect(_handle_on_hurt) != OK:
+    if __SignalBus.on_entity_hurt.connect(_handle_on_hurt) != OK:
         push_error("Failed to connect on hurt")
 
-    if __SignalBus.on_death.connect(_handle_on_death) != OK:
+    if __SignalBus.on_entity_death.connect(_handle_on_death) != OK:
         push_error("Failed to connect on death")
 
     if __SignalBus.on_robot_complete_fight.connect(_handle_on_complete_fight) != OK:

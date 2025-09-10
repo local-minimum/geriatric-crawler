@@ -69,7 +69,7 @@ func _ready() -> void:
     if __SignalBus.on_end_turn.connect(_next_agent_turn) != OK:
         push_error("Failed to connect turn done")
 
-    if __SignalBus.on_death.connect(_handle_entity_death) != OK:
+    if __SignalBus.on_entity_death.connect(_handle_entity_death) != OK:
         push_error("Failed to connect death")
 
     _ui.visible = false

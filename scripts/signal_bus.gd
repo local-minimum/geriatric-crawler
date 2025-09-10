@@ -59,9 +59,9 @@ signal on_gain_shield(battle_entitiy: BattleEntity, shields: Array[int], new_shi
 signal on_break_shield(battle_entity: BattleEntity, shields: Array[int], broken_shield: int)
 
 # -> Health
-signal on_heal(battle_entity: BattleEntity, amount: int, new_health: int, overheal: bool)
-signal on_hurt(battle_entity: BattleEntity, amount: int, new_health: int)
-signal on_death(battle_entity: BattleEntity)
+signal on_entity_heal(battle_entity: BattleEntity, amount: int, new_health: int, overheal: bool)
+signal on_entity_hurt(battle_entity: BattleEntity, amount: int, new_health: int)
+signal on_entity_death(battle_entity: BattleEntity)
 
 # -> Turns
 signal on_start_turn(entity: BattleEntity)

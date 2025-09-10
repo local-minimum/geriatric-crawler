@@ -15,11 +15,11 @@ var _target_ease_duration: float = 0.1
 func _ready() -> void:
     visible = false
 
-    if __SignalBus.on_heal.connect(_handle_heal) != OK:
+    if __SignalBus.on_entity_heal.connect(_handle_heal) != OK:
         push_error("Failed to connect %s on_heal to UI" % _entity)
-    if __SignalBus.on_hurt.connect(_handle_hurt) != OK:
+    if __SignalBus.on_entity_hurt.connect(_handle_hurt) != OK:
         push_error("Failed to connect %s on_hurt to UI" % _entity)
-    if __SignalBus.on_death.connect(_handle_death) != OK:
+    if __SignalBus.on_entity_death.connect(_handle_death) != OK:
         push_error("Failed to connect %s on_death to UI" % _entity)
 
 
