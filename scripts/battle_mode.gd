@@ -123,6 +123,9 @@ func enter_battle(battle_trigger: BattleModeTrigger, player_robot: Robot) -> voi
     # TODO: Gather proximate battle triggers too and pull them into the fight!
     # TODO: Consider need to wait for enemy to animate death before lettning new enter...
 
+    for card: BattleCard in _cards:
+        card.card_played = false
+
     trigger = battle_trigger
 
     robot = player_robot
@@ -185,7 +188,7 @@ func deal_player_hand() -> void:
     var card_data_idx: int = 0
     # Resuse cards already instanced
     for card: BattleCard in _cards:
-        if !card.card_played || cards.has(card):
+        if cards.has(card):
             continue
 
         if card_data_idx >= new_cards:
@@ -436,6 +439,9 @@ func exit_battle() -> void:
     @warning_ignore_start("return_value_discarded")
     battle_hand.clear_hand()
     @warning_ignore_restore("return_value_discarded")
+
+    for card: BattleCard in _cards:
+        card.visible = false
 
     _enemies.clear()
 

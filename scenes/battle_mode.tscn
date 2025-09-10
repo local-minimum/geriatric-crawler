@@ -756,6 +756,7 @@ size_flags_horizontal = 6
 localize_numeral_system = false
 script = ExtResource("10_50o5a")
 battle = NodePath("../../..")
+tween_out_duration = 0.3
 tween_play_duration = 0.4
 
 [node name="EnemyPlayedCardUI2" type="Control" parent="CanvasLayer/Enemy Played Hand" node_paths=PackedStringArray("battle")]
@@ -765,6 +766,7 @@ localize_numeral_system = false
 script = ExtResource("10_50o5a")
 battle = NodePath("../../..")
 show_index = 1
+tween_out_duration = 0.3
 tween_play_duration = 0.4
 
 [node name="EnemyPlayedCardUI3" type="Control" parent="CanvasLayer/Enemy Played Hand" node_paths=PackedStringArray("battle")]
@@ -774,6 +776,7 @@ localize_numeral_system = false
 script = ExtResource("10_50o5a")
 battle = NodePath("../../..")
 show_index = 2
+tween_out_duration = 0.3
 tween_play_duration = 0.4
 
 [node name="Prompt" type="Label" parent="CanvasLayer" node_paths=PackedStringArray("battle")]

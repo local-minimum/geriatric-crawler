@@ -131,11 +131,14 @@ func _restore_card_size() -> void:
     tween.play()
 
 func _execute_next_effect() -> void:
+    var card: BattleCard = _slots.slotted_cards[_active_card_index]
+
     if _halted:
+        if card != null:
+            card.card_played = true
         __SignalBus.on_end_turn.emit(self)
         return
 
-    var card: BattleCard = _slots.slotted_cards[_active_card_index]
     if card == null:
         push_warning("We should probably be halted %s, slot idx %s doesn't have a card" % [_halted, _active_card_index])
 
