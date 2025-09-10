@@ -44,6 +44,15 @@ signal on_entity_leave_battle(entity: BattleEntity, battle_end: bool)
 signal on_battle_start()
 signal on_battle_end()
 
+# -> Cards
+signal on_card_dragging(card: BattleCard)
+signal on_card_drag_start(card: BattleCard)
+signal on_card_drag_end(card: BattleCard)
+signal on_card_click(card: BattleCard)
+signal on_card_hover_start(card: BattleCard)
+signal on_card_hover_end(card: BattleCard)
+signal on_card_debug(card: BattleCard, msg: String)
+
 # Battle Entities
 # -> Shields
 signal on_gain_shield(battle_entitiy: BattleEntity, shields: Array[int], new_shield: int)
@@ -75,6 +84,12 @@ signal on_draw_new_player_card(player: BattlePlayer, card: BattleCard)
 signal on_player_hand_drawn
 signal on_player_hand_actions_complete
 signal on_player_hand_debug(msg: String)
+
+# -> Player Card Slots
+signal on_return_player_card_to_hand(card: BattleCard, position_holder: BattleCard)
+signal on_show_player_card_slots
+signal on_update_player_slotted_cards(cards: Array[BattleCard])
+signal on_end_player_card_slotting
 
 # -> Enemy
 signal on_prepare_enemy_hand(battle_enemy: BattleEnemy, slotted_cards: Array[BattleCardData])

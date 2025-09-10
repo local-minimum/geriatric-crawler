@@ -1,11 +1,6 @@
 extends Control
 class_name BattleCardSlots
 
-signal on_return_card_to_hand(card: BattleCard, position_holder: BattleCard)
-signal on_slots_shown
-signal on_update_slotted(cards: Array[BattleCard])
-signal on_end_slotting
-
 @export var _slot_rects: Array[Control] = []
 
 @export var _max_y_delta: float = 80
@@ -49,7 +44,7 @@ func show_slots(visible_slots: int) -> void:
         push_warning("Requested %s slots, but only has %s configured" % [visible_slots, idx])
 
     _done_slotting_cards_button.visible = true
-    on_slots_shown.emit()
+    __SignalBus.on_show_player_card_slots.emit()
 
 func is_over_slots(card: BattleCard) -> bool:
 
@@ -132,12 +127,12 @@ func tween_card_to_slot(card: BattleCard, target: Control, duration: float) -> T
         else:
             # Cards in hand shouldn't show their bonus
             prev_slotted.sync_display(0)
-            prev_slotted.on_debug_card.emit(prev_slotted, "Returning to hand")
-            on_return_card_to_hand.emit(prev_slotted, card)
+            __SignalBus.on_card_debug.emit(prev_slotted, "Returning to hand")
+            __SignalBus.on_return_player_card_to_hand.emit(prev_slotted, card)
 
     slotted_cards[slot_idx] = card
     _card_tweens[card] = tween
-    on_update_slotted.emit(slotted_cards)
+    __SignalBus.on_update_player_slotted_cards.emit(slotted_cards)
 
     return tween
 
@@ -151,8 +146,8 @@ func unslot_card(card: BattleCard) -> int:
         # Cards in hand shouldn't show their bonus
         card.sync_display(0)
         slotted_cards[slot_idx] = null
-        on_return_card_to_hand.emit(card, null)
-        on_update_slotted.emit(slotted_cards)
+        __SignalBus.on_return_player_card_to_hand.emit(card, null)
+        __SignalBus.on_update_player_slotted_cards.emit(slotted_cards)
 
     return slot_idx
 
@@ -185,7 +180,7 @@ func _on_player_cards_slotted_button_pressed() -> void:
 
         card.interactable = false
 
-    on_end_slotting.emit()
+    __SignalBus.on_end_player_card_slotting.emit()
 
 func lock_cards() -> void:
     for card: BattleCard in slotted_cards:

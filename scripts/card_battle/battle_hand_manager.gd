@@ -14,7 +14,6 @@ class_name BattleHandManager
 @export var min_card_places: int = 5
 
 var hand: Array[BattleCard] = []
-var _connected_cards: Array[BattleCard] = []
 
 var _card_tweens: Dictionary[BattleCard, Tween] = {}
 var _card_positions: Dictionary[BattleCard, int] = {}
@@ -28,12 +27,23 @@ var _dragged_card: BattleCard
 var _hand_size_offset: int = 0
 
 func _ready() -> void:
-    if slots.on_return_card_to_hand.connect(_return_card_to_hand) != OK:
+    if __SignalBus.on_return_player_card_to_hand.connect(_return_card_to_hand) != OK:
         push_error("Hand could not connect to return card to hand event")
-    if slots.on_slots_shown.connect(_hand_ready) != OK:
+    if __SignalBus.on_show_player_card_slots.connect(_hand_ready) != OK:
         push_error("Hand could not connect to return card to hand event")
-    if slots.on_end_slotting.connect(_handle_end_slotting) != OK:
+    if __SignalBus.on_end_player_card_slotting.connect(_handle_end_slotting) != OK:
         push_error("Hand could not connect to slotting ended event")
+
+    if __SignalBus.on_card_dragging.connect(handle_card_dragged) != OK:
+        push_error("Failed to connect on drag card")
+    if __SignalBus.on_card_drag_start.connect(_handle_card_drag_start) != OK:
+        push_error("Failed to connect on drag card")
+    if __SignalBus.on_card_drag_end.connect(_handle_card_drag_end) != OK:
+        push_error("Failed to connect on drag end card")
+    if __SignalBus.on_card_click.connect(_handle_card_click) != OK:
+        push_error("Failed to connect on drag end card")
+    if __SignalBus.on_card_debug.connect(_handle_card_debug) != OK:
+        push_error("Failed to connect on card debug")
 
     @warning_ignore_start("return_value_discarded")
     clear_hand()
@@ -104,24 +114,6 @@ func draw_hand(
 
     for card: BattleCard in cards:
         card.scale = Vector2.ONE
-
-        if _connected_cards.has(card):
-            continue
-
-        __SignalBus.on_player_hand_debug.emit("Hooking up callbacks for %s actions" % card.data.id)
-
-        _connected_cards.append(card)
-        if card.on_drag_start.connect(_handle_card_drag_start) != OK:
-            push_error("Failed to connect on drag card signal for %s" % card)
-        if card.on_drag_card.connect(handle_card_dragged) != OK:
-            push_error("Failed to connect on drag card signal for %s" % card)
-        if card.on_drag_end.connect(_handle_card_drag_end) != OK:
-            push_error("Failed to connect on drag end card signal for %s" % card)
-        if card.on_click.connect(_handle_card_click) != OK:
-            push_error("Failed to connect on drag end card signal for %s" % card)
-        if card.on_debug_card.connect(_handle_card_debug) != OK:
-            push_error("Failed to connect on card debug for %s" % card)
-
 
     __SignalBus.on_player_hand_debug.emit("\nNew hand is %s" % [cards.map(func (c: BattleCard) -> String: return c.data.id)])
     var n_controls: int = _calculate_slots_range(cards.size())

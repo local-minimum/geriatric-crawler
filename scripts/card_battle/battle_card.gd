@@ -1,14 +1,6 @@
 extends NinePatchRect
 class_name BattleCard
 
-signal on_drag_card(card: BattleCard)
-signal on_drag_start(card: BattleCard)
-signal on_drag_end(card: BattleCard)
-signal on_click(card: BattleCard)
-signal on_hover_start(card: BattleCard)
-signal on_hover_end(card: BattleCard)
-signal on_debug_card(card: BattleCard, msg: String)
-
 const CLICK_DURATION: float = 0.075
 
 static var _next_drag: float
@@ -21,13 +13,13 @@ static var _dragged: BattleCard = null:
 
             _next_drag = t + 0.1
             if _dragged != null:
-                _dragged.on_debug_card.emit(_dragged, "drag end")
-                _dragged.on_drag_end.emit(_dragged)
+                __SignalBus.on_card_debug.emit(_dragged, "drag end")
+                __SignalBus.on_card_drag_end.emit(_dragged)
 
         _dragged = value
         if value != null:
-            value.on_debug_card.emit(_dragged, "drag start")
-            value.on_drag_start.emit(value)
+            __SignalBus.on_card_debug.emit(value, "drag start")
+            __SignalBus.on_card_drag_start.emit(value)
 
 static var _next_hover: float
 static var _hovered: BattleCard:
@@ -37,9 +29,9 @@ static var _hovered: BattleCard:
 
         if value == null || _hovered == null:
             if _hovered != null:
-                _hovered.on_hover_end.emit(_hovered)
+                __SignalBus.on_card_hover_end.emit(_hovered)
             if value != null:
-                value.on_hover_start.emit(value)
+                __SignalBus.on_card_hover_start.emit(value)
             _hovered = value
             return
 
@@ -48,9 +40,9 @@ static var _hovered: BattleCard:
             _next_hover = t + 0.1
 
             if _hovered != null:
-                _hovered.on_hover_end.emit(_hovered)
+                __SignalBus.on_card_hover_end.emit(_hovered)
             if value != null:
-                value.on_hover_start.emit(value)
+                __SignalBus.on_card_hover_start.emit(value)
 
             _hovered = value
 
@@ -179,7 +171,7 @@ func _gui_input(event: InputEvent) -> void:
     if event is InputEventScreenTouch:
         var touch: InputEventScreenTouch = event
 
-        on_debug_card.emit(self, "Touched")
+        __SignalBus.on_card_debug.emit(self, "Touched")
 
         if touch.pressed && _dragged == null:
             _hovered = self
@@ -206,20 +198,20 @@ func _gui_input(event: InputEvent) -> void:
 
 func _handle_click(pressed: bool, device: int) -> void:
     if _dragged != self && _hovered == self && pressed:
-        on_debug_card.emit(self, "Pressed")
+        __SignalBus.on_card_debug.emit(self, "Pressed")
         _active_device = device
         var timer: SceneTreeTimer = get_tree().create_timer(CLICK_DURATION)
         if timer.connect("timeout", self._check_start_drag) != OK:
             push_error("Couldn't set callback of timer")
 
     elif !pressed && _active_device == device:
-        on_debug_card.emit(self, "Let go")
+        __SignalBus.on_card_debug.emit(self, "Let go")
         _active_device = -1
         if _dragged == self:
             _dragged = null
         elif _hovered == self && _dragged == null:
-            on_debug_card.emit(self, "Clicked")
-            on_click.emit(self)
+            __SignalBus.on_card_debug.emit(self, "Clicked")
+            __SignalBus.on_card_click.emit(self)
 
 func _handle_drag(relative: Vector2) -> void:
     if _may_drag:
@@ -233,7 +225,7 @@ func _handle_drag(relative: Vector2) -> void:
     if _dragged == self:
         global_position += relative
 
-        on_drag_card.emit(self)
+        __SignalBus.on_card_dragging.emit(self)
 
 func _check_start_drag() -> void:
     if _active_device < 0 || _hovered != self || _dragged != null:

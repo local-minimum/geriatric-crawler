@@ -1,20 +1,16 @@
 extends Label
 
 func _ready() -> void:
-    if __SignalBus.on_draw_new_player_card.connect(_connect_card) != OK:
-        push_error("Couldnt connect to new cards")
-
     if __SignalBus.on_player_hand_drawn.connect(_sync) != OK:
         push_error("Couldn't connect to hand drawn")
 
-func _connect_card(_player: BattlePlayer, card: BattleCard) -> void:
-    if card.on_drag_start.connect(_add_dragged_card) != OK:
+    if __SignalBus.on_card_drag_start.connect(_add_dragged_card) != OK:
         push_error("Failed to connect to on drag start")
-    if card.on_drag_end.connect(_remove_dragged_card) != OK:
+    if __SignalBus.on_card_drag_end.connect(_remove_dragged_card) != OK:
         push_error("Failed to connect to on drag end")
-    if card.on_hover_start.connect(_add_hovered_card) != OK:
+    if __SignalBus.on_card_hover_start.connect(_add_hovered_card) != OK:
         push_error("Failed to connect to on hover start")
-    if card.on_hover_end.connect(_remove_hovered_card) != OK:
+    if __SignalBus.on_card_hover_end.connect(_remove_hovered_card) != OK:
         push_error("Failed to connect to on hover end")
 
 var _dragged: Array[BattleCard] = []

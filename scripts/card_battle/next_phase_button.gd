@@ -1,7 +1,5 @@
 extends Button
 
-@export var _slots: BattleCardSlots
-
 @export var _image: TextureRect
 
 @export var _any_slotted_image: Texture
@@ -9,11 +7,11 @@ extends Button
 @export var _nothing_slotted_image: Texture
 
 func _ready() -> void:
-    if _slots.on_update_slotted.connect(_handle_slotted_updated) != OK:
+    if __SignalBus.on_update_player_slotted_cards.connect(_handle_slotted_updated) != OK:
         push_error("Could not connect update slotted")
-    if _slots.on_end_slotting.connect(_handle_nothing_slotted) != OK:
+    if __SignalBus.on_end_player_card_slotting.connect(_handle_nothing_slotted) != OK:
         push_error("Could not connect slotting end")
-    if _slots.on_slots_shown.connect(_handle_nothing_slotted) != OK:
+    if __SignalBus.on_show_player_card_slots.connect(_handle_nothing_slotted) != OK:
         push_error("Could not connect slotting shown")
 
 func _handle_slotted_updated(cards: Array[BattleCard]) -> void:

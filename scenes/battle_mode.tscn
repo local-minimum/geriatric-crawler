@@ -699,7 +699,7 @@ offset_right = 20.0
 grow_horizontal = 2
 grow_vertical = 0
 
-[node name="Player Cards Slotted Button" type="Button" parent="CanvasLayer" node_paths=PackedStringArray("_slots", "_image")]
+[node name="Player Cards Slotted Button" type="Button" parent="CanvasLayer" node_paths=PackedStringArray("_image")]
 anchors_preset = -1
 anchor_left = 0.896
 anchor_top = 0.82
@@ -716,7 +716,6 @@ size_flags_vertical = 6
 icon_alignment = 1
 expand_icon = true
 script = ExtResource("10_ia7t4")
-_slots = NodePath("../PlayerCardSlots")
 _image = NodePath("NextPhaseButton")
 _any_slotted_image = ExtResource("10_bkkck")
 _nothing_slotted_image = ExtResource("12_jejug")

@@ -61,7 +61,7 @@ func _init() -> void:
 func _ready() -> void:
     if __SignalBus.on_player_hand_drawn.connect(_after_deal) != OK:
         push_error("Failed to connect callback to hand dealt")
-    if battle_hand.slots.on_update_slotted.connect(_handle_update_slotted):
+    if __SignalBus.on_update_player_slotted_cards.connect(_handle_update_slotted):
         push_error("Failed to connect callback to slotted cards updated")
     if __SignalBus.on_player_hand_actions_complete.connect(_start_playing_cards):
         push_error("Failed to connect callback to hand actions completed")
