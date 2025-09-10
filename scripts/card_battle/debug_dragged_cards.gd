@@ -1,8 +1,5 @@
 extends Label
 
-@export
-var battle_mode: BattleMode
-
 func _ready() -> void:
     if __SignalBus.on_draw_new_player_card.connect(_connect_card) != OK:
         push_error("Couldnt connect to new cards")

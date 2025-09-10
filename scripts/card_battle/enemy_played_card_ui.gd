@@ -1,7 +1,6 @@
 extends Control
 class_name EnemyPlayedCardUI
 
-@export var battle: BattleMode
 @export var show_index: int
 @export var tween_in_duration: float = 0.4
 @export var tween_out_duration: float = 0.2

@@ -40,7 +40,7 @@ signal on_robot_loaded(robot: Robot)
 
 # Battle
 signal on_entity_join_battle(entity: BattleEntity)
-signal on_entity_leave_battle(entity: BattleEntity)
+signal on_entity_leave_battle(entity: BattleEntity, battle_end: bool)
 signal on_battle_start()
 signal on_battle_end()
 

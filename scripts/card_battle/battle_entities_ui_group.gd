@@ -59,11 +59,19 @@ func _handle_join_entity(entity: BattleEntity) -> void:
     await get_tree().create_timer(_delay_show_enemy).timeout
     ui.visible = true
 
-func _handle_entity_leave(entity: BattleEntity, with_timer: bool = true) -> void:
-    # TODO: Fancy exit from battle??
+func _handle_entity_leave(entity: BattleEntity, battle_end: bool) -> void:
+    # TODO: Fancy exit from battle at least when with timer
+
+    print_debug("[Battle Group UI %s] %s leaves battle is mine=%s (%s)" % [
+        name,
+        entity.name,
+        _connected_entities.has(entity),
+        _connected_entities.keys().map(func (e: BattleEntity) -> String: return e.name),
+    ])
+
     if _connected_entities.has(entity):
         var ui: BattleEntityUI = _connected_entities[entity]
-        if with_timer:
+        if !battle_end:
             await get_tree().create_timer(_delay_hide_enemy).timeout
 
         ui.disconnect_entity(entity)

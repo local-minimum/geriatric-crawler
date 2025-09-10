@@ -386,12 +386,14 @@ func _remembers_previous_end_of_round() -> bool: return robot.get_skill_level(Ro
 func _remembers_to_next_battle() -> bool: return robot.get_skill_level(RobotAbility.SKILL_HAND_MEMORY) > 2
 
 func _clean_up_round() -> void:
+    var battle_continues: bool = battle_player.is_alive() && _has_alive_enemies()
+
     _enemies = _enemies.filter(
         func (enemy: BattleEnemy) -> bool:
             if enemy.is_alive():
                 return true
 
-            __SignalBus.on_entity_leave_battle.emit(enemy)
+            __SignalBus.on_entity_leave_battle.emit(enemy, !battle_continues)
             enemy.clean_up_battle()
 
             return false
@@ -401,7 +403,7 @@ func _clean_up_round() -> void:
     battle_player.clean_up_round()
     player_deck.discard_from_hand(battle_hand.round_end_cleanup())
 
-    if _enemies.is_empty() || !battle_player.is_alive():
+    if !battle_continues:
         exit_battle()
         return
 
@@ -429,10 +431,12 @@ func exit_battle() -> void:
         previous_card = null
 
     for enemy: BattleEnemy in _enemies:
-        __SignalBus.on_entity_leave_battle.emit(enemy)
+        if enemy.is_alive():
+            __SignalBus.on_entity_leave_battle.emit(enemy, true)
         enemy.clean_up_battle()
 
-    __SignalBus.on_entity_leave_battle.emit(battle_player)
+    if battle_player.is_alive():
+        __SignalBus.on_entity_leave_battle.emit(battle_player, true)
 
     battle_player.clean_up_battle()
 
