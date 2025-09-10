@@ -38,6 +38,12 @@ signal on_robot_death(robot: Robot)
 signal on_robot_complete_fight(robot: Robot)
 signal on_robot_loaded(robot: Robot)
 
+# Battle
+signal on_entity_join_battle(entity: BattleEntity)
+signal on_entity_leave_battle(entity: BattleEntity)
+signal on_battle_start()
+signal on_battle_end()
+
 # Battle Entities
 # -> Shields
 signal on_gain_shield(battle_entitiy: BattleEntity, shields: Array[int], new_shield: int)
@@ -51,6 +57,24 @@ signal on_death(battle_entity: BattleEntity)
 # -> Turns
 signal on_start_turn(entity: BattleEntity)
 signal on_end_turn(entity: BattleEntity)
+
+# -> Player
+signal on_player_select_targets(
+    player: BattlePlayer,
+    count: int,
+    options: Array[BattleEntity],
+    effect: BattleCardPrimaryEffect.EffectMode,
+    target_type: BattleCardPrimaryEffect.EffectTarget,
+)
+signal on_player_select_targets_complete(player: BattlePlayer)
+signal on_before_execute_effect_on_target(player: BattlePlayer, target: BattleEntity)
+signal on_after_execute_effect_on_target(player: BattlePlayer, target: BattleEntity)
+
+# -> Player Hand
+signal on_draw_new_player_card(player: BattlePlayer, card: BattleCard)
+signal on_player_hand_drawn
+signal on_player_hand_actions_complete
+signal on_player_hand_debug(msg: String)
 
 # -> Enemy
 signal on_prepare_enemy_hand(battle_enemy: BattleEnemy, slotted_cards: Array[BattleCardData])

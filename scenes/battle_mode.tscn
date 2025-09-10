@@ -414,7 +414,7 @@ anchor_top = 0.05
 anchor_right = 0.4
 anchor_bottom = 0.2
 
-[node name="Players" type="HBoxContainer" parent="CanvasLayer/Player Entities" node_paths=PackedStringArray("_entityUIs", "_battle")]
+[node name="Players" type="HBoxContainer" parent="CanvasLayer/Player Entities" node_paths=PackedStringArray("_entityUIs")]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -423,7 +423,6 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("3_31k21")
 _entityUIs = [NodePath("PlayerUI")]
-_battle = NodePath("../../..")
 
 [node name="PlayerUI" type="HBoxContainer" parent="CanvasLayer/Player Entities/Players" node_paths=PackedStringArray("healthUI", "defenceUI", "icon", "nameUI")]
 layout_mode = 2
@@ -466,7 +465,7 @@ theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_colors/font_shadow_color = Color(0.321074, 0.109373, 0.262374, 1)
 text = "DEF:"
 
-[node name="Enemies" type="HBoxContainer" parent="CanvasLayer" node_paths=PackedStringArray("_entityUIs", "_battle")]
+[node name="Enemies" type="HBoxContainer" parent="CanvasLayer" node_paths=PackedStringArray("_entityUIs")]
 anchors_preset = -1
 anchor_left = 0.459
 anchor_top = 0.02
@@ -477,7 +476,6 @@ grow_horizontal = 0
 alignment = 2
 script = ExtResource("3_31k21")
 _entityUIs = [NodePath("EnemyUI 1"), NodePath("EnemyUI 2"), NodePath("EnemyUI 3")]
-_battle = NodePath("../..")
 _enemy_group = true
 
 [node name="EnemyUI 1" parent="CanvasLayer/Enemies" instance=ExtResource("6_4nxwp")]
@@ -779,7 +777,7 @@ show_index = 2
 tween_out_duration = 0.3
 tween_play_duration = 0.4
 
-[node name="Prompt" type="Label" parent="CanvasLayer" node_paths=PackedStringArray("battle")]
+[node name="Prompt" type="Label" parent="CanvasLayer"]
 auto_translate_mode = 2
 anchors_preset = -1
 anchor_left = 0.368
@@ -800,7 +798,6 @@ theme_override_constants/outline_size = 0
 theme_override_font_sizes/font_size = 29
 text = "This is my text very important about what to do in battle"
 script = ExtResource("12_g3sjl")
-battle = NodePath("../..")
 
 [node name="DebugStatus" type="Label" parent="CanvasLayer" node_paths=PackedStringArray("battle_mode")]
 auto_translate_mode = 2
@@ -841,7 +838,7 @@ theme_override_constants/margin_top = 4
 theme_override_constants/margin_right = 4
 theme_override_constants/margin_bottom = 4
 
-[node name="DebugMessagesLabel" type="Label" parent="CanvasLayer/Hand Debug Messages/MarginContainer" node_paths=PackedStringArray("_hand")]
+[node name="DebugMessagesLabel" type="Label" parent="CanvasLayer/Hand Debug Messages/MarginContainer"]
 auto_translate_mode = 2
 custom_minimum_size = Vector2(400, 400)
 layout_mode = 2
@@ -849,7 +846,6 @@ size_flags_vertical = 1
 text = "Test test test"
 autowrap_mode = 2
 script = ExtResource("12_360r3")
-_hand = NodePath("../../../Player BattleHand")
 _show_messages = 15
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]

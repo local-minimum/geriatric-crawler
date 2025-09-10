@@ -1,16 +1,6 @@
 extends BattleEntity
 class_name BattlePlayer
 
-signal on_player_select_targets(
-    player: BattlePlayer,
-    count: int,
-    options: Array[BattleEntity],
-    effect: BattleCardPrimaryEffect.EffectMode,
-    target_type: BattleCardPrimaryEffect.EffectTarget,
-)
-signal on_player_select_targets_complete()
-signal on_before_execute_effect_on_target(target: BattleEntity)
-signal on_after_execute_effect_on_target(target: BattleEntity)
 
 const _ID_KEY: String = "id"
 
@@ -199,7 +189,7 @@ func _execute_effect(n_targets: int) -> void:
         return
 
     # Someone else does the selection handling and calls add_target
-    on_player_select_targets.emit(self, n_targets, _possible_effect_targets, _effect_mode, _effect_target_type)
+    __SignalBus.on_player_select_targets.emit(self, n_targets, _possible_effect_targets, _effect_mode, _effect_target_type)
 
 var _effect_targets_count: int
 var _active_effect: BattleCardPrimaryEffect
@@ -221,10 +211,10 @@ func add_target(target: BattleEntity) -> bool:
     n_targets = _effect_targets.size()
 
     if n_targets == _effect_targets_count:
-        on_player_select_targets_complete.emit()
+        __SignalBus.on_player_select_targets_complete.emit(self)
         _execute_effect_on_targets.call_deferred()
     else:
-        on_player_select_targets.emit(self, _effect_targets_count - n_targets, _possible_effect_targets, _effect_mode, _effect_target_type)
+        __SignalBus.on_player_select_targets.emit(self, _effect_targets_count - n_targets, _possible_effect_targets, _effect_mode, _effect_target_type)
     return true
 
 func _execute_effect_on_targets() -> void:
@@ -233,7 +223,7 @@ func _execute_effect_on_targets() -> void:
     var rank_bonus: int = 0 if battle == null else battle.rank_bonus
 
     for target: BattleEntity in _effect_targets:
-        on_before_execute_effect_on_target.emit(target)
+        __SignalBus.on_before_execute_effect_on_target.emit(self, target)
 
         var effect_magnitude: int = _active_effect.calculate_effect(suit_bonus + rank_bonus, _allies.has(target))
         print_debug("Doing %s %s to %s" % [effect_magnitude, BattleCardPrimaryEffect.humanize(_effect_mode), target.name])
@@ -254,7 +244,7 @@ func _execute_effect_on_targets() -> void:
 
         await get_tree().create_timer(0.25).timeout
 
-        on_after_execute_effect_on_target.emit(target)
+        __SignalBus.on_after_execute_effect_on_target.emit(self, target)
 
     _active_card_effect_index += 1
     _execute_next_effect()

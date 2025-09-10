@@ -1,10 +1,6 @@
 extends Control
 class_name BattleHandManager
 
-signal on_hand_drawn
-signal on_hand_actions_complete
-signal on_hand_debug(msg: String)
-
 @export var _target_controls: Array[Control]
 
 @export var _draw_time: float = 0.3
@@ -23,6 +19,13 @@ var _connected_cards: Array[BattleCard] = []
 var _card_tweens: Dictionary[BattleCard, Tween] = {}
 var _card_positions: Dictionary[BattleCard, int] = {}
 var _reverse_card_positions: Dictionary[int, BattleCard] = {}
+
+var _first_card_idx: int
+var _last_card_idx: int
+
+var _dragged_card: BattleCard
+
+var _hand_size_offset: int = 0
 
 func _ready() -> void:
     if slots.on_return_card_to_hand.connect(_return_card_to_hand) != OK:
@@ -46,13 +49,13 @@ func cards_in_hand() -> Array[BattleCardData]:
 
 #region INTERACTIVITY
 func _handle_end_slotting() -> void:
-    on_hand_debug.emit("End slotting")
+    __SignalBus.on_player_hand_debug.emit("End slotting")
     for card: BattleCard in hand:
         card.interactable = false
-        on_hand_debug.emit("%s not interactable" % card.data.id)
+        __SignalBus.on_player_hand_debug.emit("%s not interactable" % card.data.id)
 
     slots.lock_cards()
-    on_hand_debug.emit("Locked slotted cards %s" % [slots.slotted_cards])
+    __SignalBus.on_player_hand_debug.emit("Locked slotted cards %s" % [slots.slotted_cards])
 
     for card: BattleCard in hand:
         var tween: Tween = get_tree().create_tween()
@@ -73,7 +76,7 @@ func _handle_end_slotting() -> void:
 
         await get_tree().create_timer(_draw_delta).timeout
 
-    slots.lower_slots(func () -> void: on_hand_actions_complete.emit())
+    slots.lower_slots(func () -> void: __SignalBus.on_player_hand_actions_complete.emit())
 
 func _hand_ready() -> void:
     for card: BattleCard in hand:
@@ -105,7 +108,7 @@ func draw_hand(
         if _connected_cards.has(card):
             continue
 
-        on_hand_debug.emit("Hooking up callbacks for %s actions" % card.data.id)
+        __SignalBus.on_player_hand_debug.emit("Hooking up callbacks for %s actions" % card.data.id)
 
         _connected_cards.append(card)
         if card.on_drag_start.connect(_handle_card_drag_start) != OK:
@@ -120,16 +123,13 @@ func draw_hand(
             push_error("Failed to connect on card debug for %s" % card)
 
 
-    on_hand_debug.emit("\nNew hand is %s" % [cards.map(func (c: BattleCard) -> String: return c.data.id)])
+    __SignalBus.on_player_hand_debug.emit("\nNew hand is %s" % [cards.map(func (c: BattleCard) -> String: return c.data.id)])
     var n_controls: int = _calculate_slots_range(cards.size())
 
     _draw_hand.call_deferred(cards, n_controls, emit_event, draw_from_origin)
 
-var _first_card_idx: int
-var _last_card_idx: int
-
 func _handle_card_debug(card: BattleCard, msg: String) -> void:
-    on_hand_debug.emit("%s: %s" % [card.data.id, msg])
+    __SignalBus.on_player_hand_debug.emit("%s: %s" % [card.data.id, msg])
 
 func _calculate_slots_range(n_cards: int) -> int:
     var n_controls: int = _target_controls.size()
@@ -164,10 +164,10 @@ func _draw_hand(
         if card_idx >= n_controls:
             var msg: String = "Card %s (idx %s) doesn't fit in hand with %s controls last idx %s" % [card.data.id, card_idx, n_controls, _last_card_idx]
             push_error(msg)
-            on_hand_debug.emit(msg)
+            __SignalBus.on_player_hand_debug.emit(msg)
             break
 
-        # on_hand_debug.emit("Adding %s to hand index %s (max %s)" % [card.data.id, card_idx, _last_card_idx])
+        # on_player_hand_debug.emit("Adding %s to hand index %s (max %s)" % [card.data.id, card_idx, _last_card_idx])
 
         if draw_from_origin:
             card.global_position = get_centered_position(card, _draw_origin)
@@ -184,7 +184,7 @@ func _draw_hand(
             tween.connect(
                 "finished",
                 func() -> void:
-                    on_hand_drawn.emit()
+                    __SignalBus.on_player_hand_drawn.emit()
             )
             @warning_ignore_restore("return_value_discarded")
 
@@ -227,7 +227,7 @@ func tween_card_to_position(card: BattleCard, target_index: int, duration: float
         var msg: String = "Card order collision %s (%s replaces %s, index from cache %s)" % [
             target_index, card.data.id, _reverse_card_positions[target_index].data.id, _card_positions.has(card)]
         push_error(msg)
-        on_hand_debug.emit(msg)
+        __SignalBus.on_player_hand_debug.emit(msg)
         _reverse_card_positions[target_index] = card
         _resque_collision(_reverse_card_positions[target_index])
     else:
@@ -269,8 +269,6 @@ func _get_card_position_index(card: BattleCard = null) -> int:
 
     return clampi(best, _first_card_idx, _last_card_idx)
 
-var _dragged_card: BattleCard
-
 func _handle_card_drag_start(card: BattleCard) -> void:
     _dragged_card = card
     _remove_from_lookups(card)
@@ -292,8 +290,6 @@ func _remove_from_lookups(card: BattleCard) -> void:
             @warning_ignore_start("return_value_discarded")
             _reverse_card_positions.erase(idx)
             @warning_ignore_restore("return_value_discarded")
-
-var _hand_size_offset: int = 0
 
 func _reshape_hand(dragged_card: BattleCard) -> void:
     # TODO: Working bad... not sure why
@@ -318,12 +314,12 @@ func _handle_card_dragged(card: BattleCard, card_index: int) -> void:
     var origin: Vector2 = get_centered_position(card, _target_controls[card_index])
     var offset: Vector2 = card.global_position - origin
 
-    on_hand_debug.emit("Shifting card %s with x offset %s from %s" % [card.data.id, offset.x, card_index])
+    __SignalBus.on_player_hand_debug.emit("Shifting card %s with x offset %s from %s" % [card.data.id, offset.x, card_index])
     if offset.x > DRAG_DEADZONE:
         if _reverse_card_positions.has(card_index):
             var other: BattleCard = _reverse_card_positions[card_index]
             if other.global_position.x < card.global_position.x:
-                on_hand_debug.emit("Shifting card right %s (%s) with %s (%s)" % [card.data.id, card.global_position.x, other.data.id, other.global_position.x])
+                __SignalBus.on_player_hand_debug.emit("Shifting card right %s (%s) with %s (%s)" % [card.data.id, card.global_position.x, other.data.id, other.global_position.x])
                 _remove_from_lookups(other)
                 # This will set positions of other to be our old index
                 tween_card_to_position(other, card_index + 1, 0.1).play()
@@ -331,13 +327,13 @@ func _handle_card_dragged(card: BattleCard, card_index: int) -> void:
         if _reverse_card_positions.has(card_index):
             var other: BattleCard = _reverse_card_positions[card_index]
             if other.global_position.x > card.global_position.x:
-                on_hand_debug.emit("Shifting card left %s (%s) with %s (%s)" % [card.data.id, card.global_position.x, other.data.id, other.global_position.x])
+                __SignalBus.on_player_hand_debug.emit("Shifting card left %s (%s) with %s (%s)" % [card.data.id, card.global_position.x, other.data.id, other.global_position.x])
                 _remove_from_lookups(other)
                 # This will set positions of other to be our old index
                 tween_card_to_position(other, card_index - 1, 0.1).play()
 
 func _resque_collision(card: BattleCard) -> void:
-    on_hand_debug.emit("Resque collision for %s" % card.data.id)
+    __SignalBus.on_player_hand_debug.emit("Resque collision for %s" % card.data.id)
     _remove_from_lookups(card)
     for idx: int in range(_first_card_idx, _last_card_idx + 1):
         if !_reverse_card_positions.has(idx):
@@ -374,7 +370,7 @@ func _handle_card_drag_end(card: BattleCard) -> void:
             _organize_hand()
             return
 
-        on_hand_debug.emit("Releasing card %s onto index %s" % [card.data.id, card_idx])
+        __SignalBus.on_player_hand_debug.emit("Releasing card %s onto index %s" % [card.data.id, card_idx])
         var action: Callable = func () -> void:
             tween_card_to_position(card, card_idx, 0.05).play()
 
@@ -405,7 +401,7 @@ func _return_card_to_hand(card: BattleCard, _position_holder: BattleCard) -> voi
     _card_positions[card] = idx
     _reverse_card_positions[idx] = card
 
-    on_hand_debug.emit("Returning %s to hand at %s" % [card.data.id, idx])
+    __SignalBus.on_player_hand_debug.emit("Returning %s to hand at %s" % [card.data.id, idx])
     _organize_hand()
 
 func _organize_hand() -> void:
@@ -440,7 +436,7 @@ func clear_hand() -> Array[BattleCardData]:
 
     discards.append_array(round_end_cleanup())
 
-    on_hand_debug.emit("Discarding cards %s" % [discards])
+    __SignalBus.on_player_hand_debug.emit("Discarding cards %s" % [discards])
 
     return discards
 

@@ -33,6 +33,15 @@ func _ready() -> void:
     if __SignalBus.on_end_turn.connect(_handle_turn_end) != OK:
         push_error("Failed to connect %s on_turn_done to UI" % _entity)
 
+    if __SignalBus.on_player_select_targets.connect(_handle_entity_selection_start) != OK:
+        push_error("Failed to connect on_player_select_targets")
+    if __SignalBus.on_player_select_targets_complete.connect(_handle_entity_selection_end) != OK:
+        push_error("Failed to connect on_player_select_targets")
+    if __SignalBus.on_before_execute_effect_on_target.connect(_handle_set_targeted) != OK:
+        push_error("Failed to connect player after effect on target")
+    if __SignalBus.on_after_execute_effect_on_target.connect(_handle_reset_targeted) != OK:
+        push_error("Failed to connect player after effect on target")
+
 var interactable: bool:
     set(value):
         interactable = value
@@ -89,34 +98,6 @@ func disconnect_entity(entity: BattleEntity) -> void:
 
     _entity = null
 
-
-var _connected_players: Array[BattlePlayer]
-
-func connect_player_selection(player: BattlePlayer) -> void:
-    if _connected_players.has(player):
-        return
-
-    if player.on_player_select_targets.connect(_handle_entity_selection_start) != OK:
-        push_error("Failed to connect %s's on_player_select_targets" % player)
-    if player.on_player_select_targets_complete.connect(_handle_entity_selection_end) != OK:
-        push_error("Failed to connect %s's on_player_select_targets" % player)
-    if player.on_before_execute_effect_on_target.connect(_handle_set_targeted) != OK:
-        push_error("Failed to connect %s's after effect on target" % player)
-    if player.on_after_execute_effect_on_target.connect(_handle_reset_targeted) != OK:
-        push_error("Failed to connect %s's after effect on target" % player)
-
-    _connected_players.append(player)
-
-func disconnect_player_selection(player: BattlePlayer) -> void:
-    if !_connected_players.has(player):
-        return
-
-    player.on_player_select_targets.disconnect(_handle_entity_selection_start)
-    player.on_player_select_targets_complete.disconnect(_handle_entity_selection_end)
-    player.on_before_execute_effect_on_target.disconnect(_handle_set_targeted)
-    player.on_after_execute_effect_on_target.disconnect(_handle_reset_targeted)
-    _connected_players.erase(player)
-
 var _selection_player: BattlePlayer = null
 
 func _handle_entity_selection_start(
@@ -130,14 +111,14 @@ func _handle_entity_selection_start(
     interactable = count > 0 && targets.has(_entity)
     print_debug("%s has %s and it's an option %s (%s)" % [name, _entity, targets, interactable])
 
-func _handle_set_targeted(target: BattleEntity) -> void:
-    if target != _entity:
+func _handle_set_targeted(player: BattlePlayer, target: BattleEntity) -> void:
+    if target != _entity || player != _selection_player:
         return
 
     set_target()
 
-func _handle_reset_targeted(target: BattleEntity) -> void:
-    if target != _entity:
+func _handle_reset_targeted(player: BattlePlayer, target: BattleEntity) -> void:
+    if target != _entity || player != _selection_player:
         return
 
     if selected:
@@ -145,9 +126,13 @@ func _handle_reset_targeted(target: BattleEntity) -> void:
 
     unset_target()
 
-func _handle_entity_selection_end() -> void:
+func _handle_entity_selection_end(player: BattlePlayer) -> void:
+    if player != _selection_player:
+        return
+
     interactable = false
     selected = false
+    _selection_player = null
 
 func _handle_turn_start(entity: BattleEntity) -> void:
     if entity != _entity:

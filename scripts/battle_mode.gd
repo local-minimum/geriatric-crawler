@@ -1,11 +1,6 @@
 extends Node
 class_name BattleMode
 
-signal on_entity_join_battle(entity: BattleEntity)
-signal on_entity_leave_battle(entity: BattleEntity)
-signal on_new_card(card: BattleCard)
-signal on_battle_start()
-signal on_battle_end()
 
 const LEVEL_GROUP: String = "battle-mode"
 
@@ -64,11 +59,11 @@ func _init() -> void:
     add_to_group(LEVEL_GROUP)
 
 func _ready() -> void:
-    if battle_hand.on_hand_drawn.connect(_after_deal) != OK:
+    if __SignalBus.on_player_hand_drawn.connect(_after_deal) != OK:
         push_error("Failed to connect callback to hand dealt")
     if battle_hand.slots.on_update_slotted.connect(_handle_update_slotted):
         push_error("Failed to connect callback to slotted cards updated")
-    if battle_hand.on_hand_actions_complete.connect(_start_playing_cards):
+    if __SignalBus.on_player_hand_actions_complete.connect(_start_playing_cards):
         push_error("Failed to connect callback to hand actions completed")
 
     if __SignalBus.on_end_turn.connect(_next_agent_turn) != OK:
@@ -115,7 +110,7 @@ func get_party() -> Array[BattlePlayer]:
 
 #region ENTER BATTLE
 func enter_battle(battle_trigger: BattleModeTrigger, player_robot: Robot) -> void:
-    on_battle_start.emit()
+    __SignalBus.on_battle_start.emit()
 
     _ui.visible = true
     battling = true
@@ -133,13 +128,13 @@ func enter_battle(battle_trigger: BattleModeTrigger, player_robot: Robot) -> voi
 
     player_deck.load_deck(robot.get_deck())
 
-    on_entity_join_battle.emit(battle_player)
+    __SignalBus.on_entity_join_battle.emit(battle_player)
 
     # Show all enemies and their stats
     _enemies.append_array(battle_trigger.enemies)
     for enemy: BattleEnemy in _enemies:
         enemy.ready_for_battle()
-        on_entity_join_battle.emit(enemy)
+        __SignalBus.on_entity_join_battle.emit(enemy)
 
     await get_tree().create_timer(0.5).timeout
 
@@ -215,7 +210,7 @@ func deal_player_hand() -> void:
 
         card_data_idx += 1
 
-        on_new_card.emit(new_card)
+        __SignalBus.on_draw_new_player_card.emit(battle_player, new_card)
 
     battle_hand.draw_hand(cards)
 
@@ -396,7 +391,7 @@ func _clean_up_round() -> void:
             if enemy.is_alive():
                 return true
 
-            on_entity_leave_battle.emit(enemy)
+            __SignalBus.on_entity_leave_battle.emit(enemy)
             enemy.clean_up_battle()
 
             return false
@@ -434,10 +429,10 @@ func exit_battle() -> void:
         previous_card = null
 
     for enemy: BattleEnemy in _enemies:
-        on_entity_leave_battle.emit(enemy)
+        __SignalBus.on_entity_leave_battle.emit(enemy)
         enemy.clean_up_battle()
 
-    on_entity_leave_battle.emit(battle_player)
+    __SignalBus.on_entity_leave_battle.emit(battle_player)
 
     battle_player.clean_up_battle()
 
@@ -464,6 +459,6 @@ func exit_battle() -> void:
         robot.kill()
     robot = null
 
-    on_battle_end.emit()
+    __SignalBus.on_battle_end.emit()
     _ui.visible = false
 #endregion END BATTLE

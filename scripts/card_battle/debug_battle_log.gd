@@ -1,11 +1,9 @@
 extends Label
 
-@export var _hand: BattleHandManager
-
 @export var _show_messages: int = 10
 
 func _ready() -> void:
-    if _hand.on_hand_debug.connect(_add_message) != OK:
+    if __SignalBus.on_player_hand_debug.connect(_add_message) != OK:
         push_error("Failed to connect on _hand debug")
 
     _sync()

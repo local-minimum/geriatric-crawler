@@ -4,13 +4,13 @@ extends Label
 var battle_mode: BattleMode
 
 func _ready() -> void:
-    if battle_mode.on_new_card.connect(_connect_card) != OK:
+    if __SignalBus.on_draw_new_player_card.connect(_connect_card) != OK:
         push_error("Couldnt connect to new cards")
 
-    if battle_mode.battle_hand.on_hand_drawn.connect(_sync) != OK:
+    if __SignalBus.on_player_hand_drawn.connect(_sync) != OK:
         push_error("Couldn't connect to hand drawn")
 
-func _connect_card(card: BattleCard) -> void:
+func _connect_card(_player: BattlePlayer, card: BattleCard) -> void:
     if card.on_drag_start.connect(_add_dragged_card) != OK:
         push_error("Failed to connect to on drag start")
     if card.on_drag_end.connect(_remove_dragged_card) != OK:

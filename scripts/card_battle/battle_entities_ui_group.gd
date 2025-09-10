@@ -5,9 +5,6 @@ class_name BattleEntitiesUIGroup
 var _entityUIs: Array[BattleEntityUI] = []
 
 @export
-var _battle: BattleMode
-
-@export
 var _enemy_group: bool
 
 @export
@@ -21,14 +18,12 @@ var _inverse_connected_entities: Dictionary[BattleEntityUI, BattleEntity] = {}
 
 
 func _ready() -> void:
-    if _battle.on_entity_join_battle.connect(_handle_join_entity) != OK:
+    if __SignalBus.on_entity_join_battle.connect(_handle_join_entity) != OK:
         push_error("Failed to connect enemy joins battle event")
-    if _battle.on_entity_leave_battle.connect(_handle_entity_leave) != OK:
+    if __SignalBus.on_entity_leave_battle.connect(_handle_entity_leave) != OK:
         push_error("Failed to connect enemy leaves battle event")
-    if _battle.on_battle_start.connect(_handle_battle_start) != OK:
+    if __SignalBus.on_battle_start.connect(_handle_battle_start) != OK:
         push_error("Failed to conntect battle start")
-    if _battle.on_battle_end.connect(_handle_battle_end) != OK:
-        push_error("Failed to conntect battle end")
 
 func _handle_battle_start() -> void:
     for ui: BattleEntityUI in _entityUIs:
@@ -57,7 +52,6 @@ func _handle_join_entity(entity: BattleEntity) -> void:
         return
 
     ui.connect_entity(entity)
-    ui.connect_player_selection(_battle.battle_player)
 
     _connected_entities[entity] = ui
     _inverse_connected_entities[ui] = entity
@@ -73,7 +67,6 @@ func _handle_entity_leave(entity: BattleEntity, with_timer: bool = true) -> void
             await get_tree().create_timer(_delay_hide_enemy).timeout
 
         ui.disconnect_entity(entity)
-        ui.disconnect_player_selection(_battle.battle_player)
 
         @warning_ignore_start("return_value_discarded")
         _connected_entities.erase(entity)
@@ -81,7 +74,3 @@ func _handle_entity_leave(entity: BattleEntity, with_timer: bool = true) -> void
         @warning_ignore_restore("return_value_discarded")
 
         ui.visible = false
-
-func _handle_battle_end() -> void:
-    for entity: BattleEntity in _connected_entities.keys():
-        _handle_entity_leave(entity, false)

@@ -1,29 +1,12 @@
 extends Label
 class_name BattlePrompt
 
-@export
-var battle: BattleMode
-
 func _ready() -> void:
     text = ""
-    if battle.on_entity_join_battle.connect(_handle_join_battle) != OK:
-        push_error("Failed to connect battle entity join")
-    if battle.on_entity_leave_battle.connect(_handle_leave_battle) != OK:
-        push_error("Failed to connect battle entity join")
-
-func _handle_join_battle(entity: BattleEntity) -> void:
-    if entity is BattlePlayer:
-        var player: BattlePlayer = entity
-        if player.on_player_select_targets.connect(_show_prompt) != OK:
-            push_error("Failed to connect player %s select targets" % player)
-        if player.on_before_execute_effect_on_target.connect(_hide_prompt) != OK:
-            push_error("Failed to connect player %s execute effect" % player)
-
-func _handle_leave_battle(entity: BattleEntity) -> void:
-    if entity is BattlePlayer:
-        var player: BattlePlayer = entity
-        player.on_player_select_targets.disconnect(_show_prompt)
-        player.on_before_execute_effect_on_target.disconnect(_hide_prompt)
+    if __SignalBus.on_player_select_targets.connect(_show_prompt) != OK:
+        push_error("Failed to connect player select targets")
+    if __SignalBus.on_before_execute_effect_on_target.connect(_hide_prompt) != OK:
+        push_error("Failed to connect player execute effect")
 
 func _name_target(target_type: BattleCardPrimaryEffect.EffectTarget, count: int) -> String:
     match  target_type:
@@ -51,7 +34,7 @@ func _show_prompt(
     target_type: BattleCardPrimaryEffect.EffectTarget,
 ) -> void:
     if count == 0:
-        _hide_prompt(null)
+        _hide_prompt()
         return
 
     text = tr("SELECT_TO_EFFECT").format({
@@ -61,5 +44,5 @@ func _show_prompt(
     })
     visible = true
 
-func _hide_prompt(_target: BattleEntity) -> void:
+func _hide_prompt(_player: BattlePlayer = null, _target: BattleEntity = null) -> void:
     visible = false
