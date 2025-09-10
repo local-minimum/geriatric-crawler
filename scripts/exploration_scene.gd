@@ -47,6 +47,7 @@ func _handle_robot_death(_robot: Robot) -> void:
     var duration: float = 1.0
 
     var tween: Tween = create_tween()
+    @warning_ignore_start("return_value_discarded")
     tween.set_parallel()
 
     tween.tween_method(
@@ -66,6 +67,7 @@ func _handle_robot_death(_robot: Robot) -> void:
         8,
         duration
     ).set_trans(Tween.TRANS_QUART).set_ease(Tween.EASE_OUT)
+    @warning_ignore_restore("return_value_discarded")
 
 static func find_exploration_scene(current: Node, inclusive: bool = true) ->  ExplorationScene:
     if inclusive && current is ExplorationScene:
