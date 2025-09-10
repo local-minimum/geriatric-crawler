@@ -26,6 +26,8 @@ shader = ExtResource("5_160vf")
 shader_parameter/pixels = 40
 shader_parameter/noise_color = Color(0.849653, 0.213041, 0.272319, 1)
 shader_parameter/max_lerp = 0.2
+shader_parameter/min_lerp = 0.0
+shader_parameter/speed = 0.001
 
 [node name="Exploration" type="Control" node_paths=PackedStringArray("settings", "subviewport", "exploration_ui")]
 layout_mode = 3
