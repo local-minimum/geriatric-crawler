@@ -21,12 +21,20 @@ enum EncounterMode { NEVER, NODE, ANCHOR }
 @export var _spawn_node: GridNode
 
 @export var _start_anchor_direction: CardinalDirections.CardinalDirection = CardinalDirections.CardinalDirection.DOWN
+@export var _start_look_direction: CardinalDirections.CardinalDirection = CardinalDirections.CardinalDirection.NORTH
 
 var _triggered: bool
 var _was_on_node: bool
 
 func _ready() -> void:
+    if __SignalBus.on_change_anchor.connect(_check_colliding_anchor) != OK:
+        push_error("%s failed to connect to anchor change signal" % name)
+    if __SignalBus.on_change_node.connect(_check_colliding_node) != OK:
+        push_error("%s failed to connect to node change signal" % name)
+
     if _spawn_node != null:
+        look_direction = _start_look_direction
+
         var anchor: GridAnchor = _spawn_node.get_grid_anchor(_start_anchor_direction)
         if anchor == null:
             push_error("%s doesn't have anchor in %s direction" % [
@@ -38,38 +46,10 @@ func _ready() -> void:
 
     super._ready()
 
-    _connect_player_callbacks(get_level())
-
     effect.prepare(self)
 
-var _connected_player: GridPlayer
-
-func _connect_player_callbacks(level: GridLevel) -> void:
-    if _connected_player == level.player:
-        return
-    elif _connected_player != null:
-        _disconnect_player_callbacks()
-
-    if level != null:
-        if level.player.on_change_anchor.connect(_check_colliding_anchor) != OK:
-            push_error("%s failed to connect to player anchor change signal" % name)
-        if level.player.on_change_node.connect(_check_colliding_node) != OK:
-            push_error("%s failed to connect to player node change signal" % name)
-        _connected_player = level.player
-    else:
-        push_error("%s is not part of a level" % name)
-
-func _disconnect_player_callbacks() -> void:
-    if _connected_player == null:
-        return
-
-    _connected_player.on_change_anchor.disconnect(_check_colliding_anchor)
-    _connected_player.on_change_node.disconnect(_check_colliding_node)
-    _connected_player = null
-
-
 func _check_colliding_anchor(feature: GridNodeFeature) -> void:
-    if encounter_mode != EncounterMode.ANCHOR:
+    if feature is not GridPlayer || encounter_mode != EncounterMode.ANCHOR:
         return
 
     if feature.get_grid_node() == get_grid_node() && feature.get_grid_anchor() == get_grid_anchor():
@@ -77,6 +57,9 @@ func _check_colliding_anchor(feature: GridNodeFeature) -> void:
             _trigger(feature as GridEntity)
 
 func _check_colliding_node(feature: GridNodeFeature) -> void:
+    if feature is not GridPlayer:
+        return
+
     var is_on_node: bool = feature.get_grid_node() == get_grid_node()
 
     if encounter_mode != EncounterMode.NODE:
@@ -167,11 +150,10 @@ func load_from_save(level: GridLevel, save_data: Dictionary) -> void:
     var enemy_cards: Dictionary = DictionaryUtils.safe_getd(save_data, _ENEMY_GAINED_CARDS_KEY, {}, false)
     _load_enemy_cards(enemy_cards)
 
-    _connect_player_callbacks(level)
-
     print_debug("Loaded %s from %s" % [encounter_id, save_data])
 
 func _reset_starting_condition() -> void:
+    look_direction = _start_look_direction
     down = _start_anchor_direction
 
     if down == CardinalDirections.CardinalDirection.NONE:
@@ -190,7 +172,6 @@ func _reset_starting_condition() -> void:
         enemy.deck.restore_start_deck()
 
     _triggered = false
-    # TODO: Continue here!
 
 func _load_enemy_cards(enemy_cards: Dictionary) -> void:
     if effect is not BattleModeTrigger:

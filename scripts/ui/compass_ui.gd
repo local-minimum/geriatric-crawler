@@ -18,26 +18,24 @@ func _ready() -> void:
     if exploration_ui.level.on_change_player.connect(_handle_new_player) != OK:
         push_error("Failed to connect on change player")
 
+    if __SignalBus.on_update_orientation.connect(_handle_update_orientation) != OK:
+        push_error("Failed to connect on move start")
+
     _handle_new_player()
 
 func _handle_new_player() -> void:
     var player: GridPlayer = exploration_ui.level.player
-
-    if !player.on_update_orientation.is_connected(_handle_update_orientation):
-        if player.on_update_orientation.connect(_handle_update_orientation) != OK:
-            push_error("Failed to connect on move start")
-
     _sync_robot.call_deferred(player, player.robot)
 
 func _handle_update_orientation(
-    _entity: GridEntity,
+    entity: GridEntity,
     old_down: CardinalDirections.CardinalDirection,
     down: CardinalDirections.CardinalDirection,
     old_forward: CardinalDirections.CardinalDirection,
     forward: CardinalDirections.CardinalDirection,
 ) -> void:
-    if _entity is GridPlayer:
-        var player: GridPlayer = _entity
+    if entity is GridPlayer:
+        var player: GridPlayer = entity
         if player.robot.get_skill_level(RobotAbility.SKILL_MAPPING) < 1:
             visible = false
             return

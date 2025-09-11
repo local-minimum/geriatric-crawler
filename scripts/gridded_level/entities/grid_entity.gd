@@ -1,16 +1,6 @@
 extends GridNodeFeature
 class_name GridEntity
 
-signal on_move_start(entity: GridEntity, from: Vector3i, translation_direction: CardinalDirections.CardinalDirection)
-signal on_move_end(entity: GridEntity)
-signal on_update_orientation(
-    entity: GridEntity,
-    old_down: CardinalDirections.CardinalDirection,
-    down: CardinalDirections.CardinalDirection,
-    old_forward: CardinalDirections.CardinalDirection,
-    forward: CardinalDirections.CardinalDirection,
-)
-signal on_cinematic(entity: GridEntity, active: bool)
 
 const _LOOK_DIRECTION_KEY: String = "look_direction"
 const _DOWN_KEY: String = "down"
@@ -27,7 +17,7 @@ var cinematic: bool:
         cinematic = value
         if value:
             clear_queue()
-        on_cinematic.emit(self, value)
+        __SignalBus.on_cinematic.emit(self, value)
         print_debug("%s is cinematic %s" % [name, cinematic])
 
 @export var look_direction: CardinalDirections.CardinalDirection:
@@ -70,7 +60,7 @@ func _ready() -> void:
 func delay_emit() -> void:
     if _emit_orientation:
         _emit_orientation = false
-        on_update_orientation.emit(self, _old_down, down, _old_look_direction, look_direction)
+        __SignalBus.on_update_orientation.emit(self, _old_down, down, _old_look_direction, look_direction)
         _old_down = down
         _old_look_direction = look_direction
 
@@ -111,7 +101,7 @@ func end_movement(movement: Movement.MovementType, start_next_from_queue: bool =
         _concurrent_movement = Movement.MovementType.NONE
     else:
         if force_emit:
-            on_move_end.emit(self)
+            __SignalBus.on_move_end.emit(self)
         elif !cinematic:
             push_warning("%s was not an active movement (%s / %s)" % [
                 Movement.name(movement),
@@ -127,7 +117,7 @@ func end_movement(movement: Movement.MovementType, start_next_from_queue: bool =
     # ])
 
     if movement != null || force_emit:
-        on_move_end.emit(self)
+        __SignalBus.on_move_end.emit(self)
 
     if start_next_from_queue:
         _attempt_movement_from_queue()
@@ -207,7 +197,7 @@ func attempt_movement(
         end_movement(movement, false)
         return false
 
-    on_move_start.emit(self, coords, translation_direction)
+    __SignalBus.on_move_start.emit(self, coords, translation_direction)
     return true
 
 func _enqeue_movement(movement: Movement.MovementType) -> void:

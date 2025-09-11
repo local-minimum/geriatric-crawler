@@ -7,7 +7,6 @@ const _EVENTS_KEY: String = "events"
 const _PUNISHMENT_DECK_KEY: String = "punishments"
 const _CORPSE_KEY: String = "corpse"
 
-# TODO: Should not be hardcoded static
 const _PLAYER_SCENE: String = "res://scenes/dungeon/player.tscn"
 
 @export var persistant_group: String = "Persistant"

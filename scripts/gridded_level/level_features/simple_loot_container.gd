@@ -12,6 +12,7 @@ var _looted: bool
 
 var _looting: bool
 var _inv: Inventory.InventorySubscriber
+var _manual_loot: bool
 
 func _enter_tree() -> void:
     _inv = Inventory.InventorySubscriber.new()
@@ -20,6 +21,10 @@ func _ready() -> void:
     var mat: Material = _mesh.get_active_material(0)
     if mat.get_reference_count() > 1:
         _mesh.material_overlay = mat.duplicate()
+
+    if __SignalBus.on_move_end.connect(_handle_loooting) != OK:
+        push_error("Failed to connect on movement end, will loot manually")
+        _manual_loot = true
 
 func needs_saving() -> bool:
     return _looted
@@ -33,13 +38,12 @@ func trigger(entity: GridEntity, movement: Movement.MovementType) -> void:
 
     super.trigger(entity, movement)
 
-    if entity.on_move_end.connect(_handle_loooting) != OK:
-        push_error("Failed to connect on movement end, will loot now")
+    if _manual_loot:
         _handle_loooting(entity)
 
 
 func _handle_loooting(entity: GridEntity) -> void:
-    if _looting:
+    if _looting || entity is not GridPlayer || entity.coordinates() != coordinates():
         return
 
     _looting = true
@@ -59,9 +63,6 @@ func _handle_loooting(entity: GridEntity) -> void:
             var amount: int = ceili(_contents[id])
             if amount > 0:
                 key_ring.gain(id, amount)
-
-    if entity.on_move_end.is_connected(_handle_loooting):
-        entity.on_move_end.disconnect(_handle_loooting)
 
     _looting = false
 

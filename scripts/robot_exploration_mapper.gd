@@ -50,6 +50,9 @@ func _after_load_history() -> void:
     _handle_move_end(_player)
 
 func _ready() -> void:
+    if __SignalBus.on_move_end.connect(_handle_move_end) != OK:
+        push_error("Failed to connect on move end")
+
     _setup.call_deferred()
 
 func _enter_tree() -> void:
@@ -89,14 +92,10 @@ func _handle_teleport(_teleporter: GridTeleporter, entity: GridEntity) -> void:
 
 func _connect_new_player() -> void:
     _player = _level.player
-    if !_player.on_move_end.is_connected(_handle_move_end):
-        if _player.on_move_end.connect(_handle_move_end) != OK:
-            push_error("Failed to connect on move end")
-
     print_debug("Connected %s to map" % _player)
 
 func _handle_move_end(entity: GridEntity) -> void:
-    if entity != _player || entity == null:
+    if entity is not GridPlayer || entity != _player || entity == null:
         return
 
     var coords: Vector3i = entity.coordinates()

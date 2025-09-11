@@ -18,6 +18,12 @@ var _local_anchor_position: Vector3
 func _ready() -> void:
     _local_anchor_position = position
 
+    if __SignalBus.on_move_start.connect(_track_player) != OK:
+        push_error("%s cannot track player during movement" % name)
+
+    if __SignalBus.on_move_end.connect(_end_track_player) != OK:
+        push_error("%s cannot end player tracking during movement" % name)
+
     var level: GridLevel = get_level()
     if level != null:
         if level.on_change_player.connect(_connect_player_tracking) != OK:
@@ -33,13 +39,6 @@ func _connect_player_tracking() -> void:
         push_error("%s is not part of a level" % name)
         return
 
-    if !level.player.on_move_start.is_connected(_track_player):
-        if level.player.on_move_start.connect(_track_player) != OK:
-            push_error("%s cannot track player during movement" % name)
-
-    if !level.player.on_move_end.is_connected(_end_track_player):
-        if level.player.on_move_end.connect(_end_track_player) != OK:
-            push_error("%s cannot end player tracking during movement" % name)
 
     _update_position_and_rotation.call_deferred(false)
 
@@ -50,6 +49,9 @@ func _track_player(
     _from: Vector3i,
     _translation_direction: CardinalDirections.CardinalDirection,
 ) -> void:
+    if entity is not GridPlayer:
+        return
+
     var level: GridLevel = get_level()
 
     if entity != level.player:
@@ -58,6 +60,9 @@ func _track_player(
     _track = true
 
 func _end_track_player(entity: GridEntity) -> void:
+    if entity is not GridPlayer:
+        return
+
     var level: GridLevel = get_level()
 
     if entity != level.player:

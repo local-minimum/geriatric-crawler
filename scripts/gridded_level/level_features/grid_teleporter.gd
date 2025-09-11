@@ -20,6 +20,9 @@ signal on_arrive_entity(teleporter: GridTeleporter, entity: GridEntity)
 @export var rotation_speed: float = 1
 
 func _ready() -> void:
+    if __SignalBus.on_move_end.connect(_handle_teleport) != OK:
+        push_error("Failed to connect on move end")
+
     if effect != null:
         if exit == null:
             effect.visible = false
@@ -86,8 +89,6 @@ func trigger(entity: GridEntity, movement: Movement.MovementType) -> void:
 
     entity.cinematic = true
     # TODO: Play some nice effect
-    if entity.on_move_end.connect(_handle_teleport) != OK:
-        _handle_teleport(entity)
 
 func _show_effect(entity: GridEntity) -> void:
     if effect == null || exit == null:
@@ -117,6 +118,9 @@ func _show_effect(entity: GridEntity) -> void:
 
 
 func _handle_teleport(entity: GridEntity) -> void:
+    if !_teleporting.has(entity):
+        return
+
     await get_tree().create_timer(0.1).timeout
 
     FaderUI.fade(
@@ -151,9 +155,6 @@ func _handle_teleport(entity: GridEntity) -> void:
     )
 
     print_debug("Handle teleport of %s from %s to %s" % [entity, coordinates(), "%s" % exit.coordinates() if exit != null else "Nowhere"])
-
-    if entity.on_move_end.is_connected(_handle_teleport):
-        entity.on_move_end.disconnect(_handle_teleport)
 
 func _process(delta: float) -> void:
     if effect == null || !effect.visible || !_teleporting.is_empty():

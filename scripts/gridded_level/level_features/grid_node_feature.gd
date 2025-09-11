@@ -1,9 +1,6 @@
 extends Node3D
 class_name GridNodeFeature
 
-signal on_change_node(feature: GridNodeFeature)
-signal on_change_anchor(feature: GridNodeFeature)
-
 var _node: GridNode:
     get():
         if _node == null && !_inited:
@@ -38,8 +35,8 @@ func set_grid_node(node: GridNode, _deferred: bool = false) -> void:
     if !_inited:
         _inited = true
 
-    on_change_anchor.emit(self)
-    on_change_node.emit(self)
+    __SignalBus.on_change_anchor.emit(self)
+    __SignalBus.on_change_node.emit(self)
 
 func get_grid_anchor() -> GridAnchor:
     return _anchor
@@ -59,8 +56,8 @@ func set_grid_anchor(anchor: GridAnchor, _deferred: bool = false) -> void:
     if !_inited:
         _inited = true
 
-    on_change_anchor.emit(self)
-    on_change_node.emit(self)
+    __SignalBus.on_change_anchor.emit(self)
+    __SignalBus.on_change_node.emit(self)
 
 func coordinates() -> Vector3i:
     if _node == null:

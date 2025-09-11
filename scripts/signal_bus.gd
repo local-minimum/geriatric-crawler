@@ -38,6 +38,23 @@ signal on_robot_death(robot: Robot)
 signal on_robot_complete_fight(robot: Robot)
 signal on_robot_loaded(robot: Robot)
 
+# Exploration
+# -> Grid Entity
+signal on_move_start(entity: GridEntity, from: Vector3i, translation_direction: CardinalDirections.CardinalDirection)
+signal on_move_end(entity: GridEntity)
+signal on_update_orientation(
+    entity: GridEntity,
+    old_down: CardinalDirections.CardinalDirection,
+    down: CardinalDirections.CardinalDirection,
+    old_forward: CardinalDirections.CardinalDirection,
+    forward: CardinalDirections.CardinalDirection,
+)
+signal on_cinematic(entity: GridEntity, active: bool)
+
+# -> Gride Node Feature
+signal on_change_node(feature: GridNodeFeature)
+signal on_change_anchor(feature: GridNodeFeature)
+
 # Battle
 signal on_entity_join_battle(entity: BattleEntity)
 signal on_entity_leave_battle(entity: BattleEntity, battle_end: bool)
