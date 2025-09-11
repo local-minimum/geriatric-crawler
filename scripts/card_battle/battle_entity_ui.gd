@@ -166,7 +166,7 @@ func _handle_death(battle_entity: BattleEntity) -> void:
     if battle_entity != _entity:
         return
 
-    healthUI.text = "XXX %s XXX" % tr("DEAD")
+    healthUI.text = "XXX %s XXX" % tr("DEAD").to_upper()
     await get_tree().create_timer(SHOW_CHANGE_TIME).timeout
 
     disconnect_entity(battle_entity)
