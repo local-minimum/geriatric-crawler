@@ -27,13 +27,13 @@ func get_initial_save_state() -> Dictionary:
     return {}
 
 ## When saving and loading indicates the current level
-func get_level_name() -> String:
+func get_level_id() -> String:
     return LEVEL_NAME
 
 ## When saving indicates which level to load next time the save is loaded.
 ## This will be different from its own level if we're exiting for a new one
 func get_level_to_load() -> String:
-    return get_level_name() if _destination_level.is_empty() else _destination_level
+    return get_level_id() if _destination_level.is_empty() else _destination_level
 
 ## Only the save data for the particular level
 func load_from_save(save_data: Dictionary, _entry_portal_id: String) -> void:

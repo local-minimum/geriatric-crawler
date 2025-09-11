@@ -10,14 +10,14 @@ func get_initial_save_state() -> Dictionary:
     return {}
 
 ## When saving and loading indicates the current level
-func get_level_name() -> String:
+func get_level_id() -> String:
     push_error("Executing base class method for getting level name")
     return "level-name"
 
 ## When saving indicates which level to load next time the save is loaded.
 ## This will be different from its own level if we're exiting for a new one
 func get_level_to_load() -> String:
-    return get_level_name()
+    return get_level_id()
 
 ## When saving indicates at which level portal to enter the level
 func get_level_to_load_entry_portal_id() -> String:

@@ -54,7 +54,7 @@ func transition_to_next_scene(wait_for_new_level_load: bool = true) -> bool:
 
     _loading_scene_id = ""
     if SaveSystem.instance != null:
-        _loading_scene_id = SaveSystem.get_next_scene_id()
+        _loading_scene_id = SaveSystem.get_loading_level_id()
 
     if _loading_scene_id.is_empty():
         _loading_scene_id = fallback_scene_id

@@ -23,7 +23,7 @@ func _ready() -> void:
         else:
             push_warning("Could not find a level in '%s', won't be able to load level saves" % GridLevel.LEVEL_GROUP)
 
-func get_level_name() -> String:
+func get_level_id() -> String:
     _ready()
     if level == null:
         return GridLevel.UNKNOWN_LEVEL_ID
@@ -37,10 +37,10 @@ func get_level_to_load() -> String:
     if level.activated_exit_portal != null:
         var target: String = level.activated_exit_portal.exit_level_target
         if target.is_empty():
-            return get_level_name()
+            return get_level_id()
         return target
 
-    return get_level_name()
+    return get_level_id()
 
 func get_level_to_load_entry_portal_id() -> String:
     if !level.player.robot.is_alive():
@@ -86,7 +86,7 @@ func collect_save_state() -> Dictionary:
             var encounter: GridEncounter = encounter_node
 
             if encounters_save.has(encounter.encounter_id):
-                push_error("Level %s has duplicate encounters with id '%s'" % [get_level_name(), encounter.encounter_id])
+                push_error("Level %s has duplicate encounters with id '%s'" % [get_level_id(), encounter.encounter_id])
 
             encounters_save[encounter.encounter_id] = encounter.save()
 
@@ -98,7 +98,7 @@ func collect_save_state() -> Dictionary:
 
             events_save[event.save_key()] = event.collect_save_data()
 
-    print_debug("[GriddedLevelSaver] Saved level %s" % get_level_name())
+    print_debug("[GriddedLevelSaver] Saved level %s" % get_level_id())
 
     return save_state
 

@@ -523,6 +523,7 @@ direction = 2
 [node name="door" parent="LevelGeometry/Elevation 0/Node (3, 0, 1)" instance=ExtResource("14_wymjw")]
 transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -1.23292, 0, 0)
 _back_automation = 3
+_close_automation = 2
 _inital_lock_state = 0
 _door_face = 3
 block_traversal_anchor_sides = Array[int]([1, 2])
@@ -542,6 +543,7 @@ direction = 2
 [node name="Side UP" parent="LevelGeometry/Elevation 0/Node (4, 0, 1)" instance=ExtResource("8_72dvb")]
 
 [node name="Side DOWN" parent="LevelGeometry/Elevation 0/Node (4, 0, 1)" instance=ExtResource("9_4mxkc")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00100899, 0.00840122, 0.000681162)
 
 [node name="Node (5, 0, 1)" parent="LevelGeometry/Elevation 0" instance=ExtResource("4_myev5")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12.5, 0, 2.5)

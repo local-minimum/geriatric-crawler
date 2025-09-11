@@ -80,7 +80,7 @@ func _collect_levels_save_data(save_data: Dictionary) -> Dictionary:
         var levels: Dictionary = save_data[_LEVEL_SAVE_KEY]
         updated_levels = levels.duplicate()
 
-    var current_level: String = level_saver.get_level_name()
+    var current_level: String = level_saver.get_level_id()
 
     @warning_ignore_start("return_value_discarded")
     updated_levels.erase(current_level)
@@ -129,7 +129,7 @@ func _collect_global_game_save_data(save_data: Dictionary) -> Dictionary:
 
     var level_history: Array[String] = save_data[_GLOBAL_GAME_STATE_KEY][_LEVEL_HISTORY_KEY]
     if level_saver != null:
-        var current_level: String = level_saver.get_level_name()
+        var current_level: String = level_saver.get_level_id()
         if level_history.size() == 0 || level_history[level_history.size() - 1] != current_level:
             level_history = level_history + ([current_level] as Array[String])
 
@@ -166,7 +166,7 @@ func _load_save_data_or_default_initial_data(slot: int) -> Dictionary:
         _APPLICATION_KEY: _collect_application_save_data(),
         _GLOBAL_GAME_STATE_KEY: _collect_inital_global_game_save_data(),
         _LEVEL_SAVE_KEY: {} if level_saver == null else {
-            level_saver.get_level_name(): level_saver.get_initial_save_state()
+            level_saver.get_level_id(): level_saver.get_initial_save_state()
         },
     }
 
@@ -183,7 +183,7 @@ func _load_save_data_or_default_initial_data(slot: int) -> Dictionary:
 
     return data
 
-func load_slot(slot: int) -> bool:
+func _load_slot_into_cache(slot: int) -> bool:
     var data: Dictionary = storage_provider.retrieve_data(slot)
     if data.is_empty() || data == null:
         push_error("Failed to load from slot %s using %s" % [slot, storage_provider])
@@ -202,8 +202,21 @@ func load_slot(slot: int) -> bool:
                 data = migration.migrate_save(data)
 
     _current_save = data
+    return true
 
-    if level_saver == null || get_next_scene_id() != level_saver.get_level_name():
+func can_load_cach_onto_this_level() -> bool:
+    return level_saver != null && get_loading_level_id() == level_saver.get_level_id()
+
+func load_slot(slot: int) -> bool:
+    if !_load_slot_into_cache(slot):
+        return false
+
+    if !can_load_cach_onto_this_level():
+        push_error("Failed to load from slot %s using %s because of next scene id missmach %s vs %s" % [
+            slot,
+            storage_provider,
+            get_loading_level_id(),
+            level_saver.get_level_id()])
         return false
 
     if load_cached_save():
@@ -261,9 +274,12 @@ func load_cached_save() -> bool:
 
     return true
 
-static func get_next_scene_id() -> String:
+static func get_loading_level_id() -> String:
     var global_state: Dictionary = DictionaryUtils.safe_getd(_current_save, _GLOBAL_GAME_STATE_KEY, {}, false)
     return DictionaryUtils.safe_gets(global_state, _LEVEL_TO_LOAD_KEY, "", false)
+
+func preload_last_save_into_cache() -> bool:
+    return _load_slot_into_cache(_current_save_slot)
 
 func load_last_save() -> bool:
     return load_slot(_current_save_slot)
