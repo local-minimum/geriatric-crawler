@@ -4,9 +4,17 @@ class_name InventorySaver
 @export var _save_key: String = "exploration-inventory"
 
 var _inv: Inventory.InventorySubscriber
+var _save_inventory: bool = true
 
 func _enter_tree() -> void:
     _inv = Inventory.InventorySubscriber.new()
+
+func _ready() -> void:
+    if __SignalBus.on_robot_death.connect(_handle_robot_death) != OK:
+        push_error("Failed to connect robot death")
+
+func _handle_robot_death(_robot: Robot) -> void:
+    _save_inventory = _robot.is_alive()
 
 func get_key() -> String:
     return _save_key
@@ -15,6 +23,9 @@ func load_from_initial_if_save_missing() -> bool:
     return false
 
 func retrieve_data(extentsion_save_data: Dictionary) -> Dictionary:
+    if !_save_inventory:
+        return {}
+
     if _inv.inventory == null:
         return extentsion_save_data
 

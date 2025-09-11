@@ -232,3 +232,4 @@ FAILED_TO_CHANGE_SCENE,Failed to change scene,Kunde inte byta scen
 NOTICE_AIRLOCK,Airlock,Luftsluss
 AIRLOCK_NOT_OPERATIONAL,Airlock is not operational,Luftslussen är ur funktion
 AIRLOCK_FAIL_TO_CYCLE,Airlock failed to cycle,Luftslussen misslyckades att öppna yttre dörren
+CONNECTION_LOST,Connection Lost,Tappad Uppkoppling

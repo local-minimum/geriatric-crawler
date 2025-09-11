@@ -3,7 +3,7 @@ class_name SpaceshipSaver
 
 const _PRINTERS_KEY: String = "printers"
 
-@export var _level_name: String = "hub-spaceship"
+const LEVEL_NAME: String = "hub-spaceship"
 
 @export var ship: Spaceship
 
@@ -28,7 +28,7 @@ func get_initial_save_state() -> Dictionary:
 
 ## When saving and loading indicates the current level
 func get_level_name() -> String:
-    return _level_name
+    return LEVEL_NAME
 
 ## When saving indicates which level to load next time the save is loaded.
 ## This will be different from its own level if we're exiting for a new one

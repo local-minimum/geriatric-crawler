@@ -5,6 +5,11 @@ const _PLAYER_KEY: String = "player"
 const _ENCOUNTERS_KEY: String = "encounters"
 const _EVENTS_KEY: String = "events"
 const _PUNISHMENT_DECK_KEY: String = "punishments"
+const _CORPSE_KEY: String = "corpse"
+const _CORPSE_COORDINATES_KEY: String = "corpse"
+const _CORPSE_INVENTORY_KEY: String = "inventory"
+const _CORPSE_MODEL_KEY: String = "model"
+const _CORPSE_NAME_KEY: String = "name"
 
 # TODO: Should not be hardcoded static
 const _PLAYER_SCENE: String = "res://scenes/dungeon/player.tscn"
@@ -31,6 +36,9 @@ func get_level_name() -> String:
     return level.level_id
 
 func get_level_to_load() -> String:
+    if !level.player.robot.is_alive():
+        return SpaceshipSaver.LEVEL_NAME
+
     if level.activated_exit_portal != null:
         var target: String = level.activated_exit_portal.exit_level_target
         if target.is_empty():
@@ -40,6 +48,9 @@ func get_level_to_load() -> String:
     return get_level_name()
 
 func get_level_to_load_entry_portal_id() -> String:
+    if !level.player.robot.is_alive():
+        return ""
+
     if level.activated_exit_portal != null:
         return level.activated_exit_portal.exit_level_target_portal
 
@@ -55,6 +66,10 @@ func collect_save_state() -> Dictionary:
         _EVENTS_KEY: events_save,
         _PUNISHMENT_DECK_KEY: level.punishments.collect_save_data(),
     }
+
+    var corpse_data: Dictionary
+    if _create_corpse(corpse_data):
+        save_state[_CORPSE_KEY] = corpse_data
 
     for persistable: Node in get_tree().get_nodes_in_group(persistant_group):
         if persistable is GridPlayer:
@@ -87,6 +102,17 @@ func collect_save_state() -> Dictionary:
     print_debug("[GriddedLevelSaver] Saved level %s" % get_level_name())
 
     return save_state
+
+func _create_corpse(save: Dictionary) -> bool:
+    if level.player.robot.is_alive():
+        return false
+
+    save[_CORPSE_COORDINATES_KEY] = level.player.coordinates()
+    save[_CORPSE_INVENTORY_KEY] = Inventory.active_inventory.collect_save_data()
+    save[_CORPSE_MODEL_KEY] = level.player.robot.model.id
+    save[_CORPSE_NAME_KEY] = level.player.robot.given_name
+
+    return true
 
 func get_initial_save_state() -> Dictionary:
     var player_save: Dictionary = level.player.initial_state()

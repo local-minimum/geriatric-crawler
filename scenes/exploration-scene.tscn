@@ -29,7 +29,7 @@ shader_parameter/max_lerp = 0.2
 shader_parameter/min_lerp = 0.0
 shader_parameter/speed = 0.001
 
-[node name="Exploration" type="Control" node_paths=PackedStringArray("settings", "subviewport", "exploration_ui")]
+[node name="Exploration" type="Control" node_paths=PackedStringArray("settings", "subviewport", "exploration_view", "exploration_ui", "connection_lost")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -40,8 +40,12 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 script = ExtResource("1_w7kg7")
 settings = NodePath("Settings")
-subviewport = NodePath("SubViewportContainer")
+subviewport = NodePath("Exploration View/SubViewportContainer")
+exploration_view = NodePath("Exploration View")
 exploration_ui = NodePath("Exploration UI")
+connection_lost = NodePath("Exploration View/ConnectionLostLabel")
+cl_start_color = Color(0, 0, 0, 0)
+cl_end_color = Color(0.349481, 0.910385, 0.872652, 0.866667)
 
 [node name="SaveSystem" parent="." instance=ExtResource("2_n04bd")]
 
@@ -61,36 +65,60 @@ alignment = 2
 script = ExtResource("9_t2qw5")
 _tween_notifiction_duration = 0.5
 
-[node name="SubViewportContainer" type="SubViewportContainer" parent="."]
+[node name="Exploration View" type="Control" parent="."]
+layout_mode = 1
+anchor_right = 0.82
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="SubViewportContainer" type="SubViewportContainer" parent="Exploration View"]
 material = SubResource("ShaderMaterial_gl6i3")
 layout_mode = 1
-anchors_preset = -1
-anchor_right = 0.82
+anchors_preset = 15
+anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 0
 stretch = true
 
-[node name="SubViewport" type="SubViewport" parent="SubViewportContainer"]
+[node name="SubViewport" type="SubViewport" parent="Exploration View/SubViewportContainer"]
 handle_input_locally = false
 physics_object_picking = true
 canvas_cull_mask = 4293918751
 size = Vector2i(944, 648)
 render_target_update_mode = 4
 
-[node name="Exploration View" parent="SubViewportContainer/SubViewport" instance=ExtResource("5_6lmoa")]
+[node name="Exploration View" parent="Exploration View/SubViewportContainer/SubViewport" instance=ExtResource("5_6lmoa")]
 
-[node name="DebugSettingsUI" parent="SubViewportContainer/SubViewport" node_paths=PackedStringArray("exploration_view", "settings") instance=ExtResource("1_6lmoa")]
+[node name="DebugSettingsUI" parent="Exploration View/SubViewportContainer/SubViewport" node_paths=PackedStringArray("exploration_view", "settings") instance=ExtResource("1_6lmoa")]
 exploration_view = NodePath("../Exploration View")
-settings = NodePath("../../../Settings")
+settings = NodePath("../../../../Settings")
+
+[node name="ConnectionLostLabel" type="Label" parent="Exploration View"]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = 40.0
+offset_right = -40.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 144
+text = "CONNECTION_LOST"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
 
 [node name="Exploration UI" parent="." node_paths=PackedStringArray("exploration_view", "battle", "inspect_robot_ui") instance=ExtResource("4_kbxam")]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.82
 offset_left = 0.0
-exploration_view = NodePath("../SubViewportContainer/SubViewport/Exploration View")
+exploration_view = NodePath("../Exploration View/SubViewportContainer/SubViewport/Exploration View")
 battle = NodePath("../Battle Mode")
 inspect_robot_ui = NodePath("../Robot Inspection UI")
 
