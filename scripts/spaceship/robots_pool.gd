@@ -17,7 +17,10 @@ func count() -> int: return _robots.size()
 func max_id_counter() -> int: return _robots.reduce(func (acc: int, robot: RobotData) -> int: return maxi(acc, robot.get_id_counter()), 1000)
 
 func available_robots() -> Array[RobotData]:
-    return _robots
+    if _robots.is_empty():
+        return []
+    var c_name: String = _robots[0].get_class()
+    return Array(_robots.filter(func (robot: RobotData) -> bool: return robot.alive), TYPE_OBJECT, c_name, RobotData)
 
 func get_robot(id: String) -> RobotData:
     if id.is_empty():
