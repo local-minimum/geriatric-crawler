@@ -138,7 +138,7 @@ func load_from_save(level: GridLevel, save_data: Dictionary) -> void:
     var node: GridNode = level.get_grid_node(coords)
 
     if node == null:
-        push_error("Trying to load player onto coordinates %s but there's no node there." % coords)
+        push_error("Trying to load encounter onto coordinates %s but there's no node there." % coords)
         _reset_starting_condition()
         return
 
@@ -155,7 +155,7 @@ func load_from_save(level: GridLevel, save_data: Dictionary) -> void:
     else:
         var anchor: GridAnchor = node.get_grid_anchor(anchor_direction)
         if anchor == null:
-            push_error("Trying to load player onto coordinates %s and anchor %s but node lacks anchor in that direction" % [coords, anchor_direction])
+            push_error("Trying to load encounter onto coordinates %s and anchor %s but node lacks anchor in that direction" % [coords, anchor_direction])
         update_entity_anchorage(node, anchor, true)
 
     if effect != null:
@@ -172,7 +172,23 @@ func load_from_save(level: GridLevel, save_data: Dictionary) -> void:
     print_debug("Loaded %s from %s" % [encounter_id, save_data])
 
 func _reset_starting_condition() -> void:
-    set_grid_node(_spawn_node)
+    down = _start_anchor_direction
+
+    if down == CardinalDirections.CardinalDirection.NONE:
+        set_grid_node(_spawn_node)
+    else:
+        var anchor: GridAnchor = _spawn_node.get_grid_anchor(down)
+        if anchor == null:
+            push_error("Trying to load encounter onto node %s and anchor %s but node lacks anchor in that direction" % [_spawn_node, down])
+        update_entity_anchorage(_spawn_node, anchor, true)
+
+    sync_position()
+    orient()
+
+    var trigger: BattleModeTrigger = effect
+    for enemy: BattleEnemy in trigger.enemies:
+        enemy.deck.restore_start_deck()
+
     _triggered = false
     # TODO: Continue here!
 

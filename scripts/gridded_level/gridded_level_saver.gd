@@ -125,7 +125,7 @@ func get_initial_save_state() -> Dictionary:
         GridPlayer.strip_save_of_transform_data(player_save)
 
     var save_state: Dictionary = {
-        _LEVEL_ID_KEY: null,
+        _LEVEL_ID_KEY: level.level_id,
         _PLAYER_KEY: player_save,
         _ENCOUNTERS_KEY: {}, # We just assume they are as they should be
         _EVENTS_KEY: {},
@@ -188,7 +188,8 @@ func load_from_save(save_data: Dictionary, entry_portal_id: String) -> void:
                 encounter.load_from_save(level, encounters_save[encounter.encounter_id])
             else:
                 encounter.load_from_save(level, {})
-                push_warning("Encounter '%s' not present in save" % [encounter.encounter_id])
+                if !encounters_save.is_empty():
+                    push_warning("Encounter '%s' not present in save" % [encounter.encounter_id])
 
     var events_save: Dictionary = DictionaryUtils.safe_getd(save_data, _EVENTS_KEY, {}, false)
     for event_node: Node in get_tree().get_nodes_in_group(GridEvent.GRID_EVENT_GROUP):
@@ -201,7 +202,8 @@ func load_from_save(save_data: Dictionary, entry_portal_id: String) -> void:
                 @warning_ignore_restore("unsafe_cast")
             elif event.needs_saving():
                 event.load_save_data({})
-                push_warning("Event '%s' not present in save" % event.save_key())
+                if !events_save.is_empty():
+                    push_warning("Event '%s' not present in save" % event.save_key())
 
     level.punishments.load_from_save(DictionaryUtils.safe_geta(save_data, _PUNISHMENT_DECK_KEY, []))
 
