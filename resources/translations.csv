@@ -233,3 +233,6 @@ NOTICE_AIRLOCK,Airlock,Luftsluss
 AIRLOCK_NOT_OPERATIONAL,Airlock is not operational,Luftslussen är ur funktion
 AIRLOCK_FAIL_TO_CYCLE,Airlock failed to cycle,Luftslussen misslyckades att öppna yttre dörren
 CONNECTION_LOST,Connection Lost,Tappad Uppkoppling
+NOTICE_DEBRIS,Debris,Skräp
+DUSTY_HUSK_NAME,The empty dusty husk of {name} lies on the ground,Det tomma skalet av {name} ligger på marken
+SEARCH_DEBRIS_MODEL_NAME,Searching the ruins of {name} [{model}] for lost loot:,Letar igenom vraket efter {name} [{model}] efter värdefulla saker

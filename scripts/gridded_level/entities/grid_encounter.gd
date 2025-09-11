@@ -134,7 +134,7 @@ func load_from_save(level: GridLevel, save_data: Dictionary) -> void:
         push_error("Attempting load of '%s' but I'm '%s" % [save_data[_ID_KEY], encounter_id])
         return
 
-    var coords: Vector3i = save_data[_COORDINATES_KEY]
+    var coords: Vector3i = DictionaryUtils.safe_getv3i(save_data, _COORDINATES_KEY)
     var node: GridNode = level.get_grid_node(coords)
 
     if node == null:

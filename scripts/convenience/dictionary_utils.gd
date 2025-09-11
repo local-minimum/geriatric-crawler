@@ -44,6 +44,17 @@ static func safe_gets(dict: Dictionary, key: String, default: String = "", warn:
 
     return default
 
+static func safe_getv3i(dict: Dictionary, key: String, default: Vector3i = Vector3i.ZERO, warn: bool = true) -> Vector3i:
+    if dict.has(key):
+        if dict[key] is Vector3i:
+            return dict[key]
+        elif warn:
+            push_warning("Dictionary %s has %s on key %s, expected an vector 3i" % [dict, dict[key], key])
+    elif warn:
+        push_warning("Dictionary %s lacks key %s" % [dict, key])
+
+    return default
+
 static func safe_geta(dict: Dictionary, key: String, default: Array = [], warn: bool = true) -> Array:
     if dict.has(key):
         if dict[key] is Array:

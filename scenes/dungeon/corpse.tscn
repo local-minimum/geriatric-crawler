@@ -1,0 +1,26 @@
+[gd_scene load_steps=6 format=3 uid="uid://1w5dmmqk2s7j"]
+
+[ext_resource type="Script" uid="uid://cfhojfqqu0l6p" path="res://scripts/gridded_level/level_features/corpse.gd" id="1_pdi0t"]
+[ext_resource type="Script" uid="uid://dexigkhejxn1h" path="res://scripts/gridded_level/level_features/player_facer.gd" id="2_i56ut"]
+[ext_resource type="Texture2D" uid="uid://40vaht1fqqob" path="res://sprites/enemies/corpse.png" id="3_8r4te"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ub21w"]
+transparency = 1
+albedo_texture = ExtResource("3_8r4te")
+
+[sub_resource type="QuadMesh" id="QuadMesh_hm4fr"]
+material = SubResource("StandardMaterial3D_ub21w")
+
+[node name="Corpse" type="Node3D"]
+script = ExtResource("1_pdi0t")
+_repeatable = false
+_trigger_entire_node = true
+metadata/_custom_type_script = "uid://cfhojfqqu0l6p"
+
+[node name="Avatar" type="Node3D" parent="."]
+script = ExtResource("2_i56ut")
+metadata/_custom_type_script = "uid://dexigkhejxn1h"
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Avatar"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.582511, 0)
+mesh = SubResource("QuadMesh_hm4fr")

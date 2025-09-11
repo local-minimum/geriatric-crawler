@@ -6,10 +6,6 @@ const _ENCOUNTERS_KEY: String = "encounters"
 const _EVENTS_KEY: String = "events"
 const _PUNISHMENT_DECK_KEY: String = "punishments"
 const _CORPSE_KEY: String = "corpse"
-const _CORPSE_COORDINATES_KEY: String = "corpse"
-const _CORPSE_INVENTORY_KEY: String = "inventory"
-const _CORPSE_MODEL_KEY: String = "model"
-const _CORPSE_NAME_KEY: String = "name"
 
 # TODO: Should not be hardcoded static
 const _PLAYER_SCENE: String = "res://scenes/dungeon/player.tscn"
@@ -73,10 +69,14 @@ func collect_save_state() -> Dictionary:
 
     for persistable: Node in get_tree().get_nodes_in_group(persistant_group):
         if persistable is GridPlayer:
+            var player: GridPlayer = persistable
+            if !player.robot.is_alive():
+                continue
+
             if save_state.has(_PLAYER_KEY):
                 push_error("Level can only save one player, ignoring %s" % persistable.name)
 
-            var player_save: Dictionary = (persistable as GridPlayer).save()
+            var player_save: Dictionary = player.save()
             if level.activated_exit_portal != null:
                 GridPlayer.strip_save_of_transform_data(player_save)
             save_state[_PLAYER_KEY] = player_save
@@ -105,12 +105,17 @@ func collect_save_state() -> Dictionary:
 
 func _create_corpse(save: Dictionary) -> bool:
     if level.player.robot.is_alive():
+        if level.corpse != null && level.corpse.has_loot():
+            save.merge(level.corpse.collect_save_data(), true)
+
+            return true
+
         return false
 
-    save[_CORPSE_COORDINATES_KEY] = level.player.coordinates()
-    save[_CORPSE_INVENTORY_KEY] = Inventory.active_inventory.collect_save_data()
-    save[_CORPSE_MODEL_KEY] = level.player.robot.model.id
-    save[_CORPSE_NAME_KEY] = level.player.robot.given_name
+    save[Corpse.CORPSE_COORDINATES_KEY] = level.player.coordinates()
+    save[Corpse.CORPSE_INVENTORY_KEY] = Inventory.active_inventory.collect_save_data()
+    save[Corpse.CORPSE_MODEL_KEY] = level.player.robot.model.id
+    save[Corpse.CORPSE_NAME_KEY] = level.player.robot.given_name
 
     return true
 
@@ -199,5 +204,11 @@ func load_from_save(save_data: Dictionary, entry_portal_id: String) -> void:
                 push_warning("Event '%s' not present in save" % event.save_key())
 
     level.punishments.load_from_save(DictionaryUtils.safe_geta(save_data, _PUNISHMENT_DECK_KEY, []))
+
+    var corpse_save: Dictionary = DictionaryUtils.safe_getd(save_data, _CORPSE_KEY, {}, false)
+    if !corpse_save.is_empty():
+        var corpse_scene: PackedScene = load("res://scenes/dungeon/corpse.tscn")
+        var corpse: Corpse = corpse_scene.instantiate()
+        corpse.load_from_save(level, corpse_save)
 
     level.emit_loaded = true

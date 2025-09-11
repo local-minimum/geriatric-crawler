@@ -29,6 +29,8 @@ var grid_entities: Array[GridEntity]
 @export var primary_entry_portal: LevelPortal
 @export var level_portals: Array[LevelPortal]
 
+var corpse: Corpse
+
 var entry_portal: LevelPortal:
     get():
         if entry_portal == null:

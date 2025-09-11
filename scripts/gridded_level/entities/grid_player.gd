@@ -236,7 +236,7 @@ func load_from_save(level: GridLevel, save_data: Dictionary) -> void:
     var key_ring_save: Dictionary = DictionaryUtils.safe_getd(save_data, _KEY_RING_KEY, {})
     key_ring.load_from_save(key_ring_save)
 
-    var coords: Vector3i = save_data[_COORDINATES_KEY]
+    var coords: Vector3i = DictionaryUtils.safe_getv3i(save_data, _COORDINATES_KEY)
     var node: GridNode = level.get_grid_node(coords)
 
     if node == null:
