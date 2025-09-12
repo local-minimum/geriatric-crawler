@@ -144,10 +144,7 @@ DISEASED,diseased,avliden
 SHIFT_CODES,Shift codes {direction},Skifta koder {direction}
 DEPLOY_WORM,Deploy Worm,Sänd ut worm
 RECALL_WORM,Recall Worm,Återkalla worm
-HACKING_WORMS,Worms,Worms
-HACKING_BOMBS,Logical Bombs,Logiska Bomber
 HACKING_BOMB_REFUNDED,Bomb refunded,Bomb återgäldad
-HACKING_PROXIES,Proxies,Proxies
 NOTICE_HACKING_PROXY,Proxy,Proxy
 HACKING_PROXY_DEPLOY,Deploy proxy to lower risk of failure penalty,Sätt upp en proxy för att minska riskerna
 HACKING_PROXY_DEPLOYED,Successfully deployed,Framgångsrikt utsänd

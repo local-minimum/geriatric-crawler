@@ -50,7 +50,7 @@ func _list_inventory() -> void:
         label.bbcode_enabled = true
         label.fit_content = true
         label.text = "[b]%s[/b][p align=right][code]%1.2f %s[/code][/p]" % [
-            Inventory.inventory_item_id_to_text(listing.id),
+            LootableManager.translate(listing.id),
             listing.amount,
             Inventory.inventory_item_id_to_unit(listing.id),
         ]

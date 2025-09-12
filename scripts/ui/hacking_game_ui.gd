@@ -118,8 +118,8 @@ func _ready() -> void:
 
     _handle_handedness(AccessibilitySettings.handedness)
 
-    _bombs_label.text = HackingGame.item_id_to_text(HackingGame.ITEM_HACKING_BOMB)
-    _worms_label.text = HackingGame.item_id_to_text(HackingGame.ITEM_HACKING_WORM)
+    _bombs_label.text = LootableManager.translate(LootableManager.ITEM_HACKING_BOMB, 999)
+    _worms_label.text = LootableManager.translate(LootableManager.ITEM_HACKING_WORM, 999)
 
 func _unhandled_input(event: InputEvent) -> void:
     if !_bombing || !_hovering || event.is_echo():
@@ -422,8 +422,8 @@ func _show_next_tutorial() -> void:
         on_complete_tutorial.clear()
 
 func sync_inventory_actions() -> void:
-    var bombs: int = roundi(_inv.inventory.get_item_count(HackingGame.ITEM_HACKING_BOMB))
-    var worms: int = roundi(_inv.inventory.get_item_count(HackingGame.ITEM_HACKING_WORM))
+    var bombs: int = roundi(_inv.inventory.get_item_count(LootableManager.ITEM_HACKING_BOMB))
+    var worms: int = roundi(_inv.inventory.get_item_count(LootableManager.ITEM_HACKING_WORM))
 
     _bombs_counter.text = "%03d" % bombs
     _deploy_bomb_button.text = DEPLOY_BOMB_TEXT
