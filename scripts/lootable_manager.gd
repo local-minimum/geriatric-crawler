@@ -103,8 +103,21 @@ static func translate(item_id: String, count: int = 1) -> String:
     return __GlobalGameState.tr_n(key, "%s_PL" % key, count)
 
 static func unit(id: String) -> String:
-    match LootableManager.classify_loot(id):
-        LootableManager.LootClass.SUBSTANCE, LootableManager.LootClass.ELEMENT:
+    match classify_loot(id):
+        LootClass.SUBSTANCE, LootClass.ELEMENT:
             return __GlobalGameState.tr("UNIT_KG")
         _:
             return __GlobalGameState.tr("UNIT_COUNT")
+
+static func categorize(item_ids: Array[String]) -> Dictionary[LootClass, Array]:
+    var results: Dictionary[LootClass, Array] = {}
+
+    for item_id: String in item_ids:
+        var category: LootClass = classify_loot(item_id)
+        if results.has(category):
+            results[category].append(item_id)
+        else:
+            var category_items: Array[String] = [item_id]
+            results[category] = category_items
+
+    return results
