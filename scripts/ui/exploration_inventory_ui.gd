@@ -52,7 +52,7 @@ func _list_inventory() -> void:
         label.text = "[b]%s[/b][p align=right][code]%1.2f %s[/code][/p]" % [
             LootableManager.translate(listing.id),
             listing.amount,
-            Inventory.inventory_item_id_to_unit(listing.id),
+            LootableManager.unit(listing.id),
         ]
         label.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
 

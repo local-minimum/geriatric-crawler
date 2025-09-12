@@ -29,12 +29,6 @@ class InventorySubscriber:
 
 var _inventory: Dictionary[String, float] = {}
 
-static func inventory_item_id_to_unit(id: String) -> String:
-    match LootableManager.classify_loot(id):
-        LootableManager.LootClass.SUBSTANCE, LootableManager.LootClass.ELEMENT:
-            return "kg"
-        _:
-            return ""
 
 func _enter_tree() -> void:
     if active_inventory != null && active_inventory != self:
@@ -90,7 +84,7 @@ func add_to_inventory(id: String, amount: float, notify: bool = true) -> bool:
     if notify:
         NotificationsManager.info(
             tr("NOTICE_INVENTORY"),
-            tr("GAINED_ITEM").format({"item": "%10.2f %s [b]%s[/b]" % [amount, inventory_item_id_to_unit(id) , LootableManager.translate(id)]}),
+            tr("GAINED_ITEM").format({"item": "%10.2f %s [b]%s[/b]" % [amount, LootableManager.unit(id) , LootableManager.translate(id)]}),
             5000,
         )
     return true
@@ -123,7 +117,7 @@ func remove_from_inventory(id: String, amount: float, accept_less: bool = false,
     if notify:
         NotificationsManager.info(
             tr("NOTICE_INVENTORY"),
-            tr("LOST_ITEM").format({"item": "%4.3f %s [b]%s[/b]" % [amount, inventory_item_id_to_unit(id), LootableManager.translate(id)]}),
+            tr("LOST_ITEM").format({"item": "%4.3f %s [b]%s[/b]" % [amount, LootableManager.unit(id), LootableManager.translate(id)]}),
             5000,
         )
 

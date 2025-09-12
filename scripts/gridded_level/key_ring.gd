@@ -1,10 +1,8 @@
 extends Node
 class_name KeyRing
 
-const KEY_PREFIX: String = "KEY-"
-
 static func is_key(id: String) -> bool:
-    return id.begins_with(KEY_PREFIX)
+    return LootableManager.classify_loot(id) == LootableManager.LootClass.KEY
 
 var _keys: Dictionary[String, int]
 
@@ -18,9 +16,6 @@ func consume_key(key: String) -> bool:
     return false
 
 func gain(key: String, amount: int = 1) -> void:
-    if key.begins_with(KeyRing.KEY_PREFIX):
-        key = key.substr(KeyRing.KEY_PREFIX.length())
-
     if _keys.has(key):
         _keys[key] += amount
         NotificationsManager.info(tr("NOTICE_KEYRING"), tr("GAINED_KEY_COUNT").format({"key": KeyMaster.instance.get_description(key), "amount": amount}))
