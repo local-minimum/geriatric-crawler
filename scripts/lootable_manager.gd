@@ -22,13 +22,31 @@ const _KEY_PREFIX: String = ""
 const ITEM_PURPLE_KEY: String = "KEY_PURPLE"
 const ITEM_GENERIC_KEY: String = "KEY_GENERIC"
 
-static func _translation_key_prefix(item_id: String) -> String:
-    match item_id.to_upper():
-        ITEM_HACKING_BOMB, ITEM_HACKING_WORM, ITEM_HACKING_PROXY:
-            return _HACKING_PREFIX
+const _ELEMENT_PREFIX: String = "ELEM_"
+const ITEM_ELEM_IRON: String = "FE"
+const ITEM_ELEM_ALUMINUM: String = "AL"
+const ITEM_ELEM_GOLD: String = "AU"
+const ITEM_ELEM_COPPER: String = "CU"
+const ITEM_ELEM_HYDROGEN: String = "H"
+const ITEM_ELEM_CARBON: String = "C"
+const ITEM_ELEM_SILICON: String = "SI"
+const ITEM_ELEM_TIN: String = "Sn"
 
-        ITEM_PURPLE_KEY:
-            return _KEY_PREFIX
+const _COMPONENT_PREFIX: String = "COMP_"
+const ITEM_COMP_CPU: String = "CPU"
+const ITEM_COMP_MEMORY: String = "MEM"
+
+const _SUBSTANCE_PREFIX: String = "SUB_"
+const ITEM_SUB_PLASTIC: String = "PLASTIC"
+const ITEM_SUB_RUBBER: String = "RUBBER"
+
+static func _translation_key_prefix(item_id: String) -> String:
+    match classify_loot(item_id):
+        LootClass.HACKING: return _HACKING_PREFIX
+        LootClass.KEY: return _KEY_PREFIX
+        LootClass.ELEMENT: return _ELEMENT_PREFIX
+        LootClass.COMPONENT: return _COMPONENT_PREFIX
+        LootClass.SUBSTANCE: return _SUBSTANCE_PREFIX
 
         _: return _GENERAL_PREFIX
 
@@ -42,6 +60,15 @@ static func classify_loot(item_id: String) -> LootClass:
 
         ITEM_PURPLE_KEY:
             return LootClass.KEY
+
+        ITEM_ELEM_ALUMINUM, ITEM_ELEM_IRON, ITEM_ELEM_CARBON, ITEM_ELEM_COPPER, ITEM_ELEM_GOLD, ITEM_ELEM_HYDROGEN, ITEM_ELEM_SILICON, ITEM_ELEM_TIN:
+            return LootClass.ELEMENT
+
+        ITEM_COMP_CPU, ITEM_COMP_MEMORY:
+            return LootClass.COMPONENT
+
+        ITEM_SUB_PLASTIC, ITEM_SUB_RUBBER:
+            return LootClass.SUBSTANCE
 
         _: return LootClass.GENERAL
 

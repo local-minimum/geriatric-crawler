@@ -149,18 +149,10 @@ direction = 3
 [node name="SimpleLootContainer" type="Node3D" parent="LevelGeometry/Elevation 0/Node (0, 0, -1)" node_paths=PackedStringArray("_mesh")]
 script = ExtResource("8_j1mj1")
 _contents = Dictionary[String, float]({
-"Ag": 3.0,
-"Au": 1.0,
-"Carbide Polymere": 30.0,
-"Cu": 3.0,
-"Fe": 10.0,
-"Fullerene Clusters": 0.2,
-"He": 0.5,
-"Sn": 15.0,
-"Thermal Paste": 1.0,
-"Ti": 8.0,
-"hacking-bombs": 2.0,
-"hacking-worms": 1.0
+"bomb": 2.0,
+"cu": 3.0,
+"ti": 3.0,
+"worm": 3.0
 })
 _mesh = NodePath("MeshInstance3D")
 _open_tex = ExtResource("9_7gan6")
@@ -527,7 +519,7 @@ _close_automation = 2
 _inital_lock_state = 0
 _door_face = 3
 block_traversal_anchor_sides = Array[int]([1, 2])
-key_id = "purple"
+key_id = "key_purple"
 _hacking_danger = 2
 
 [node name="Node (4, 0, 1)" parent="LevelGeometry/Elevation 0" instance=ExtResource("4_myev5")]
@@ -1356,10 +1348,8 @@ direction = 4
 [node name="SimpleLootContainer" type="Node3D" parent="LevelGeometry/Elevation 2/Node (3, 2, 0)" node_paths=PackedStringArray("_mesh")]
 script = ExtResource("8_j1mj1")
 _contents = Dictionary[String, float]({
-"Carbide Polymere": 30.0,
-"Fullerene Clusters": 0.2,
-"KEY-purple": 1.0,
-"Sn": 15.0
+"c": 20.0,
+"key_purple": 1.0
 })
 _mesh = NodePath("MeshInstance3D")
 _open_tex = ExtResource("9_7gan6")

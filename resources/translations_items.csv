@@ -9,3 +9,29 @@ ITEM_HACKING_PROXY,proxy,proxy
 ITEM_HACKING_PROXY_PL,proxies,proxies
 ITEM_KEY_GENERIC,key,nyckel
 ITEM_KEY_GENERIC_PL,keys,nycklar
+ITEM_KEY_PURPLE,purple key,lila nyckel
+ITEM_KEY_PURPLE_PL,purple keys,lila nycklar
+ITEM_ELEM_IRON,iron,järn
+ITEM_ELEM_IRON,iron,järn
+ITEM_ELEM_ALUMINUM,aliminium,aliminium
+ITEM_ELEM_ALUMINUM_PL,aliminium,aliminium
+ITEM_ELEM_GOLD,guld,guld
+ITEM_ELEM_GOLD_PL,guld,guld
+ITEM_ELEM_COPPER,cupper,koppar
+ITEM_ELEM_COPPER_PL,cupper,koppar
+ITEM_ELEM_HYDROGEN,hydrogen,väte
+ITEM_ELEM_HYDROGEN_PL,hydrogen,väte
+ITEM_ELEM_CARBON,carbon,kol
+ITEM_ELEM_CARBON_PL,carbon,kol
+ITEM_ELEM_SILICON,silicon,kisel
+ITEM_ELEM_SILICON_PL,silicon,kisel
+ITEM_ELEM_TIN,tin,tenn
+ITEM_ELEM_TIN_PL,tin,tenn
+ITEM_COMP_CPU,CPU,CPU
+ITEM_COMP_CPU_PL,CPU:s,CPU:s
+ITEM_COMP_MEM,memory,minne
+ITEM_COMP_MEM_PL,memories,minnen
+ITEM_SUB_PLASTIC,plastic,plast
+ITEM_SUB_PLASTIC_PL,plastic,plast
+ITEM_SUB_RUBBER,rubber,gummi
+ITEM_SUB_RUBBER_PL,rubber,gummi

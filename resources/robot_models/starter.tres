@@ -25,12 +25,11 @@ script = ExtResource("7_b2bqs")
 credits = 200
 days = 1
 materials = Dictionary[String, float]({
-"CPU": 1.0,
-"Cu": 0.5,
-"Fe": 2.0,
-"Plastics": 20.0,
-"Rubber": 1.0,
-"Silicates": 2.0
+"cpu": 1.0,
+"cu": 0.5,
+"fe": 5.0,
+"plastic": 4.0,
+"rubber": 0.5
 })
 metadata/_custom_type_script = "uid://jgu3xyjxonbb"
 
