@@ -1,4 +1,4 @@
-[gd_scene load_steps=36 format=3 uid="uid://7flb82m2ddwe"]
+[gd_scene load_steps=49 format=3 uid="uid://7flb82m2ddwe"]
 
 [ext_resource type="Script" uid="uid://dfub4a26emjgr" path="res://scripts/spaceship.gd" id="1_ae4p7"]
 [ext_resource type="Texture2D" uid="uid://0ncw5fw4jr8u" path="res://sprites/spaceship/missionops.png" id="2_5eye7"]
@@ -31,6 +31,19 @@
 [ext_resource type="Script" uid="uid://cvprjpggj7xyr" path="res://scripts/spaceship/printers_manager.gd" id="27_q2lbv"]
 [ext_resource type="Script" uid="uid://l84hgmlhvq4m" path="res://scripts/spaceship/nav_manager.gd" id="29_r15p1"]
 [ext_resource type="Script" uid="uid://pel3ag6k5kse" path="res://scripts/spaceship/destination_data.gd" id="30_m7q4g"]
+[ext_resource type="Script" uid="uid://r0s4xttsqlbw" path="res://scripts/spaceship/trading_market.gd" id="32_cfbc6"]
+[ext_resource type="Script" uid="uid://4hdcxwe2s75o" path="res://scripts/spaceship/stockpile.gd" id="33_u7hrl"]
+[ext_resource type="Resource" uid="uid://b5f6xu1llculo" path="res://resources/stockpiles/al.tres" id="34_22d30"]
+[ext_resource type="Resource" uid="uid://1bpt6uh1h3x2" path="res://resources/stockpiles/au.tres" id="35_4dymj"]
+[ext_resource type="Resource" uid="uid://b44bldxrhqw63" path="res://resources/stockpiles/cpu.tres" id="36_t2qrf"]
+[ext_resource type="Resource" uid="uid://bviul6a3n6wyt" path="res://resources/stockpiles/cu.tres" id="37_44jdn"]
+[ext_resource type="Resource" uid="uid://dfhcia4b1fa5u" path="res://resources/stockpiles/fe.tres" id="38_alvly"]
+[ext_resource type="Resource" uid="uid://boici5xjsaqmc" path="res://resources/stockpiles/h.tres" id="39_nqhqb"]
+[ext_resource type="Resource" uid="uid://birlm8bss7sql" path="res://resources/stockpiles/mem.tres" id="40_3bf43"]
+[ext_resource type="Resource" uid="uid://bke38shql11ui" path="res://resources/stockpiles/plastic.tres" id="41_thhel"]
+[ext_resource type="Resource" uid="uid://chfwkxba4rkx5" path="res://resources/stockpiles/rubber.tres" id="42_iltd8"]
+[ext_resource type="Resource" uid="uid://ym8ou33wgb8w" path="res://resources/stockpiles/si.tres" id="43_etste"]
+[ext_resource type="Resource" uid="uid://c885j701nw4g1" path="res://resources/stockpiles/sn.tres" id="44_4sp65"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ws7tf"]
 bg_color = Color(0.477872, 0.602944, 0.818495, 1)
@@ -711,6 +724,11 @@ metadata/_custom_type_script = "uid://cvprjpggj7xyr"
 script = ExtResource("29_r15p1")
 designed_destinations = Array[ExtResource("30_m7q4g")]([SubResource("Resource_aigc1")])
 metadata/_custom_type_script = "uid://l84hgmlhvq4m"
+
+[node name="TradingMarket" type="Node" parent="."]
+script = ExtResource("32_cfbc6")
+stockpiles = Array[ExtResource("33_u7hrl")]([ExtResource("34_22d30"), ExtResource("35_4dymj"), ExtResource("36_t2qrf"), ExtResource("37_44jdn"), ExtResource("38_alvly"), ExtResource("39_nqhqb"), ExtResource("40_3bf43"), ExtResource("41_thhel"), ExtResource("42_iltd8"), ExtResource("43_etste"), ExtResource("44_4sp65")])
+metadata/_custom_type_script = "uid://r0s4xttsqlbw"
 
 [connection signal="pressed" from="CanvasLayer/ActiveArea/MissionOpsRoom/Main Buttons/Select Robot" to="CanvasLayer/ActiveArea/MissionOpsRoom" method="_on_select_robot_pressed"]
 [connection signal="pressed" from="CanvasLayer/ActiveArea/MissionOpsRoom/Main Buttons/Loadout" to="CanvasLayer/ActiveArea/MissionOpsRoom" method="_on_loadout_pressed"]

@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="Stockpile" load_steps=2 format=3 uid="uid://1bpt6uh1h3x2"]
+
+[ext_resource type="Script" uid="uid://4hdcxwe2s75o" path="res://scripts/spaceship/stockpile.gd" id="1_6lkeq"]
+
+[resource]
+script = ExtResource("1_6lkeq")
+item_id = "au"
+_baseline_price = 250
+_min_price_factor = 0.6
+_max_price_factor = 9.0
+_volatility = 0.25
+metadata/_custom_type_script = "uid://4hdcxwe2s75o"

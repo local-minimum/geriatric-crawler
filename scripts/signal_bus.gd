@@ -19,6 +19,9 @@ signal on_update_rent(rent: int)
 signal on_finalize_loadout(loadout: Dictionary)
 signal on_before_deploy(level_id: String, robot: RobotData, duration_days: int, insured: bool)
 
+# Trading market
+signal on_market_updated(market: TradingMarket)
+
 # Saving and loading
 signal on_before_save()
 signal on_save_complete()

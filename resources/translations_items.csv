@@ -1,16 +1,22 @@
 keys,en,sv
 UNIT_KG,kg,kg
 UNIT_COUNT,,
+ITEM_HACKING_CATEGORY,hacking tool,hackingverktyg
+ITEM_HACKING_CATEGORY_PL,hacking tools,hackingverktyg
 ITEM_HACKING_WORM,worm,worm
 ITEM_HACKING_WORM_PL,worms,worms
 ITEM_HACKING_BOMB,logical bomb,logisk bomb
 ITEM_HACKING_BOMB_PL,logical bombs,logiska bomber
 ITEM_HACKING_PROXY,proxy,proxy
 ITEM_HACKING_PROXY_PL,proxies,proxies
+ITEM_KEY_CATEGORY,key,nyckel
+ITEM_KEY_CATEGORY_PL,keys,nycklar
 ITEM_KEY_GENERIC,key,nyckel
 ITEM_KEY_GENERIC_PL,keys,nycklar
 ITEM_KEY_PURPLE,purple key,lila nyckel
 ITEM_KEY_PURPLE_PL,purple keys,lila nycklar
+ITEM_ELEM_CATEGORY,element,grundämne
+ITEM_ELEM_CATEGORY_PL,elements,grundämnen
 ITEM_ELEM_IRON,iron,järn
 ITEM_ELEM_IRON,iron,järn
 ITEM_ELEM_ALUMINUM,aliminium,aliminium
@@ -27,10 +33,14 @@ ITEM_ELEM_SILICON,silicon,kisel
 ITEM_ELEM_SILICON_PL,silicon,kisel
 ITEM_ELEM_TIN,tin,tenn
 ITEM_ELEM_TIN_PL,tin,tenn
+ITEM_COMP_CATEGORY,component,komponent
+ITEM_COMP_CATEGORY_PL,components,komponenter
 ITEM_COMP_CPU,CPU,CPU
 ITEM_COMP_CPU_PL,CPU:s,CPU:s
 ITEM_COMP_MEM,memory,minne
 ITEM_COMP_MEM_PL,memories,minnen
+ITEM_SUB_CATEGORY,material,material
+ITEM_SUB_CATEGORY_PL,materials,material
 ITEM_SUB_PLASTIC,plastic,plast
 ITEM_SUB_PLASTIC_PL,plastic,plast
 ITEM_SUB_RUBBER,rubber,gummi

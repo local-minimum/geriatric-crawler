@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="Stockpile" load_steps=2 format=3 uid="uid://birlm8bss7sql"]
+
+[ext_resource type="Script" uid="uid://4hdcxwe2s75o" path="res://scripts/spaceship/stockpile.gd" id="1_2d6bh"]
+
+[resource]
+script = ExtResource("1_2d6bh")
+item_id = "mem"
+_baseline_price = 30
+_min_price_factor = 0.3
+_max_price_factor = 1.0
+_volatility = 0.2
+metadata/_custom_type_script = "uid://4hdcxwe2s75o"

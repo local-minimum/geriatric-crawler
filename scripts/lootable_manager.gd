@@ -41,7 +41,10 @@ const ITEM_SUB_PLASTIC: String = "PLASTIC"
 const ITEM_SUB_RUBBER: String = "RUBBER"
 
 static func _translation_key_prefix(item_id: String) -> String:
-    match classify_loot(item_id):
+    return _translation_cateogry_prefix(classify_loot(item_id))
+
+static func _translation_cateogry_prefix(category: LootClass) -> String:
+    match category:
         LootClass.HACKING: return _HACKING_PREFIX
         LootClass.KEY: return _KEY_PREFIX
         LootClass.ELEMENT: return _ELEMENT_PREFIX
@@ -50,15 +53,18 @@ static func _translation_key_prefix(item_id: String) -> String:
 
         _: return _GENERAL_PREFIX
 
-static func translation_key(item_id: String) -> String:
+static func _translation_key(item_id: String) -> String:
     return "%s%s%s" % [_PREFIX, _translation_key_prefix(item_id), item_id.to_upper()]
+
+static func _translation_category_key(category: LootClass) -> String:
+    return "%s%sCATEGORY" % [_PREFIX, _translation_cateogry_prefix(category)]
 
 static func classify_loot(item_id: String) -> LootClass:
     match item_id:
         ITEM_HACKING_BOMB, ITEM_HACKING_WORM, ITEM_HACKING_PROXY:
             return LootClass.HACKING
 
-        ITEM_PURPLE_KEY:
+        ITEM_PURPLE_KEY, ITEM_GENERIC_KEY:
             return LootClass.KEY
 
         ITEM_ELEM_ALUMINUM, ITEM_ELEM_IRON, ITEM_ELEM_CARBON, ITEM_ELEM_COPPER, ITEM_ELEM_GOLD, ITEM_ELEM_HYDROGEN, ITEM_ELEM_SILICON, ITEM_ELEM_TIN:
@@ -72,8 +78,28 @@ static func classify_loot(item_id: String) -> LootClass:
 
         _: return LootClass.GENERAL
 
+static func list_item_ids(category: LootClass) -> Array[String]:
+    match category:
+        LootClass.HACKING:
+            return [ITEM_HACKING_BOMB, ITEM_HACKING_WORM, ITEM_HACKING_PROXY]
+
+        LootClass.KEY:
+            return [ITEM_PURPLE_KEY, ITEM_GENERIC_KEY]
+
+        LootClass.ELEMENT:
+            return [ITEM_ELEM_ALUMINUM, ITEM_ELEM_IRON, ITEM_ELEM_CARBON, ITEM_ELEM_COPPER, ITEM_ELEM_GOLD, ITEM_ELEM_HYDROGEN, ITEM_ELEM_SILICON, ITEM_ELEM_TIN]
+
+        LootClass.COMPONENT:
+            return [ITEM_COMP_CPU, ITEM_COMP_MEMORY]
+
+        LootClass.SUBSTANCE:
+            return [ITEM_SUB_PLASTIC, ITEM_SUB_RUBBER]
+
+        _:
+            return []
+
 static func translate(item_id: String, count: int = 1) -> String:
-    var key: String = translation_key(item_id)
+    var key: String = _translation_key(item_id)
     return __GlobalGameState.tr_n(key, "%s_PL" % key, count)
 
 static func unit(id: String) -> String:
