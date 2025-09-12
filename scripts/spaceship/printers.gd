@@ -86,12 +86,14 @@ func _toggle_select_printer(idx: int) -> void:
 
     _sync_panels()
 
-func _has_materials(cost: PrintersManager.PrintingCost) -> bool:
+func _has_materials_and_credits(cost: PrintersManager.PrintingCost) -> bool:
     if cost.free:
         return true
 
-    # TODO: Figure this out
-    return false
+    if !__GlobalGameState.can_afford(cost.total):
+        return false
+
+    return ship.inventory.has_items(cost.materials)
 
 var _selected_cost: PrintersManager.PrintingCost
 var _selected_model: RobotModel
@@ -118,7 +120,7 @@ func _sync_panels() -> void:
             _selected_cost = ship.printers.calculate_printing_costs(_selected_model, _selected_printer)
             model_price.text = tr("TOTAL_COST_PRICE").format({"price": GlobalGameState.credits_with_sign(_selected_cost.total)})
 
-            var has_materials: bool = _has_materials(_selected_cost)
+            var has_materials: bool = _has_materials_and_credits(_selected_cost)
             if has_materials:
                 buy_materials_btn.hide()
             else:
@@ -136,7 +138,16 @@ func _sync_panels() -> void:
         models_panel.hide()
 
 func _on_buy_missing_resources_pressed() -> void:
-    pass # Replace with function body.
+    if __GlobalGameState.total_credits <= 0:
+        NotificationsManager.warn(tr("NOTICE_CREDITS"), tr("NO_CREDITS"))
+        return
+
+    var missing: Dictionary[String, float] = {}
+    if ship.inventory.has_items(_selected_cost.materials, missing):
+        # TODO: Show trader
+        pass
+    else:
+        NotificationsManager.warn(tr("NOTICE_INVENTORY"), tr("INVENTORY_ALREADY_HAS_MATERIALS"))
 
 func _on_print_pressed() -> void:
     if _selected_cost != null && !_selected_cost.free:

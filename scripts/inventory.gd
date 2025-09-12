@@ -135,6 +135,19 @@ func remove_many_from_inventory(items: Dictionary[String, float], notify: bool =
 
     return true
 
+func has_items(items: Dictionary[String, float], differential: Dictionary[String, float] = {}) -> bool:
+    differential.clear()
+
+    for item_id: String in items:
+        if _inventory.has(item_id):
+            var diff: float = _inventory[item_id] - items[item_id]
+            if diff < 0:
+                differential[item_id] = absf(diff)
+        elif items[item_id] > 0:
+            differential[item_id] = items[item_id]
+
+    return differential.is_empty()
+
 func transfer_inventory(receiver: Inventory) -> void:
     for id: String in _inventory:
         var removed: float = remove_from_inventory(id, _inventory[id])
