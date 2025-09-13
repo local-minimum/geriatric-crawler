@@ -64,6 +64,8 @@ theme_override_font_sizes/font_size = 10
 text = "XXX$"
 
 [node name="Graph" type="Control" parent="MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
 script = ExtResource("3_7ur2b")
+_wanted_guides = 2
 metadata/_custom_type_script = "uid://bowpiyq67d4o1"

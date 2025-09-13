@@ -50,7 +50,7 @@ func _handle_market_tick(market: TradingMarket) -> void:
 
     _average.text = tr("AVERAGE_VALUE").format({"value": GlobalGameState.credits_with_sign(stock.average())})
 
-    var trend: float = stock.trend(_trend_window)
+    var trend: float = stock.trend()
 
     if trend > _zero_trend_tolerance:
         _trend_arrow.texture = _up_arrow
@@ -69,11 +69,15 @@ func _handle_market_tick(market: TradingMarket) -> void:
         _trend_arrow.flip_v = false
         _trend_arrow.self_modulate = _steady_color
 
+    trend = stock.trend(_trend_window)
     _trend.text = tr("HOUR_TREND_VALUE").format({"trend": "%2.1f%%" % (trend * 100)})
 
     _price.text = GlobalGameState.credits_with_sign(stock.price)
 
-    _graph.show_line(stock.history)
+    _graph.show_series(stock.history)
 
 func _show_stock_missing() -> void:
-    pass
+    _average.visible = false
+    _trend_arrow.visible = false
+    _trend.visible = false
+    _price.text = tr("CANNOT_BE_TRADED")
