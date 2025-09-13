@@ -673,7 +673,7 @@ icon_alignment = 1
 expand_icon = true
 
 [node name="ScrollContainer" type="ScrollContainer" parent="CanvasLayer/Trader UI/MarginContainer/VBoxContainer2"]
-custom_minimum_size = Vector2(0, 500)
+custom_minimum_size = Vector2(0, 480)
 layout_mode = 2
 size_flags_vertical = 3
 horizontal_scroll_mode = 0
