@@ -12,6 +12,7 @@ var _lookup: Dictionary[String, Stockpile]
 var live: bool:
     set(value):
         _next_tick = Time.get_ticks_msec() + _tick_frequency
+        live = value
 
 func _ready() -> void:
     if __SignalBus.on_increment_day.connect(_handle_increment_day) != OK:
@@ -51,5 +52,5 @@ func _process(_delta: float) -> void:
         return
 
     tick()
-
+    # print_debug("[Trading Market] Tick!")
     _next_tick = Time.get_ticks_msec() + _tick_frequency

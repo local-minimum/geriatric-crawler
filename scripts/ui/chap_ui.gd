@@ -322,7 +322,7 @@ func _handle_choice(choice: InkAdapter.Choice) -> void:
         push_error("Should not be allowed to choose at this moment")
 
     for btn: Button in _option_buttons:
-        if btn.get_meta(_BTN_META_CHOICE).choice_index == choice.choice_index:
+        if btn.has_meta(_BTN_META_CHOICE) && btn.get_meta(_BTN_META_CHOICE).choice_index == choice.choice_index:
             btn.disabled = true
         else:
             btn.queue_free()

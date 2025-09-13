@@ -30,7 +30,7 @@ const ITEM_ELEM_COPPER: String = "CU"
 const ITEM_ELEM_HYDROGEN: String = "H"
 const ITEM_ELEM_CARBON: String = "C"
 const ITEM_ELEM_SILICON: String = "SI"
-const ITEM_ELEM_TIN: String = "Sn"
+const ITEM_ELEM_TIN: String = "SN"
 
 const _COMPONENT_PREFIX: String = "COMP_"
 const ITEM_COMP_CPU: String = "CPU"
@@ -60,7 +60,7 @@ static func _translation_category_key(category: LootClass) -> String:
     return "%s%sCATEGORY" % [_PREFIX, _translation_cateogry_prefix(category)]
 
 static func classify_loot(item_id: String) -> LootClass:
-    match item_id:
+    match item_id.to_upper():
         ITEM_HACKING_BOMB, ITEM_HACKING_WORM, ITEM_HACKING_PROXY:
             return LootClass.HACKING
 

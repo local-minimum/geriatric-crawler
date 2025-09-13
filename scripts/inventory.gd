@@ -137,14 +137,20 @@ func remove_many_from_inventory(items: Dictionary[String, float], notify: bool =
 
 func has_items(items: Dictionary[String, float], differential: Dictionary[String, float] = {}) -> bool:
     differential.clear()
+    print_debug("[Inventory %s] Looking for items %s" % [name, items])
 
     for item_id: String in items:
-        if _inventory.has(item_id):
-            var diff: float = _inventory[item_id] - items[item_id]
-            if diff < 0:
-                differential[item_id] = absf(diff)
-        elif items[item_id] > 0:
-            differential[item_id] = items[item_id]
+        var diff: float = _inventory.get(item_id, 0.0) - items[item_id]
+        if diff < 0:
+            differential[item_id] = absf(diff)
+
+        print_debug("[Inventory %s] Checking for '%s' has %s want %s, missing %s" % [
+            name,
+            item_id,
+            _inventory.get(item_id, 0.0),
+            items[item_id],
+            differential.get(item_id, 0.0),
+        ])
 
     return differential.is_empty()
 
@@ -156,6 +162,7 @@ func transfer_inventory(receiver: Inventory) -> void:
 
 func load_from_save(save: Dictionary[String, float]) -> void:
     _inventory = save
+    print_debug("[Inventory %s] Loaed inventory %s" % [name, save])
     __SignalBus.on_load_inventory.emit(self)
 
 func collect_save_data() -> Dictionary[String, float]:

@@ -41,20 +41,24 @@ func reset_simulation() -> void:
     history.append(price)
 
 func _get_derivative_change() -> float:
-    return randfn(_baseline_price * _volatility, _volatility)
+    var mean: float = _baseline_price * _volatility
+    return mean - randfn(mean, _volatility)
 
 func tick() -> void:
     _derivative += _get_derivative_change()
     var _raw_price: float = _hidden_price + _derivative
+    print_debug("[Stock %s] Price %s Delta %s" % [item_id, _hidden_price, _derivative])
 
     if _raw_price < _baseline_price * _min_price_factor:
         _raw_price = _baseline_price * _min_price_factor
         if _derivative < 0:
             _derivative = _get_derivative_change()
+        print_debug("[Stock %s] Capped Min Price %s Delta %s" % [item_id, _hidden_price, _derivative])
     elif _raw_price > _baseline_price * _max_price_factor:
         _raw_price = _baseline_price * _max_price_factor
         if _derivative > 0:
             _derivative = _get_derivative_change()
+        print_debug("[Stock %s] Capped Max Price %s Delta %s" % [item_id, _hidden_price, _derivative])
 
     _hidden_price = _raw_price
     price = roundi(_hidden_price)

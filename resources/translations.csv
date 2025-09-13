@@ -235,3 +235,5 @@ DUSTY_HUSK_NAME,The empty dusty husk of {name} lies on the ground,Det tomma skal
 SEARCH_DEBRIS_MODEL_NAME,Searching the ruins of {name} [{model}] for lost loot:,Letar igenom vraket efter {name} [{model}] efter värdefulla saker
 NO_CREDITS,You have no credits,Du saknar credits
 INVENTORY_ALREADY_HAS_MATERIALS,Your inventory on the ship already has all the needed materials,Ditt magasin på skeppet har redan alla material som behövs
+AVERAGE_VALUE,Avg. {value},Medel {value}
+HOUR_TREND_VALUE,Trend {trend} (1h),Trend {trend} (1h)

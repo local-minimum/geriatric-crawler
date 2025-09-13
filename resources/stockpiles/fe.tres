@@ -4,7 +4,7 @@
 
 [resource]
 script = ExtResource("1_g8fn3")
-item_id = ""
+item_id = "fe"
 _baseline_price = 100
 _min_price_factor = 0.5
 _max_price_factor = 4.0

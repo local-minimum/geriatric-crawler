@@ -38,11 +38,13 @@ func track_stock(item_id: String, market: TradingMarket, _buy_callback: Variant 
 
 func _handle_market_tick(market: TradingMarket) -> void:
     if _market != market:
+        push_warning("Not my stockmarked %s not %s" % [market, _market])
         return
 
     var stock: Stockpile = market.get_stock(_item_id)
 
     if stock == null:
+        push_warning("Stock %s doesn't exist in market" % _item_id)
         _show_stock_missing()
         return
 
@@ -67,7 +69,7 @@ func _handle_market_tick(market: TradingMarket) -> void:
         _trend_arrow.flip_v = false
         _trend_arrow.self_modulate = _steady_color
 
-    _trend.text = tr("HOUR_TREND_VALUE".format({"trend": "%2.1f%%" % (trend * 100)}))
+    _trend.text = tr("HOUR_TREND_VALUE").format({"trend": "%2.1f%%" % (trend * 100)})
 
     _price.text = GlobalGameState.credits_with_sign(stock.price)
 

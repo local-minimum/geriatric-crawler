@@ -124,10 +124,12 @@ func _sync_panels() -> void:
             if has_materials:
                 buy_materials_btn.hide()
             else:
+                buy_materials_btn.disabled = __GlobalGameState.total_credits <= 0
                 buy_materials_btn.show()
 
             print_model_btn.text = tr("ACTION_PRINT_FREE_SAMPLE") if _selected_cost.free else tr("ACTION_PRINT")
-            print_model_btn.disabled = !has_materials && __GlobalGameState.can_afford(_selected_cost.total)
+            print_model_btn.disabled = !has_materials || !__GlobalGameState.can_afford(_selected_cost.total)
+
 
             models_panel.show()
         rent_panel.hide()
@@ -143,12 +145,18 @@ func _on_buy_missing_resources_pressed() -> void:
         return
 
     var missing: Dictionary[String, float] = {}
-    if ship.inventory.has_items(_selected_cost.materials, missing):
-        ship.trader.show_trader(missing, TraderUI.TradingMode.BUY)
+    if !ship.inventory.has_items(_selected_cost.materials, missing):
+        ship.trader.show_trader(missing, TraderUI.TradingMode.BUY, _on_close_trader)
     else:
+        print_debug("[Printers] All materials were %s" % _selected_cost.materials)
         NotificationsManager.warn(tr("NOTICE_INVENTORY"), tr("INVENTORY_ALREADY_HAS_MATERIALS"))
 
     buy_materials_btn.disabled = true
+
+func _on_close_trader() -> void:
+    var has_materials: bool = ship.inventory.has_items(_selected_cost.materials)
+    buy_materials_btn.disabled = __GlobalGameState.total_credits <= 0 || has_materials
+    print_model_btn.disabled = __GlobalGameState.total_credits < _selected_cost.total || !has_materials
 
 func _on_print_pressed() -> void:
     if _selected_cost != null && !_selected_cost.free:

@@ -8,6 +8,7 @@ const _STOCKPILE_UI: String = "res://scenes/ui/stockplie_container.tscn"
 
 var limited_stock: Dictionary[String, float]
 var mode: TradingMode
+var on_close_callback: Variant
 
 enum TradingMode { BUY_AND_SELL, BUY, SELL }
 
@@ -15,14 +16,21 @@ func _ready() -> void:
     hide()
 
 @warning_ignore_start("shadowed_variable")
-func show_trader(limited_stock: Dictionary[String, float] = {}, mode: TradingMode = TradingMode.BUY_AND_SELL) -> void:
+func show_trader(
+    limited_stock: Dictionary[String, float] = {},
+    mode: TradingMode = TradingMode.BUY_AND_SELL,
+    on_close: Variant = null
+) -> void:
     @warning_ignore_restore("shadowed_variable")
     self.limited_stock = limited_stock
     self.mode = mode
+    on_close_callback = on_close
 
     _setup_stock()
 
     ship.trading_market.live = true
+
+    show()
 
 func _setup_stock() -> void:
     UIUtils.clear_control(stockpiles_container)
@@ -40,8 +48,10 @@ func _setup_stock() -> void:
         var items: Array[String] = categorized[category]
 
         var title: Label = Label.new()
-        title.text = LootableManager.translate_cateogry(category, items.size())
+        title.text = LootableManager.translate_cateogry(category, 999)
         title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+        title.uppercase = true
+
         stockpiles_container.add_child(title)
 
         for stock_id: String in items:
@@ -51,3 +61,11 @@ func _setup_stock() -> void:
             stock.track_stock(stock_id, ship.trading_market)
 
             stockpiles_container.add_child(stock)
+
+func _on_close_trader_pressed() -> void:
+    hide()
+
+    if on_close_callback is Callable:
+        @warning_ignore_start("unsafe_cast")
+        (on_close_callback as Callable).call()
+        @warning_ignore_restore("unsafe_cast")
