@@ -144,10 +144,11 @@ func _on_buy_missing_resources_pressed() -> void:
 
     var missing: Dictionary[String, float] = {}
     if ship.inventory.has_items(_selected_cost.materials, missing):
-        # TODO: Show trader
-        pass
+        ship.trader.show_trader(missing, TraderUI.TradingMode.BUY)
     else:
         NotificationsManager.warn(tr("NOTICE_INVENTORY"), tr("INVENTORY_ALREADY_HAS_MATERIALS"))
+
+    buy_materials_btn.disabled = true
 
 func _on_print_pressed() -> void:
     if _selected_cost != null && !_selected_cost.free:

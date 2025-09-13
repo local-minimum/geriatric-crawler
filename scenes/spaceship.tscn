@@ -18,8 +18,8 @@
 [ext_resource type="Script" uid="uid://dk1kwquttgwfc" path="res://scripts/savesystem/migrations/migrate_save_v0.0.2.gd" id="9_iow36"]
 [ext_resource type="Script" uid="uid://bjkpx0v0d0vky" path="res://scripts/convenience/version.gd" id="10_5eye7"]
 [ext_resource type="Script" uid="uid://tgtpk0qo2xx7" path="res://scripts/savesystem/extensions/global_game_state_saver.gd" id="10_6wr2n"]
-[ext_resource type="PackedScene" uid="uid://dngtwctu5jl6n" path="res://scenes/ui/stockplie_container.tscn" id="11_syl8l"]
 [ext_resource type="Script" uid="uid://cewd737qkspe7" path="res://scripts/savesystem/extensions/chap_saver.gd" id="11_yckko"]
+[ext_resource type="Script" uid="uid://bixxi1gctc5f6" path="res://scripts/ui/trader_ui.gd" id="11_ygcj5"]
 [ext_resource type="Script" uid="uid://bowpiyq67d4o1" path="res://scripts/ui/line_graph.gd" id="13_t2qrf"]
 [ext_resource type="Script" uid="uid://dddgx760pvv7h" path="res://scripts/spaceship/spaceship_saver.gd" id="14_csm47"]
 [ext_resource type="Script" uid="uid://clmlakb50km2n" path="res://scripts/savesystem/extensions/inventory_saver.gd" id="15_d22a7"]
@@ -59,7 +59,7 @@ duration_days = 1
 destination_id = "test-level"
 metadata/_custom_type_script = "uid://pel3ag6k5kse"
 
-[node name="Spaceshiip" type="Node2D" node_paths=PackedStringArray("chap_ui", "rooms", "inventory", "robots_pool", "printers", "nav")]
+[node name="Spaceshiip" type="Node2D" node_paths=PackedStringArray("chap_ui", "rooms", "inventory", "robots_pool", "printers", "nav", "trader", "trading_market")]
 script = ExtResource("1_ae4p7")
 chap_ui = NodePath("CanvasLayer/CHAP AI")
 rooms = {
@@ -71,6 +71,8 @@ inventory = NodePath("Inventory")
 robots_pool = NodePath("RobotsPool")
 printers = NodePath("PrintersManager")
 nav = NodePath("NavManager")
+trader = NodePath("CanvasLayer/Trader UI")
+trading_market = NodePath("TradingMarket")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
@@ -616,7 +618,7 @@ text = "BROOM_CLOSET"
 
 [node name="Balance Sheet UI" parent="CanvasLayer" instance=ExtResource("3_yckko")]
 
-[node name="Trader UI" type="PanelContainer" parent="CanvasLayer"]
+[node name="Trader UI" type="PanelContainer" parent="CanvasLayer" node_paths=PackedStringArray("ship", "stockpiles_container")]
 custom_minimum_size = Vector2(400, 400)
 anchors_preset = 8
 anchor_left = 0.5
@@ -625,6 +627,9 @@ anchor_right = 0.5
 anchor_bottom = 0.5
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("11_ygcj5")
+ship = NodePath("../..")
+stockpiles_container = NodePath("MarginContainer/VBoxContainer")
 
 [node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/Trader UI"]
 layout_mode = 2
@@ -642,9 +647,6 @@ layout_mode = 2
 text = "TRADER"
 horizontal_alignment = 1
 vertical_alignment = 1
-
-[node name="Stockplie Container" parent="CanvasLayer/Trader UI/MarginContainer/VBoxContainer" instance=ExtResource("11_syl8l")]
-layout_mode = 2
 
 [node name="Spaceship Notifications" type="CanvasLayer" parent="."]
 layer = 126

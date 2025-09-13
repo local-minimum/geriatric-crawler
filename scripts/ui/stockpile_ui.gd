@@ -27,7 +27,8 @@ func _ready() -> void:
     if __SignalBus.on_market_updated.connect(_handle_market_tick) != OK:
         push_error("Failed to connect marked updated")
 
-func track_stock(item_id: String, market: TradingMarket) -> void:
+func track_stock(item_id: String, market: TradingMarket, _buy_callback: Variant = null, _sell_callback: Variant = null) -> void:
+    # TODO: Enable buttons according to callbacks
     _market = market
     _item_id = item_id
 

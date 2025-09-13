@@ -102,6 +102,10 @@ static func translate(item_id: String, count: int = 1) -> String:
     var key: String = _translation_key(item_id)
     return __GlobalGameState.tr_n(key, "%s_PL" % key, count)
 
+static func translate_cateogry(category: LootClass, count: int = 1) -> String:
+    var key: String = _translation_category_key(category)
+    return __GlobalGameState.tr_n(key, "%s_PL" % key, count)
+
 static func unit(id: String) -> String:
     match classify_loot(id):
         LootClass.SUBSTANCE, LootClass.ELEMENT:

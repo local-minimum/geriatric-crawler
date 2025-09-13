@@ -43,6 +43,9 @@ func tick() -> void:
 func get_stock(item_id: String) -> Stockpile:
     return _lookup.get(item_id)
 
+func list_stock_ids() -> Array[String]:
+    return Array(_lookup.keys(), TYPE_STRING, "", null)
+
 func _process(_delta: float) -> void:
     if !live || Time.get_ticks_msec() < _next_tick:
         return
