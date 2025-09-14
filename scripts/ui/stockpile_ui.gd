@@ -7,6 +7,8 @@ class_name StockpileUI
 @export var _trend_arrow: TextureRect
 @export var _price: Label
 @export var _graph: LineGraph
+@export var _buy_button: Button
+@export var _sell_button: Button
 
 @export var _trend_window: int = 6
 @export var _zero_trend_tolerance: float = 0.01
@@ -22,15 +24,30 @@ class_name StockpileUI
 
 var _item_id: String
 var _market: TradingMarket
+var _sell_callback: Variant
+var _buy_callback: Variant
 
 func _ready() -> void:
     if __SignalBus.on_market_updated.connect(_handle_market_tick) != OK:
         push_error("Failed to connect marked updated")
 
-func track_stock(item_id: String, market: TradingMarket, _buy_callback: Variant = null, _sell_callback: Variant = null) -> void:
-    # TODO: Enable buttons according to callbacks
+func track_stock(item_id: String, market: TradingMarket, buy_callback: Variant = null, sell_callback: Variant = null) -> void:
     _market = market
     _item_id = item_id
+
+    if buy_callback is Callable:
+        _buy_button.visible = true
+        _buy_callback = buy_callback
+    else:
+        _buy_callback = null
+        _buy_button.visible = false
+
+    if sell_callback is Callable:
+        _sell_button.visible = true
+        _sell_callback = sell_callback
+    else:
+        _sell_callback = null
+        _sell_button.visible = false
 
     _title.text = LootableManager.translate(item_id).to_upper()
 
@@ -81,3 +98,16 @@ func _show_stock_missing() -> void:
     _trend_arrow.visible = false
     _trend.visible = false
     _price.text = tr("CANNOT_BE_TRADED")
+
+
+func _on_sell_button_pressed() -> void:
+    if _sell_callback is Callable:
+        @warning_ignore_start("unsafe_cast")
+        (_sell_callback as Callable).call(_item_id)
+        @warning_ignore_restore("unsafe_cast")
+
+func _on_buy_button_pressed() -> void:
+    if _buy_callback is Callable:
+        @warning_ignore_start("unsafe_cast")
+        (_buy_callback as Callable).call(_item_id)
+        @warning_ignore_restore("unsafe_cast")

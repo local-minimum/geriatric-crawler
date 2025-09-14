@@ -47,18 +47,23 @@ func _setup_stock() -> void:
     for category: LootableManager.LootClass in categorized:
         var items: Array[String] = categorized[category]
 
-        var title: Label = Label.new()
-        title.text = LootableManager.translate_cateogry(category, 999)
-        title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-        title.uppercase = true
+        var category_title: Label = Label.new()
+        category_title.text = LootableManager.translate_cateogry(category, 999)
+        category_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+        category_title.uppercase = true
+        category_title.theme_type_variation = "HeaderMedium"
 
-        stockpiles_container.add_child(title)
+
+        stockpiles_container.add_child(category_title)
+
+        var buy_callback: Variant = _get_buy_callback()
+        var sell_callback: Variant = _get_sell_callback()
 
         for stock_id: String in items:
             var stock: StockpileUI = scene.instantiate()
 
             # TODO: Add callbacks if sell / buy is allowed
-            stock.track_stock(stock_id, ship.trading_market)
+            stock.track_stock(stock_id, ship.trading_market, buy_callback, sell_callback)
 
             stockpiles_container.add_child(stock)
 
@@ -69,3 +74,19 @@ func _on_close_trader_pressed() -> void:
         @warning_ignore_start("unsafe_cast")
         (on_close_callback as Callable).call()
         @warning_ignore_restore("unsafe_cast")
+
+func _get_buy_callback() -> Variant:
+    if mode != TradingMode.SELL:
+        return _handle_want_to_buy_stock
+    return null
+
+func _get_sell_callback() -> Variant:
+    if mode != TradingMode.BUY:
+        return _handle_want_to_sell_stock
+    return null
+
+func _handle_want_to_buy_stock(_item_id: String) -> void:
+    pass
+
+func _handle_want_to_sell_stock(_item_id: String) -> void:
+    pass

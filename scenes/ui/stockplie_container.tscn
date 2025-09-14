@@ -1,11 +1,13 @@
-[gd_scene load_steps=5 format=3 uid="uid://dngtwctu5jl6n"]
+[gd_scene load_steps=6 format=3 uid="uid://dngtwctu5jl6n"]
 
 [ext_resource type="Script" uid="uid://dqavxe0mdq0a" path="res://scripts/ui/stockpile_ui.gd" id="1_2aavq"]
+[ext_resource type="Theme" uid="uid://clwuiynrim13h" path="res://themes/dialog_theme.tres" id="1_7ur2b"]
 [ext_resource type="Texture2D" uid="uid://b2dvpmo316i0l" path="res://sprites/kenny game icons/upRight.png" id="2_y2ol5"]
 [ext_resource type="Script" uid="uid://bowpiyq67d4o1" path="res://scripts/ui/line_graph.gd" id="3_7ur2b"]
 [ext_resource type="Texture2D" uid="uid://bm8p8oa78pasu" path="res://sprites/kenny game icons/arrowRight.png" id="3_y2ol5"]
 
-[node name="Stockplie Container" type="PanelContainer" node_paths=PackedStringArray("_title", "_average", "_trend", "_trend_arrow", "_price", "_graph")]
+[node name="Stockplie Container" type="PanelContainer" node_paths=PackedStringArray("_title", "_average", "_trend", "_trend_arrow", "_price", "_graph", "_buy_button", "_sell_button")]
+theme = ExtResource("1_7ur2b")
 script = ExtResource("1_2aavq")
 _title = NodePath("MarginContainer/VBoxContainer/Summary Row/Stockpile Name")
 _average = NodePath("MarginContainer/VBoxContainer/Summary Row/Average")
@@ -13,15 +15,13 @@ _trend = NodePath("MarginContainer/VBoxContainer/Summary Row/Trend")
 _trend_arrow = NodePath("MarginContainer/VBoxContainer/Summary Row/MarginContainer/Trend Direction")
 _price = NodePath("MarginContainer/VBoxContainer/Summary Row/Price")
 _graph = NodePath("MarginContainer/VBoxContainer/Graph")
+_buy_button = NodePath("MarginContainer/VBoxContainer/Actions/Buy Button")
+_sell_button = NodePath("MarginContainer/VBoxContainer/Actions/Sell Button")
 _up_arrow = ExtResource("2_y2ol5")
 _steady_arrow = ExtResource("3_y2ol5")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 2
-theme_override_constants/margin_left = 4
-theme_override_constants/margin_top = 4
-theme_override_constants/margin_right = 4
-theme_override_constants/margin_bottom = 4
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
 layout_mode = 2
@@ -37,13 +37,13 @@ size_flags_horizontal = 3
 [node name="Average" type="Label" parent="MarginContainer/VBoxContainer/Summary Row"]
 auto_translate_mode = 2
 layout_mode = 2
-theme_override_font_sizes/font_size = 10
+theme_type_variation = &"HeaderSmall"
 text = "AVG: XXX"
 
 [node name="Trend" type="Label" parent="MarginContainer/VBoxContainer/Summary Row"]
 auto_translate_mode = 2
 layout_mode = 2
-theme_override_font_sizes/font_size = 10
+theme_type_variation = &"HeaderSmall"
 text = "HOUR: +5.2%"
 
 [node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/Summary Row"]
@@ -60,7 +60,7 @@ stretch_mode = 5
 [node name="Price" type="Label" parent="MarginContainer/VBoxContainer/Summary Row"]
 auto_translate_mode = 2
 layout_mode = 2
-theme_override_font_sizes/font_size = 10
+theme_type_variation = &"HeaderSmall"
 text = "XXX$"
 
 [node name="Graph" type="Control" parent="MarginContainer/VBoxContainer"]
@@ -69,3 +69,20 @@ layout_mode = 2
 script = ExtResource("3_7ur2b")
 _wanted_guides = 2
 metadata/_custom_type_script = "uid://bowpiyq67d4o1"
+
+[node name="Actions" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+alignment = 2
+
+[node name="Sell Button" type="Button" parent="MarginContainer/VBoxContainer/Actions"]
+layout_mode = 2
+theme_type_variation = &"ButtonSmall"
+text = "SELL"
+
+[node name="Buy Button" type="Button" parent="MarginContainer/VBoxContainer/Actions"]
+layout_mode = 2
+theme_type_variation = &"ButtonSmall"
+text = "BUY"
+
+[connection signal="pressed" from="MarginContainer/VBoxContainer/Actions/Sell Button" to="." method="_on_sell_button_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/Actions/Buy Button" to="." method="_on_buy_button_pressed"]
