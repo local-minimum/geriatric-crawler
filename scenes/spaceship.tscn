@@ -1,4 +1,4 @@
-[gd_scene load_steps=53 format=3 uid="uid://7flb82m2ddwe"]
+[gd_scene load_steps=54 format=3 uid="uid://7flb82m2ddwe"]
 
 [ext_resource type="Script" uid="uid://dfub4a26emjgr" path="res://scripts/spaceship.gd" id="1_ae4p7"]
 [ext_resource type="Texture2D" uid="uid://0ncw5fw4jr8u" path="res://sprites/spaceship/missionops.png" id="2_5eye7"]
@@ -18,6 +18,7 @@
 [ext_resource type="Script" uid="uid://dk1kwquttgwfc" path="res://scripts/savesystem/migrations/migrate_save_v0.0.2.gd" id="9_iow36"]
 [ext_resource type="Script" uid="uid://bjkpx0v0d0vky" path="res://scripts/convenience/version.gd" id="10_5eye7"]
 [ext_resource type="Script" uid="uid://tgtpk0qo2xx7" path="res://scripts/savesystem/extensions/global_game_state_saver.gd" id="10_6wr2n"]
+[ext_resource type="Theme" uid="uid://clwuiynrim13h" path="res://themes/dialog_theme.tres" id="11_44jdn"]
 [ext_resource type="Script" uid="uid://cewd737qkspe7" path="res://scripts/savesystem/extensions/chap_saver.gd" id="11_yckko"]
 [ext_resource type="Script" uid="uid://bixxi1gctc5f6" path="res://scripts/ui/trader_ui.gd" id="11_ygcj5"]
 [ext_resource type="Texture2D" uid="uid://cgijt2to15yms" path="res://sprites/kenny game icons/cross.png" id="12_ygcj5"]
@@ -641,9 +642,10 @@ anchor_right = 0.5
 anchor_bottom = 0.5
 grow_horizontal = 2
 grow_vertical = 2
+theme = ExtResource("11_44jdn")
 script = ExtResource("11_ygcj5")
 ship = NodePath("../..")
-stockpiles_container = NodePath("MarginContainer/VBoxContainer2/ScrollContainer/Stockpiles Container")
+stockpiles_container = NodePath("MarginContainer/VBoxContainer2/ScrollContainer/MarginContainer/Stockpiles Container")
 
 [node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/Trader UI"]
 layout_mode = 2
@@ -678,7 +680,12 @@ layout_mode = 2
 size_flags_vertical = 3
 horizontal_scroll_mode = 0
 
-[node name="Stockpiles Container" type="VBoxContainer" parent="CanvasLayer/Trader UI/MarginContainer/VBoxContainer2/ScrollContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/Trader UI/MarginContainer/VBoxContainer2/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/margin_right = 6
+
+[node name="Stockpiles Container" type="VBoxContainer" parent="CanvasLayer/Trader UI/MarginContainer/VBoxContainer2/ScrollContainer/MarginContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 4

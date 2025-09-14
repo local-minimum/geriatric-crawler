@@ -1,0 +1,60 @@
+[gd_resource type="Theme" load_steps=9 format=3 uid="uid://clwuiynrim13h"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_by6vg"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+bg_color = Color(0.107967, 0.161971, 0.256215, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.784314, 0.435294, 0.168627, 1)
+corner_radius_top_left = 9
+corner_radius_top_right = 3
+corner_radius_bottom_right = 9
+corner_radius_bottom_left = 3
+corner_detail = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_75n24"]
+content_margin_right = 8.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_by6vg"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wwq0p"]
+bg_color = Color(0.784314, 0.435294, 0.168627, 1)
+corner_detail = 2
+expand_margin_left = 1.0
+expand_margin_right = 1.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ksbla"]
+bg_color = Color(0.94465, 0.599669, 0.363519, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2u15n"]
+bg_color = Color(0.94465, 0.599669, 0.363519, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4prq6"]
+content_margin_right = 2.0
+bg_color = Color(0.91, 0.91, 0.91, 0.643137)
+border_color = Color(0.91, 0.91, 0.91, 0.643137)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1n1rm"]
+bg_color = Color(0.91, 0.91, 0.91, 0.643137)
+
+[resource]
+Button/colors/font_color = Color(0.784314, 0.435294, 0.168627, 1)
+Button/colors/icon_focus_color = Color(0.94465, 0.599669, 0.363519, 1)
+Button/colors/icon_hover_color = Color(0.94465, 0.599669, 0.363519, 1)
+Button/colors/icon_hover_pressed_color = Color(0.905882, 0.909804, 0.905882, 1)
+Button/colors/icon_normal_color = Color(0.784314, 0.435294, 0.168627, 1)
+Button/colors/icon_pressed_color = Color(0.905882, 0.909804, 0.905882, 1)
+Label/colors/font_color = Color(0.905882, 0.909804, 0.905882, 1)
+PanelContainer/styles/panel = SubResource("StyleBoxFlat_by6vg")
+ScrollContainer/styles/focus = SubResource("StyleBoxFlat_75n24")
+ScrollContainer/styles/panel = SubResource("StyleBoxEmpty_by6vg")
+VScrollBar/styles/grabber = SubResource("StyleBoxFlat_wwq0p")
+VScrollBar/styles/grabber_highlight = SubResource("StyleBoxFlat_ksbla")
+VScrollBar/styles/grabber_pressed = SubResource("StyleBoxFlat_2u15n")
+VScrollBar/styles/scroll = SubResource("StyleBoxFlat_4prq6")
+VScrollBar/styles/scroll_focus = SubResource("StyleBoxFlat_1n1rm")

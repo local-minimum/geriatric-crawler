@@ -23,8 +23,8 @@ ITEM_ELEM_AL,aliminium,aliminium
 ITEM_ELEM_AL_PL,aliminium,aliminium
 ITEM_ELEM_AU,guld,guld
 ITEM_ELEM_AU_PL,guld,guld
-ITEM_ELEM_CU,cupper,koppar
-ITEM_ELEM_CU_PL,cupper,koppar
+ITEM_ELEM_CU,copper,koppar
+ITEM_ELEM_CU_PL,copper,koppar
 ITEM_ELEM_H,hydrogen,väte
 ITEM_ELEM_H_PL,hydrogen,väte
 ITEM_ELEM_C,carbon,kol

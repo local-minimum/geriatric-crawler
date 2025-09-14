@@ -31,7 +31,7 @@ func trend(window_size: int = 1) -> float:
     var prev: int = history[-(1 + step)]
     var current: int = history[-1]
     var change: float = (current - prev) / (prev as float)
-    print_debug("[Stockpile %s] (%s - %s)/%s = %s" % [item_id, current, prev, prev, change])
+    # print_debug("[Stockpile %s] (%s - %s)/%s = %s" % [item_id, current, prev, prev, change])
     return change
 
 func reset_simulation() -> void:
