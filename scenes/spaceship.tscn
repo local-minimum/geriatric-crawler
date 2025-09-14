@@ -100,6 +100,7 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="MissionOpsRoom" type="Control" parent="CanvasLayer/ActiveArea" node_paths=PackedStringArray("spaceship", "select_robot_btn", "loadout_btn", "deploy_btn", "robot_listing_panel", "robot_listing_container", "robot_selected_button", "loadout_panel", "deploy_panel", "deploy_robot_name", "deploy_destination_name", "deploy_with_insurance_btn")]
+visible = false
 layout_mode = 2
 mouse_filter = 2
 script = ExtResource("2_tst1b")
@@ -166,6 +167,7 @@ layout_mode = 2
 text = "DEPLOY"
 
 [node name="Robots Listing Panel" type="PanelContainer" parent="CanvasLayer/ActiveArea/MissionOpsRoom"]
+visible = false
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -178,6 +180,7 @@ offset_right = 183.0
 offset_bottom = 79.0
 grow_horizontal = 2
 grow_vertical = 2
+theme = ExtResource("11_44jdn")
 
 [node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/ActiveArea/MissionOpsRoom/Robots Listing Panel"]
 layout_mode = 2
@@ -217,6 +220,7 @@ offset_right = 543.0
 offset_bottom = 357.0
 size_flags_horizontal = 4
 size_flags_vertical = 4
+theme = ExtResource("11_44jdn")
 
 [node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/ActiveArea/MissionOpsRoom/Loadout Panel"]
 layout_mode = 2
@@ -259,6 +263,7 @@ offset_right = 20.0
 offset_bottom = 20.0
 grow_horizontal = 2
 grow_vertical = 2
+theme = ExtResource("11_44jdn")
 
 [node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/ActiveArea/MissionOpsRoom/Deploy Panel"]
 layout_mode = 2
@@ -311,7 +316,6 @@ layout_mode = 2
 text = "DEPLOY_WITH_INSURANCE"
 
 [node name="PrintersRoom" type="Control" parent="CanvasLayer/ActiveArea" node_paths=PackedStringArray("ship", "printer_buttons", "printer_statuses", "rent_panel", "rent_down_payment_cost", "rent_cost", "models_panel", "model_title", "model_description", "model_price", "print_model_btn", "buy_materials_btn")]
-visible = false
 layout_mode = 2
 mouse_filter = 2
 script = ExtResource("5_nosia")
@@ -428,6 +432,7 @@ offset_right = 57.0
 offset_bottom = 3.0
 grow_horizontal = 2
 grow_vertical = 2
+theme = ExtResource("11_44jdn")
 
 [node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/ActiveArea/PrintersRoom/Rent New Printer Panel"]
 layout_mode = 2
@@ -492,6 +497,7 @@ offset_right = -20.0
 offset_bottom = -20.0
 grow_horizontal = 2
 grow_vertical = 2
+theme = ExtResource("11_44jdn")
 
 [node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/ActiveArea/PrintersRoom/Print Robot Panel"]
 layout_mode = 2
@@ -634,6 +640,7 @@ text = "BROOM_CLOSET"
 [node name="Balance Sheet UI" parent="CanvasLayer" instance=ExtResource("3_yckko")]
 
 [node name="Trader UI" type="PanelContainer" parent="CanvasLayer" node_paths=PackedStringArray("ship", "stockpiles_container")]
+visible = false
 custom_minimum_size = Vector2(400, 400)
 anchors_preset = 8
 anchor_left = 0.5
