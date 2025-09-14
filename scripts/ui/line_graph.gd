@@ -116,4 +116,4 @@ func _visible_y(value: float) -> bool:
     return value >= _y_min && value <= _y_max
 
 func _transform_y_to_area(value: float, area: Rect2) -> float:
-    return (value - _y_min) * area.size.y / _y_span
+    return area.size.y - (value - _y_min) * area.size.y / _y_span

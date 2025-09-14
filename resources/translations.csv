@@ -237,3 +237,4 @@ NO_CREDITS,You have no credits,Du saknar credits
 INVENTORY_ALREADY_HAS_MATERIALS,Your inventory on the ship already has all the needed materials,Ditt magasin på skeppet har redan alla material som behövs
 AVERAGE_VALUE,Avg. {value},Medel {value}
 HOUR_TREND_VALUE,Trend {trend} (1h),Trend {trend} (1h)
+CANNOT_BE_TRADED,Cannot be traded,Kan inte handlas med
