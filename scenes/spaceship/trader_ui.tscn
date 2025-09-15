@@ -1,0 +1,85 @@
+[gd_scene load_steps=4 format=3 uid="uid://q20bgg1ae3nh"]
+
+[ext_resource type="Theme" uid="uid://clwuiynrim13h" path="res://themes/dialog_theme.tres" id="1_uiafh"]
+[ext_resource type="Script" uid="uid://bixxi1gctc5f6" path="res://scripts/ui/trader_ui.gd" id="2_m6cag"]
+[ext_resource type="Texture2D" uid="uid://cgijt2to15yms" path="res://sprites/kenny game icons/cross.png" id="3_miod5"]
+
+[node name="Trader UI" type="PanelContainer" node_paths=PackedStringArray("_stockpiles_container", "_access_market_button", "_wait_tick_button")]
+custom_minimum_size = Vector2(400, 400)
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_uiafh")
+script = ExtResource("2_m6cag")
+_stockpiles_container = NodePath("MarginContainer/Main VBox/ScrollContainer/MarginContainer/Stockpiles Container")
+_access_market_button = NodePath("MarginContainer/Main VBox/Main Buttons/Access Trading Button")
+_wait_tick_button = NodePath("MarginContainer/Main VBox/Main Buttons/Wait Button")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="Main VBox" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+
+[node name="Header Row" type="HBoxContainer" parent="MarginContainer/Main VBox"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MarginContainer/Main VBox/Header Row"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"HeaderLarge"
+text = "TRADER"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/Main VBox/Header Row"]
+layout_mode = 2
+
+[node name="CloseTrader" type="Button" parent="MarginContainer/Main VBox/Header Row/VBoxContainer"]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+icon = ExtResource("3_miod5")
+icon_alignment = 1
+expand_icon = true
+
+[node name="Main Buttons" type="HBoxContainer" parent="MarginContainer/Main VBox"]
+layout_mode = 2
+alignment = 1
+
+[node name="Access Trading Button" type="Button" parent="MarginContainer/Main VBox/Main Buttons"]
+auto_translate_mode = 2
+layout_mode = 2
+text = "ACCESS_TRADING_COST"
+
+[node name="Wait Button" type="Button" parent="MarginContainer/Main VBox/Main Buttons"]
+auto_translate_mode = 2
+layout_mode = 2
+text = "WAIT (1)"
+
+[node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer/Main VBox"]
+custom_minimum_size = Vector2(0, 480)
+layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/Main VBox/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/margin_right = 6
+
+[node name="Stockpiles Container" type="VBoxContainer" parent="MarginContainer/Main VBox/ScrollContainer/MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 4
+
+[connection signal="pressed" from="MarginContainer/Main VBox/Header Row/VBoxContainer/CloseTrader" to="." method="_on_close_trader_pressed"]
+[connection signal="pressed" from="MarginContainer/Main VBox/Main Buttons/Access Trading Button" to="." method="_on_access_trading_button_pressed"]
+[connection signal="pressed" from="MarginContainer/Main VBox/Main Buttons/Wait Button" to="." method="_on_wait_button_pressed"]

@@ -91,6 +91,7 @@ NOTICE_DOOR_BYPASS,Door bypass,Dörr hackad
 INSUFFICIENT_LEVEL,Insufficient skill level to attempt,Färdighet inte tillräcklig för att försöka
 NOTICE_DOOR_UNLOCKED,Door unlocked,Dörr upplåst
 GAINED_ITEM,Gained {item},Mottog {item}
+FAILED_GAINED_ITEM,Failed to add {item} to inventory,Misslyckades att lägga {item} i förvaret
 LOST_ITEM,Lost {item},Förlorade {item}
 UNLOCK_FAILED,Could not unlock with {item},Kunde inte låsa upp med {item}
 USED_ITEM,Used {item},Använde {item}
@@ -239,4 +240,8 @@ AVERAGE_VALUE,Avg. {value},Medel {value}
 HOUR_TREND_VALUE,Trend {trend} (1h),Trend {trend} (1h)
 CANNOT_BE_TRADED,Cannot be traded,Kan inte handlas med
 ACCESS_TRADING_COST,Access trading ({cost}),Lås upp handel ({cost})
-INSUFICCIENT_FUNDS,Insuficcient funds,Täckning saknas för utgiften
+INSUFICIENT_FUNDS,Insuficcient funds,Täckning saknas för utgiften
+ACTION_WAIT_REMAINING,Wait ({remaining}),Avvakta ({remaining})
+NOTICE_MARKET,Market,Marknaden
+CAN_NOT_BUY_AND_SELL,Can not buy and sell the same comodity at the same time,Inte tillåtet att köpa och sälja samma vara vid samma tillfälle
+FAILED_SELL_ITEM,"Failed to sell {item} on market. Could not withdraw expected volume from inventory","Kunde inte sälja {item} på marknaden eftersom det inte gick att ta ut den förväntade mängden från lagret."

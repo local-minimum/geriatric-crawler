@@ -8,6 +8,8 @@ const MAX_HISTORY: int = 256
 @export_range(0, 1) var _min_price_factor: float = 0.5
 @export_range(1, 10) var _max_price_factor: float = 4.0
 @export_range(0, 1) var _volatility: float = 0.4
+@export var _min_range_tick_volume: float = 1
+@export var _max_range_tick_volume: float = 10
 
 var history: Array[int]
 var price: int
@@ -72,3 +74,22 @@ func tick() -> void:
 func pre_simulate(ticks: int) -> void:
     for _tick: int in range(ticks):
         tick()
+
+func place_order(volume: float, price_cap: int, remainder: Array[float]) -> int:
+    remainder.clear()
+
+    if volume == 0 || volume > 0 && price_cap <= 0:
+        remainder.append(volume)
+        return 0
+
+    var tick_total_volume: float = randf_range(_min_range_tick_volume, _max_range_tick_volume)
+    var traded_volume: float = clampf(volume, -tick_total_volume, tick_total_volume)
+
+    var cost: int = maxi(1, ceili(traded_volume * price))
+    if cost > price_cap:
+        traded_volume = price_cap / float(price)
+        cost = mini(maxi(1, ceili(traded_volume * cost)), price_cap)
+
+    remainder.append(volume - traded_volume)
+
+    return cost
