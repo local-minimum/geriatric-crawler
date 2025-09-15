@@ -3,12 +3,16 @@ class_name TraderUI
 
 const _STOCKPILE_UI: String = "res://scenes/ui/stockplie_container.tscn"
 
-@export var ship: Spaceship
-@export var stockpiles_container: Container
+@export var _ship: Spaceship
+@export var _stockpiles_container: Container
+@export var _access_market_button: Button
+@export var _trading_access_cost: int = 20
+@export var _trading_duration: int = 10
 
 var limited_stock: Dictionary[String, float]
 var mode: TradingMode
 var on_close_callback: Variant
+var _stocks: Array[StockpileUI]
 
 enum TradingMode { BUY_AND_SELL, BUY, SELL }
 
@@ -28,16 +32,19 @@ func show_trader(
 
     _setup_stock()
 
-    ship.trading_market.live = true
+    _ship.trading_market.live = true
+    _access_market_button.text = tr("ACCESS_TRADING_COST").format({"cost": GlobalGameState.credits_with_sign(_trading_access_cost)})
+    _access_market_button.disabled = __GlobalGameState.total_credits <= _trading_access_cost
 
     show()
 
 func _setup_stock() -> void:
-    UIUtils.clear_control(stockpiles_container)
+    UIUtils.clear_control(_stockpiles_container)
     var categorized: Dictionary[LootableManager.LootClass, Array]
+    _stocks.clear()
 
     if limited_stock.is_empty():
-        var ids: Array[String] = ship.trading_market.list_stock_ids()
+        var ids: Array[String] = _ship.trading_market.list_stock_ids()
         categorized = LootableManager.categorize(ids)
     else:
         categorized = LootableManager.categorize(limited_stock.keys())
@@ -54,18 +61,17 @@ func _setup_stock() -> void:
         category_title.theme_type_variation = "HeaderMedium"
 
 
-        stockpiles_container.add_child(category_title)
+        _stockpiles_container.add_child(category_title)
 
-        var buy_callback: Variant = _get_buy_callback()
-        var sell_callback: Variant = _get_sell_callback()
 
         for stock_id: String in items:
             var stock: StockpileUI = scene.instantiate()
 
             # TODO: Add callbacks if sell / buy is allowed
-            stock.track_stock(stock_id, ship.trading_market, buy_callback, sell_callback)
+            stock.track_stock(stock_id, _ship.trading_market)
+            _stocks.append(stock)
 
-            stockpiles_container.add_child(stock)
+            _stockpiles_container.add_child(stock)
 
 func _on_close_trader_pressed() -> void:
     hide()
@@ -90,3 +96,19 @@ func _handle_want_to_buy_stock(_item_id: String) -> void:
 
 func _handle_want_to_sell_stock(_item_id: String) -> void:
     pass
+
+func _on_access_trading_button_pressed() -> void:
+    _access_market_button.disabled = true
+
+    if !__GlobalGameState.withdraw_credits(_trading_access_cost):
+        NotificationsManager.warn(tr("NOTICE_CREDITS"), tr("INSUFFICIENT_FUNDS"))
+        return
+
+    var buy_callback: Variant = _get_buy_callback()
+    var sell_callback: Variant = _get_sell_callback()
+
+    for stock: StockpileUI in _stocks:
+        stock.set_buy_state(buy_callback)
+        stock.set_sell_state(sell_callback)
+
+    _ship.trading_market.live = false

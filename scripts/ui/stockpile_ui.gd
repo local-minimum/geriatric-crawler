@@ -31,10 +31,7 @@ func _ready() -> void:
     if __SignalBus.on_market_updated.connect(_handle_market_tick) != OK:
         push_error("Failed to connect marked updated")
 
-func track_stock(item_id: String, market: TradingMarket, buy_callback: Variant = null, sell_callback: Variant = null) -> void:
-    _market = market
-    _item_id = item_id
-
+func set_buy_state(buy_callback: Variant) -> void:
     if buy_callback is Callable:
         _buy_button.visible = true
         _buy_callback = buy_callback
@@ -42,12 +39,20 @@ func track_stock(item_id: String, market: TradingMarket, buy_callback: Variant =
         _buy_callback = null
         _buy_button.visible = false
 
+func set_sell_state(sell_callback: Variant) -> void:
     if sell_callback is Callable:
         _sell_button.visible = true
         _sell_callback = sell_callback
     else:
         _sell_callback = null
         _sell_button.visible = false
+
+func track_stock(item_id: String, market: TradingMarket, buy_callback: Variant = null, sell_callback: Variant = null) -> void:
+    _market = market
+    _item_id = item_id
+
+    set_buy_state(buy_callback)
+    set_sell_state(sell_callback)
 
     _title.text = LootableManager.translate(item_id).to_upper()
 

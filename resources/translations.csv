@@ -238,3 +238,5 @@ INVENTORY_ALREADY_HAS_MATERIALS,Your inventory on the ship already has all the n
 AVERAGE_VALUE,Avg. {value},Medel {value}
 HOUR_TREND_VALUE,Trend {trend} (1h),Trend {trend} (1h)
 CANNOT_BE_TRADED,Cannot be traded,Kan inte handlas med
+ACCESS_TRADING_COST,Access trading ({cost}),Lås upp handel ({cost})
+INSUFICCIENT_FUNDS,Insuficcient funds,Täckning saknas för utgiften

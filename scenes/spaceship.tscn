@@ -639,7 +639,7 @@ text = "BROOM_CLOSET"
 
 [node name="Balance Sheet UI" parent="CanvasLayer" instance=ExtResource("3_yckko")]
 
-[node name="Trader UI" type="PanelContainer" parent="CanvasLayer" node_paths=PackedStringArray("ship", "stockpiles_container")]
+[node name="Trader UI" type="PanelContainer" parent="CanvasLayer" node_paths=PackedStringArray("_ship", "_stockpiles_container", "_access_market_button")]
 custom_minimum_size = Vector2(400, 400)
 anchors_preset = 8
 anchor_left = 0.5
@@ -650,8 +650,9 @@ grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("11_44jdn")
 script = ExtResource("11_ygcj5")
-ship = NodePath("../..")
-stockpiles_container = NodePath("MarginContainer/VBoxContainer2/ScrollContainer/MarginContainer/Stockpiles Container")
+_ship = NodePath("../..")
+_stockpiles_container = NodePath("MarginContainer/VBoxContainer2/ScrollContainer/MarginContainer/Stockpiles Container")
+_access_market_button = NodePath("MarginContainer/VBoxContainer2/Access Trading Button")
 
 [node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/Trader UI"]
 layout_mode = 2
@@ -683,6 +684,11 @@ layout_mode = 2
 icon = ExtResource("12_ygcj5")
 icon_alignment = 1
 expand_icon = true
+
+[node name="Access Trading Button" type="Button" parent="CanvasLayer/Trader UI/MarginContainer/VBoxContainer2"]
+auto_translate_mode = 2
+layout_mode = 2
+text = "ACCESS_TRADING_COST"
 
 [node name="ScrollContainer" type="ScrollContainer" parent="CanvasLayer/Trader UI/MarginContainer/VBoxContainer2"]
 custom_minimum_size = Vector2(0, 480)
@@ -832,3 +838,4 @@ metadata/_custom_type_script = "uid://bowpiyq67d4o1"
 [connection signal="pressed" from="CanvasLayer/Rooms Selector Side Panel/MarginContainer/VBoxContainer/Living Quarters Btn" to="." method="_on_living_quarters_btn_pressed"]
 [connection signal="pressed" from="CanvasLayer/Rooms Selector Side Panel/MarginContainer/VBoxContainer/Printers Btn" to="." method="_on_printers_btn_pressed"]
 [connection signal="pressed" from="CanvasLayer/Trader UI/MarginContainer/VBoxContainer2/HBoxContainer/VBoxContainer/CloseTrader" to="CanvasLayer/Trader UI" method="_on_close_trader_pressed"]
+[connection signal="pressed" from="CanvasLayer/Trader UI/MarginContainer/VBoxContainer2/Access Trading Button" to="CanvasLayer/Trader UI" method="_on_access_trading_button_pressed"]
