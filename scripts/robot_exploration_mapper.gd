@@ -160,7 +160,7 @@ func _handle_move_end(entity: GridEntity) -> void:
 func _update_map() -> void:
     var skill_level: int = _player.robot.get_skill_level(RobotAbility.SKILL_MAPPING) if _player.robot != null else -1
 
-    print_debug("[Exploration Mapper] Mapping skill is %s" % skill_level)
+    # print_debug("[Exploration Mapper] Mapping skill is %s" % skill_level)
 
     map_controls.sync(self, skill_level, prefer_2d)
 

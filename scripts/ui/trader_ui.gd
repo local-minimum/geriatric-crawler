@@ -31,9 +31,17 @@ func _ready() -> void:
 
     hide()
 
-func _handle_update_credits(_credits: int, _loans: int) -> void:
+func _handle_update_credits(credits: int, _loans: int) -> void:
     if visible:
         _sync_access_marked_button()
+
+        for stock_ui: StockpileUI in _stocks:
+            var stock: Stockpile = _ship.trading_market.get_stock(stock_ui.item_id)
+            if stock.item_id == null:
+                stock_ui.set_buy_state()
+            elif stock.minimum_price() > credits && stock_ui.showing_buy():
+                stock_ui.set_buy_state()
+
 
 func _handle_market_updated(market: TradingMarket) -> void:
     if !visible:
@@ -141,7 +149,6 @@ func _setup_stock() -> void:
         category_title.uppercase = true
         category_title.theme_type_variation = "HeaderMedium"
 
-
         _stockpiles_container.add_child(category_title)
 
 
@@ -204,10 +211,16 @@ func _place_order(stock_id: String, amount: float) -> void:
     _orders[stock_id] = amount
     if amount > 0 && limited_stock.has(stock_id):
         limited_stock[stock_id] -= amount
+        print_debug("[Trader] %s has %s remaining stock" % [stock_id, limited_stock[stock_id]])
+
         if limited_stock[stock_id] <= 0:
             for stock: StockpileUI in _stocks:
                 if stock.item_id == stock_id:
-                    stock.set_buy_state()
+                    if __GlobalGameState.total_credits == 0 || limited_stock.values().all(func (value: float) -> bool: return value <= 0):
+                        print_debug("[Trader] Nothing more to do on the market")
+                        _end_market_access()
+                    else:
+                        stock.set_buy_state()
                     break
 
     _ship.trading_market.tick()
@@ -233,9 +246,15 @@ func _on_access_trading_button_pressed() -> void:
     var buy_callback: Variant = _get_buy_callback()
     var sell_callback: Variant = _get_sell_callback()
 
-    for stock: StockpileUI in _stocks:
-        stock.set_buy_state(buy_callback)
-        stock.set_sell_state(sell_callback)
+    for stock_ui: StockpileUI in _stocks:
+        var stock: Stockpile = _ship.trading_market.get_stock(stock_ui.item_id)
+        if stock.item_id == null:
+            stock_ui.set_buy_state()
+        elif stock.minimum_price() > __GlobalGameState.total_credits || !limited_stock.is_empty() && limited_stock.get(stock.item_id, 0.0) == 0.0:
+            stock_ui.set_buy_state()
+        else:
+            stock_ui.set_buy_state(buy_callback)
+        stock_ui.set_sell_state(sell_callback)
 
     _trading_ticks = _trading_duration
     _ship.trading_market.live = _trading_ticks <= 0

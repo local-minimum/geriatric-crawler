@@ -31,6 +31,9 @@ func _ready() -> void:
     if __SignalBus.on_market_updated.connect(_handle_market_tick) != OK:
         push_error("Failed to connect marked updated")
 
+func showing_buy() -> bool:
+    return _buy_callback is Callable && _buy_button.visible
+
 func set_buy_state(buy_callback: Variant = null) -> void:
     if buy_callback is Callable:
         _buy_button.visible = true
