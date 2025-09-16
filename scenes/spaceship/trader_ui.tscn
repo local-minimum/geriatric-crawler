@@ -21,10 +21,6 @@ _wait_tick_button = NodePath("MarginContainer/Main VBox/Main Buttons/Wait Button
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 2
-theme_override_constants/margin_left = 8
-theme_override_constants/margin_top = 8
-theme_override_constants/margin_right = 8
-theme_override_constants/margin_bottom = 8
 
 [node name="Main VBox" type="VBoxContainer" parent="MarginContainer"]
 layout_mode = 2
@@ -73,7 +69,7 @@ horizontal_scroll_mode = 0
 [node name="MarginContainer" type="MarginContainer" parent="MarginContainer/Main VBox/ScrollContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_constants/margin_right = 6
+theme_type_variation = &"ScrollContentContainer"
 
 [node name="Stockpiles Container" type="VBoxContainer" parent="MarginContainer/Main VBox/ScrollContainer/MarginContainer"]
 layout_mode = 2

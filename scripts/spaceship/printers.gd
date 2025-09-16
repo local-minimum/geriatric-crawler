@@ -103,12 +103,15 @@ func _toggle_select_printer(idx: int) -> void:
 
     _sync_panels()
 
-func _has_materials_and_credits(cost: PrintersManager.PrintingCost) -> bool:
+func _has_credits(cost: PrintersManager.PrintingCost) -> bool:
     if cost.free:
         return true
 
-    if !__GlobalGameState.can_afford(cost.total):
-        return false
+    return __GlobalGameState.can_afford(cost.total)
+
+func _has_materials(cost: PrintersManager.PrintingCost) -> bool:
+    if cost.free:
+        return true
 
     return ship.inventory.has_items(cost.materials)
 
@@ -137,7 +140,9 @@ func _sync_panels() -> void:
             _selected_cost = ship.printers.calculate_printing_costs(_selected_model, _selected_printer)
             model_price.text = tr("TOTAL_COST_PRICE").format({"price": GlobalGameState.credits_with_sign(_selected_cost.total)})
 
-            var has_materials: bool = _has_materials_and_credits(_selected_cost)
+            var has_materials: bool = _has_materials(_selected_cost)
+            var has_credits: bool = _has_credits(_selected_cost)
+
             if has_materials:
                 buy_materials_btn.hide()
             else:
@@ -145,7 +150,7 @@ func _sync_panels() -> void:
                 buy_materials_btn.show()
 
             print_model_btn.text = tr("ACTION_PRINT_FREE_SAMPLE") if _selected_cost.free else tr("ACTION_PRINT")
-            print_model_btn.disabled = !has_materials || !__GlobalGameState.can_afford(_selected_cost.total)
+            print_model_btn.disabled = !has_materials || !has_credits
 
 
             models_panel.show()

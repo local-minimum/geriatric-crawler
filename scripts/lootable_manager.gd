@@ -31,6 +31,7 @@ const ITEM_ELEM_HYDROGEN: String = "H"
 const ITEM_ELEM_CARBON: String = "C"
 const ITEM_ELEM_SILICON: String = "SI"
 const ITEM_ELEM_TIN: String = "SN"
+const ITEM_ELEM_TITANIUM: String = "TI"
 
 const _COMPONENT_PREFIX: String = "COMP_"
 const ITEM_COMP_CPU: String = "CPU"
@@ -67,7 +68,7 @@ static func classify_loot(item_id: String) -> LootClass:
         ITEM_PURPLE_KEY, ITEM_GENERIC_KEY:
             return LootClass.KEY
 
-        ITEM_ELEM_ALUMINUM, ITEM_ELEM_IRON, ITEM_ELEM_CARBON, ITEM_ELEM_COPPER, ITEM_ELEM_GOLD, ITEM_ELEM_HYDROGEN, ITEM_ELEM_SILICON, ITEM_ELEM_TIN:
+        ITEM_ELEM_ALUMINUM, ITEM_ELEM_IRON, ITEM_ELEM_CARBON, ITEM_ELEM_COPPER, ITEM_ELEM_GOLD, ITEM_ELEM_HYDROGEN, ITEM_ELEM_SILICON, ITEM_ELEM_TIN, ITEM_ELEM_TITANIUM:
             return LootClass.ELEMENT
 
         ITEM_COMP_CPU, ITEM_COMP_MEMORY:
@@ -87,7 +88,7 @@ static func list_item_ids(category: LootClass) -> Array[String]:
             return [ITEM_PURPLE_KEY, ITEM_GENERIC_KEY]
 
         LootClass.ELEMENT:
-            return [ITEM_ELEM_ALUMINUM, ITEM_ELEM_IRON, ITEM_ELEM_CARBON, ITEM_ELEM_COPPER, ITEM_ELEM_GOLD, ITEM_ELEM_HYDROGEN, ITEM_ELEM_SILICON, ITEM_ELEM_TIN]
+            return [ITEM_ELEM_ALUMINUM, ITEM_ELEM_IRON, ITEM_ELEM_CARBON, ITEM_ELEM_COPPER, ITEM_ELEM_GOLD, ITEM_ELEM_HYDROGEN, ITEM_ELEM_SILICON, ITEM_ELEM_TIN, ITEM_ELEM_TITANIUM]
 
         LootClass.COMPONENT:
             return [ITEM_COMP_CPU, ITEM_COMP_MEMORY]
@@ -106,12 +107,14 @@ static func translate_cateogry(category: LootClass, count: int = 1) -> String:
     var key: String = _translation_category_key(category)
     return __GlobalGameState.tr_n(key, "%s_PL" % key, count)
 
-static func unit(id: String) -> String:
+static func unit(id: String, use_alt: bool = false) -> String:
     match classify_loot(id):
         LootClass.SUBSTANCE, LootClass.ELEMENT:
             return __GlobalGameState.tr("UNIT_KG")
         _:
-            return __GlobalGameState.tr("UNIT_COUNT")
+            if use_alt:
+                return __GlobalGameState.tr("UNIT_COUNT_ALT")
+            return ""
 
 static func categorize(item_ids: Array[String]) -> Dictionary[LootClass, Array]:
     var results: Dictionary[LootClass, Array] = {}

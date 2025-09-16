@@ -4,6 +4,7 @@ class_name TraderUI
 const _STOCKPILE_UI: String = "res://scenes/ui/stockplie_container.tscn"
 
 @export var _ship: Spaceship
+@export var _buy_and_sell: BuySellUI
 @export var _stockpiles_container: Container
 @export var _access_market_button: Button
 @export var _trading_access_cost_factor: float = 0.005
@@ -35,15 +36,21 @@ func _handle_update_credits(_credits: int, _loans: int) -> void:
         _sync_access_marked_button()
 
 func _handle_market_updated(market: TradingMarket) -> void:
-    if !visible || _trading_ticks <= 0 && _orders.is_empty():
+    if !visible:
         return
 
-    _trading_ticks -= 1
-
-    if _trading_ticks <= 0:
-        _end_market_access()
-    else:
+    if _trading_ticks < 0 && market.live:
+        _trading_ticks += 1
+        if _trading_ticks == 0:
+            _sync_access_marked_button()
+    elif _trading_ticks > 0:
+        _trading_ticks -= 1
         _sync_wait_button()
+        if _trading_ticks == 0:
+            _end_market_access()
+
+    if _orders.is_empty():
+        return
 
     for stock_id: String in _orders.keys():
         var stock: Stockpile = market.get_stock(stock_id)
@@ -103,7 +110,7 @@ func show_trader(
 func _sync_access_marked_button() -> void:
     var access_cost: int = _access_market_cost
     _access_market_button.text = tr("ACCESS_TRADING_COST").format({"cost": GlobalGameState.credits_with_sign(access_cost)})
-    _access_market_button.disabled = __GlobalGameState.total_credits <= access_cost || !_ship.trading_market.live
+    _access_market_button.disabled =  _trading_ticks < 0 || __GlobalGameState.total_credits <= access_cost || !_ship.trading_market.live
 
 func _sync_wait_button() -> void:
     if _trading_ticks > 0:
@@ -148,6 +155,8 @@ func _setup_stock() -> void:
 
 func _on_close_trader_pressed() -> void:
     _ship.trading_market.live = false
+    _trading_ticks = 0
+
     hide()
 
     if on_close_callback is Callable:
@@ -165,12 +174,24 @@ func _get_sell_callback() -> Variant:
         return _handle_want_to_sell_stock
     return null
 
-func _handle_want_to_buy_stock(_item_id: String) -> void:
-    # TODO: Add callbacks if sell / buy is allowed
-    pass
+func _handle_want_to_buy_stock(item_id: String) -> void:
+    @warning_ignore_start("unsafe_cast")
+    var limit: float = limited_stock.get(item_id, -1.0) as float
+    @warning_ignore_restore("unsafe_cast")
+    _buy_and_sell.buy(
+        _ship.trading_market.get_stock(item_id),
+        _place_buy_order,
+        limit,
+    )
 
-func _handle_want_to_sell_stock(_item_id: String) -> void:
-    pass
+func _place_buy_order(stock_id: String, amount: float) -> void:
+    _place_order(stock_id, amount)
+
+func _handle_want_to_sell_stock(item_id: String) -> void:
+    _buy_and_sell.sell(_ship.trading_market.get_stock(item_id), _place_sell_order)
+
+func _place_sell_order(stock_id: String, amount: float) -> void:
+    _place_order(stock_id, -amount)
 
 func _place_order(stock_id: String, amount: float) -> void:
     if amount == 0 || stock_id.is_empty():
@@ -181,6 +202,14 @@ func _place_order(stock_id: String, amount: float) -> void:
         return
 
     _orders[stock_id] = amount
+    if amount > 0 && limited_stock.has(stock_id):
+        limited_stock[stock_id] -= amount
+        if limited_stock[stock_id] <= 0:
+            for stock: StockpileUI in _stocks:
+                if stock.item_id == stock_id:
+                    stock.set_buy_state()
+                    break
+
     _ship.trading_market.tick()
 
 func _end_market_access() -> void:
@@ -188,7 +217,7 @@ func _end_market_access() -> void:
         stock.set_buy_state()
         stock.set_sell_state()
 
-    _trading_ticks = 0
+    _trading_ticks = -10
     _ship.trading_market.live = true
 
     _sync_access_marked_button()

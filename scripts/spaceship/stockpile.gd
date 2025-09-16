@@ -10,6 +10,7 @@ const MAX_HISTORY: int = 256
 @export_range(0, 1) var _volatility: float = 0.4
 @export var _min_range_tick_volume: float = 1
 @export var _max_range_tick_volume: float = 10
+@export var min_unit: float = 1
 
 var history: Array[int]
 var price: int

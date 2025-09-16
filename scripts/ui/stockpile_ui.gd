@@ -22,7 +22,7 @@ class_name StockpileUI
 @export var _steady_color: Color = Color.WHITE_SMOKE
 @export var _down_color: Color = Color.RED
 
-var _item_id: String
+var item_id: String
 var _market: TradingMarket
 var _sell_callback: Variant
 var _buy_callback: Variant
@@ -47,9 +47,11 @@ func set_sell_state(sell_callback: Variant = null) -> void:
         _sell_callback = null
         _sell_button.visible = false
 
+@warning_ignore_start("shadowed_variable")
 func track_stock(item_id: String, market: TradingMarket, buy_callback: Variant = null, sell_callback: Variant = null) -> void:
+    @warning_ignore_restore("shadowed_variable")
     _market = market
-    _item_id = item_id
+    self.item_id = item_id
 
     set_buy_state(buy_callback)
     set_sell_state(sell_callback)
@@ -63,10 +65,10 @@ func _handle_market_tick(market: TradingMarket) -> void:
         push_warning("Not my stockmarked %s not %s" % [market, _market])
         return
 
-    var stock: Stockpile = market.get_stock(_item_id)
+    var stock: Stockpile = market.get_stock(item_id)
 
     if stock == null:
-        push_warning("Stock %s doesn't exist in market" % _item_id)
+        push_warning("Stock %s doesn't exist in market" % item_id)
         _show_stock_missing()
         return
 
@@ -108,11 +110,11 @@ func _show_stock_missing() -> void:
 func _on_sell_button_pressed() -> void:
     if _sell_callback is Callable:
         @warning_ignore_start("unsafe_cast")
-        (_sell_callback as Callable).call(_item_id)
+        (_sell_callback as Callable).call(item_id)
         @warning_ignore_restore("unsafe_cast")
 
 func _on_buy_button_pressed() -> void:
     if _buy_callback is Callable:
         @warning_ignore_start("unsafe_cast")
-        (_buy_callback as Callable).call(_item_id)
+        (_buy_callback as Callable).call(item_id)
         @warning_ignore_restore("unsafe_cast")

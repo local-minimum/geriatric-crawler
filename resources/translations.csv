@@ -246,3 +246,10 @@ NOTICE_MARKET,Market,Marknaden
 CAN_NOT_BUY_AND_SELL,Can not buy and sell the same comodity at the same time,Inte tillåtet att köpa och sälja samma vara vid samma tillfälle
 FAILED_SELL_ITEM,"Failed to sell {item} on market. Could not withdraw expected volume from inventory","Kunde inte sälja {item} på marknaden eftersom det inte gick att ta ut den förväntade mängden från lagret."
 ACTION_WAIT_TIME,Wait ({time}),Vänta ({time})
+LARGE_ORDERS,Large orders will be processed over several ticks and are exposed to price fluctuations.,Stora ordrar kommer splittas upp över flera tick och är utsatta för prisförändringar.
+ACTION_CANCEL,Cancel,Avbryt
+VOLUME,Volume,Volym
+CURRENT_PRICE,Current price,Nuvarande pris
+TOTAL,Total,Total
+ACTION_BUY,Buy,Köp
+ACTION_SELL,Sell,Sälj

@@ -1,6 +1,6 @@
 keys,en,sv
 UNIT_KG,kg,kg
-UNIT_COUNT,,
+UNIT_COUNT_ALT,unit,st
 ITEM_HACKING_CATEGORY,hacking tool,hackingverktyg
 ITEM_HACKING_CATEGORY_PL,hacking tools,hackingverktyg
 ITEM_HACKING_WORM,worm,worm

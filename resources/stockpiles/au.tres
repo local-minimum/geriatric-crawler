@@ -9,4 +9,7 @@ _baseline_price = 250
 _min_price_factor = 0.6
 _max_price_factor = 9.0
 _volatility = 0.25
+_min_range_tick_volume = 1.0
+_max_range_tick_volume = 10.0
+min_unit = 0.1
 metadata/_custom_type_script = "uid://4hdcxwe2s75o"

@@ -1,4 +1,4 @@
-[gd_scene load_steps=53 format=3 uid="uid://7flb82m2ddwe"]
+[gd_scene load_steps=54 format=3 uid="uid://7flb82m2ddwe"]
 
 [ext_resource type="Script" uid="uid://dfub4a26emjgr" path="res://scripts/spaceship.gd" id="1_ae4p7"]
 [ext_resource type="Texture2D" uid="uid://0ncw5fw4jr8u" path="res://sprites/spaceship/missionops.png" id="2_5eye7"]
@@ -21,6 +21,7 @@
 [ext_resource type="Theme" uid="uid://clwuiynrim13h" path="res://themes/dialog_theme.tres" id="11_44jdn"]
 [ext_resource type="Script" uid="uid://cewd737qkspe7" path="res://scripts/savesystem/extensions/chap_saver.gd" id="11_yckko"]
 [ext_resource type="PackedScene" uid="uid://q20bgg1ae3nh" path="res://scenes/spaceship/trader_ui.tscn" id="12_t2qrf"]
+[ext_resource type="PackedScene" uid="uid://dfm0ddffm6xoj" path="res://scenes/spaceship/buy_sell_ui.tscn" id="13_44jdn"]
 [ext_resource type="Script" uid="uid://bowpiyq67d4o1" path="res://scripts/ui/line_graph.gd" id="13_t2qrf"]
 [ext_resource type="Script" uid="uid://dddgx760pvv7h" path="res://scripts/spaceship/spaceship_saver.gd" id="14_csm47"]
 [ext_resource type="Script" uid="uid://clmlakb50km2n" path="res://scripts/savesystem/extensions/inventory_saver.gd" id="15_d22a7"]
@@ -638,8 +639,11 @@ text = "BROOM_CLOSET"
 
 [node name="Balance Sheet UI" parent="CanvasLayer" instance=ExtResource("3_yckko")]
 
-[node name="Trader UI" parent="CanvasLayer" node_paths=PackedStringArray("_ship") instance=ExtResource("12_t2qrf")]
+[node name="Trader UI" parent="CanvasLayer" node_paths=PackedStringArray("_ship", "_buy_and_sell") instance=ExtResource("12_t2qrf")]
 _ship = NodePath("../..")
+_buy_and_sell = NodePath("../Buy Sell UI")
+
+[node name="Buy Sell UI" parent="CanvasLayer" instance=ExtResource("13_44jdn")]
 
 [node name="Spaceship Notifications" type="CanvasLayer" parent="."]
 layer = 126

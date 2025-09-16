@@ -1,0 +1,107 @@
+[gd_scene load_steps=3 format=3 uid="uid://dfm0ddffm6xoj"]
+
+[ext_resource type="Theme" uid="uid://clwuiynrim13h" path="res://themes/dialog_theme.tres" id="1_ftpno"]
+[ext_resource type="Script" uid="uid://b33exoxbyjnbv" path="res://scripts/ui/buy_sell_ui.gd" id="2_iqbj7"]
+
+[node name="Buy Sell UI" type="PanelContainer" node_paths=PackedStringArray("_comodity", "_current_price", "_volume", "_total_price", "_buy_sell_button")]
+custom_minimum_size = Vector2(450, 0)
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -150.0
+offset_top = -94.5
+offset_right = 150.0
+offset_bottom = 94.5
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_ftpno")
+script = ExtResource("2_iqbj7")
+_comodity = NodePath("MarginContainer/VBoxContainer/Comodity")
+_current_price = NodePath("MarginContainer/VBoxContainer/Current/Current Price Value")
+_volume = NodePath("MarginContainer/VBoxContainer/Volume/LineEdit")
+_total_price = NodePath("MarginContainer/VBoxContainer/Total/Total Value")
+_buy_sell_button = NodePath("MarginContainer/VBoxContainer/Actions/BuySell")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+
+[node name="Comodity" type="Label" parent="MarginContainer/VBoxContainer"]
+auto_translate_mode = 2
+layout_mode = 2
+theme_type_variation = &"HeaderLarge"
+text = "COMODITY"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Current" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Current Price Label" type="Label" parent="MarginContainer/VBoxContainer/Current"]
+auto_translate_mode = 1
+layout_mode = 2
+size_flags_horizontal = 3
+text = "CURRENT_PRICE"
+
+[node name="Current Price Value" type="Label" parent="MarginContainer/VBoxContainer/Current"]
+layout_mode = 2
+text = "11 / kg"
+horizontal_alignment = 2
+
+[node name="Volume" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Volume Label" type="Label" parent="MarginContainer/VBoxContainer/Volume"]
+auto_translate_mode = 1
+layout_mode = 2
+size_flags_horizontal = 3
+text = "VOLUME"
+horizontal_alignment = 3
+
+[node name="LineEdit" type="LineEdit" parent="MarginContainer/VBoxContainer/Volume"]
+layout_mode = 2
+placeholder_text = "1"
+alignment = 2
+
+[node name="Total" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Total Label" type="Label" parent="MarginContainer/VBoxContainer/Total"]
+auto_translate_mode = 1
+layout_mode = 2
+size_flags_horizontal = 3
+text = "TOTAL"
+
+[node name="Total Value" type="Label" parent="MarginContainer/VBoxContainer/Total"]
+layout_mode = 2
+text = "11"
+horizontal_alignment = 2
+
+[node name="Large Orders" type="Label" parent="MarginContainer/VBoxContainer"]
+auto_translate_mode = 1
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+text = "LARGE_ORDERS"
+autowrap_mode = 3
+
+[node name="Actions" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+alignment = 2
+
+[node name="Cancel" type="Button" parent="MarginContainer/VBoxContainer/Actions"]
+auto_translate_mode = 1
+layout_mode = 2
+text = "ACTION_CANCEL"
+
+[node name="BuySell" type="Button" parent="MarginContainer/VBoxContainer/Actions"]
+auto_translate_mode = 1
+layout_mode = 2
+text = "ACTION_BUY"
+
+[connection signal="text_changed" from="MarginContainer/VBoxContainer/Volume/LineEdit" to="." method="_on_line_edit_text_changed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/Actions/Cancel" to="." method="_on_cancel_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/Actions/BuySell" to="." method="_on_buy_sell_pressed"]

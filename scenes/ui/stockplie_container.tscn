@@ -75,14 +75,16 @@ layout_mode = 2
 alignment = 2
 
 [node name="Sell Button" type="Button" parent="MarginContainer/VBoxContainer/Actions"]
+auto_translate_mode = 1
 layout_mode = 2
 theme_type_variation = &"ButtonSmall"
-text = "SELL"
+text = "ACTION_SELL"
 
 [node name="Buy Button" type="Button" parent="MarginContainer/VBoxContainer/Actions"]
+auto_translate_mode = 1
 layout_mode = 2
 theme_type_variation = &"ButtonSmall"
-text = "BUY"
+text = "ACTION_BUY"
 
 [connection signal="pressed" from="MarginContainer/VBoxContainer/Actions/Sell Button" to="." method="_on_sell_button_pressed"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/Actions/Buy Button" to="." method="_on_buy_button_pressed"]
