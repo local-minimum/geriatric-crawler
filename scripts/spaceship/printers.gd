@@ -26,6 +26,15 @@ func _ready() -> void:
     if __SignalBus.on_increment_day.connect(_handle_increment_day) != OK:
         push_error("Failed to connect increment day")
 
+    if __SignalBus.on_update_credits.connect(_handle_update_credits) != OK:
+        push_error("Failed to connect update credits")
+
+    if __SignalBus.on_add_to_inventory.connect(_handle_update_inventory) != OK:
+        push_error("Failed to connect add to inventory")
+
+    if __SignalBus.on_remove_from_inventory.connect(_handle_update_inventory) != OK:
+        push_error("Failed to connect remove from inventory")
+
     _sync_printer_buttons()
     _sync_printer_statues()
     _sync_panels()
@@ -38,6 +47,14 @@ func activate() -> void:
 
 func deactivate() -> void:
     hide()
+
+func _handle_update_inventory(inventory: Inventory, _id: String, _amount: float, _total: float) -> void:
+    if inventory != ship.inventory:
+        return
+    _sync_panels()
+
+func _handle_update_credits(_credits: int, _loans: int) -> void:
+    _sync_panels()
 
 func _handle_increment_day(_day_of_month: int, _remaining_days: int) -> void:
     _sync_printer_statues()

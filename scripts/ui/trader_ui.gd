@@ -39,8 +39,11 @@ func _handle_market_updated(market: TradingMarket) -> void:
         return
 
     _trading_ticks -= 1
+
     if _trading_ticks <= 0:
         _end_market_access()
+    else:
+        _sync_wait_button()
 
     for stock_id: String in _orders.keys():
         var stock: Stockpile = market.get_stock(stock_id)
@@ -92,8 +95,8 @@ func show_trader(
     _setup_stock()
 
     _ship.trading_market.live = _trading_ticks <= 0
-    _wait_tick_button.visible = _trading_ticks > 0
     _sync_access_marked_button()
+    _sync_wait_button()
 
     show()
 
@@ -101,6 +104,13 @@ func _sync_access_marked_button() -> void:
     var access_cost: int = _access_market_cost
     _access_market_button.text = tr("ACCESS_TRADING_COST").format({"cost": GlobalGameState.credits_with_sign(access_cost)})
     _access_market_button.disabled = __GlobalGameState.total_credits <= access_cost || !_ship.trading_market.live
+
+func _sync_wait_button() -> void:
+    if _trading_ticks > 0:
+        _wait_tick_button.visible = _trading_ticks > 0
+        _wait_tick_button.text = tr("ACTION_WAIT_TIME").format({"time": _trading_ticks})
+    else:
+        _wait_tick_button.visible = false
 
 func _setup_stock() -> void:
     UIUtils.clear_control(_stockpiles_container)
@@ -131,7 +141,6 @@ func _setup_stock() -> void:
         for stock_id: String in items:
             var stock: StockpileUI = scene.instantiate()
 
-            # TODO: Add callbacks if sell / buy is allowed
             stock.track_stock(stock_id, _ship.trading_market)
             _stocks.append(stock)
 
@@ -157,6 +166,7 @@ func _get_sell_callback() -> Variant:
     return null
 
 func _handle_want_to_buy_stock(_item_id: String) -> void:
+    # TODO: Add callbacks if sell / buy is allowed
     pass
 
 func _handle_want_to_sell_stock(_item_id: String) -> void:
@@ -178,8 +188,11 @@ func _end_market_access() -> void:
         stock.set_buy_state()
         stock.set_sell_state()
 
+    _trading_ticks = 0
     _ship.trading_market.live = true
+
     _sync_access_marked_button()
+    _sync_wait_button()
 
 func _on_access_trading_button_pressed() -> void:
     _access_market_button.disabled = true
@@ -197,8 +210,7 @@ func _on_access_trading_button_pressed() -> void:
 
     _trading_ticks = _trading_duration
     _ship.trading_market.live = _trading_ticks <= 0
-    _wait_tick_button.visible = _trading_ticks > 0
-    # TODO: Sync wait button with remaining in all cases
+    _sync_wait_button()
 
 func _on_wait_button_pressed() -> void:
     if !_ship.trading_market.live:

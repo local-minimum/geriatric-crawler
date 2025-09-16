@@ -245,3 +245,4 @@ ACTION_WAIT_REMAINING,Wait ({remaining}),Avvakta ({remaining})
 NOTICE_MARKET,Market,Marknaden
 CAN_NOT_BUY_AND_SELL,Can not buy and sell the same comodity at the same time,Inte tillåtet att köpa och sälja samma vara vid samma tillfälle
 FAILED_SELL_ITEM,"Failed to sell {item} on market. Could not withdraw expected volume from inventory","Kunde inte sälja {item} på marknaden eftersom det inte gick att ta ut den förväntade mängden från lagret."
+ACTION_WAIT_TIME,Wait ({time}),Vänta ({time})
