@@ -24,17 +24,12 @@ func _ready() -> void:
     if __SignalBus.on_move_end.connect(_end_track_player) != OK:
         push_error("%s cannot end player tracking during movement" % name)
 
-    var level: GridLevel = get_level()
-    if level != null:
-        if level.on_change_player.connect(_connect_player_tracking) != OK:
-            push_error("Could not connect level player updating")
-    else:
-        push_error("Player facer must be part of a level")
+    if __SignalBus.on_change_player.connect(_connect_player_tracking) != OK:
+        push_error("Could not connect level player updating")
 
-    _connect_player_tracking()
+    _connect_player_tracking(get_level(), null)
 
-func _connect_player_tracking() -> void:
-    var level: GridLevel = get_level()
+func _connect_player_tracking(level: GridLevel, _player: GridPlayer) -> void:
     if level == null:
         push_error("%s is not part of a level" % name)
         return

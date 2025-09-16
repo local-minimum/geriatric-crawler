@@ -3,9 +3,6 @@ class_name GridLevel
 
 static var active_level: GridLevel
 
-signal on_change_player
-signal on_level_loaded
-
 const LEVEL_GROUP: String = "grid-level"
 const UNKNOWN_LEVEL_ID: String = "--unknown--"
 
@@ -18,7 +15,7 @@ const UNKNOWN_LEVEL_ID: String = "--unknown--"
 @export var player: GridPlayer:
     set(value):
         player = value
-        on_change_player.emit()
+        __SignalBus.on_change_player.emit(self, value)
 
 var grid_entities: Array[GridEntity]
 
@@ -186,7 +183,7 @@ func _process(_delta: float) -> void:
     if emit_loaded:
         emit_loaded = false
         print_debug("Level %s loaded" % level_id)
-        on_level_loaded.emit()
+        __SignalBus.on_level_loaded.emit(self)
 
 static func find_level_parent(current: Node, inclusive: bool = true) ->  GridLevel:
     if inclusive && current is GridLevel:

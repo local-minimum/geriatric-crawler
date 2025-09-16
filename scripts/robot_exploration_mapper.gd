@@ -59,6 +59,12 @@ func _enter_tree() -> void:
     if active_mapper != null && active_mapper != self:
         active_mapper.queue_free()
 
+    if __SignalBus.on_change_player.connect(_connect_new_player) != OK:
+        push_error("Failed to connect new _player")
+
+    if __SignalBus.on_level_loaded.connect(_level_loaded) != OK:
+        push_error("Failed to connect level loaded")
+
     active_mapper = self
 
 func _exit_tree() -> void:
@@ -68,16 +74,12 @@ func _exit_tree() -> void:
 func _setup() -> void:
     _level = GridLevel.active_level
 
-    if _level.on_change_player.connect(_connect_new_player) != OK:
-        push_error("Failed to connect new _player")
-
-    if _level.on_level_loaded.connect(_level_loaded) != OK:
-        push_error("Failed to connect level loaded")
-
-    _connect_new_player()
+    _connect_new_player(_level, _player)
     _handle_move_end(_player)
 
-func _level_loaded() -> void:
+func _level_loaded(level: GridLevel) -> void:
+    _level = level
+
     for door: GridDoor in _level.doors():
         if !door.on_door_state_chaged.is_connected(_update_map) && door.on_door_state_chaged.connect(_update_map) != OK:
             push_error("Failed to connect door state change")
@@ -90,9 +92,10 @@ func _handle_teleport(_teleporter: GridTeleporter, entity: GridEntity) -> void:
     if entity == _player:
         _handle_move_end(entity)
 
-func _connect_new_player() -> void:
-    _player = _level.player
-    print_debug("Connected %s to map" % _player)
+func _connect_new_player(level: GridLevel, player: GridPlayer) -> void:
+    if _level == level:
+        _player = player
+        print_debug("[Exploration Mapper] Connected %s to map" % _player)
 
 func _handle_move_end(entity: GridEntity) -> void:
     if entity is not GridPlayer || entity != _player || entity == null:

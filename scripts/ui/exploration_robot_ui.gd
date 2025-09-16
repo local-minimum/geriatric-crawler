@@ -12,10 +12,10 @@ class_name ExplorationRobotUI
 @export var _level_label: Label
 
 func _ready() -> void:
-    if _exploration_ui.level.on_change_player.connect(_handle_new_player) != OK:
+    if __SignalBus.on_change_player.connect(_handle_new_player) != OK:
         push_error("Failed to connect on new player")
 
-    if _exploration_ui.level.on_level_loaded.connect(_handle_new_level) != OK:
+    if __SignalBus.on_level_loaded.connect(_handle_new_level) != OK:
         push_error("Failed to connect on new level")
 
     if __SignalBus.on_entity_heal.connect(_handle_on_heal) != OK:
@@ -51,22 +51,20 @@ func _gui_input(event: InputEvent) -> void:
 func _click_robot() -> void:
     _exploration_ui.inspect_robot()
 
-func _handle_new_level() -> void:
-    if _exploration_ui.level != GridLevel.active_level:
-        _exploration_ui.level = GridLevel.active_level
+func _handle_new_level(level: GridLevel) -> void:
+    if _exploration_ui.level != level:
+        _exploration_ui.level = level
 
-    _handle_new_player()
+    _handle_new_player(level, level.player)
 
-func _handle_new_player() -> void:
-    var grid_player: GridPlayer = _exploration_ui.level.player
-
-    _sync_robot.call_deferred(grid_player.robot, _exploration_ui.battle.battle_player)
+func _handle_new_player(_level: GridLevel, player: GridPlayer) -> void:
+    _sync_robot.call_deferred(player.robot, _exploration_ui.battle.battle_player)
 
 func _connect_player(grid_player: GridPlayer, battle_player: BattlePlayer, omit_connecting_robot: bool = false) -> void:
 
     if !omit_connecting_robot:
         # sync robot also called from new player
-        _handle_new_player()
+        _handle_new_player(_exploration_ui.level, _exploration_ui.level.player)
     else:
         _sync_robot.call_deferred(grid_player.robot, battle_player)
 

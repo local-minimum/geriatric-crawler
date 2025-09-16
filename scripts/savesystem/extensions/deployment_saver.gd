@@ -81,7 +81,7 @@ func load_from_data(extentsion_save_data: Dictionary) -> void:
             __SignalBus.on_critical_level_corrupt.emit(level.level_id)
             return
 
-        level.on_change_player.emit()
+        __SignalBus.on_change_player.emit(level, level.player)
 
     var days: int = DictionaryUtils.safe_geti(extentsion_save_data, DURATION_DAYS_KEY, 0, false)
     if _tick_time_on_load:

@@ -39,7 +39,7 @@ func _ready() -> void:
     if door.on_door_state_chaged.connect(_sync_reader_display) != OK:
         print_debug("%s could not connect to door state changes" % self)
 
-    if door.get_level().on_level_loaded.connect(_sync_reader_display) != OK:
+    if __SignalBus.on_level_loaded.connect(_sync_reader_display) != OK:
         push_error("Could not connect level loaded")
 
     _sync_reader_display.call_deferred()
@@ -89,7 +89,7 @@ func _get_needed_texture() -> Texture:
 
     return no_entry_door_tex
 
-func _sync_reader_display() -> void:
+func _sync_reader_display(_level: GridLevel = null) -> void:
     var mat: StandardMaterial3D = mesh.get_surface_override_material(display_material_idx)
     if mat == null:
         mat = StandardMaterial3D.new()

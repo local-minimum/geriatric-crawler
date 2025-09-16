@@ -42,6 +42,10 @@ signal on_robot_complete_fight(robot: Robot)
 signal on_robot_loaded(robot: Robot)
 
 # Exploration
+# -> Level
+signal on_change_player(level: GridLevel, player: GridPlayer)
+signal on_level_loaded(level: GridLevel)
+
 # -> Grid Entity
 signal on_move_start(entity: GridEntity, from: Vector3i, translation_direction: CardinalDirections.CardinalDirection)
 signal on_move_end(entity: GridEntity)

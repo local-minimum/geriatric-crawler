@@ -74,11 +74,10 @@ func _ready() -> void:
 
     _ui.visible = false
     _inited = true
-    if GridLevel.active_level != null:
-        if GridLevel.active_level.on_level_loaded.connect(_handle_new_level) != OK:
-            push_error("Failed to connect level loaded")
-        if GridLevel.active_level.on_change_player.connect(_handle_new_player) != OK:
-            push_error("Failed to connect new player")
+    if __SignalBus.on_level_loaded.connect(_handle_new_level) != OK:
+        push_error("Failed to connect level loaded")
+    if __SignalBus.on_change_player.connect(_handle_new_player) != OK:
+        push_error("Failed to connect new player")
 
 
 func _enter_tree() -> void:
@@ -91,11 +90,11 @@ func _exit_tree() -> void:
     if instance == self:
         instance = null
 
-func _handle_new_player() -> void:
-    _handle_new_level()
+func _handle_new_player(level: GridLevel, _player: GridPlayer) -> void:
+    _handle_new_level(level)
 
-func _handle_new_level() -> void:
-    if GridLevel.active_level.player != null:
+func _handle_new_level(level: GridLevel) -> void:
+    if level.player != null:
         robot = GridLevel.active_level.player.robot
         battle_player.use_robot(robot)
 
