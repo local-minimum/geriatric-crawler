@@ -129,8 +129,7 @@ func load_from_save(level: GridLevel, save_data: Dictionary) -> void:
     var down_direction: CardinalDirections.CardinalDirection = save_data[_DOWN_KEY]
     var anchor_direction: CardinalDirections.CardinalDirection = save_data[_ANCHOR_KEY]
 
-    look_direction = look
-    down = down_direction
+    load_look_direction_and_down(look, down_direction)
     _triggered = save_data[_TRIGGERED_KEY] if save_data.has(_TRIGGERED_KEY) else false
 
     if anchor_direction == CardinalDirections.CardinalDirection.NONE:

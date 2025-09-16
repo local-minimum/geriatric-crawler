@@ -247,8 +247,7 @@ func load_from_save(level: GridLevel, save_data: Dictionary) -> void:
         var down_direction: CardinalDirections.CardinalDirection = save_data[_DOWN_KEY]
         var anchor_direction: CardinalDirections.CardinalDirection = save_data[_ANCHOR_KEY]
 
-        look_direction = look
-        down = down_direction
+        load_look_direction_and_down(look, down_direction)
 
         if anchor_direction == CardinalDirections.CardinalDirection.NONE:
             set_grid_node(node)

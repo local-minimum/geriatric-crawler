@@ -63,7 +63,6 @@ _exploration_ui = NodePath("../../..")
 [node name="Spacer" type="Control" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
-size_flags_stretch_ratio = 3.0
 
 [node name="Sonar" type="ColorRect" parent="MarginContainer/VBoxContainer"]
 custom_minimum_size = Vector2(0, 30)
@@ -219,8 +218,8 @@ layout_mode = 2
 exploration_ui = NodePath("../../..")
 
 [node name="Exploration Movement Controls" type="GridContainer" parent="MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 100)
 layout_mode = 2
-size_flags_vertical = 3
 columns = 3
 
 [node name="Turn Left" type="Button" parent="MarginContainer/VBoxContainer/Exploration Movement Controls"]

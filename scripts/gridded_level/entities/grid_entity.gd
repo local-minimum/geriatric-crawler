@@ -57,6 +57,13 @@ func _ready() -> void:
     orient()
     get_level().grid_entities.append(self)
 
+func load_look_direction_and_down(load_look: CardinalDirections.CardinalDirection, load_down: CardinalDirections.CardinalDirection) -> void:
+    look_direction = load_look
+    _old_look_direction = CardinalDirections.CardinalDirection.NONE
+
+    down = load_down
+    _old_down = CardinalDirections.CardinalDirection.NONE
+
 func delay_emit() -> void:
     if _emit_orientation:
         _emit_orientation = false
