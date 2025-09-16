@@ -25,6 +25,7 @@ func _ready() -> void:
 
 func _handle_new_player() -> void:
     var player: GridPlayer = exploration_ui.level.player
+    print_debug("[Compass] got new player and robot")
     _sync_robot.call_deferred(player, player.robot)
 
 func _handle_update_orientation(
@@ -34,14 +35,16 @@ func _handle_update_orientation(
     old_forward: CardinalDirections.CardinalDirection,
     forward: CardinalDirections.CardinalDirection,
 ) -> void:
+    var player: GridPlayer = null
     if entity is GridPlayer:
-        var player: GridPlayer = entity
+        player = entity
         if player.robot.get_skill_level(RobotAbility.SKILL_MAPPING) < 1:
             visible = false
             return
     else:
         return
 
+    print_debug("[Compass] Player rotated %s and %s" % [CardinalDirections.name(down), CardinalDirections.name(forward)])
     visible = true
 
     if down == old_down || old_down == CardinalDirections.CardinalDirection.NONE:
@@ -49,8 +52,10 @@ func _handle_update_orientation(
             _animate_yaw_rotation(down, old_forward, forward)
     elif old_forward == forward:
         _animate_roll_rotation(old_down, old_forward, down, forward)
-    else:
+    elif forward == old_down || down == old_forward:
         _animate_pitch_rotation(old_down, old_forward, forward)
+    else:
+        _sync_robot(player, player.robot)
 
 func _sync_robot(player: GridPlayer, robot: Robot) -> void:
     if robot == null || robot.get_skill_level(RobotAbility.SKILL_MAPPING) < 1:
