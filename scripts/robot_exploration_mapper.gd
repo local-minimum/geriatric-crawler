@@ -27,6 +27,26 @@ var _level_id: String
 var _seen: Array[Vector3i]
 var _last_seen_idx: int
 
+func _enter_tree() -> void:
+    if active_mapper != null && active_mapper != self:
+        active_mapper.queue_free()
+
+    if __SignalBus.on_change_player.connect(_connect_new_player) != OK:
+        push_error("Failed to connect new _player")
+
+    if __SignalBus.on_level_loaded.connect(_level_loaded) != OK:
+        push_error("Failed to connect level loaded")
+
+    active_mapper = self
+
+func _ready() -> void:
+    if __SignalBus.on_move_end.connect(_handle_move_end) != OK:
+        push_error("Failed to connect on move end")
+
+    _level_loaded.call_deferred(GridLevel.active_level)
+    _connect_new_player.call_deferred(GridLevel.active_level, GridLevel.active_level.player)
+
+
 func history() -> Array[Vector3i]:
     var hist: Array[Vector3i]
     var size: int = mini(_seen.size(), _memory_size)
@@ -49,33 +69,9 @@ func _after_load_history() -> void:
 
     _handle_move_end(_player)
 
-func _ready() -> void:
-    if __SignalBus.on_move_end.connect(_handle_move_end) != OK:
-        push_error("Failed to connect on move end")
-
-    _setup.call_deferred()
-
-func _enter_tree() -> void:
-    if active_mapper != null && active_mapper != self:
-        active_mapper.queue_free()
-
-    if __SignalBus.on_change_player.connect(_connect_new_player) != OK:
-        push_error("Failed to connect new _player")
-
-    if __SignalBus.on_level_loaded.connect(_level_loaded) != OK:
-        push_error("Failed to connect level loaded")
-
-    active_mapper = self
-
 func _exit_tree() -> void:
     if active_mapper == self:
         active_mapper = null
-
-func _setup() -> void:
-    _level = GridLevel.active_level
-
-    _connect_new_player(_level, _player)
-    _handle_move_end(_player)
 
 func _level_loaded(level: GridLevel) -> void:
     _level = level
@@ -94,7 +90,8 @@ func _handle_teleport(_teleporter: GridTeleporter, entity: GridEntity) -> void:
 
 func _connect_new_player(level: GridLevel, player: GridPlayer) -> void:
     if _level == level:
-        _player = player
+        _player = level.player
+        _handle_move_end(_player)
         print_debug("[Exploration Mapper] Connected %s to map" % _player)
 
 func _handle_move_end(entity: GridEntity) -> void:
@@ -161,7 +158,9 @@ func _handle_move_end(entity: GridEntity) -> void:
     _update_map()
 
 func _update_map() -> void:
-    var skill_level: int = _player.robot.get_skill_level(RobotAbility.SKILL_MAPPING)
+    var skill_level: int = _player.robot.get_skill_level(RobotAbility.SKILL_MAPPING) if _player.robot != null else -1
+
+    print_debug("[Exploration Mapper] Mapping skill is %s" % skill_level)
 
     map_controls.sync(self, skill_level, prefer_2d)
 

@@ -47,7 +47,7 @@ func _handle_update_orientation(
     else:
         return
 
-    print_debug("[Compass] Player rotated %s and %s" % [CardinalDirections.name(down), CardinalDirections.name(forward)])
+    # print_debug("[Compass] Player rotated %s and %s" % [CardinalDirections.name(down), CardinalDirections.name(forward)])
     visible = true
 
     if !_inited:
@@ -76,7 +76,7 @@ func _sync_robot(player: GridPlayer, robot: Robot) -> void:
 
     visible = true
 
-    print_debug("[Compass] sync of %s look %s down %s (%s)" % [robot.given_name, CardinalDirections.name(player.look_direction), CardinalDirections.name(player.down), _inited])
+    # print_debug("[Compass] sync of %s look %s down %s (%s)" % [robot.given_name, CardinalDirections.name(player.look_direction), CardinalDirections.name(player.down), _inited])
 
     var left_coords: Vector2 = _get_coordinates(CompassCardinalLabelPosition.LEFT)
     var mid_coords: Vector2 = _get_coordinates(CompassCardinalLabelPosition.MID)
@@ -86,8 +86,8 @@ func _sync_robot(player: GridPlayer, robot: Robot) -> void:
     var left: CardinalDirections.CardinalDirection = CardinalDirections.yaw_ccw(player.look_direction, player.down)[0]
     var right: CardinalDirections.CardinalDirection = CardinalDirections.yaw_cw(player.look_direction, player.down)[0]
 
-    print_debug("[Compass] left %s = %s mid %s = %s right %s = %s" % [
-        _get_cardinal(left), left_coords, _get_cardinal(mid), mid_coords, _get_cardinal(right), right_coords])
+    # print_debug("[Compass] left %s = %s mid %s = %s right %s = %s" % [
+    #    _get_cardinal(left), left_coords, _get_cardinal(mid), mid_coords, _get_cardinal(right), right_coords])
 
     if mid != CardinalDirections.CardinalDirection.NONE:
         _get_cardinal(mid).global_position = mid_coords
@@ -103,7 +103,7 @@ func _sync_robot(player: GridPlayer, robot: Robot) -> void:
 
         _get_cardinal(direction).global_position = up_coords
 
-        print_debug("[Compass] %s = %s" % [_get_cardinal(direction), up_coords])
+        # print_debug("[Compass] %s = %s" % [_get_cardinal(direction), up_coords])
 
     _inited = true
 
@@ -233,7 +233,7 @@ enum CompassCardinalLabelPosition {FAR_LEFT, LEFT, MID, RIGHT, FAR_RIGHT, UP, DO
 func _get_coordinates(label_position: CompassCardinalLabelPosition) -> Vector2:
     var rect: Rect2 = get_global_rect()
     var center: Vector2 = rect.get_center()
-    print_debug("[Compass] %s size" % rect.size)
+    # print_debug("[Compass] %s size" % rect.size)
     center.y += _vertical_label_offset
     center.x += _horizontal_label_offset
     # We need some space to edge
