@@ -3,6 +3,9 @@ class_name SignalBus
 
 @warning_ignore_start("unused_signal")
 
+# Settings
+signal on_update_handedness(handedness: AccessibilitySettings.Handedness)
+
 # Critical fails
 signal on_critical_level_corrupt(level_id: String)
 

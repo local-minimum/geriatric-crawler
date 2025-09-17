@@ -95,6 +95,9 @@ var _inv: Inventory.InventorySubscriber
 func _enter_tree() -> void:
     _inv = Inventory.InventorySubscriber.new()
 
+    if __SignalBus.on_update_handedness.connect(_handle_handedness) != OK:
+        push_error("Could not connect handedness change")
+
 func _ready() -> void:
     hide()
 
@@ -112,9 +115,6 @@ func _ready() -> void:
 
     if _game.on_fail_game.connect(_handle_fail_game) != OK:
         push_error("Could not connect to hacking failed")
-
-    if _game.settings.accessibility.on_update_handedness.connect(_handle_handedness) != OK:
-        push_error("Could not connect handedness change")
 
     _handle_handedness(AccessibilitySettings.handedness)
 

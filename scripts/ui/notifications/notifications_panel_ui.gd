@@ -7,11 +7,33 @@ class_name NotificationsPanelUI
 
 var _notification: PackedScene = preload("res://scenes/ui/notification.tscn")
 
+var _left_anchor: float
+var _right_anchor: float
+var _tween_from_direction: float = -1
+
+func _enter_tree() -> void:
+    _left_anchor = anchor_left
+    _right_anchor = anchor_right
+
+    if __SignalBus.on_update_handedness.connect(_handle_update_handedness) != OK:
+        push_error("Failed to connect update handedness")
+
 func _ready() -> void:
     if NotificationsManager.active_manager == null:
         NotificationsManager.await_manager(_handle_update_manager)
     else:
         _handle_update_manager(null, NotificationsManager.active_manager)
+
+func _handle_update_handedness(handedness: AccessibilitySettings.Handedness) -> void:
+    match handedness:
+        AccessibilitySettings.Handedness.LEFT:
+            anchor_right = 1 - _left_anchor
+            anchor_left = 1 - _right_anchor
+            _tween_from_direction = 1
+        AccessibilitySettings.Handedness.RIGHT:
+            anchor_left = _left_anchor
+            anchor_right = _right_anchor
+            _tween_from_direction = -1
 
 func _handle_update_manager(old_manager: NotificationsManager, new_manager: NotificationsManager) -> void:
     if old_manager != null:
@@ -43,8 +65,7 @@ func _handle_update_queue(queue_size: int) -> void:
         print_debug("[Notifications Panel UI] %s messages waiting" % queue_size)
 
 func _get_tween_offset() -> float:
-    # TODO: Offset side direction should be based on settings
-    return -1 * _tween_offset_width_factor * get_rect().size.x
+    return _tween_from_direction * _tween_offset_width_factor * get_rect().size.x
 
 func _show_message(mgs: NotificationsManager.NotificationData) -> void:
     var to_show: NotificationUI = _notification.instantiate()

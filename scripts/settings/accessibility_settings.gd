@@ -5,15 +5,13 @@ enum Handedness { LEFT, RIGHT }
 
 static var handedness: Handedness = Handedness.RIGHT
 
-signal on_update_handedness(handedness: Handedness)
-
 const _HANDEDNESS_KEY: String = "accessibility.handedness"
 
 @export var settings: GameSettingsProvider
 
 func _ready() -> void:
     handedness = _int_to_handedness(settings.get_settingi(_HANDEDNESS_KEY, handedness))
-    on_update_handedness.emit(handedness)
+    __SignalBus.on_update_handedness.emit(handedness)
 
 func _int_to_handedness(value: int) -> Handedness:
     match value:
@@ -26,4 +24,4 @@ func _int_to_handedness(value: int) -> Handedness:
 func set_handedness(value: Handedness) -> void:
     handedness = value
     settings.set_settingi(_HANDEDNESS_KEY, value)
-    on_update_handedness.emit(handedness)
+    __SignalBus.on_update_handedness.emit(handedness)

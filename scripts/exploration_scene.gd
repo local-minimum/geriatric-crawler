@@ -21,22 +21,19 @@ var level_ready: bool:
 
 func _enter_tree() -> void:
     instance = self
+    _view_split = exploration_view.anchor_right
+
+    if __SignalBus.on_update_handedness.connect(_handle_handedness_change) != OK:
+        push_error("Failed to connect on update handedness")
+
+    if __SignalBus.on_robot_death.connect(_handle_robot_death) != OK:
+        push_error("Failed to connect to robot death")
 
 func _exit_tree() -> void:
     if instance == self:
         instance = null
 
 func _ready() -> void:
-    _view_split = exploration_view.anchor_right
-
-    if settings.accessibility.on_update_handedness.connect(_handle_handedness_change) != OK:
-        push_error("Failed to connect on update handedness")
-
-    _handle_handedness_change(AccessibilitySettings.handedness)
-
-    if __SignalBus.on_robot_death.connect(_handle_robot_death) != OK:
-        push_error("Failed to connect to robot death")
-
     _disable_robot_death_effect()
 
 func _disable_robot_death_effect() -> void:
