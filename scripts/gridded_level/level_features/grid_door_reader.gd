@@ -104,11 +104,12 @@ func _sync_reader_display(_level: GridLevel = null) -> void:
 
 func _in_range(event_position: Vector3) -> bool:
     var level: GridLevel = door.get_level()
+    var player: GridPlayer = level.player
 
-    if level.player.cinematic:
+    if player.cinematic:
         return false
 
-    var player_coords: Vector3i = level.player.coordinates()
+    var player_coords: Vector3i = player.coordinates()
     var door_coords: Vector3i = door.coordinates()
     var door_side: CardinalDirections.CardinalDirection = door.get_side()
     var negative_coords: Vector3i = CardinalDirections.translate(door_coords, door_side)
@@ -122,8 +123,12 @@ func _in_range(event_position: Vector3) -> bool:
         if VectorUtils.manhattan_distance(negative_coords, player_coords) < VectorUtils.manhattan_distance(door_coords, player_coords):
             return false
 
-    return VectorUtils.all_dimensions_smaller(
-        (level.player.global_position - event_position).abs(),
+    var direction: Vector3 = event_position - player.global_position
+    var look_direction: Vector3 = CardinalDirections.direction_to_vector(player.look_direction)
+
+    var dot: float = direction.dot(look_direction.normalized())
+    return dot > 0.1 && VectorUtils.all_dimensions_smaller(
+        direction.abs(),
         level.node_size,
     )
 
