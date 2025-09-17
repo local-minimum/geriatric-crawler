@@ -1,8 +1,6 @@
 extends Control
 class_name InteractionUI
 
-@export var _3d_mode: bool = true
-
 @export var _color: Color = Color.AZURE
 @export var _line_width: float = 2
 @export var _font: Font
@@ -105,8 +103,7 @@ func _draw() -> void:
 func _get_key_id(idx: int) -> String: return "%s" % (idx % 10)
 
 func _draw_interactable_ui(key: String, interactable: Interactable) -> void:
-    # TODO: Add 2D support
-    var rect: Rect2 = _get_viewport_rect_with_3d_camera(interactable) if _3d_mode else Rect2()
+    var rect: Rect2 = _get_viewport_rect_with_3d_camera(interactable)
     print_debug("[Interaction UI] %s rect %s" % [key, rect])
 
     var top_left: Vector2 = get_global_transform().affine_inverse().basis_xform(rect.position)
