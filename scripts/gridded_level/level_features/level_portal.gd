@@ -11,6 +11,9 @@ class_name LevelPortal
 @export var fail_exit_notice_title: String = "NOTICE_AIRLOCK"
 @export var fail_exit_notice_message: String = "AIRLOCK_FAIL_TO_CYCLE"
 
+func get_grid_anchor_direction() -> CardinalDirections.CardinalDirection:
+    return CardinalDirections.invert(entry_lookdirection)
+
 func exit_level() -> void:
     _triggered = true
 

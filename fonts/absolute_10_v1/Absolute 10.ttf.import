@@ -1,0 +1,35 @@
+[remap]
+
+importer="font_data_dynamic"
+type="FontFile"
+uid="uid://bothlw1ybsqx1"
+path="res://.godot/imported/Absolute 10.ttf-0d0112bbfdbf3f8d764f23c6de39f382.fontdata"
+
+[deps]
+
+source_file="res://fonts/absolute_10_v1/Absolute 10.ttf"
+dest_files=["res://.godot/imported/Absolute 10.ttf-0d0112bbfdbf3f8d764f23c6de39f382.fontdata"]
+
+[params]
+
+Rendering=null
+antialiasing=1
+generate_mipmaps=false
+disable_embedded_bitmaps=true
+multichannel_signed_distance_field=false
+msdf_pixel_range=8
+msdf_size=48
+allow_system_fallback=true
+force_autohinter=false
+hinting=1
+subpixel_positioning=4
+keep_rounding_remainders=true
+oversampling=0.0
+Fallbacks=null
+fallbacks=[]
+Compress=null
+compress=true
+preload=[]
+language_support={}
+script_support={}
+opentype_features={}

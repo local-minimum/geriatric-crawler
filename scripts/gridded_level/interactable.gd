@@ -3,17 +3,42 @@ class_name Interactable
 
 @export var _collission_shape: CollisionShape3D
 
-var is_interactable: bool = true
+var is_interactable: bool = true:
+    set(value):
+        is_interactable = value
+        if value:
+            __SignalBus.on_allow_interactions.emit(self)
+        else:
+            __SignalBus.on_disallow_interactions.emit(self)
+
 var _hovered: bool
 var _showing_cursor_hand: bool
+
+func _exit_tree() -> void:
+    is_interactable = false
+
+func player_is_in_range() -> bool:
+    return _in_range(_collission_shape.global_position)
+
+func bounding_box() -> AABB:
+    if _collission_shape.shape is BoxShape3D:
+        var box: BoxShape3D = _collission_shape.shape
+        return AABB(_collission_shape.global_position, basis * box.size)
+
+    elif _collission_shape.shape is SphereShape3D:
+        var sphere: SphereShape3D = _collission_shape.shape
+        return AABB(_collission_shape.global_position, basis * (sphere.radius * Vector3i.ONE))
+
+    push_warning("Collision shape %s type not handled" % _collission_shape.shape)
+    return AABB(_collission_shape.global_position, Vector3i.ONE)
 
 func _in_range(_event_position: Vector3) -> bool:
     return true
 
-func _check_allow_interact() -> bool:
+func check_allow_interact() -> bool:
     return true
 
-func _execute_interation() -> void:
+func execute_interation() -> void:
     pass
 
 func _on_static_body_3d_input_event(
@@ -41,8 +66,8 @@ func _on_static_body_3d_input_event(
         var mouse_event: InputEventMouseButton = event
 
         if mouse_event.pressed && mouse_event.button_index == MOUSE_BUTTON_LEFT:
-            if _check_allow_interact():
-                _execute_interation()
+            if check_allow_interact():
+                execute_interation()
 
 func _on_static_body_3d_mouse_entered() -> void:
     _hovered = true

@@ -66,6 +66,10 @@ signal on_cinematic(entity: GridEntity, active: bool)
 signal on_change_node(feature: GridNodeFeature)
 signal on_change_anchor(feature: GridNodeFeature)
 
+# -> Interactable
+signal on_allow_interactions(interactable: Interactable)
+signal on_disallow_interactions(interactable: Interactable)
+
 # Battle
 signal on_entity_join_battle(entity: BattleEntity)
 signal on_entity_leave_battle(entity: BattleEntity, battle_end: bool)

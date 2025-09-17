@@ -104,15 +104,30 @@ func _sync_reader_display(_level: GridLevel = null) -> void:
 
 func _in_range(event_position: Vector3) -> bool:
     var level: GridLevel = door.get_level()
-    return (
-        !level.player.cinematic &&
-        VectorUtils.all_dimensions_smaller(
-            (level.player.global_position - event_position).abs(),
-            level.node_size,
-        )
+
+    if level.player.cinematic:
+        return false
+
+    var player_coords: Vector3i = level.player.coordinates()
+    var door_coords: Vector3i = door.coordinates()
+    var door_side: CardinalDirections.CardinalDirection = door.get_side()
+    var negative_coords: Vector3i = CardinalDirections.translate(door_coords, door_side)
+
+    # print_debug("[Door Reader] Player %s Door %s (%s) Negative %s" % [player_coords, door_coords, CardinalDirections.name(door_side), negative_coords])
+
+    if is_negative_side:
+        if VectorUtils.manhattan_distance(negative_coords, player_coords) > VectorUtils.manhattan_distance(door_coords, player_coords):
+            return false
+    else:
+        if VectorUtils.manhattan_distance(negative_coords, player_coords) < VectorUtils.manhattan_distance(door_coords, player_coords):
+            return false
+
+    return VectorUtils.all_dimensions_smaller(
+        (level.player.global_position - event_position).abs(),
+        level.node_size,
     )
 
-func _execute_interation() -> void:
+func execute_interation() -> void:
     if door.lock_state == GridDoor.LockState.LOCKED:
         door.attempt_door_unlock(camera_puller)
     else:
