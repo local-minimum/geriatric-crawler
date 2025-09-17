@@ -109,8 +109,8 @@ func _draw_interactable_ui(key: String, interactable: Interactable) -> void:
     var rect: Rect2 = _get_viewport_rect_with_3d_camera(interactable) if _3d_mode else Rect2()
     print_debug("[Interaction UI] %s rect %s" % [key, rect])
 
-    var top_left: Vector2 = get_canvas_transform().affine_inverse().basis_xform(rect.position)
-    var lower_right: Vector2 = get_canvas_transform().affine_inverse().basis_xform(rect.end)
+    var top_left: Vector2 = get_global_transform().affine_inverse().basis_xform(rect.position)
+    var lower_right: Vector2 = get_global_transform().affine_inverse().basis_xform(rect.end)
     var top_right: Vector2 = Vector2(lower_right.x, top_left.y)
     var lower_left: Vector2 = Vector2(top_left.x, lower_right.y)
 
@@ -141,8 +141,6 @@ func _draw_interactable_ui(key: String, interactable: Interactable) -> void:
         _color,
     )
 
-
-
 func _get_viewport_rect_with_3d_camera(interactable: Interactable) -> Rect2:
     var camera3d: Camera3D = get_viewport().get_camera_3d()
 
@@ -153,7 +151,7 @@ func _get_viewport_rect_with_3d_camera(interactable: Interactable) -> Rect2:
     for idx: int in range(8):
         var corner_global: Vector3 = box.get_endpoint(idx)
         var pos: Vector2 = camera3d.unproject_position(corner_global)
-        print_debug("[Interaction UI] Corner %s -> %s" % [corner_global, pos])
+        # print_debug("[Interaction UI] Corner %s -> %s" % [corner_global, pos])
 
         if idx == 0:
             min_pos = pos
@@ -164,7 +162,8 @@ func _get_viewport_rect_with_3d_camera(interactable: Interactable) -> Rect2:
             max_pos.x = max(pos.x, max_pos.x)
             max_pos.y = max(pos.y, max_pos.y)
 
-    return Rect2((min_pos + max_pos) * 0.5, max_pos - min_pos)
+    var r_size: Vector2 = max_pos - min_pos
+    return Rect2(min_pos, r_size)
 
 func _calculate_within_reach() -> Array[Interactable]:
     return _interactables.filter(

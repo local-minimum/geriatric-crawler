@@ -33,7 +33,7 @@ func bounding_box() -> AABB:
     else:
         push_warning("Collision shape %s type not handled" % _collission_shape.shape)
 
-    return AABB(_collission_shape.global_position, size)
+    return AABB(_collission_shape.global_position - size * 0.5, size)
 
 func _in_range(_event_position: Vector3) -> bool:
     return true
