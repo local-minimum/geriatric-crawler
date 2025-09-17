@@ -34,6 +34,7 @@ func save_key() -> String:
 
 func trigger(entity: GridEntity, movement: Movement.MovementType) -> void:
     if _triggered || _inv.inventory == null:
+
         return
 
     super.trigger(entity, movement)
@@ -43,19 +44,16 @@ func trigger(entity: GridEntity, movement: Movement.MovementType) -> void:
 
 
 func _handle_loooting(entity: GridEntity) -> void:
-    if _looting || entity is not GridPlayer || entity.coordinates() != coordinates():
+    if _looting || _looted || entity is not GridPlayer || entity.coordinates() != coordinates():
         return
 
     _looting = true
 
-    # TODO: Do fancy stuff!
     await get_tree().create_timer(0.5).timeout
     _set_open_graphics()
     await get_tree().create_timer(0.2).timeout
 
-
     _looted = _inv.inventory.add_many_to_inventory(_contents)
-
 
     var key_ring: KeyRing = get_level().player.key_ring
     for id: String in _contents:
