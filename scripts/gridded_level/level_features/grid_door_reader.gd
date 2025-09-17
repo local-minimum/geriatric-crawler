@@ -1,4 +1,4 @@
-extends Node3D
+extends Interactable
 class_name GridDoorReader
 
 @export var door: GridDoor
@@ -6,8 +6,6 @@ class_name GridDoorReader
 @export var is_negative_side: bool
 
 @export var mesh: MeshInstance3D
-
-@export var collision_shape: CollisionShape3D
 
 @export var display_material_idx: int = 2
 
@@ -33,9 +31,8 @@ class_name GridDoorReader
 
 @export var camera_puller: CameraPuller
 
-var _check_click: bool
-
 func _ready() -> void:
+    is_interactable = false
     if door.on_door_state_chaged.connect(_sync_reader_display) != OK:
         print_debug("%s could not connect to door state changes" % self)
 
@@ -57,14 +54,14 @@ func _get_locked_texture() -> Texture:
 func _get_needed_texture() -> Texture:
     match door.get_opening_automation(self):
         GridDoor.OpenAutomation.NONE:
-            _check_click = false
+            is_interactable = false
             match door.lock_state:
                 GridDoor.LockState.OPEN:
                     return open_door_tex
                 _:
                     return no_entry_door_tex
         GridDoor.OpenAutomation.WALK_INTO:
-            _check_click = true
+            is_interactable = true
             match door.lock_state:
                 GridDoor.LockState.LOCKED:
                     return _get_locked_texture()
@@ -73,13 +70,13 @@ func _get_needed_texture() -> Texture:
         GridDoor.OpenAutomation.PROXIMITY:
             match door.lock_state:
                 GridDoor.LockState.LOCKED:
-                    _check_click = true
+                    is_interactable = true
                     return _get_locked_texture()
                 _:
-                    _check_click = false
+                    is_interactable = false
                     return automatic_door_tex
         GridDoor.OpenAutomation.INTERACT:
-            _check_click = true
+            is_interactable = true
             match door.lock_state:
                 GridDoor.LockState.LOCKED:
                     return _get_locked_texture()
@@ -105,56 +102,18 @@ func _sync_reader_display(_level: GridLevel = null) -> void:
 
     mesh.set_surface_override_material(display_material_idx, mat)
 
-var _hovered: bool
-var _showing_cursor_hand: bool
-
-func _get_in_range(event_position: Vector3) -> bool:
+func _in_range(event_position: Vector3) -> bool:
     var level: GridLevel = door.get_level()
     return (
         !level.player.cinematic &&
         VectorUtils.all_dimensions_smaller(
-            (level.player.position - event_position).abs(),
+            (level.player.global_position - event_position).abs(),
             level.node_size,
         )
     )
 
-func _on_static_body_3d_input_event(
-    _camera: Node,
-    event: InputEvent,
-    event_position: Vector3,
-    _normal: Vector3,
-    _shape_idx: int,
-) -> void:
-    if !_check_click:
-        return
-
-    if _get_in_range(event_position):
-        if !_showing_cursor_hand:
-            Input.set_default_cursor_shape(Input.CURSOR_POINTING_HAND)
-            _showing_cursor_hand = true
+func _execute_interation() -> void:
+    if door.lock_state == GridDoor.LockState.LOCKED:
+        door.attempt_door_unlock(camera_puller)
     else:
-        if _showing_cursor_hand:
-            Input.set_default_cursor_shape(Input.CURSOR_ARROW)
-            _showing_cursor_hand = false
-
-        return
-
-    if event is InputEventMouseButton && !event.is_echo():
-        var mouse_event: InputEventMouseButton = event
-
-        if mouse_event.pressed && mouse_event.button_index == MOUSE_BUTTON_LEFT:
-            if door.lock_state == GridDoor.LockState.LOCKED:
-                door.attempt_door_unlock(camera_puller)
-            else:
-                door.toggle_door()
-
-func _on_static_body_3d_mouse_entered() -> void:
-    _hovered = true
-    if _check_click && _get_in_range(global_position):
-        Input.set_default_cursor_shape(Input.CURSOR_POINTING_HAND)
-        _showing_cursor_hand = true
-
-func _on_static_body_3d_mouse_exited() -> void:
-    _hovered = false
-    _showing_cursor_hand = false
-    Input.set_default_cursor_shape(Input.CURSOR_ARROW)
+        door.toggle_door()

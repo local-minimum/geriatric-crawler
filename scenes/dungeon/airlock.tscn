@@ -15,9 +15,10 @@ transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0, 
 [node name="Airlock Event" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1.15391)
 
-[node name="AirlockButton" type="Node" parent="." node_paths=PackedStringArray("portal")]
+[node name="AirlockButton" type="Node3D" parent="." node_paths=PackedStringArray("portal", "_collission_shape")]
 script = ExtResource("3_6weax")
 portal = NodePath("..")
+_collission_shape = NodePath("../StaticBody3D/CollisionShape3D")
 metadata/_custom_type_script = "uid://ca24gxv56p7a"
 
 [node name="StaticBody3D" type="StaticBody3D" parent="."]
@@ -27,3 +28,5 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2513, 1.26593)
 shape = SubResource("BoxShape3D_6weax")
 
 [connection signal="input_event" from="StaticBody3D" to="AirlockButton" method="_on_static_body_3d_input_event"]
+[connection signal="mouse_entered" from="StaticBody3D" to="AirlockButton" method="_on_static_body_3d_mouse_entered"]
+[connection signal="mouse_exited" from="StaticBody3D" to="AirlockButton" method="_on_static_body_3d_mouse_exited"]
