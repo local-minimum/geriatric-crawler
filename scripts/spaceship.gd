@@ -55,6 +55,8 @@ func _sync_rooms() -> void:
         else:
             rooms[r].deactivate()
 
+    __SignalBus.on_change_room_complete.emit(room)
+
 func _move_to_room(new_room: Room) -> void:
     # TODO: Transition to no-room if needed
 

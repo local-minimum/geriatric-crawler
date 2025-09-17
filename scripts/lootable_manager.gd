@@ -1,6 +1,7 @@
 class_name LootableManager
 
 enum LootClass {
+    NONE,
     GENERAL,
     HACKING,
     ELEMENT,

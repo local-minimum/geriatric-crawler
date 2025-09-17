@@ -98,8 +98,8 @@ func pre_simulate(ticks: int) -> void:
     for _tick: int in range(ticks):
         tick()
 
-func minimum_price() -> int:
-    return ceili(price * min_unit)
+func minimum_price(limit: float = -1) -> int:
+    return ceili(price * (min_unit if limit <= 0 else minf(min_unit, limit)))
 
 func place_order(volume: float, price_cap: int, remainder: Array[float]) -> int:
     remainder.clear()

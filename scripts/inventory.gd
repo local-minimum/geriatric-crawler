@@ -16,6 +16,8 @@ class InventorySubscriber:
         if __SignalBus.on_deactivate_inventory.connect(_handle_deactivate_inventory) != OK:
             push_error("Failed to connect to deactivate inventory")
 
+        inventory = Inventory.active_inventory
+
     func _handle_activate_inventory(inv: Inventory) -> void:
         if inventory == null || !_persist:
             inventory = inv

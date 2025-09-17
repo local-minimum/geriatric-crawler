@@ -7,6 +7,7 @@ class_name StockpileUI
 @export var _trend_arrow: TextureRect
 @export var _price: Label
 @export var _graph: LineGraph
+@export var _need: Label
 @export var _buy_button: Button
 @export var _sell_button: Button
 
@@ -50,14 +51,32 @@ func set_sell_state(sell_callback: Variant = null) -> void:
         _sell_callback = null
         _sell_button.visible = false
 
+func update_limited_buy(limited_buy: float = -1) -> void:
+    if limited_buy < 0:
+        _need.visible = false
+    elif limited_buy == 0:
+        _need.visible = true
+        _need.text = tr("ALL_BOUGHT")
+    else:
+        _need.visible = true
+        if roundf(limited_buy) == limited_buy:
+            _need.text = tr("NEED_AMOUNT").format({"amount": "%s %s" % [roundi(limited_buy), LootableManager.unit(item_id)]})
+        else:
+            _need.text = tr("NEED_AMOUNT").format({"amount": "%.2f %s" % [limited_buy, LootableManager.unit(item_id)]})
+
+func set_need_text(text: String) -> void:
+    _need.text = text
+    _need.visible = !text.is_empty()
+
 @warning_ignore_start("shadowed_variable")
-func track_stock(item_id: String, market: TradingMarket, buy_callback: Variant = null, sell_callback: Variant = null) -> void:
+func track_stock(item_id: String, market: TradingMarket, limited_buy: float = -1) -> void:
     @warning_ignore_restore("shadowed_variable")
     _market = market
     self.item_id = item_id
 
-    set_buy_state(buy_callback)
-    set_sell_state(sell_callback)
+    set_buy_state()
+    set_sell_state()
+    update_limited_buy(limited_buy)
 
     _title.text = LootableManager.translate(item_id).to_upper()
 

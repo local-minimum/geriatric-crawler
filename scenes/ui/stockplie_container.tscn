@@ -6,7 +6,7 @@
 [ext_resource type="Script" uid="uid://bowpiyq67d4o1" path="res://scripts/ui/line_graph.gd" id="3_7ur2b"]
 [ext_resource type="Texture2D" uid="uid://bm8p8oa78pasu" path="res://sprites/kenny game icons/arrowRight.png" id="3_y2ol5"]
 
-[node name="Stockplie Container" type="PanelContainer" node_paths=PackedStringArray("_title", "_average", "_trend", "_trend_arrow", "_price", "_graph", "_buy_button", "_sell_button")]
+[node name="Stockplie Container" type="PanelContainer" node_paths=PackedStringArray("_title", "_average", "_trend", "_trend_arrow", "_price", "_graph", "_need", "_buy_button", "_sell_button")]
 theme = ExtResource("1_7ur2b")
 script = ExtResource("1_2aavq")
 _title = NodePath("MarginContainer/VBoxContainer/Summary Row/Stockpile Name")
@@ -15,6 +15,7 @@ _trend = NodePath("MarginContainer/VBoxContainer/Summary Row/Trend")
 _trend_arrow = NodePath("MarginContainer/VBoxContainer/Summary Row/MarginContainer/Trend Direction")
 _price = NodePath("MarginContainer/VBoxContainer/Summary Row/Price")
 _graph = NodePath("MarginContainer/VBoxContainer/Graph")
+_need = NodePath("MarginContainer/VBoxContainer/Actions/Need Label")
 _buy_button = NodePath("MarginContainer/VBoxContainer/Actions/Buy Button")
 _sell_button = NodePath("MarginContainer/VBoxContainer/Actions/Sell Button")
 _up_arrow = ExtResource("2_y2ol5")
@@ -73,6 +74,12 @@ metadata/_custom_type_script = "uid://bowpiyq67d4o1"
 [node name="Actions" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 alignment = 2
+
+[node name="Need Label" type="Label" parent="MarginContainer/VBoxContainer/Actions"]
+auto_translate_mode = 2
+layout_mode = 2
+theme_type_variation = &"HeaderSmall"
+text = "NEED: 5.0kg"
 
 [node name="Sell Button" type="Button" parent="MarginContainer/VBoxContainer/Actions"]
 auto_translate_mode = 1

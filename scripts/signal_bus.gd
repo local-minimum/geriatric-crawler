@@ -18,6 +18,7 @@ signal on_update_rent(rent: int)
 # Spaceship
 signal on_finalize_loadout(loadout: Dictionary)
 signal on_before_deploy(level_id: String, robot: RobotData, duration_days: int, insured: bool)
+signal on_change_room_complete(new_room: Spaceship.Room)
 
 # Trading market
 signal on_market_updated(market: TradingMarket)

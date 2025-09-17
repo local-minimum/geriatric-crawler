@@ -253,3 +253,8 @@ CURRENT_PRICE,Current price,Nuvarande pris
 TOTAL,Total,Total
 ACTION_BUY,Buy,Köp
 ACTION_SELL,Sell,Sälj
+ALL_BOUGHT,All bought,Allt köpt
+NEED_AMOUNT,Need {amount},Behöver {amount}
+NO_COMMODITY_AVAILABLE,No commodity available for trading,Inga varor är tillgängliga för handel
+ALL_COMMODITIES_BOUGHT,All available commodities bought,Alla tillgängliga varor uppköpta
+PROCESSING_ORDER,Processing order,Bearbetar order

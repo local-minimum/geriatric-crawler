@@ -33,6 +33,8 @@ ITEM_ELEM_SI,silicon,kisel
 ITEM_ELEM_SI_PL,silicon,kisel
 ITEM_ELEM_SN,tin,tenn
 ITEM_ELEM_SN_PL,tin,tenn
+ITEM_ELEM_TI,titanium,titan
+ITEM_ELEM_TI_PL,titanium,titan
 ITEM_COMP_CATEGORY,component,komponent
 ITEM_COMP_CATEGORY_PL,components,komponenter
 ITEM_COMP_CPU,CPU,CPU
