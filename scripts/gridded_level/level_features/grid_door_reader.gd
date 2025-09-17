@@ -114,7 +114,7 @@ func _in_range(event_position: Vector3) -> bool:
     var door_side: CardinalDirections.CardinalDirection = door.get_side()
     var negative_coords: Vector3i = CardinalDirections.translate(door_coords, door_side)
 
-    # print_debug("[Door Reader] Player %s Door %s (%s) Negative %s" % [player_coords, door_coords, CardinalDirections.name(door_side), negative_coords])
+    print_debug("[Door Reader] Player %s Door %s (%s) Negative %s" % [player_coords, door_coords, CardinalDirections.name(door_side), negative_coords])
 
     if is_negative_side:
         if VectorUtils.manhattan_distance(negative_coords, player_coords) > VectorUtils.manhattan_distance(door_coords, player_coords):

@@ -8,6 +8,7 @@ class_name InteractionUI
 @export var _font: Font
 @export var _font_size: int = 22
 @export_range(0, 1) var _char_gap_position: float = 0.3
+@export_range(-2, 2) var _char_y_offset: float = 0.3
 
 @export var _auto_end: bool = true
 
@@ -106,6 +107,7 @@ func _get_key_id(idx: int) -> String: return "%s" % (idx % 10)
 func _draw_interactable_ui(key: String, interactable: Interactable) -> void:
     # TODO: Add 2D support
     var rect: Rect2 = _get_viewport_rect_with_3d_camera(interactable) if _3d_mode else Rect2()
+    print_debug("[Interaction UI] %s rect %s" % [key, rect])
 
     var top_left: Vector2 = get_canvas_transform().affine_inverse().basis_xform(rect.position)
     var lower_right: Vector2 = get_canvas_transform().affine_inverse().basis_xform(rect.end)
@@ -129,7 +131,7 @@ func _draw_interactable_ui(key: String, interactable: Interactable) -> void:
         _line_width,
     )
 
-    var char_center: Vector2 = lerp(top_gap_start, top_gap_end, _char_gap_position)
+    var char_center: Vector2 = lerp(top_gap_start, top_gap_end, _char_gap_position) + Vector2.UP * _font_size * _char_y_offset
 
     draw_char(
         _font,
@@ -149,9 +151,9 @@ func _get_viewport_rect_with_3d_camera(interactable: Interactable) -> Rect2:
     var max_pos: Vector2
 
     for idx: int in range(8):
-        var global_point: Vector3 = box.get_endpoint(idx)
-
-        var pos: Vector2 = camera3d.unproject_position(global_point)
+        var corner_global: Vector3 = box.get_endpoint(idx)
+        var pos: Vector2 = camera3d.unproject_position(corner_global)
+        print_debug("[Interaction UI] Corner %s -> %s" % [corner_global, pos])
 
         if idx == 0:
             min_pos = pos

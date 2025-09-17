@@ -21,16 +21,19 @@ func player_is_in_range() -> bool:
     return _in_range(_collission_shape.global_position)
 
 func bounding_box() -> AABB:
+    var size: Vector3 = Vector3.ONE
+
     if _collission_shape.shape is BoxShape3D:
         var box: BoxShape3D = _collission_shape.shape
-        return AABB(_collission_shape.global_position, basis * box.size)
+        size = basis * box.size
 
     elif _collission_shape.shape is SphereShape3D:
         var sphere: SphereShape3D = _collission_shape.shape
-        return AABB(_collission_shape.global_position, basis * (sphere.radius * Vector3i.ONE))
+        size = basis * (sphere.radius * Vector3i.ONE)
+    else:
+        push_warning("Collision shape %s type not handled" % _collission_shape.shape)
 
-    push_warning("Collision shape %s type not handled" % _collission_shape.shape)
-    return AABB(_collission_shape.global_position, Vector3i.ONE)
+    return AABB(_collission_shape.global_position, size)
 
 func _in_range(_event_position: Vector3) -> bool:
     return true
