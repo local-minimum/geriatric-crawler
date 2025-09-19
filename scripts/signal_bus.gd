@@ -4,6 +4,7 @@ class_name SignalBus
 @warning_ignore_start("unused_signal")
 
 # Settings
+signal on_update_input_mode(method: BindingHints.InputMode)
 signal on_update_handedness(handedness: AccessibilitySettings.Handedness)
 
 # Critical fails

@@ -1,0 +1,57 @@
+[gd_scene load_steps=17 format=3 uid="uid://brs7iebucvyh5"]
+
+[ext_resource type="Script" uid="uid://dn88c6xiunk4h" path="res://scripts/convenience/binding_hints.gd" id="1_ee3mc"]
+[ext_resource type="Texture2D" uid="uid://csqsnn3cea1g7" path="res://sprites/icons/mouse-left.png" id="2_rep5b"]
+[ext_resource type="Texture2D" uid="uid://ddl4ienmr8um2" path="res://sprites/kenny game icons/buttonA.png" id="2_t3gm5"]
+[ext_resource type="Texture2D" uid="uid://ds6yn7qnrcnap" path="res://sprites/kenny game icons/buttonB.png" id="3_ccxro"]
+[ext_resource type="Texture2D" uid="uid://cr5ckiivp4g1a" path="res://sprites/icons/mouse-right.png" id="3_ttncg"]
+[ext_resource type="Texture2D" uid="uid://d3sqnrrs6wl0p" path="res://sprites/icons/mouse-mid.png" id="4_ddjht"]
+[ext_resource type="Texture2D" uid="uid://bmtbqcen2qo2" path="res://sprites/kenny game icons/buttonX.png" id="4_wqhge"]
+[ext_resource type="Texture2D" uid="uid://cgwlshrla7djd" path="res://sprites/kenny game icons/buttonY.png" id="5_ydeka"]
+[ext_resource type="Texture2D" uid="uid://1hh3lh5fsx2w" path="res://sprites/kenny game icons/buttonL1.png" id="6_gup54"]
+[ext_resource type="Texture2D" uid="uid://6rc3o3rso4or" path="res://sprites/kenny game icons/buttonR1.png" id="7_sea6m"]
+[ext_resource type="Texture2D" uid="uid://cqh1ptuno0sad" path="res://sprites/kenny game icons/buttonL2.png" id="8_2176u"]
+[ext_resource type="Texture2D" uid="uid://cllsbtg32c4f7" path="res://sprites/icons/d-pad-up.png" id="8_gup54"]
+[ext_resource type="Texture2D" uid="uid://dog742kycjc1r" path="res://sprites/kenny game icons/buttonR2.png" id="9_rep5b"]
+[ext_resource type="Texture2D" uid="uid://cpapmxukqtfjs" path="res://sprites/icons/d-pad-down.png" id="9_sea6m"]
+[ext_resource type="Texture2D" uid="uid://201e7h8882cl" path="res://sprites/icons/d-pad-left.png" id="10_2176u"]
+[ext_resource type="Texture2D" uid="uid://b538ckdfnstfe" path="res://sprites/icons/d-pad-right.png" id="11_rep5b"]
+
+[node name="BindingHints" type="Node"]
+script = ExtResource("1_ee3mc")
+_mouse_button_icons = Dictionary[int, Texture]({
+1: ExtResource("2_rep5b"),
+2: ExtResource("3_ttncg"),
+3: ExtResource("4_ddjht")
+})
+_mouse_button_translation_keys = Dictionary[int, String]({
+4: "MOUSE_MID_UP",
+5: "MOUSE_MID_DOWN",
+6: "MOUSE_MID_LEFT",
+7: "MOUSE_MID_RIGHT"
+})
+_joypad_button_icons = Dictionary[int, Texture]({
+0: ExtResource("2_t3gm5"),
+1: ExtResource("3_ccxro"),
+2: ExtResource("4_wqhge"),
+3: ExtResource("5_ydeka"),
+9: ExtResource("6_gup54"),
+10: ExtResource("7_sea6m"),
+11: ExtResource("8_gup54"),
+12: ExtResource("9_sea6m"),
+13: ExtResource("10_2176u"),
+14: ExtResource("11_rep5b")
+})
+_joy_axis_icons = Dictionary[int, Texture]({
+4: ExtResource("8_2176u"),
+5: ExtResource("9_rep5b")
+})
+_joy_axis_translation_keys = Dictionary[int, String]({
+0: "JOY_AXIS_LEFT_X",
+1: "JOY_AXIS_LEFT_Y",
+2: "JOY_AXIS_RIGHT_X",
+3: "JOY_AXIS_RIGHT_Y",
+4: "JOY_AXIS_LEFT_TRIGGER",
+5: "JOY_AXIS_RIGHT_TRIGGER"
+})
+metadata/_custom_type_script = "uid://dn88c6xiunk4h"

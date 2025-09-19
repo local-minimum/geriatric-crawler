@@ -18,6 +18,7 @@ var _requested: bool
 var _moving: bool
 var _active: Dictionary[String, Interactable]
 var _cinematic: bool
+var _mode: BindingHints.InputMode = BindingHints.InputMode.KEYBOARD_AND_MOUSE
 
 func _enter_tree() -> void:
     if __SignalBus.on_allow_interactions.connect(_handle_allow_interaction) != OK:
@@ -34,6 +35,16 @@ func _enter_tree() -> void:
 
     if __SignalBus.on_cinematic.connect(_handle_cinematic) != OK:
         push_error("Failed to connect cinematic")
+
+    if __SignalBus.on_update_input_mode.connect(_handle_update_input_mode) != OK:
+        push_error("Failed to connect update input mode")
+
+func _ready() -> void:
+    _mode = __BindingHints.mode
+
+func _handle_update_input_mode(mode: BindingHints.InputMode) -> void:
+    _mode = mode
+    queue_redraw()
 
 func _handle_cinematic(entity: GridEntity, cinematic: bool) -> void:
     if entity is not GridPlayer:
@@ -100,20 +111,29 @@ func _draw() -> void:
 
         idx += 1
 
-func _get_key_id(idx: int) -> String: return "%s" % (idx % 10)
+func _get_key_id(idx: int) -> String: return "hot_key_%s" % idx
 
 func _draw_interactable_ui(key: String, interactable: Interactable) -> void:
     var rect: Rect2 = _get_viewport_rect_with_3d_camera(interactable)
-    print_debug("[Interaction UI] %s rect %s" % [key, rect])
+    var hint: Variant = __BindingHints.get_hint(key)
+
+    var gap_size: int = 1
+    var hint_text: String = ""
+    if hint is String:
+        hint_text = hint
+        gap_size = hint_text.length()
+
+    print_debug("[Interaction UI] %s -> %s rect %s" % [key, hint, rect])
 
     var top_left: Vector2 = get_global_transform().affine_inverse().basis_xform(rect.position)
     var lower_right: Vector2 = get_global_transform().affine_inverse().basis_xform(rect.end)
     var top_right: Vector2 = Vector2(lower_right.x, top_left.y)
     var lower_left: Vector2 = Vector2(top_left.x, lower_right.y)
 
-    var top_gap_start: Vector2 = lerp(top_left, top_right, 0.1)
-    var top_gap_end: Vector2 = top_gap_start + Vector2.RIGHT * _font_size
+    var top_gap_start: Vector2 = top_left + Vector2.RIGHT * _font_size * 0.5
+    var top_gap_end: Vector2 = top_gap_start + Vector2.RIGHT * _font_size * gap_size
     top_gap_end.x = minf(top_right.x, top_gap_end.x)
+
 
     draw_polyline(
         [
@@ -128,15 +148,26 @@ func _draw_interactable_ui(key: String, interactable: Interactable) -> void:
         _line_width,
     )
 
-    var char_center: Vector2 = lerp(top_gap_start, top_gap_end, _char_gap_position) + Vector2.UP * _font_size * _char_y_offset
+    var text_start: Vector2 = lerp(top_gap_start, top_gap_end, _char_gap_position) + Vector2.UP * _font_size * _char_y_offset
 
-    draw_char(
-        _font,
-        char_center,
-        key,
-        _font_size,
-        _color,
-    )
+    if hint_text.is_empty() && hint is Texture2D:
+        var tex: Texture2D = hint
+        draw_texture_rect(
+            tex,
+            Rect2(text_start, Vector2(_font_size, _font_size)),
+            false,
+            _color
+        )
+    else:
+        draw_string(
+            _font,
+            text_start,
+            hint_text if !hint_text.is_empty() else key,
+            HORIZONTAL_ALIGNMENT_LEFT,
+            -1,
+            _font_size,
+            _color,
+        )
 
 func _get_viewport_rect_with_3d_camera(interactable: Interactable) -> Rect2:
     var camera3d: Camera3D = get_viewport().get_camera_3d()
@@ -178,7 +209,7 @@ func _input(event: InputEvent) -> void:
 
     elif _interacting:
         for idx: int in range(1, _max_interactables + 1):
-            var key: String = "hot_key_%s" % idx
+            var key: String = _get_key_id(idx)
             if event.is_action_pressed(key):
                 _activate_hotkey_interaction(idx)
                 break
