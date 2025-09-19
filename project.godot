@@ -12,7 +12,7 @@ config_version=5
 
 config/name="GeriatricCrawler"
 config/version="0.0.2"
-run/main_scene="uid://5mvkmlsl4h3x"
+run/main_scene="uid://bup7ryaeef1f"
 config/use_custom_user_dir=true
 config/custom_user_dir_name="Unknown Incubator/Geriatric Crawler"
 config/features=PackedStringArray("4.4", "Forward Plus")
