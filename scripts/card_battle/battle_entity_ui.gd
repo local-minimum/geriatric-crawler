@@ -117,8 +117,8 @@ func _handle_set_targeted(player: BattlePlayer, target: BattleEntity) -> void:
 
     set_target()
 
-func _handle_reset_targeted(player: BattlePlayer, target: BattleEntity) -> void:
-    if target != _entity || player != _selection_player:
+func _handle_reset_targeted(_player: BattlePlayer, target: BattleEntity) -> void:
+    if target != _entity:
         return
 
     if selected:
