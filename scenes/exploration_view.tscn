@@ -60,5 +60,6 @@ mouse_filter = 2
 script = ExtResource("4_0mkka")
 _color = Color(0, 0.813477, 0.826954, 1)
 _font = ExtResource("5_fclip")
-_char_y_offset = -0.4
+_hint_y_offset = -0.4
+_text_hint_x_offset = 6
 metadata/_custom_type_script = "uid://bvqfk07xb2q3f"

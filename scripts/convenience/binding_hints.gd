@@ -40,8 +40,10 @@ func _get_event_mode(event: InputEvent) -> InputMode:
 func _get_event_hint(evt: InputEvent) -> Variant:
     if evt is InputEventKey:
         var key: InputEventKey = evt
-        print_debug("[Binding Hints] Event Key %s / %s (%s)-> %s" % [key.keycode, key.key_label, key, OS.get_keycode_string(key.keycode)])
-        return _key_icons.get(key.keycode, OS.get_keycode_string(key.key_label))
+        var keycode: Key = DisplayServer.keyboard_get_keycode_from_physical(key.physical_keycode)
+        if _key_icons.has(keycode):
+            return _key_icons[keycode]
+        return OS.get_keycode_string(keycode)
 
     if evt is InputEventMouseButton:
         var mouse_btn: InputEventMouseButton = evt

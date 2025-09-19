@@ -5,11 +5,10 @@ class_name InteractionUI
 @export var _line_width: float = 2
 @export var _font: Font
 @export var _font_size: int = 22
-@export_range(0, 1) var _char_gap_position: float = 0.3
-@export_range(-2, 2) var _char_y_offset: float = 0.3
-
+@export var _gap_padding: int = 2
+@export_range(-2, 2) var _hint_y_offset: float = 0.3
+@export var _text_hint_x_offset: int = 5
 @export var _auto_end: bool = true
-
 @export_range(1, 10) var _max_interactables: int = 5
 
 var _interactables: Array[Interactable]
@@ -131,7 +130,7 @@ func _draw_interactable_ui(key: String, interactable: Interactable) -> void:
     var lower_left: Vector2 = Vector2(top_left.x, lower_right.y)
 
     var top_gap_start: Vector2 = top_left + Vector2.RIGHT * _font_size * 0.5
-    var top_gap_end: Vector2 = top_gap_start + Vector2.RIGHT * _font_size * gap_size
+    var top_gap_end: Vector2 = top_gap_start + Vector2.RIGHT * (_font_size * gap_size + 2 * _gap_padding)
     top_gap_end.x = minf(top_right.x, top_gap_end.x)
 
 
@@ -148,22 +147,24 @@ func _draw_interactable_ui(key: String, interactable: Interactable) -> void:
         _line_width,
     )
 
-    var text_start: Vector2 = lerp(top_gap_start, top_gap_end, _char_gap_position) + Vector2.UP * _font_size * _char_y_offset
+    var text_start: Vector2 = top_gap_start + Vector2.RIGHT * _gap_padding + Vector2.UP * _font_size * _hint_y_offset
 
     if hint_text.is_empty() && hint is Texture2D:
         var tex: Texture2D = hint
+        var r: Rect2 = Rect2(text_start + _font_size * Vector2.UP, Vector2(_font_size, _font_size))
         draw_texture_rect(
             tex,
-            Rect2(text_start, Vector2(_font_size, _font_size)),
+            r,
             false,
             _color
         )
     else:
+        text_start.x += _text_hint_x_offset
         draw_string(
             _font,
             text_start,
             hint_text if !hint_text.is_empty() else key,
-            HORIZONTAL_ALIGNMENT_LEFT,
+            HORIZONTAL_ALIGNMENT_CENTER,
             -1,
             _font_size,
             _color,
