@@ -51,6 +51,15 @@ func _on_selection_change() -> void:
 
     if selections.size() == 1:
         var selection: Node = selections[0]
+        var grid_level: GridLevel = GridLevel.find_level_parent(selection)
+
+        if selection is LevelZone:
+            print_debug("[Grid Level Digger] Selected a zone: %s" % selection.name)
+            var zone: LevelZone = selection
+            if zone != panel.zones.selected_zone:
+                panel.set_level(grid_level)
+                panel.zones.selected_zone = zone
+            return
 
         var grid_anchor: GridAnchor = GridAnchor.find_anchor_parent(selection)
         if grid_anchor != null:
@@ -62,7 +71,6 @@ func _on_selection_change() -> void:
             panel.set_grid_node(grid_node)
             return
 
-        var grid_level: GridLevel = GridLevel.find_level_parent(selection)
         if grid_level != null:
             panel.set_level(grid_level)
             return
@@ -71,7 +79,6 @@ func _on_selection_change() -> void:
         panel.set_not_selected_level()
         return
 
-    # TODO: Multi select features
     panel.set_not_selected_level()
     if selections.size():
         print_debug("Multiple items selected (%s)" % selections.size())

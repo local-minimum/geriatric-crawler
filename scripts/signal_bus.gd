@@ -51,6 +51,11 @@ signal on_robot_loaded(robot: Robot)
 signal on_change_player(level: GridLevel, player: GridPlayer)
 signal on_level_loaded(level: GridLevel)
 
+# -> Zone
+signal on_enter_zone(zone: LevelZone, entity: GridEntity)
+signal on_exit_zone(zone: LevelZone, entity: GridEntity)
+signal on_stay_zone(zone: LevelZone, entity: GridEntity)
+
 # -> Grid Entity
 signal on_move_start(entity: GridEntity, from: Vector3i, translation_direction: CardinalDirections.CardinalDirection)
 signal on_move_end(entity: GridEntity)

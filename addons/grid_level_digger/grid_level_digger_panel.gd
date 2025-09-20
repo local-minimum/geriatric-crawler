@@ -31,32 +31,18 @@ var undo_redo: EditorUndoRedoManager
 
 var all_level_nodes: Array[GridNode] = []
 
-@export
-var tab_container: TabContainer
+@export var tab_container: TabContainer
 
-@export
-var about_tab: Control
+@export var about_tab: Control
+@export var level_tab: Control
+@export var digging_tab: Control
+@export var manipulate_tab: Control
+@export var style_tab: Control
 
-@export
-var level_tab: Control
-
-@export
-var digging_tab: Control
-
-@export
-var manipulate_tab: Control
-
-@export
-var style_tab: Control
-
-@export
-var node_digger: GridNodeDigger
-
-@export
-var level_actions: GridLevelActions
-
-@export
-var manipulator: GridLevelManipulator
+@export var node_digger: GridNodeDigger
+@export var level_actions: GridLevelActions
+@export var manipulator: GridLevelManipulator
+@export var zones: GridLevelZoner
 
 var selected_nodes: Array[GridNode]:
     set(value):
@@ -91,7 +77,8 @@ func get_grid_anchor() -> GridAnchor:
     return _anchor
 
 func set_level(level: GridLevel) -> void:
-    self.level = level
+    if self.level != level:
+        self.level = level
     _node = null
     _anchor = null
     inside_level = true

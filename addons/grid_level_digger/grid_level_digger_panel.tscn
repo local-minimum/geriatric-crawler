@@ -16,7 +16,7 @@
 [ext_resource type="Script" uid="uid://ci4cqouiwg5p" path="res://addons/grid_level_digger/grid_level_manipulator.gd" id="12_veu6e"]
 [ext_resource type="Script" uid="uid://dg1kfg5kfauqu" path="res://addons/grid_level_digger/grid_level_zoner.gd" id="13_cnqku"]
 
-[node name="GridLevelDiggerPanel" type="Panel" node_paths=PackedStringArray("tab_container", "about_tab", "level_tab", "digging_tab", "manipulate_tab", "style_tab", "node_digger", "level_actions", "manipulator")]
+[node name="GridLevelDiggerPanel" type="Panel" node_paths=PackedStringArray("tab_container", "about_tab", "level_tab", "digging_tab", "manipulate_tab", "style_tab", "node_digger", "level_actions", "manipulator", "zones")]
 custom_minimum_size = Vector2(500, 600)
 anchors_preset = 9
 anchor_bottom = 1.0
@@ -32,6 +32,7 @@ style_tab = NodePath("VBoxContainer/TabContainer/Style")
 node_digger = NodePath("VBoxContainer/TabContainer/Dig/ScrollContainer/VBoxContainer/Grid Node Digger")
 level_actions = NodePath("VBoxContainer/TabContainer/Level/ScrollContainer/VBoxContainer/GridLevelActions")
 manipulator = NodePath("VBoxContainer/TabContainer/Update/ScrollContainer/VBoxContainer/Manipulator")
+zones = NodePath("VBoxContainer/TabContainer/Zones")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 1

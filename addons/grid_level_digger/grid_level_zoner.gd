@@ -14,7 +14,13 @@ class_name GridLevelZoner
 
 var _zone_resource: Resource
 var _selected_nodes: Array[GridNode]
-var _selected_zone: LevelZone
+var selected_zone: LevelZone:
+    set(value):
+        selected_zone = value
+        _sync_zone_lister()
+        _sync_zone_actions()
+        _sync_zone_highlight()
+
 var _zone_highlights: Array[MeshInstance3D]
 
 func _enter_tree() -> void:
@@ -78,21 +84,14 @@ func _handle_select_zone(id: int) -> void:
         return
 
     var zone: LevelZone = level.zones[id] if id >= 0 && id < level.zones.size() else null
-    if zone == _selected_zone:
+    if zone == selected_zone:
         return
 
-    _selected_zone = zone
-    if zone != null:
-        zone_lister.text = _name_zone(zone)
-    else:
-        zone_lister.text = "%s Zones in level '%s'" % [level.zones.size(), level.level_id]
-
-    _sync_zone_actions()
-    _sync_zone_highlight()
+    selected_zone = zone
 
 func _handle_update_level(level: GridLevel) -> void:
     _selected_nodes.clear()
-    _selected_zone = null
+    selected_zone = null
 
     _sync_zone_lister()
     _sync_zone_actions()
@@ -118,9 +117,7 @@ func _on_create_new_zone_pressed() -> void:
     zone.owner = level.get_tree().edited_scene_root
 
     level.zones.append(zone)
-    _selected_zone = zone
-    _sync_zone_lister()
-    _sync_zone_highlight()
+    selected_zone = zone
     print_debug("[Grid Level Zoner] Added new zone %s" % _name_zone(zone))
 
 func _name_zone(zone: LevelZone) -> String: return "%s [%s]: %s node%s" % [zone.name, zone.get_script().get_global_name(), zone.nodes.size(), "" if zone.nodes.size() == 1 else "s"]
@@ -135,10 +132,10 @@ func _sync_zone_lister() -> void:
         zone_lister.text = "Current scene not a grid level"
         return
 
-    if _selected_zone == null:
+    if selected_zone == null:
         zone_lister.text = "%s Zones in level '%s'" % [level.zones.size(), level.level_id]
     else:
-        zone_lister.text = _name_zone(_selected_zone)
+        zone_lister.text = _name_zone(selected_zone)
 
     zone_lister.disabled = level.zones.is_empty()
 
@@ -157,10 +154,10 @@ func _sync_zone_highlight() -> void:
     _zone_highlights.clear()
 
     var level: GridLevel = panel.level
-    if _selected_zone == null || level == null:
+    if selected_zone == null || level == null:
         return
 
-    for node: GridNode in _selected_zone.nodes:
+    for node: GridNode in selected_zone.nodes:
         var center: Vector3 = GridLevel.node_center(level, node.coordinates)
 
         _zone_highlights.append(
@@ -175,51 +172,48 @@ func _sync_zone_highlight() -> void:
 
 
 func _sync_zone_actions() -> void:
-    add_to_zone.disabled = _selected_zone == null
-    remove_from_zone.disabled = _selected_zone == null
-    set_as_zone.disabled = _selected_zone == null
-    delete_zone.disabled = _selected_zone == null || panel.level == null
+    add_to_zone.disabled = selected_zone == null
+    remove_from_zone.disabled = selected_zone == null
+    set_as_zone.disabled = selected_zone == null
+    delete_zone.disabled = selected_zone == null || panel.level == null
 
 func _on_delete_zone_pressed() -> void:
-    if _selected_zone == null || panel.level == null:
+    if selected_zone == null || panel.level == null:
         return
 
-    panel.level.zones.erase(_selected_zone)
-    _selected_zone.free()
-    _selected_zone = null
-    _sync_zone_lister()
-    _sync_zone_actions()
-    _sync_zone_highlight()
+    panel.level.zones.erase(selected_zone)
+    selected_zone.free()
+    selected_zone = null
 
 func _on_set_selection_as_zone_pressed() -> void:
-    if _selected_zone == null || panel.level == null:
+    if selected_zone == null || panel.level == null:
         return
 
-    _selected_zone.nodes = _selected_nodes.duplicate()
+    selected_zone.nodes = _selected_nodes.duplicate()
     _sync_zone_lister()
     _sync_zone_highlight()
 
 func _on_add_to_zone_pressed() -> void:
-    if _selected_zone == null || panel.level == null:
+    if selected_zone == null || panel.level == null:
         return
 
     for node: GridNode in _selected_nodes:
-        if _selected_zone.nodes.has(node):
+        if selected_zone.nodes.has(node):
             continue
 
-        _selected_zone.nodes.append(node)
+        selected_zone.nodes.append(node)
 
     _sync_zone_lister()
     _sync_zone_highlight()
 
 
 func _on_remove_from_zone_pressed() -> void:
-    if _selected_zone == null || panel.level == null:
+    if selected_zone == null || panel.level == null:
         return
 
     for node: GridNode in _selected_nodes:
-        if _selected_zone.nodes.has(node):
-            _selected_zone.nodes.erase(node)
+        if selected_zone.nodes.has(node):
+            selected_zone.nodes.erase(node)
 
     _sync_zone_lister()
     _sync_zone_highlight()
