@@ -26,6 +26,10 @@ var grid_entities: Array[GridEntity]
 @export var primary_entry_portal: LevelPortal
 @export var level_portals: Array[LevelPortal]
 
+@export var zones_parent: Node
+@export var zones: Array[LevelZone]
+
+
 var corpse: Corpse
 
 var entry_portal: LevelPortal:

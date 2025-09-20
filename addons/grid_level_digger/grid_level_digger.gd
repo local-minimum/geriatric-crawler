@@ -28,8 +28,27 @@ func _exit_tree() -> void:
     panel.remove_debug_nodes()
     panel.queue_free()
 
+func _grid_node_from_selected(selected: Node) -> GridNode:
+    if selected is GridNode:
+        return selected
+
+    if selected is GridNodeFeature || selected is GridNodeSide:
+        return GridNode.find_node_parent(selected, false)
+
+    print_debug("[Grid Level Digger] '%s' (%s) is not a node or part of one" % [selected.name, selected])
+    return null
+
 func _on_selection_change() -> void:
     var selections: Array[Node] = editor_selection.get_selected_nodes()
+    var selected_nodes: Array[GridNode] = []
+
+    for selected: Node in selections:
+        var node: GridNode = _grid_node_from_selected(selected)
+        if node != null && !selected_nodes.has(node):
+            selected_nodes.append(node)
+
+    panel.selected_nodes = selected_nodes
+
     if selections.size() == 1:
         var selection: Node = selections[0]
 

@@ -104,7 +104,7 @@ albedo_texture = ExtResource("34_rljv5")
 material = SubResource("StandardMaterial3D_jmfrw")
 size = Vector2(1.5, 1.5)
 
-[node name="TestLevel" type="Node3D" node_paths=PackedStringArray("player", "level_geometry", "punishments", "primary_entry_portal", "level_portals")]
+[node name="TestLevel" type="Node3D" node_paths=PackedStringArray("player", "level_geometry", "punishments", "primary_entry_portal", "level_portals", "zones_parent")]
 script = ExtResource("1_dd1ob")
 level_id = "test-level"
 node_size = Vector3(2.5, 2.5, 2.5)
@@ -113,6 +113,7 @@ level_geometry = NodePath("LevelGeometry")
 punishments = NodePath("PunishmentDeck")
 primary_entry_portal = NodePath("LevelGeometry/Elevation 0/Node (0, 0, 2)/Airlock")
 level_portals = [NodePath("LevelGeometry/Elevation 0/Node (0, 0, 2)/Airlock"), NodePath("LevelGeometry/Elevation 1/Node (5, 1, -2)/Airlock")]
+zones_parent = NodePath("Zones")
 
 [node name="Player" parent="." instance=ExtResource("3_m6mav")]
 process_mode = 3
@@ -1367,6 +1368,8 @@ offset_if_on_same_tile = true
 maintain_down = true
 offset_amount = 0.137
 interpoation_fraction = 0.13
+
+[node name="Zones" type="Node" parent="."]
 
 [node name="Encounters" type="Node" parent="."]
 

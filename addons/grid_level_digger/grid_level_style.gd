@@ -14,8 +14,7 @@ func has_any_side_resource_selected() -> bool:
         (_grid_ceiling_resource != null if _grid_ceiling_used else false)
     )
 
-@export
-var _grid_node_picker: ValidatingEditorNodePicker
+@export var _grid_node_picker: ValidatingEditorNodePicker
 var _grid_node_resource: Resource
 var _grid_node_used: bool = true
 
@@ -44,8 +43,7 @@ func _on_grid_node_picker_resource_changed(resource:Resource) -> void:
     _grid_node_resource = resource
     on_style_updated.emit()
 
-@export
-var grid_ceiling_picker: ValidatingEditorNodePicker
+@export var grid_ceiling_picker: ValidatingEditorNodePicker
 var _grid_ceiling_resource: Resource
 var _grid_ceiling_used: bool = true
 
@@ -67,12 +65,12 @@ func _on_grid_ceiling_picker_resource_changed(resource:Resource) -> void:
         _grid_ceiling_resource = null
         push_warning("%s is not a %s" % [resource, grid_ceiling_picker.root_class_name])
         _forcing_resource_change = false
+    else:
+        _grid_ceiling_resource = resource
 
-    _grid_ceiling_resource = resource
     on_style_updated.emit()
 
-@export
-var grid_floor_picker: ValidatingEditorNodePicker
+@export var grid_floor_picker: ValidatingEditorNodePicker
 var _grid_floor_resource: Resource
 var _grid_floor_used: bool = true
 
@@ -94,12 +92,12 @@ func _on_grid_floor_picker_resource_changed(resource:Resource) -> void:
         _grid_floor_resource = null
         push_warning("%s is not a %s" % [resource, grid_floor_picker.root_class_name])
         _forcing_resource_change = false
+    else:
+        _grid_floor_resource = resource
 
-    _grid_floor_resource = resource
     on_style_updated.emit()
 
-@export
-var grid_wall_picker: ValidatingEditorNodePicker
+@export var grid_wall_picker: ValidatingEditorNodePicker
 var _grid_wall_resource: Resource
 var _grid_wall_used: bool = true
 
@@ -121,8 +119,9 @@ func _on_grid_wall_picker_resource_changed(resource:Resource) -> void:
         _grid_wall_resource = null
         push_warning("%s is not a %s" % [resource, grid_wall_picker.root_class_name])
         _forcing_resource_change = false
+    else:
+        _grid_wall_resource = resource
 
-    _grid_wall_resource = resource
     on_style_updated.emit()
 
 func _on_grid_ceiling_used_toggled(toggled_on:bool) -> void:
