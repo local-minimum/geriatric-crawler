@@ -3,12 +3,25 @@ extends Panel
 class_name GridLevelDiggerPanel
 
 signal on_update_selected_nodes(nodes: Array[GridNode])
+signal on_update_level(level: GridLevel)
 
-var level: GridLevel
+var level: GridLevel:
+    set(value):
+        if inside_level:
+            level = value
+            on_update_level.emit(level if inside_level else null)
+        else:
+            level = value
+
 var _node: GridNode
 var _anchor: GridAnchor
 
-var inside_level: bool
+var inside_level: bool:
+    set(value):
+        if value != inside_level:
+            inside_level = value
+            on_update_level.emit(level if inside_level else null)
+
 var coordinates: Vector3i = Vector3i.ZERO : set = _set_coords
 func _set_coords(value: Vector3i) -> void:
     coordinates = value
@@ -195,7 +208,7 @@ func _draw_debug_node_meshes() -> void:
     if level != null:
         var center: Vector3 = GridLevel.node_center(level, coordinates)
 
-        _node_debug_mesh = DebugDraw.wireframe_box(
+        _node_debug_mesh = DebugDraw.box(
             level,
             center,
             level.node_size,

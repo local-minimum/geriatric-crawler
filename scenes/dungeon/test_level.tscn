@@ -1,4 +1,4 @@
-[gd_scene load_steps=69 format=3 uid="uid://dwqcwbgj8p6q0"]
+[gd_scene load_steps=71 format=3 uid="uid://dwqcwbgj8p6q0"]
 
 [ext_resource type="Script" uid="uid://dqe42q7uub84r" path="res://scripts/gridded_level/level_features/grid_level.gd" id="1_dd1ob"]
 [ext_resource type="PackedScene" uid="uid://bfoog3fb4v5ij" path="res://scenes/dungeon/player.tscn" id="3_m6mav"]
@@ -25,8 +25,10 @@
 [ext_resource type="PackedScene" uid="uid://cd55qnu3gk7he" path="res://scenes/dungeon/stairs.tscn" id="15_sy7nh"]
 [ext_resource type="Resource" uid="uid://cbhpqqpyr05fu" path="res://resources/enemy_cards/target-dummy_cards/dummy-blank-200.tres" id="16_n55gf"]
 [ext_resource type="Resource" uid="uid://jqj3jm50pkqs" path="res://resources/enemy_cards/target-dummy_cards/dummy-blank-420.tres" id="17_idbts"]
+[ext_resource type="PackedScene" uid="uid://bo7t6vucyhsis" path="res://scenes/dungeon/radioactive_zone.tscn" id="17_jqdjk"]
 [ext_resource type="PackedScene" uid="uid://ci70efr3ftt6k" path="res://scenes/dungeon/airlock.tscn" id="18_24aia"]
 [ext_resource type="Resource" uid="uid://bodhea2xa1exq" path="res://resources/enemy_cards/target-dummy_cards/dummy-blank-700.tres" id="18_j1mj1"]
+[ext_resource type="Script" uid="uid://cucjl8ggwmr27" path="res://scripts/gridded_level/level_zone.gd" id="18_jqdjk"]
 [ext_resource type="Resource" uid="uid://cgq448x54hl2k" path="res://resources/enemy_cards/target-dummy_cards/dummy-shield-up-65.tres" id="19_7gan6"]
 [ext_resource type="Resource" uid="uid://ea7mbheiqimg" path="res://resources/enemy_cards/target-dummy_cards/dummy-shield-up-330.tres" id="20_sn1co"]
 [ext_resource type="Resource" uid="uid://c0fagwlpy72ds" path="res://resources/enemy_cards/target-dummy_cards/dummy-shield-up-950.tres" id="21_wymjw"]
@@ -57,7 +59,7 @@
 [ext_resource type="Resource" uid="uid://bdwpemc2r72sv" path="res://resources/punishment_cards/insecurities_979.tres" id="48_24aia"]
 [ext_resource type="Resource" uid="uid://bm3cpmpqe3u6h" path="res://resources/punishment_cards/insecurities_999.tres" id="49_yofnv"]
 
-[sub_resource type="Resource" id="Resource_rljv5"]
+[sub_resource type="Resource" id="Resource_ub21w"]
 resource_local_to_scene = true
 script = ExtResource("4_840jk")
 mode = 61
@@ -104,7 +106,7 @@ albedo_texture = ExtResource("34_rljv5")
 material = SubResource("StandardMaterial3D_jmfrw")
 size = Vector2(1.5, 1.5)
 
-[node name="TestLevel" type="Node3D" node_paths=PackedStringArray("player", "level_geometry", "punishments", "primary_entry_portal", "level_portals", "zones_parent")]
+[node name="TestLevel" type="Node3D" node_paths=PackedStringArray("player", "level_geometry", "punishments", "primary_entry_portal", "level_portals", "zones_parent", "zones")]
 script = ExtResource("1_dd1ob")
 level_id = "test-level"
 node_size = Vector3(2.5, 2.5, 2.5)
@@ -114,11 +116,12 @@ punishments = NodePath("PunishmentDeck")
 primary_entry_portal = NodePath("LevelGeometry/Elevation 0/Node (0, 0, 2)/Airlock")
 level_portals = [NodePath("LevelGeometry/Elevation 0/Node (0, 0, 2)/Airlock"), NodePath("LevelGeometry/Elevation 1/Node (5, 1, -2)/Airlock")]
 zones_parent = NodePath("Zones")
+zones = [NodePath("Zones/Radioactive Zone"), NodePath("Zones/Radioactive Zone2")]
 
 [node name="Player" parent="." instance=ExtResource("3_m6mav")]
 process_mode = 3
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0145968, -0.00857759, 0.00070858)
-transportation_abilities = SubResource("Resource_rljv5")
+transportation_abilities = SubResource("Resource_ub21w")
 transportation_mode = SubResource("Resource_pgxau")
 
 [node name="LevelGeometry" type="Node3D" parent="."]
@@ -649,6 +652,7 @@ transform = Transform3D(-1, 0, -1.50996e-07, 0, 1, 0, 1.50996e-07, 0, -1, 0, 0, 
 direction = 2
 
 [node name="Side UP" parent="LevelGeometry/Elevation 0/Node (3, 0, 5)" instance=ExtResource("8_72dvb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.000555038, 9.53674e-07, -0.0211887)
 
 [node name="Side DOWN" parent="LevelGeometry/Elevation 0/Node (3, 0, 5)" instance=ExtResource("9_4mxkc")]
 
@@ -1370,6 +1374,14 @@ offset_amount = 0.137
 interpoation_fraction = 0.13
 
 [node name="Zones" type="Node" parent="."]
+
+[node name="Radioactive Zone" parent="Zones" node_paths=PackedStringArray("nodes") instance=ExtResource("17_jqdjk")]
+nodes = [NodePath("../../LevelGeometry/Elevation 0/Node (4, 0, 3)"), NodePath("../../LevelGeometry/Elevation 0/Node (4, 0, 4)"), NodePath("../../LevelGeometry/Elevation 0/Node (3, 0, 4)"), NodePath("../../LevelGeometry/Elevation 0/Node (3, 0, 3)"), NodePath("../../LevelGeometry/Elevation 0/Node (4, 0, 5)"), NodePath("../../LevelGeometry/Elevation 0/Node (3, 0, 5)")]
+
+[node name="Radioactive Zone2" type="Node" parent="Zones" node_paths=PackedStringArray("nodes") instance=ExtResource("17_jqdjk")]
+script = ExtResource("18_jqdjk")
+nodes = [NodePath("../../LevelGeometry/Elevation 0/Node (0, 0, 5)"), NodePath("../../LevelGeometry/Elevation 0/Node (0, 0, 4)"), NodePath("../../LevelGeometry/Elevation 0/Node (1, 0, 4)"), NodePath("../../LevelGeometry/Elevation 0/Node (1, 0, 5)")]
+metadata/_custom_type_script = "uid://cucjl8ggwmr27"
 
 [node name="Encounters" type="Node" parent="."]
 

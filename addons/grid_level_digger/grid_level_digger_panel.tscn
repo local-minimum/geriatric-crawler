@@ -460,14 +460,20 @@ layout_mode = 2
 disabled = true
 text = "Add Floor"
 
-[node name="Zones" type="MarginContainer" parent="VBoxContainer/TabContainer" node_paths=PackedStringArray("panel", "new_zone_button", "zone_picker")]
+[node name="Zones" type="MarginContainer" parent="VBoxContainer/TabContainer" node_paths=PackedStringArray("panel", "new_zone_button", "zone_picker", "zone_lister", "add_to_zone", "remove_from_zone", "set_as_zone", "delete_zone")]
 layout_mode = 2
 theme_override_constants/margin_left = 4
 theme_override_constants/margin_right = 4
 script = ExtResource("13_cnqku")
+zone_highlight_color = Color(1, 0.266667, 0, 0.639216)
 panel = NodePath("../../..")
 new_zone_button = NodePath("ScrollContainer/VBoxContainer/Create New Zone")
 zone_picker = NodePath("ScrollContainer/VBoxContainer/Zone Template Picking/ZonePicker")
+zone_lister = NodePath("ScrollContainer/VBoxContainer/Zone Listing")
+add_to_zone = NodePath("ScrollContainer/VBoxContainer/HBoxContainer/Add To Zone")
+remove_from_zone = NodePath("ScrollContainer/VBoxContainer/HBoxContainer/Remove From Zone")
+set_as_zone = NodePath("ScrollContainer/VBoxContainer/HBoxContainer2/Set Selection As Zone")
+delete_zone = NodePath("ScrollContainer/VBoxContainer/HBoxContainer2/Delete Zone")
 metadata/_tab_index = 4
 
 [node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer/TabContainer/Zones"]
@@ -482,7 +488,7 @@ layout_mode = 2
 
 [node name="Label" type="Label" parent="VBoxContainer/TabContainer/Zones/ScrollContainer/VBoxContainer/Zone Template Picking"]
 layout_mode = 2
-text = "Zone"
+text = "New Zone"
 
 [node name="Spacer" type="Control" parent="VBoxContainer/TabContainer/Zones/ScrollContainer/VBoxContainer/Zone Template Picking"]
 layout_mode = 2
@@ -500,6 +506,37 @@ metadata/_custom_type_script = "uid://2cl0qyqo8sb5"
 [node name="Create New Zone" type="Button" parent="VBoxContainer/TabContainer/Zones/ScrollContainer/VBoxContainer"]
 layout_mode = 2
 text = "Create zone from selected nodes"
+
+[node name="Zone Listing" type="MenuButton" parent="VBoxContainer/TabContainer/Zones/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+disabled = true
+text = "Current scene not a grid level"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/TabContainer/Zones/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Add To Zone" type="Button" parent="VBoxContainer/TabContainer/Zones/ScrollContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+disabled = true
+text = "Add Selection to Zone"
+
+[node name="Remove From Zone" type="Button" parent="VBoxContainer/TabContainer/Zones/ScrollContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+disabled = true
+text = "Remove from Zone"
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="VBoxContainer/TabContainer/Zones/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Set Selection As Zone" type="Button" parent="VBoxContainer/TabContainer/Zones/ScrollContainer/VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+disabled = true
+text = "Set Selection as Zone"
+
+[node name="Delete Zone" type="Button" parent="VBoxContainer/TabContainer/Zones/ScrollContainer/VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+disabled = true
+text = "Delete Zone"
 
 [node name="Style" type="MarginContainer" parent="VBoxContainer/TabContainer"]
 visible = false
@@ -657,6 +694,10 @@ metadata/_custom_type_script = "uid://2cl0qyqo8sb5"
 [connection signal="pressed" from="VBoxContainer/TabContainer/Update/ScrollContainer/VBoxContainer/Manipulator/Floor/Add Floor" to="VBoxContainer/TabContainer/Update/ScrollContainer/VBoxContainer/Manipulator" method="_on_add_floor_pressed"]
 [connection signal="resource_changed" from="VBoxContainer/TabContainer/Zones/ScrollContainer/VBoxContainer/Zone Template Picking/ZonePicker" to="VBoxContainer/TabContainer/Zones" method="_on_zone_picker_changed"]
 [connection signal="pressed" from="VBoxContainer/TabContainer/Zones/ScrollContainer/VBoxContainer/Create New Zone" to="VBoxContainer/TabContainer/Zones" method="_on_create_new_zone_pressed"]
+[connection signal="pressed" from="VBoxContainer/TabContainer/Zones/ScrollContainer/VBoxContainer/HBoxContainer/Add To Zone" to="VBoxContainer/TabContainer/Zones" method="_on_add_to_zone_pressed"]
+[connection signal="pressed" from="VBoxContainer/TabContainer/Zones/ScrollContainer/VBoxContainer/HBoxContainer/Remove From Zone" to="VBoxContainer/TabContainer/Zones" method="_on_remove_from_zone_pressed"]
+[connection signal="pressed" from="VBoxContainer/TabContainer/Zones/ScrollContainer/VBoxContainer/HBoxContainer2/Set Selection As Zone" to="VBoxContainer/TabContainer/Zones" method="_on_set_selection_as_zone_pressed"]
+[connection signal="pressed" from="VBoxContainer/TabContainer/Zones/ScrollContainer/VBoxContainer/HBoxContainer2/Delete Zone" to="VBoxContainer/TabContainer/Zones" method="_on_delete_zone_pressed"]
 [connection signal="toggled" from="VBoxContainer/TabContainer/Style/ScrollContainer/VBoxContainer/Style Container/Dig Node/GridNodeUsed" to="VBoxContainer/TabContainer/Style/ScrollContainer/VBoxContainer/Style Container" method="_on_grid_node_used_toggled"]
 [connection signal="resource_changed" from="VBoxContainer/TabContainer/Style/ScrollContainer/VBoxContainer/Style Container/Dig Node/GridNodePicker" to="VBoxContainer/TabContainer/Style/ScrollContainer/VBoxContainer/Style Container" method="_on_grid_node_picker_resource_changed"]
 [connection signal="toggled" from="VBoxContainer/TabContainer/Style/ScrollContainer/VBoxContainer/Style Container/Dig Wall/GridWallUsed" to="VBoxContainer/TabContainer/Style/ScrollContainer/VBoxContainer/Style Container" method="_on_grid_wall_used_toggled"]

@@ -17,11 +17,12 @@ static func _safe_add_mech_to_root(node: Node, mesh: MeshInstance3D) -> bool:
     tree.root.add_child(mesh)
     return true
 
-static func wireframe_box(
+static func box(
     node: Node3D,
     center: Vector3,
     size: Vector3,
     color: Color = Color.WHITE_SMOKE,
+    outlined: bool = true,
 ) -> MeshInstance3D:
     if node == null:
         push_error("Node is null")
@@ -54,43 +55,100 @@ static func wireframe_box(
     var unw: Vector3 = lnw + y_size
     var une: Vector3 = lne + y_size
 
-    immediate_mesh.surface_begin(Mesh.PRIMITIVE_LINES, mat)
+    immediate_mesh.surface_begin(Mesh.PRIMITIVE_LINES if outlined else Mesh.PRIMITIVE_TRIANGLES, mat)
 
-    immediate_mesh.surface_add_vertex(lsw)
-    immediate_mesh.surface_add_vertex(lse)
+    if outlined:
+        immediate_mesh.surface_add_vertex(lsw)
+        immediate_mesh.surface_add_vertex(lse)
 
-    immediate_mesh.surface_add_vertex(lsw)
-    immediate_mesh.surface_add_vertex(lnw)
+        immediate_mesh.surface_add_vertex(lsw)
+        immediate_mesh.surface_add_vertex(lnw)
 
-    immediate_mesh.surface_add_vertex(lsw)
-    immediate_mesh.surface_add_vertex(usw)
+        immediate_mesh.surface_add_vertex(lsw)
+        immediate_mesh.surface_add_vertex(usw)
 
-    immediate_mesh.surface_add_vertex(une)
-    immediate_mesh.surface_add_vertex(unw)
+        immediate_mesh.surface_add_vertex(une)
+        immediate_mesh.surface_add_vertex(unw)
 
-    immediate_mesh.surface_add_vertex(une)
-    immediate_mesh.surface_add_vertex(use)
+        immediate_mesh.surface_add_vertex(une)
+        immediate_mesh.surface_add_vertex(use)
 
-    immediate_mesh.surface_add_vertex(une)
-    immediate_mesh.surface_add_vertex(lne)
+        immediate_mesh.surface_add_vertex(une)
+        immediate_mesh.surface_add_vertex(lne)
 
-    immediate_mesh.surface_add_vertex(usw)
-    immediate_mesh.surface_add_vertex(unw)
+        immediate_mesh.surface_add_vertex(usw)
+        immediate_mesh.surface_add_vertex(unw)
 
-    immediate_mesh.surface_add_vertex(usw)
-    immediate_mesh.surface_add_vertex(use)
+        immediate_mesh.surface_add_vertex(usw)
+        immediate_mesh.surface_add_vertex(use)
 
-    immediate_mesh.surface_add_vertex(unw)
-    immediate_mesh.surface_add_vertex(lnw)
+        immediate_mesh.surface_add_vertex(unw)
+        immediate_mesh.surface_add_vertex(lnw)
 
-    immediate_mesh.surface_add_vertex(lne)
-    immediate_mesh.surface_add_vertex(lse)
+        immediate_mesh.surface_add_vertex(lne)
+        immediate_mesh.surface_add_vertex(lse)
 
-    immediate_mesh.surface_add_vertex(lne)
-    immediate_mesh.surface_add_vertex(lnw)
+        immediate_mesh.surface_add_vertex(lne)
+        immediate_mesh.surface_add_vertex(lnw)
 
-    immediate_mesh.surface_add_vertex(lse)
-    immediate_mesh.surface_add_vertex(use)
+        immediate_mesh.surface_add_vertex(lse)
+        immediate_mesh.surface_add_vertex(use)
+    else:
+        mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+
+        # Down
+        immediate_mesh.surface_add_vertex(lsw)
+        immediate_mesh.surface_add_vertex(lse)
+        immediate_mesh.surface_add_vertex(lnw)
+
+        immediate_mesh.surface_add_vertex(lnw)
+        immediate_mesh.surface_add_vertex(lse)
+        immediate_mesh.surface_add_vertex(lne)
+
+        # South
+        immediate_mesh.surface_add_vertex(lsw)
+        immediate_mesh.surface_add_vertex(use)
+        immediate_mesh.surface_add_vertex(lse)
+
+        immediate_mesh.surface_add_vertex(lsw)
+        immediate_mesh.surface_add_vertex(usw)
+        immediate_mesh.surface_add_vertex(use)
+
+        # West
+        immediate_mesh.surface_add_vertex(lsw)
+        immediate_mesh.surface_add_vertex(lnw)
+        immediate_mesh.surface_add_vertex(unw)
+
+        immediate_mesh.surface_add_vertex(lsw)
+        immediate_mesh.surface_add_vertex(unw)
+        immediate_mesh.surface_add_vertex(usw)
+
+        # East
+        immediate_mesh.surface_add_vertex(lse)
+        immediate_mesh.surface_add_vertex(une)
+        immediate_mesh.surface_add_vertex(lne)
+
+        immediate_mesh.surface_add_vertex(lse)
+        immediate_mesh.surface_add_vertex(use)
+        immediate_mesh.surface_add_vertex(une)
+
+        # North
+        immediate_mesh.surface_add_vertex(lne)
+        immediate_mesh.surface_add_vertex(une)
+        immediate_mesh.surface_add_vertex(lnw)
+
+        immediate_mesh.surface_add_vertex(lnw)
+        immediate_mesh.surface_add_vertex(une)
+        immediate_mesh.surface_add_vertex(unw)
+
+        # Up
+        immediate_mesh.surface_add_vertex(unw)
+        immediate_mesh.surface_add_vertex(une)
+        immediate_mesh.surface_add_vertex(usw)
+
+        immediate_mesh.surface_add_vertex(une)
+        immediate_mesh.surface_add_vertex(use)
+        immediate_mesh.surface_add_vertex(usw)
 
     immediate_mesh.surface_end()
 
