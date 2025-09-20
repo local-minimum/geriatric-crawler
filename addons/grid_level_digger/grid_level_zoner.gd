@@ -90,9 +90,13 @@ func _handle_select_zone(id: int) -> void:
     _sync_zone_actions()
     _sync_zone_highlight()
 
-func _handle_update_level(_level: GridLevel) -> void:
+func _handle_update_level(level: GridLevel) -> void:
+    _selected_nodes.clear()
+    _selected_zone = null
+
     _sync_zone_lister()
     _sync_zone_actions()
+    _sync_zone_highlight()
 
 func _handle_selection_change(selected_nodes: Array[GridNode]) -> void:
     _selected_nodes = selected_nodes

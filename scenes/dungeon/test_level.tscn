@@ -1376,11 +1376,11 @@ interpoation_fraction = 0.13
 [node name="Zones" type="Node" parent="."]
 
 [node name="Radioactive Zone" parent="Zones" node_paths=PackedStringArray("nodes") instance=ExtResource("17_jqdjk")]
-nodes = [NodePath("../../LevelGeometry/Elevation 0/Node (4, 0, 3)"), NodePath("../../LevelGeometry/Elevation 0/Node (4, 0, 4)"), NodePath("../../LevelGeometry/Elevation 0/Node (3, 0, 4)"), NodePath("../../LevelGeometry/Elevation 0/Node (3, 0, 3)"), NodePath("../../LevelGeometry/Elevation 0/Node (4, 0, 5)"), NodePath("../../LevelGeometry/Elevation 0/Node (3, 0, 5)")]
+nodes = [NodePath("../../LevelGeometry/Elevation 0/Node (4, 0, 3)"), NodePath("../../LevelGeometry/Elevation 0/Node (4, 0, 4)"), NodePath("../../LevelGeometry/Elevation 0/Node (3, 0, 4)"), NodePath("../../LevelGeometry/Elevation 0/Node (3, 0, 3)"), NodePath("../../LevelGeometry/Elevation 0/Node (5, 0, 4)"), NodePath("../../LevelGeometry/Elevation 0/Node (5, 0, 3)")]
 
 [node name="Radioactive Zone2" type="Node" parent="Zones" node_paths=PackedStringArray("nodes") instance=ExtResource("17_jqdjk")]
 script = ExtResource("18_jqdjk")
-nodes = [NodePath("../../LevelGeometry/Elevation 0/Node (0, 0, 5)"), NodePath("../../LevelGeometry/Elevation 0/Node (0, 0, 4)"), NodePath("../../LevelGeometry/Elevation 0/Node (1, 0, 4)"), NodePath("../../LevelGeometry/Elevation 0/Node (1, 0, 5)")]
+nodes = [NodePath("../../LevelGeometry/Elevation 0/Node (1, 0, 5)"), NodePath("../../LevelGeometry/Elevation 0/Node (0, 0, 5)"), NodePath("../../LevelGeometry/Elevation 0/Node (0, 0, 4)"), NodePath("../../LevelGeometry/Elevation 0/Node (1, 0, 4)")]
 metadata/_custom_type_script = "uid://cucjl8ggwmr27"
 
 [node name="Encounters" type="Node" parent="."]
