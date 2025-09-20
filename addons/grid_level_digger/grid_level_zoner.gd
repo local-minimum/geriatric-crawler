@@ -20,6 +20,7 @@ var selected_zone: LevelZone:
         _sync_zone_lister()
         _sync_zone_actions()
         _sync_zone_highlight()
+        print_debug("[Grid Level Zoner] Updated selected zone to '%s'" % value)
 
 var _zone_highlights: Array[MeshInstance3D]
 
@@ -88,14 +89,13 @@ func _handle_select_zone(id: int) -> void:
         return
 
     selected_zone = zone
+    print_debug("[Grid Level Zoner] Selected zone from popup")
 
 func _handle_update_level(level: GridLevel) -> void:
     _selected_nodes.clear()
     selected_zone = null
 
-    _sync_zone_lister()
-    _sync_zone_actions()
-    _sync_zone_highlight()
+    print_debug("[Grid Level Zoner] Updated level")
 
 func _handle_selection_change(selected_nodes: Array[GridNode]) -> void:
     _selected_nodes = selected_nodes
@@ -104,14 +104,24 @@ func _handle_selection_change(selected_nodes: Array[GridNode]) -> void:
     _sync_zone_actions()
 
 func _on_create_new_zone_pressed() -> void:
+    panel.undo_redo.create_action("GridLevelZoner: Create Zone")
+    panel.undo_redo.add_do_method(self, "_do_create_zone", _zone_resource, _selected_nodes.duplicate())
+    panel.undo_redo.add_undo_method(self, "_do_erase_zone", panel.level.zones.size() if panel.level != null else -1)
+    panel.undo_redo.commit_action()
+
+func _do_create_zone(resource: Resource, nodes: Array[GridNode]) -> void:
     var level: GridLevel = panel.level
     if level == null:
         push_error("Cannot add zone current scene isn't a grid level")
         return
 
-    var zone: LevelZone = _zone_resource.instantiate()
+    if resource == null:
+        push_error("Cannot create zone without a resource to instance")
+        return
 
-    zone.nodes = _selected_nodes.duplicate()
+    var zone: LevelZone = resource.instantiate()
+
+    zone.nodes = nodes
 
     level.zones_parent.add_child(zone, true)
     zone.owner = level.get_tree().edited_scene_root
@@ -181,15 +191,41 @@ func _on_delete_zone_pressed() -> void:
     if selected_zone == null || panel.level == null:
         return
 
-    panel.level.zones.erase(selected_zone)
-    selected_zone.free()
-    selected_zone = null
+    var resource: Resource = load(selected_zone.scene_file_path)
+
+    panel.undo_redo.create_action("GridLevelZoner: Delete %s" % selected_zone.name)
+    panel.undo_redo.add_do_method(self, "_do_erase_zone", panel.level.zones.find(selected_zone) if panel.level != null else -1)
+    panel.undo_redo.add_undo_method(self, "_do_create_zone", resource, selected_zone.nodes.duplicate())
+    panel.undo_redo.commit_action()
+
+func _do_erase_zone(idx: int) -> void:
+    if panel.level == null:
+        push_error("Failed to erase level")
+        return
+
+    var zone: LevelZone = panel.level.zones[idx] if idx >= 0 && idx < panel.level.zones.size() else null
+    if zone == null:
+        return
+
+    var updated_select: bool = zone == selected_zone
+
+    panel.level.zones.erase(zone)
+    zone.free()
+
+    if updated_select:
+        selected_zone = null
 
 func _on_set_selection_as_zone_pressed() -> void:
     if selected_zone == null || panel.level == null:
         return
 
-    selected_zone.nodes = _selected_nodes.duplicate()
+    panel.undo_redo.create_action("GridLevelZoner: Add to zone %s" % selected_zone.name)
+    panel.undo_redo.add_do_method(self, "_do_set_zone_nodes", selected_zone, _selected_nodes.duplicate())
+    panel.undo_redo.add_undo_method(self, "_do_set_zone_nodes", selected_zone, selected_zone.nodes.duplicate())
+    panel.undo_redo.commit_action()
+
+func _do_set_zone_nodes(zone: LevelZone, nodes: Array[GridNode]) -> void:
+    zone.nodes = nodes
     _sync_zone_lister()
     _sync_zone_highlight()
 
@@ -197,23 +233,53 @@ func _on_add_to_zone_pressed() -> void:
     if selected_zone == null || panel.level == null:
         return
 
+    var new_nodes: Array[GridNode] = []
     for node: GridNode in _selected_nodes:
         if selected_zone.nodes.has(node):
             continue
+        new_nodes.append(node)
 
-        selected_zone.nodes.append(node)
+    if !new_nodes.is_empty():
+        panel.undo_redo.create_action("GridLevelZoner: Add to zone %s" % selected_zone.name)
+        panel.undo_redo.add_do_method(self, "_do_add_to_zone", selected_zone, new_nodes)
+        panel.undo_redo.add_undo_method(self, "_do_remove_from_zone", selected_zone, new_nodes)
+        panel.undo_redo.commit_action()
 
-    _sync_zone_lister()
-    _sync_zone_highlight()
+func _do_add_to_zone(zone: LevelZone, nodes: Array[GridNode]) -> void:
+    var updated: bool = false
+    for node: GridNode in nodes:
+        if zone.nodes.has(node):
+            continue
 
+        zone.nodes.append(node)
+        updated = true
+
+    if updated:
+        _sync_zone_lister()
+        _sync_zone_highlight()
 
 func _on_remove_from_zone_pressed() -> void:
     if selected_zone == null || panel.level == null:
         return
 
+    var old_nodes: Array[GridNode] = []
     for node: GridNode in _selected_nodes:
         if selected_zone.nodes.has(node):
-            selected_zone.nodes.erase(node)
+            old_nodes.append(node)
 
-    _sync_zone_lister()
-    _sync_zone_highlight()
+    if !old_nodes.is_empty():
+        panel.undo_redo.create_action("GridLevelZoner: Add to zone %s" % selected_zone.name)
+        panel.undo_redo.add_do_method(self, "_do_remove_from_zone", selected_zone, old_nodes)
+        panel.undo_redo.add_undo_method(self, "_do_add_to_zone", selected_zone, old_nodes)
+        panel.undo_redo.commit_action()
+
+func _do_remove_from_zone(zone: LevelZone, nodes: Array[GridNode]) -> void:
+    var updated: bool
+    for node: GridNode in nodes:
+        if zone.nodes.has(node):
+            zone.nodes.erase(node)
+            updated = true
+
+    if updated:
+        _sync_zone_lister()
+        _sync_zone_highlight()

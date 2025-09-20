@@ -49,6 +49,9 @@ func _on_selection_change() -> void:
 
     panel.selected_nodes = selected_nodes
 
+    if selected_nodes.size() > 1:
+        return
+
     if selections.size() == 1:
         var selection: Node = selections[0]
         var grid_level: GridLevel = GridLevel.find_level_parent(selection)
@@ -57,7 +60,8 @@ func _on_selection_change() -> void:
             print_debug("[Grid Level Digger] Selected a zone: %s" % selection.name)
             var zone: LevelZone = selection
             if zone != panel.zones.selected_zone:
-                panel.set_level(grid_level)
+                if panel.level != grid_level:
+                    panel.set_level(grid_level)
                 panel.zones.selected_zone = zone
             return
 
@@ -72,7 +76,8 @@ func _on_selection_change() -> void:
             return
 
         if grid_level != null:
-            panel.set_level(grid_level)
+            if grid_level != panel.level:
+                panel.set_level(grid_level)
             return
 
         print_debug("Selection outside level (%s)" % selection.name)
