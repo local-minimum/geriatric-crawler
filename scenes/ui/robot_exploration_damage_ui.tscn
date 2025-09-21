@@ -9,7 +9,7 @@ shader = ExtResource("1_s551k")
 shader_parameter/stencil = ExtResource("1_lnsh5")
 shader_parameter/stencil_progress = 0.2
 shader_parameter/noise_color = Color(0.76, 0.4104, 0.42788, 0.796078)
-shader_parameter/texture_color = Color(0.758278, 0.109728, 0.108142, 0.905882)
+shader_parameter/texture_color = Color(0.76, 0.1064, 0.1064, 0.47451)
 shader_parameter/noise_speed = 1.5
 shader_parameter/noise_bias = 0.99
 
@@ -23,5 +23,5 @@ grow_vertical = 2
 mouse_filter = 2
 script = ExtResource("2_s551k")
 stencil_fade_in_duration = 0.1
-stencil_fade_out_duration = 0.5
 noise_fade_in_duration = 0.05
+noise_fade_out_duration = 0.3
