@@ -115,7 +115,7 @@ punishments = NodePath("PunishmentDeck")
 primary_entry_portal = NodePath("LevelGeometry/Elevation 0/Node (0, 0, 2)/Airlock")
 level_portals = [NodePath("LevelGeometry/Elevation 0/Node (0, 0, 2)/Airlock"), NodePath("LevelGeometry/Elevation 1/Node (5, 1, -2)/Airlock")]
 zones_parent = NodePath("Zones")
-zones = [NodePath("Zones/Radioactive Zone2")]
+zones = [NodePath("Zones/Radioactive Zone")]
 
 [node name="Player" parent="." instance=ExtResource("3_m6mav")]
 process_mode = 3
@@ -1374,7 +1374,7 @@ interpoation_fraction = 0.13
 
 [node name="Zones" type="Node" parent="."]
 
-[node name="Radioactive Zone2" parent="Zones" node_paths=PackedStringArray("nodes") instance=ExtResource("17_jqdjk")]
+[node name="Radioactive Zone" parent="Zones" node_paths=PackedStringArray("nodes") instance=ExtResource("17_jqdjk")]
 nodes = [NodePath("../../LevelGeometry/Elevation 0/Node (1, 0, 5)"), NodePath("../../LevelGeometry/Elevation 0/Node (0, 0, 5)"), NodePath("../../LevelGeometry/Elevation 0/Node (0, 0, 4)"), NodePath("../../LevelGeometry/Elevation 0/Node (1, 0, 4)")]
 
 [node name="Encounters" type="Node" parent="."]

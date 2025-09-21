@@ -37,16 +37,18 @@ func covers(coordinates: Vector3i) -> bool:
     return nodes.any(func (node: GridNode) -> bool: return node.coordinates == coordinates)
 
 func _handle_change_node(feature: GridNodeFeature) -> void:
-    if !_passes_filter(feature):
+    if feature is not GridEntity || !_passes_filter(feature):
         return
 
-    var in_zone: bool = covers(feature.coordinates())
-    if !_in_zones.has(feature):
-        _in_zones.append(feature)
-        __SignalBus.on_enter_zone.emit(self, feature)
-    elif _in_zones.has(feature):
+    var entity: GridEntity = feature
+
+    var in_zone: bool = covers(entity.coordinates())
+    if !_in_zones.has(entity) && in_zone:
+        _in_zones.append(entity)
+        __SignalBus.on_enter_zone.emit(self, entity)
+    elif _in_zones.has(entity):
         if in_zone:
-            __SignalBus.on_stay_zone.emit(self, feature)
+            __SignalBus.on_stay_zone.emit(self, entity)
         else:
-            _in_zones.erase(feature)
-            __SignalBus.on_exit_zone.emit(self, feature)
+            _in_zones.erase(entity)
+            __SignalBus.on_exit_zone.emit(self, entity)

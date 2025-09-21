@@ -231,7 +231,7 @@ func _execute_effect_on_targets() -> void:
         match _effect_mode:
             BattleCardPrimaryEffect.EffectMode.Damage:
                 await target.hurt(effect_magnitude)
-                if !target.is_alive():
+                if !target.is_alive_and_has_health():
                     if _allies.has(target):
                         _allies.erase(target)
                     if _enemies.has(target):
@@ -257,40 +257,40 @@ func use_robot(robot: Robot) -> void:
     validate_health()
 
 func get_health() -> int:
-    return _robot._data.health
+    return _robot.health
 
 func get_max_health() -> int:
     return _robot.model.max_hp
 
 func get_healthiness() -> float:
-    return 0
+    return _robot.health / float(_robot.model.max_hp)
 
 func validate_health() -> void:
-    if _robot._data.health > _robot.model.max_hp:
-        _robot._data.health = _robot.model.max_hp
-        __SignalBus.on_entity_heal.emit(self, 0, _robot._data.health, false)
-    elif !_robot._data.alive:
-        _robot._data.health = 0
+    if _robot.health > _robot.model.max_hp:
+        _robot.health = _robot.model.max_hp
+        __SignalBus.on_entity_heal.emit(self, 0, _robot.health, false)
+    elif !_robot.alive:
+        _robot.health = 0
 
-func is_alive() -> bool:
-    return _robot._data.alive && _robot._data.health > 0
+func is_alive_and_has_health() -> bool:
+    return _robot.alive && _robot.health > 0
 
 func _hurt(amount: int) -> void:
-    amount = mini(_robot._data.health, amount)
-    _robot._data.health -= amount
-    _robot._data.accumualated_damage += amount
-    __SignalBus.on_entity_hurt.emit(self, amount, _robot._data.health)
+    amount = mini(_robot.health, amount)
+    _robot.health -= amount
+    _robot.accumulated_damage += amount
+    __SignalBus.on_entity_hurt.emit(self, amount, _robot.health)
 
-    if _robot._data.health == 0:
+    if _robot.health == 0:
         # We don't set alive to false here, instead we kill the robot manually when we get to end of battle
         __SignalBus.on_entity_death.emit(self)
 
 func _heal(amount: int) -> void:
-    var raw_new: int = _robot._data.health + amount
+    var raw_new: int = _robot.health + amount
     var overshoot: bool = raw_new > _robot.model.max_hp
-    _robot._data.health = min(raw_new, _robot.model.max_hp)
+    _robot.health = min(raw_new, _robot.model.max_hp)
 
-    __SignalBus.on_entity_heal.emit(self, amount - (raw_new - _robot._data.health), _robot._data.health, overshoot)
+    __SignalBus.on_entity_heal.emit(self, amount - (raw_new - _robot.health), _robot.health, overshoot)
 
 func get_entity_name() -> String:
     return tr("NO_ROBOT_NAME") if _robot == null else _robot.given_name

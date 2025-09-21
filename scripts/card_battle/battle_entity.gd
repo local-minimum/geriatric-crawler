@@ -20,7 +20,7 @@ func get_healthiness() -> float:
 func validate_health() -> void:
     pass
 
-func is_alive() -> bool:
+func is_alive_and_has_health() -> bool:
     return false
 
 var _shields: Array[int] = []

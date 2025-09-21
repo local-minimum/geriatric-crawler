@@ -34,6 +34,26 @@ var given_name: String:
         if !_has_data:
             robot_id = value
 
+var health: int:
+    get(): return _data.health
+    set(value):
+        _data.health = clamp(value, 0, model.max_hp)
+
+var alive: bool:
+    get():
+        return _data.alive
+    set(value):
+        if value:
+            _data.alive = true
+        else:
+            _data.alive = false
+            _data.health = 0
+
+var accumulated_damage: int:
+    get(): return _data.accumulated_damage
+    set(value):
+        _data.accumulated_damage = value
+
 func _ready() -> void:
     _sync_player_transportation_mode()
 

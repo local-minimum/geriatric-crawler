@@ -1,7 +1,13 @@
-[gd_scene load_steps=2 format=3 uid="uid://bo7t6vucyhsis"]
+[gd_scene load_steps=3 format=3 uid="uid://bo7t6vucyhsis"]
 
 [ext_resource type="Script" uid="uid://cucjl8ggwmr27" path="res://scripts/gridded_level/level_zone.gd" id="1_3mdkm"]
+[ext_resource type="Script" uid="uid://nwboqus623bv" path="res://scripts/gridded_level/zone_damage.gd" id="2_0t4ii"]
 
 [node name="Radioactive Zone" type="Node"]
 script = ExtResource("1_3mdkm")
 metadata/_custom_type_script = "uid://cucjl8ggwmr27"
+
+[node name="ZoneDamage" type="Node" parent="." node_paths=PackedStringArray("_zone")]
+script = ExtResource("2_0t4ii")
+_zone = NodePath("..")
+metadata/_custom_type_script = "uid://nwboqus623bv"

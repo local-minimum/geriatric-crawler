@@ -153,7 +153,7 @@ func enter_battle(battle_trigger: BattleModeTrigger, player_robot: Robot) -> voi
 #region PHASE DRAW AND SLOT CARDS
 func round_start_prepare_hands() -> void:
     for enemy: BattleEnemy in _enemies:
-        if !enemy.is_alive():
+        if !enemy.is_alive_and_has_health():
             continue
 
         enemy.prepare_hand()
@@ -340,7 +340,7 @@ func _next_enemy_initiative() -> int:
     if _next_active_enemy >= _enemies.size() || _enemies[_next_active_enemy] == null:
         return -1
     var enemy: BattleEnemy = _enemies[_next_active_enemy]
-    if !enemy.is_alive():
+    if !enemy.is_alive_and_has_health():
         return -1
 
     return enemy.initiative()
@@ -360,7 +360,7 @@ func _handle_player_death(entity: BattleEntity) -> void:
 func _has_alive_enemies() -> bool:
     return _enemies.any(
         func (e: BattleEnemy) -> bool:
-            return e.is_alive()
+            return e.is_alive_and_has_health()
     )
 
 func _handle_enemy_death(entity: BattleEntity) -> void:
@@ -385,11 +385,11 @@ func _remembers_previous_end_of_round() -> bool: return robot.get_skill_level(Ro
 func _remembers_to_next_battle() -> bool: return robot.get_skill_level(RobotAbility.SKILL_HAND_MEMORY) > 2
 
 func _clean_up_round() -> void:
-    var battle_continues: bool = battle_player.is_alive() && _has_alive_enemies()
+    var battle_continues: bool = battle_player.is_alive_and_has_health() && _has_alive_enemies()
 
     _enemies = _enemies.filter(
         func (enemy: BattleEnemy) -> bool:
-            if enemy.is_alive():
+            if enemy.is_alive_and_has_health():
                 return true
 
             __SignalBus.on_entity_leave_battle.emit(enemy, !battle_continues)
@@ -430,11 +430,11 @@ func exit_battle() -> void:
         previous_card = null
 
     for enemy: BattleEnemy in _enemies:
-        if enemy.is_alive():
+        if enemy.is_alive_and_has_health():
             __SignalBus.on_entity_leave_battle.emit(enemy, true)
         enemy.clean_up_battle()
 
-    if battle_player.is_alive():
+    if battle_player.is_alive_and_has_health():
         __SignalBus.on_entity_leave_battle.emit(battle_player, true)
 
     battle_player.clean_up_battle()
@@ -456,7 +456,7 @@ func exit_battle() -> void:
         trigger.complete()
 
     trigger = null
-    if battle_player.is_alive():
+    if battle_player.is_alive_and_has_health():
         robot.complete_fight()
     else:
         robot.kill()

@@ -6,7 +6,7 @@ var given_name: String
 var storage_location: Spaceship.Room
 var excursions: int
 var health: int
-var accumualated_damage: int
+var accumulated_damage: int
 var fights: int
 var alive: bool = true
 var obtained_upgrades: Array[RobotAbility]
@@ -35,6 +35,7 @@ func _init(
     self.given_name = given_name
     self.id = RobotsPool._get_next_robot_id() if id.is_empty() else id
     self.health = model.max_hp
+    print_debug("[Robot Data] %s (%s) given %s health" % [given_name, self.id, self.health])
 
 func to_save() -> Dictionary:
     return {
@@ -46,7 +47,7 @@ func to_save() -> Dictionary:
         FIGHTS_KEY: fights,
         EXCURSIONS_KEY: excursions,
         HEALTH_KEY: health,
-        ACCUMULATED_DAMAGE_KEY: accumualated_damage,
+        ACCUMULATED_DAMAGE_KEY: accumulated_damage,
         ABILITIES_KEY: obtained_upgrades.map(func (ability: RobotAbility) -> String: return ability.full_id()),
         OBTAINED_CARDS_KEY: obtained_cards.map(func (card: BattleCardData) -> String: return card.id),
     }
@@ -77,7 +78,7 @@ static func from_save(data: Dictionary) -> RobotData:
     robot.storage_location = _storage_location
     robot.excursions = _excursions
     robot.health = _health
-    robot.accumualated_damage = _accumulated_damage
+    robot.accumulated_damage = _accumulated_damage
     robot.fights = _fights
     robot.alive = _alive
 

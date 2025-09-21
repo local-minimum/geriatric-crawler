@@ -101,7 +101,7 @@ func _sync_health(battle_player: BattleEntity) -> void:
     if battle_player == null:
         return
 
-    if battle_player.is_alive():
+    if battle_player.is_alive_and_has_health():
         _health_label.text = "%s/%s %s" % [battle_player.get_health(), battle_player.get_max_health(), tr("HEALTH_POINTS")]
     else:
         _health_label.text = tr("DISEASED").to_upper()

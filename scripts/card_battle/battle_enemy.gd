@@ -64,7 +64,7 @@ func validate_health() -> void:
         _health = max_health
         __SignalBus.on_entity_heal.emit(self, 0, _health, false)
 
-func is_alive() -> bool:
+func is_alive_and_has_health() -> bool:
     return _health > 0
 
 func _hurt(amount: int) -> void:
@@ -186,8 +186,8 @@ func play_actions(
             if !had_effect:
                 push_warning("Card %s's effect %s has no effect" % [card.name, effect])
 
-            enemies = enemies.filter(func (e: BattleEntity) -> bool: return e.is_alive())
-            allies = allies.filter(func (e: BattleEntity) -> bool: return e.is_alive())
+            enemies = enemies.filter(func (e: BattleEntity) -> bool: return e.is_alive_and_has_health())
+            allies = allies.filter(func (e: BattleEntity) -> bool: return e.is_alive_and_has_health())
 
         idx += 1
         previous = card

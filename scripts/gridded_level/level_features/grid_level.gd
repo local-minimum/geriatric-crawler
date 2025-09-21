@@ -127,7 +127,7 @@ func alive_enemies() -> Array[BattleEnemy]:
                 var battle_trigger: BattleModeTrigger = encounter.effect
 
                 for enemy: BattleEnemy in battle_trigger.enemies:
-                    if enemy.is_alive():
+                    if enemy.is_alive_and_has_health():
                         enemies.append(enemy)
 
     return enemies

@@ -1,11 +1,6 @@
 extends Resource
 class_name RobotAbility
 
-## LVL 1: Small suit bonus, LVL 2: Medium, LVL 3: Large
-const SKILL_SUIT: String = "suits"
-## LVL 1: Rank bonus, LVL 2: Also remember last round final rank, LVL 3: Larger bonus and remember until next battle
-const SKILL_RANK: String = "rank"
-
 ## LVL 0: Only floors, LVL 1: Stairs/Ladders, LVL 2: Wallwalking, LVL 3: Ceiling too
 const SKILL_CLIMBING: String = "climbing"
 
@@ -18,11 +13,19 @@ const SKILL_MAPPING: String = "mapping"
 ## LVL 1: Detect enemies, LVL 2: Detect enemies & hidden objects
 const SKILL_SONAR: String = "sonar"
 
+## Damage reduction from zones
+const SKILL_HARDENED: String = "hardened"
+
 ## LVL 1-4: Increasing proficiency
 const SKILL_BYPASS: String = "bypass"
 
 ## LVL 1: Minimum tools
 const SKILL_HACKING_BOMBS: String = "hacking-bombs"
+
+## LVL 1: Small suit bonus, LVL 2: Medium, LVL 3: Large
+const SKILL_SUIT: String = "suits"
+## LVL 1: Rank bonus, LVL 2: Also remember last round final rank, LVL 3: Larger bonus and remember until next battle
+const SKILL_RANK: String = "rank"
 
 ## Handsize is level + 4
 const SKILL_HAND_SIZE: String = "hand"
