@@ -33,6 +33,9 @@ func _ready() -> void:
     if __SignalBus.on_robot_loaded.connect(_handle_on_robot_loaded) != OK:
         push_error("Failed to connect on robot loaded")
 
+    if __SignalBus.on_robot_exploration_damage.connect(_handle_robot_exploration_damage) != OK:
+        push_error("Failed to connect robot exploration damage")
+
 
     _connect_player(_exploration_ui.level.player, _exploration_ui.battle.battle_player)
 
@@ -51,6 +54,9 @@ func _gui_input(event: InputEvent) -> void:
 func _click_robot() -> void:
     _exploration_ui.inspect_robot()
 
+func _handle_robot_exploration_damage(robot: Robot, _damage: int) -> void:
+    _sync_robot(robot)
+
 func _handle_new_level(level: GridLevel) -> void:
     if _exploration_ui.level != level:
         _exploration_ui.level = level
@@ -58,17 +64,17 @@ func _handle_new_level(level: GridLevel) -> void:
     _handle_new_player(level, level.player)
 
 func _handle_new_player(_level: GridLevel, player: GridPlayer) -> void:
-    _sync_robot.call_deferred(player.robot, _exploration_ui.battle.battle_player)
+    _sync_robot.call_deferred(player.robot)
 
-func _connect_player(grid_player: GridPlayer, battle_player: BattlePlayer, omit_connecting_robot: bool = false) -> void:
+func _connect_player(grid_player: GridPlayer, _battle_player: BattlePlayer, omit_connecting_robot: bool = false) -> void:
 
     if !omit_connecting_robot:
         # sync robot also called from new player
         _handle_new_player(_exploration_ui.level, _exploration_ui.level.player)
     else:
-        _sync_robot.call_deferred(grid_player.robot, battle_player)
+        _sync_robot.call_deferred(grid_player.robot)
 
-func _sync_robot(robot: Robot, battle_player: BattlePlayer) -> void:
+func _sync_robot(robot: Robot) -> void:
     _name_label.text = robot.given_name
     _model_label.text = robot.model.model_name if robot.model != null else RobotModel.UNKNOWN_MODEL
 
@@ -76,11 +82,8 @@ func _sync_robot(robot: Robot, battle_player: BattlePlayer) -> void:
 
     if robot.model == null:
         _health_label.text = "0/0 %s" % [tr("HEALTH_POINTS")]
-    elif battle_player == null:
-        push_warning("Assuming full health because battle player not set")
-        _health_label.text = "%s/%s %s" % [robot.model.max_hp, robot.model.max_hp, tr("HEALTH_POINTS")]
     else:
-        _sync_health(battle_player)
+        _health_label.text = "%s/%s %s" % [robot.health, robot.model.max_hp, tr("HEALTH_POINTS")]
 
 func _sync_level(robot: Robot) -> void:
     if robot.must_upgrade():

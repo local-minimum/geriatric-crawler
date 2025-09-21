@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="RobotAbility" load_steps=2 format=3 uid="uid://dx6hl8jgrej6w"]
+
+[ext_resource type="Script" uid="uid://0qri7op4mfno" path="res://scripts/robot_ability.gd" id="1_3ckjx"]
+
+[resource]
+script = ExtResource("1_3ckjx")
+id = "hardened"
+skill_level = 3
+skill_name = "ABILITY_HARDENED_NAME"
+ability_type = 0
+description = "ABILITY_HARDENED_3_DESC"
+metadata/_custom_type_script = "uid://0qri7op4mfno"

@@ -33,8 +33,8 @@ func _handle_player_damage(player: GridPlayer) -> void:
     if damage == 0:
         return
 
-    print_debug("[Zone Damage] %s has health %s (%s)" % [player.robot.given_name, player.robot.health, player.robot.model.max_hp])
     player.robot.health -= damage
-    print_debug("[Zone Damage] Did %s damage to %s which ended up with health %s (%s)" % [damage, player.robot.given_name, player.robot.health, player.robot.model.max_hp])
+    __SignalBus.on_robot_exploration_damage.emit(player.robot, damage)
+
     if player.robot.health == 0:
         player.robot.kill()

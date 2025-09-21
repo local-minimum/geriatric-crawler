@@ -19,10 +19,20 @@ class_name RobotInspectionUI
 @export var _exploration_inventory: ExplorationInventoryUI
 @export var _exploration_keys: ExplorationKeysUI
 
+var _player: GridPlayer
+var _toggled_cinematic: bool
+
 func _ready() -> void:
     visible = false
 
-func inspect(robot: Robot, battle_player: BattlePlayer, credits: int) -> void:
+func inspect(player: GridPlayer, robot: Robot, battle_player: BattlePlayer, credits: int) -> void:
+    _player = player
+    if player.cinematic:
+        _toggled_cinematic = false
+    else:
+        _toggled_cinematic = true
+        player.cinematic = true
+
     _name_label.text = robot.given_name
     _model_label.text = "%s: %s" % [tr("MODEL"), robot.model.model_name if robot.model.model_name else RobotModel.UNKNOWN_MODEL]
 
@@ -87,3 +97,6 @@ func _on_tab_bar_tab_changed(tab:int) -> void:
 
 func _on_close_button_pressed() -> void:
     visible = false
+
+    if _player != null && _toggled_cinematic:
+        _player.cinematic = false

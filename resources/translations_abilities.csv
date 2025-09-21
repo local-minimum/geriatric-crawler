@@ -42,3 +42,7 @@ ABILITY_UPGRADES_1_DESC,Can progress on next tier before buying upgrade,Kan saml
 ABILITY_UPGRADES_2_DESC,Can skip buying upgrade tiers,Kan hoppa över att köpa uppgradering på en nivå
 ABILITY_UPGRADES_3_DESC,Can buy multiple upgrades on same tier,Kan köpa flera uppgraderingar på samma nivå
 ABILITY_UPGRADES_4_DESC,Can buy unlimited upgrades for unlocked tiers,Kan köpa obegränsat antal uppgraderingar
+ABILITY_HARDENED_NAME,Hardened,Förstärkt
+ABILITY_HARDENED_1_DESC,Lower environmental damage by one,Minskar omvärldsskada med ett
+ABILITY_HARDENED_2_DESC,Lower environmental damage by two,Minskar omvärldsskada med två
+ABILITY_HARDENED_3_DESC,Lower environmental damage by three,Minskar omvärldsskada med tre
