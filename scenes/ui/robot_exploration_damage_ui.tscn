@@ -1,0 +1,27 @@
+[gd_scene load_steps=5 format=3 uid="uid://ia54ogrqwfbr"]
+
+[ext_resource type="Texture2D" uid="uid://cmmgkph3nphlc" path="res://sprites/robot-damage-effect.png" id="1_lnsh5"]
+[ext_resource type="Shader" uid="uid://bwpxmd8hdsv8m" path="res://shaders/canvas_damage_effect.gdshader" id="1_s551k"]
+[ext_resource type="Script" uid="uid://bb1c0ay4ratdg" path="res://scripts/ui/exploration_damage_ui.gd" id="2_s551k"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_aqis2"]
+shader = ExtResource("1_s551k")
+shader_parameter/stencil = ExtResource("1_lnsh5")
+shader_parameter/stencil_progress = 0.2
+shader_parameter/noise_color = Color(0.76, 0.4104, 0.42788, 0.796078)
+shader_parameter/texture_color = Color(0.758278, 0.109728, 0.108142, 0.905882)
+shader_parameter/noise_speed = 1.5
+shader_parameter/noise_bias = 0.99
+
+[node name="Robot Exploration Damage UI" type="ColorRect"]
+material = SubResource("ShaderMaterial_aqis2")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("2_s551k")
+stencil_fade_in_duration = 0.1
+stencil_fade_out_duration = 0.5
+noise_fade_in_duration = 0.05
