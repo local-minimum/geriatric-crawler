@@ -1,4 +1,4 @@
-extends Node
+extends Node3D
 class_name LevelZone
 
 enum EntityFilter { ENTITIES, PLAYER, ENEMIES }

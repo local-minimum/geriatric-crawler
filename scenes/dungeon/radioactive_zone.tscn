@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://cucjl8ggwmr27" path="res://scripts/gridded_level/level_zone.gd" id="1_3mdkm"]
 [ext_resource type="Script" uid="uid://nwboqus623bv" path="res://scripts/gridded_level/zone_damage.gd" id="2_0t4ii"]
 
-[node name="Radioactive Zone" type="Node"]
+[node name="Radioactive Zone" type="Node3D"]
 script = ExtResource("1_3mdkm")
 metadata/_custom_type_script = "uid://cucjl8ggwmr27"
 

@@ -11,6 +11,9 @@ func _enter_tree() -> void:
     if __SignalBus.on_stay_zone.connect(_handle_stay_zone) != OK:
         push_error("Failed to connect stay zone")
 
+func _ready() -> void:
+    if _zone == null:
+        push_warning("%s does not have a configured zone and thus be useless" % name)
 
 func _handle_enter_zone(zone: LevelZone, entity: GridNodeFeature) -> void:
     if zone != _zone:
