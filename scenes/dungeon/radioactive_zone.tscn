@@ -17,4 +17,5 @@ metadata/_custom_type_script = "uid://nwboqus623bv"
 script = ExtResource("3_wlcb8")
 zone = NodePath("..")
 attachment = 1
+effect_path = "res://scenes/dungeon/effects/wall_ooze.tscn"
 metadata/_custom_type_script = "uid://pjier4k5y3rs"

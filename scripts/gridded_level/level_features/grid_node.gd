@@ -72,7 +72,9 @@ func get_ramp(direction: CardinalDirections.CardinalDirection) -> GridRamp:
 
 enum NodeSideState { NONE, SOLID, ILLUSORY, DOOR }
 func has_side(direction: CardinalDirections.CardinalDirection) -> NodeSideState:
+    _init_sides_and_anchors()
     _init_doors()
+
     if _doors.has(direction):
         return NodeSideState.DOOR
 

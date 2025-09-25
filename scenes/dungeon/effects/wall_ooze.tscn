@@ -1,6 +1,57 @@
-[gd_scene format=3 uid="uid://cboj423mtno46"]
+[gd_scene load_steps=9 format=3 uid="uid://cboj423mtno46"]
+
+[ext_resource type="Texture2D" uid="uid://bcvr7fda7y5uh" path="res://sprites/spark2.png" id="1_jciot"]
+
+[sub_resource type="Gradient" id="Gradient_jciot"]
+offsets = PackedFloat32Array(0, 0.0555556, 0.82906, 1)
+colors = PackedColorArray(0, 0, 0, 0, 1, 1, 1, 1, 0.98, 0.98, 0.98, 1, 0.03, 0.03, 0.03, 0)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_7qof4"]
+gradient = SubResource("Gradient_jciot")
+
+[sub_resource type="Curve" id="Curve_jciot"]
+_data = [Vector2(0, 0.832709), 0.0, 1.49243, 0, 0, Vector2(0.23913, 1), 0.0, 0.0, 0, 0, Vector2(1, 0.22438), -0.871174, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="CurveTexture" id="CurveTexture_7qof4"]
+curve = SubResource("Curve_jciot")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_ix4wq"]
+emission_shape = 3
+emission_box_extents = Vector3(4, 0.1, 4)
+direction = Vector3(0, 1, 0)
+initial_velocity_min = 0.5
+initial_velocity_max = 0.7
+orbit_velocity_min = 9.49949e-08
+orbit_velocity_max = 9.49949e-08
+radial_velocity_min = -0.100022
+radial_velocity_max = 0.0999776
+gravity = Vector3(0, 0, 0)
+linear_accel_min = -2.23517e-06
+linear_accel_max = -2.23517e-06
+radial_accel_min = -2.23517e-06
+radial_accel_max = -2.23517e-06
+scale_curve = SubResource("CurveTexture_7qof4")
+color_ramp = SubResource("GradientTexture1D_7qof4")
+turbulence_noise_strength = 3.53
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7qof4"]
+transparency = 1
+blend_mode = 1
+vertex_color_use_as_albedo = true
+albedo_color = Color(0.0966, 0.46, 0.31464, 0.803922)
+albedo_texture = ExtResource("1_jciot")
+
+[sub_resource type="QuadMesh" id="QuadMesh_jciot"]
+material = SubResource("StandardMaterial3D_7qof4")
+orientation = 1
 
 [node name="WallOoze" type="Node3D"]
-transform = Transform3D(2.5, 0, 0, 0, 0.1, 0, 0, 0, 2.5, 0, 0, 0)
+transform = Transform3D(2.5, 0, 0, 0, 1, 0, 0, 0, 2.5, 0, 0, 0)
 
 [node name="GPUParticles3D" type="GPUParticles3D" parent="."]
+amount = 64
+lifetime = 6.0
+local_coords = true
+process_material = SubResource("ParticleProcessMaterial_ix4wq")
+draw_pass_1 = SubResource("QuadMesh_jciot")

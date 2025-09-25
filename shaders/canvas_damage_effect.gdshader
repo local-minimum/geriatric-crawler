@@ -18,9 +18,9 @@ void fragment() {
 	// Called for every pixel the material is visible on.
     float tex_alfa = texture(stencil, UV).a;
     float edge_distance = min(min(UV.x, UV.y) * 2.0, min(1.0 - UV.x, 1.0 - UV.y) * 2.0);
-    
+
     float noise = sin(hash(UV) * 2.0 * PI + TIME * noise_speed);
-    
+
     if (edge_distance < stencil_progress) {
         COLOR = texture(stencil, UV) * texture_color;
         if (COLOR.a == 0.0 && noise > noise_bias) {
@@ -31,7 +31,7 @@ void fragment() {
             COLOR = noise_color;
         } else {
             COLOR = vec4(0, 0, 0, 0);
-        }     
+        }
     }
 }
 
