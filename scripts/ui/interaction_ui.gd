@@ -39,7 +39,7 @@ func _enter_tree() -> void:
         push_error("Failed to connect update input mode")
 
 func _ready() -> void:
-    _mode = __BindingHints.mode
+    _mode = (__BindingHints as BindingHints).mode
 
 func _handle_update_input_mode(mode: BindingHints.InputMode) -> void:
     _mode = mode

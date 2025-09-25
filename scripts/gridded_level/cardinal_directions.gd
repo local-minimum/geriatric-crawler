@@ -318,12 +318,29 @@ static func direction_to_axis_parameter_name(direction: CardinalDirection) -> St
             print_stack()
             return ""
 
+## Assuming north side is the identity rotation
 static func direction_to_planar_rotation(direction: CardinalDirection) -> Quaternion:
     match direction:
         CardinalDirection.NORTH: return Quaternion.IDENTITY
         CardinalDirection.WEST: return Quaternion.from_euler(Vector3(0, PI * 0.5, 0))
         CardinalDirection.SOUTH: return Quaternion.from_euler(Vector3(0, PI, 0))
         CardinalDirection.EAST: return Quaternion.from_euler(Vector3(0, PI * -0.5, 0))
+        _:
+            push_error(
+                "Illegal calculation, %s isn't a planar cardinal direction" % direction
+            )
+            print_stack()
+            return Quaternion.IDENTITY
+
+## Assuming north side is the identity rotation
+static func direction_to_any_rotation(direction: CardinalDirection) -> Quaternion:
+    match direction:
+        CardinalDirection.NORTH: return Quaternion.IDENTITY
+        CardinalDirection.WEST: return Quaternion.from_euler(Vector3(0, PI * 0.5, 0))
+        CardinalDirection.SOUTH: return Quaternion.from_euler(Vector3(0, PI, 0))
+        CardinalDirection.EAST: return Quaternion.from_euler(Vector3(0, PI * -0.5, 0))
+        CardinalDirection.DOWN: return Quaternion.from_euler(Vector3(PI * -0.5, 0, 0))
+        CardinalDirection.UP: return Quaternion.from_euler(Vector3(PI * 0.5, 0, 0))
         _:
             push_error(
                 "Illegal calculation, %s isn't a planar cardinal direction" % direction

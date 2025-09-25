@@ -209,7 +209,7 @@ func _handle_deploy_saved() -> void:
 
     # TODO: Handle failing to transition scenes
     print_debug("[Mission Ops] Trigger scene swapping")
-    if !__SceneSwapper.transition_to_next_scene():
+    if !(__SceneSwapper as SceneSwapper).transition_to_next_scene():
         _handle_fail_transition()
 
     __SignalBus.on_load_fail.disconnect(_handle_failed_load)

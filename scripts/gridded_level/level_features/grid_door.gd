@@ -40,8 +40,7 @@ func get_side() -> CardinalDirections.CardinalDirection:
 
 @export var _closed_animation: String = "Closed"
 
-@export
-var block_traversal_anchor_sides: Array[CardinalDirections.CardinalDirection]
+@export var block_traversal_anchor_sides: Array[CardinalDirections.CardinalDirection]
 
 ## If door is locked, this identifies what key unlocks it, omit the universal key-prefix
 @export var key_id: String

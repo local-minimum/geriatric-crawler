@@ -1,21 +1,17 @@
 extends Node3D
 class_name GridAnchor
 
-@export
-var direction: CardinalDirections.CardinalDirection = CardinalDirections.CardinalDirection.DOWN
+@export var direction: CardinalDirections.CardinalDirection = CardinalDirections.CardinalDirection.DOWN
 
-@export
-var required_transportation_mode: TransportationMode
+@export var required_transportation_mode: TransportationMode
 
 ## If an entity cannot anchor, does it mean it should pass through the anchor.
 ## Example if the anchor is the down (or up) direction and is a water surface
 ## and the entity cannot swim, it should sink through the anchor.
-@export
-var pass_through_on_refuse: bool
+@export var pass_through_on_refuse: bool
 
 ## If it is possible to pass through the anchor into the node
-@export
-var pass_through_reverse: bool
+@export var pass_through_reverse: bool
 
 var _node_side: GridNodeSide
 

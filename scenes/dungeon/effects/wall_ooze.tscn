@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://cboj423mtno46"]
+
+[node name="WallOoze" type="Node3D"]
+transform = Transform3D(2.5, 0, 0, 0, 0.1, 0, 0, 0, 2.5, 0, 0, 0)
+
+[node name="GPUParticles3D" type="GPUParticles3D" parent="."]
