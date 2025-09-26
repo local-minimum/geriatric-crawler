@@ -3,8 +3,8 @@
 [ext_resource type="Texture2D" uid="uid://hhi77g3tufa8" path="res://sprites/gas_particle.png" id="1_jciot"]
 
 [sub_resource type="Curve" id="Curve_7qof4"]
-_data = [Vector2(0, 0.229261), 0.0, 0.0, 0, 0, Vector2(0.298419, 0.8945), -1.1217, -1.1217, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
-point_count = 3
+_data = [Vector2(0, 0.229261), 0.0, 0.0, 0, 0, Vector2(0.298419, 0.8945), -1.1217, -1.1217, 0, 0, Vector2(0.588933, 0.108797), -0.362135, -0.362135, 0, 0, Vector2(1, 0), -0.0935659, 0.0, 0, 0]
+point_count = 4
 
 [sub_resource type="CurveTexture" id="CurveTexture_tyrac"]
 texture_mode = 1
@@ -65,7 +65,7 @@ size = 0.2
 [node name="Main" type="GPUParticles3D" parent="."]
 transform = Transform3D(1.91069e-15, -4.37114e-08, -1, -1, -4.37114e-08, 0, -4.37114e-08, 1, -4.37114e-08, 0, 0, 0)
 amount = 128
-lifetime = 4.0
+lifetime = 10.0
 local_coords = true
 trail_enabled = true
 trail_lifetime = 3.5
