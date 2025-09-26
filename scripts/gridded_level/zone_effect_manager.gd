@@ -28,7 +28,6 @@ func _attach_to_node() -> void:
 func _attach_to_side() -> void:
     var scene: PackedScene = load(effect_path)
     for node: GridNode in zone.nodes:
-        var level: GridLevel = node.get_level()
         for direction: CardinalDirections.CardinalDirection in CardinalDirections.ALL_DIRECTIONS:
             var side: Node3D
             match node.has_side(direction):
@@ -57,12 +56,4 @@ func _attach_to_side() -> void:
 
             # Assuming north is identiy rotation
             # Assuming center is node 0,0,0 (meaning floor center)
-            side.global_rotation = CardinalDirections.direction_to_any_rotation(direction).get_euler()
-
-            if direction == CardinalDirections.CardinalDirection.UP:
-                side.global_position += Vector3.UP * level.node_size.y
-            elif CardinalDirections.is_planar_cardinal(direction):
-                side.global_position += (
-                    Vector3.UP * level.node_size.y * 0.5 +
-                    CardinalDirections.direction_to_vector(direction) * level.node_size * 0.5
-                )
+            effect.global_rotation = CardinalDirections.direction_to_any_rotation(direction).get_euler()
