@@ -183,6 +183,18 @@ func get_closest_grid_node_side_by_position(pos: Vector3) -> CardinalDirections.
     # print_debug("%s -> %s" % [pos, CardinalDirections.name(CardinalDirections.principal_direction(pos))])
     return CardinalDirections.principal_direction(pos)
 
+func has_active_zone_for(coordintes: Vector3i, predicate: Callable) -> bool:
+    return zones.any(
+        func (zone: LevelZone) -> bool:
+            return zone.visible && zone.covers(coordintes) && predicate.call(zone)
+    )
+
+func get_active_zones(coordinates: Vector3i) -> Array[LevelZone]:
+    return zones.filter(
+        func (zone: LevelZone) -> bool:
+            return zone.covers(coordinates)
+    )
+
 func _process(_delta: float) -> void:
     if emit_loaded:
         emit_loaded = false

@@ -57,6 +57,7 @@ distance_fade_max_distance = 3.0
 
 [sub_resource type="RibbonTrailMesh" id="RibbonTrailMesh_7qof4"]
 material = SubResource("StandardMaterial3D_jciot")
+shape = 0
 size = 0.2
 
 [node name="WallOoze" type="Node3D"]

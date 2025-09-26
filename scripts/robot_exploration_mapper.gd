@@ -94,6 +94,9 @@ func _connect_new_player(level: GridLevel, player: GridPlayer) -> void:
         _handle_move_end(_player)
         print_debug("[Exploration Mapper] Connected %s to map" % _player)
 
+static func _limits_mapping(zone: LevelZone) -> bool:
+    return zone.limits_mapping
+
 func _handle_move_end(entity: GridEntity) -> void:
     if entity is not GridPlayer || entity != _player || entity == null:
         return
@@ -103,10 +106,7 @@ func _handle_move_end(entity: GridEntity) -> void:
 
     var level: GridLevel = _player.get_level()
 
-    if level.zones.any(
-        func (zone: LevelZone) -> bool:
-            return zone.limits_mapping && zone.covers(coords)
-    ):
+    if level.has_active_zone_for(coords, _limits_mapping):
         _update_map()
         return
 
@@ -120,10 +120,7 @@ func _handle_move_end(entity: GridEntity) -> void:
         if node != null:
             _enter_new_coordinates(coords)
 
-            if level.zones.any(
-                func (zone: LevelZone) -> bool:
-                    return zone.limits_mapping && zone.covers(coords)
-            ):
+            if level.has_active_zone_for(coords, _limits_mapping):
                 _update_map()
                 return
 
@@ -151,10 +148,7 @@ func _handle_move_end(entity: GridEntity) -> void:
 
                 if node.may_exit(_player, _player.look_direction, true, true):
 
-                    if !level.zones.any(
-                        func (zone: LevelZone) -> bool:
-                            return zone.limits_mapping && zone.covers(coords)
-                    ):
+                    if level.has_active_zone_for(coords, _limits_mapping):
                         coords = CardinalDirections.translate(coords, _player.look_direction)
 
                         if level.has_grid_node(coords):
@@ -169,10 +163,7 @@ func _handle_move_end(entity: GridEntity) -> void:
                 _enter_new_coordinates(coords)
 
                 if node.may_exit(_player, _player.look_direction, true, true):
-                    if !level.zones.any(
-                        func (zone: LevelZone) -> bool:
-                            return zone.limits_mapping && zone.covers(coords)
-                    ):
+                    if level.has_active_zone_for(coords, _limits_mapping):
                         coords = CardinalDirections.translate(coords, _player.look_direction)
 
                         if level.has_grid_node(coords):

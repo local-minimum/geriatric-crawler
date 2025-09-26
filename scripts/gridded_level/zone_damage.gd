@@ -5,6 +5,14 @@ class_name ZoneDamage
 @export var _min_damage: int = 1
 @export var _max_damage: int = 1
 
+var can_damage: bool:
+    get():
+        return _min_damage < 0 || _max_damage > 0
+
+var damage_range: Array[int]:
+    get():
+        return [_min_damage, _max_damage]
+
 func _enter_tree() -> void:
     if __SignalBus.on_enter_zone.connect(_handle_enter_zone) != OK:
         push_error("Failed to connect enter zone")
