@@ -101,7 +101,14 @@ func _handle_move_end(entity: GridEntity) -> void:
     var coords: Vector3i = entity.coordinates()
     _enter_new_coordinates(coords)
 
-    var level:GridLevel = _player.get_level()
+    var level: GridLevel = _player.get_level()
+
+    if level.zones.any(
+        func (zone: LevelZone) -> bool:
+            return zone.limits_mapping && zone.covers(coords)
+    ):
+        _update_map()
+        return
 
     var left: CardinalDirections.CardinalDirection = CardinalDirections.yaw_ccw(_player.look_direction, _player.down)[0]
     var right: CardinalDirections.CardinalDirection = CardinalDirections.invert(left)
@@ -112,6 +119,13 @@ func _handle_move_end(entity: GridEntity) -> void:
 
         if node != null:
             _enter_new_coordinates(coords)
+
+            if level.zones.any(
+                func (zone: LevelZone) -> bool:
+                    return zone.limits_mapping && zone.covers(coords)
+            ):
+                _update_map()
+                return
 
             if node.may_exit(_player, left, true, true):
                 var next_coords: Vector3i = CardinalDirections.translate(coords, left)
@@ -136,10 +150,15 @@ func _handle_move_end(entity: GridEntity) -> void:
                 _enter_new_coordinates(coords)
 
                 if node.may_exit(_player, _player.look_direction, true, true):
-                    coords = CardinalDirections.translate(coords, _player.look_direction)
 
-                    if level.has_grid_node(coords):
-                        _enter_new_coordinates(coords)
+                    if !level.zones.any(
+                        func (zone: LevelZone) -> bool:
+                            return zone.limits_mapping && zone.covers(coords)
+                    ):
+                        coords = CardinalDirections.translate(coords, _player.look_direction)
+
+                        if level.has_grid_node(coords):
+                            _enter_new_coordinates(coords)
 
 
         if _player.get_grid_node().may_exit(_player, right, true, true):
@@ -150,10 +169,14 @@ func _handle_move_end(entity: GridEntity) -> void:
                 _enter_new_coordinates(coords)
 
                 if node.may_exit(_player, _player.look_direction, true, true):
-                    coords = CardinalDirections.translate(coords, _player.look_direction)
+                    if !level.zones.any(
+                        func (zone: LevelZone) -> bool:
+                            return zone.limits_mapping && zone.covers(coords)
+                    ):
+                        coords = CardinalDirections.translate(coords, _player.look_direction)
 
-                    if level.has_grid_node(coords):
-                        _enter_new_coordinates(coords)
+                        if level.has_grid_node(coords):
+                            _enter_new_coordinates(coords)
 
     _update_map()
 

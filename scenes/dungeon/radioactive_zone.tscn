@@ -6,6 +6,7 @@
 
 [node name="Radioactive Zone" type="Node3D"]
 script = ExtResource("1_3mdkm")
+limits_mapping = true
 metadata/_custom_type_script = "uid://cucjl8ggwmr27"
 
 [node name="ZoneDamage" type="Node" parent="." node_paths=PackedStringArray("_zone")]

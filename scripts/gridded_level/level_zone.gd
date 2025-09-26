@@ -5,6 +5,7 @@ enum EntityFilter { ENTITIES, PLAYER, ENEMIES }
 
 @export var filter: EntityFilter = EntityFilter.ENTITIES
 @export var nodes: Array[GridNode]
+@export var limits_mapping: bool
 
 var _in_zones: Array[GridEntity]
 
