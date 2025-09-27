@@ -12,6 +12,7 @@ metadata/_custom_type_script = "uid://cucjl8ggwmr27"
 [node name="ZoneDamage" type="Node" parent="." node_paths=PackedStringArray("_zone")]
 script = ExtResource("2_0t4ii")
 _zone = NodePath("..")
+_max_damage = 2
 metadata/_custom_type_script = "uid://nwboqus623bv"
 
 [node name="ZoneEffectManager" type="Node" parent="." node_paths=PackedStringArray("zone")]
