@@ -86,9 +86,12 @@ theme_override_constants/margin_bottom = 2
 [node name="LinearGaugeUI" type="Control" parent="MarginContainer/VBoxContainer/ColorRect/MarginContainer"]
 layout_mode = 2
 script = ExtResource("3_cj7t8")
+mode = 2
 axis_max = 2.0
 axis_max_padding = 0.2
+box_vertical_padding = 0.15
 linear_latency_threshold = 0.05
+linear_latency_step_factor = 3.0
 latency_seconds = 1.5
 metadata/_custom_type_script = "uid://b2qf0ijhlf7yh"
 
