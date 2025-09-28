@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3 uid="uid://d3iceirfj21qw"]
+[gd_scene load_steps=20 format=3 uid="uid://d3iceirfj21qw"]
 
 [ext_resource type="Script" uid="uid://dng6kx20nqasv" path="res://scripts/ui/exploration_ui.gd" id="1_jvesw"]
 [ext_resource type="Texture2D" uid="uid://37t534r3ua0p" path="res://sprites/kenny game icons/open-xflipped.png" id="2_m3jmt"]
@@ -11,6 +11,7 @@
 [ext_resource type="Texture2D" uid="uid://cev0382nhv46i" path="res://sprites/kenny game icons/arrowUp.png" id="3_rfm22"]
 [ext_resource type="Script" uid="uid://3ce8a8hkpfeg" path="res://scripts/geiger_counter.gd" id="4_6uh6s"]
 [ext_resource type="Texture2D" uid="uid://davhidpjbpjq2" path="res://sprites/kenny game icons/open.png" id="4_eifl5"]
+[ext_resource type="FontFile" uid="uid://bothlw1ybsqx1" path="res://fonts/absolute_10_v1/Absolute 10.ttf" id="4_isccj"]
 [ext_resource type="Texture2D" uid="uid://bowjve07f2wq0" path="res://sprites/kenny game icons/arrowLeft.png" id="5_4stpx"]
 [ext_resource type="Texture2D" uid="uid://c02to5i50bgby" path="res://sprites/kenny game icons/arrowDown.png" id="6_2458l"]
 [ext_resource type="Script" uid="uid://ylartknudqvd" path="res://scripts/ui/isometric_map_ui.gd" id="6_ld1f6"]
@@ -87,12 +88,16 @@ theme_override_constants/margin_bottom = 2
 layout_mode = 2
 script = ExtResource("3_cj7t8")
 mode = 2
-axis_max = 2.0
+axis_max = 4.0
 axis_max_padding = 0.2
 box_vertical_padding = 0.15
 linear_latency_threshold = 0.05
-linear_latency_step_factor = 3.0
+linear_latency_step_factor = 8.0
 latency_seconds = 1.5
+tick_mode = 2
+tick_font = ExtResource("4_isccj")
+tick_label_offset = 1.0
+tick_color = Color(1, 1, 1, 0.443137)
 metadata/_custom_type_script = "uid://b2qf0ijhlf7yh"
 
 [node name="GiegerCounterUI" type="Node" parent="MarginContainer/VBoxContainer/ColorRect/MarginContainer/LinearGaugeUI" node_paths=PackedStringArray("_gauge")]

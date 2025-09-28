@@ -2,6 +2,7 @@ extends Control
 class_name LinearGaugeUI
 
 enum GraphMode { ONLY_VALUE, ONLY_LINES, BOX_RANGE, BOX_RANGE_FROM_ZERO }
+enum TickMode { NONE, TICKS, TICK_WITH_LABELS }
 
 var current_value: float:
     set(value):
@@ -92,6 +93,26 @@ var max_value: float:
         max_value_color = value
         queue_redraw()
 
+@export var tick_mode: TickMode:
+    set(value):
+        tick_mode = value
+        queue_redraw()
+
+@export var tick_font: Font:
+    set(value):
+        tick_font = value
+        queue_redraw()
+
+@export var tick_length: float = 0.2:
+    set(value):
+        tick_length = value
+        queue_redraw()
+
+@export var tick_label_offset: float = -2:
+    set(value):
+        tick_label_offset = value
+        queue_redraw()
+
 @export var tick_color: Color = Color.WHITE_SMOKE:
     set(value):
         tick_color = value
@@ -128,6 +149,50 @@ func _draw() -> void:
                 _draw_line(_hidden_min_value, area_size, min_value_color)
 
     _draw_line(_hidden_current_value, area_size, value_color, 2)
+
+    var tick_step: float = pow(10, floorf(log(_axis_max) / log(10)))
+    var n_ticks: int = floori(_axis_max / tick_step)
+    if n_ticks < 3:
+        tick_step *= 0.5
+    var tick_value: float = ceilf(_axis_min / tick_step) * tick_step
+
+    if tick_step > 0.0:
+        match tick_mode:
+            TickMode.TICKS:
+                while tick_value <= _axis_max:
+                    _draw_line(tick_value, area_size, tick_color, 1.0, 0, tick_length)
+                    tick_value += tick_step
+
+            TickMode.TICK_WITH_LABELS:
+                var font_size: int = floori(area_size.y / 4)
+                var label_anchor_y: float = font_size - tick_label_offset
+
+                while tick_value <= _axis_max:
+                    _draw_line(tick_value, area_size, tick_color, 1.0, 0, tick_length)
+
+                    draw_string(
+                        tick_font,
+                        Vector2(_get_draw_x_value(tick_value, area_size) + 2, label_anchor_y),
+                        _tick_value_to_string(tick_value),
+                        HORIZONTAL_ALIGNMENT_CENTER,
+                        -1,
+                        font_size,
+                        tick_color,
+                    )
+
+                    tick_value += tick_step
+
+
+func _tick_value_to_string(value: float, sig_number_decimals: int = 2) -> String:
+    if value == 0:
+        return "%.*f" % [maxi(0, sig_number_decimals - 1), value]
+
+    var power: int = floori(log(value) / log(10))
+    var decimals: int = maxi(sig_number_decimals - (power + 1), 0)
+    if power < -3 || power > 3:
+        return "%.*fE%s" % [maxi(0, sig_number_decimals - 1), value * pow(10, -power), power]
+
+    return "%.*f" % [decimals, value]
 
 func _draw_line(value: float, area_size: Vector2, color: Color, thickness: float = 1, from: float = 0.0, to: float = 1.0) -> void:
     var x: float = _get_draw_x_value(value, area_size)
