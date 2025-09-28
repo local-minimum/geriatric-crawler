@@ -67,12 +67,12 @@ _exploration_ui = NodePath("../../..")
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="ColorRect" type="ColorRect" parent="MarginContainer/VBoxContainer"]
+[node name="Geiger Counter" type="ColorRect" parent="MarginContainer/VBoxContainer"]
 custom_minimum_size = Vector2(0, 30)
 layout_mode = 2
 color = Color(0.0901961, 0.0901961, 0.0901961, 0.6)
 
-[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/ColorRect"]
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/Geiger Counter"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -84,7 +84,7 @@ theme_override_constants/margin_top = 2
 theme_override_constants/margin_right = 2
 theme_override_constants/margin_bottom = 2
 
-[node name="LinearGaugeUI" type="Control" parent="MarginContainer/VBoxContainer/ColorRect/MarginContainer"]
+[node name="LinearGaugeUI" type="Control" parent="MarginContainer/VBoxContainer/Geiger Counter/MarginContainer"]
 layout_mode = 2
 script = ExtResource("3_cj7t8")
 mode = 2
@@ -100,9 +100,10 @@ tick_label_offset = 1.0
 tick_color = Color(1, 1, 1, 0.443137)
 metadata/_custom_type_script = "uid://b2qf0ijhlf7yh"
 
-[node name="GiegerCounterUI" type="Node" parent="MarginContainer/VBoxContainer/ColorRect/MarginContainer/LinearGaugeUI" node_paths=PackedStringArray("_gauge")]
+[node name="Gieger Counter" type="Node" parent="MarginContainer/VBoxContainer/Geiger Counter/MarginContainer/LinearGaugeUI" node_paths=PackedStringArray("_gauge", "_container")]
 script = ExtResource("4_6uh6s")
 _gauge = NodePath("..")
+_container = NodePath("../../..")
 metadata/_custom_type_script = "uid://3ce8a8hkpfeg"
 
 [node name="Sonar" type="ColorRect" parent="MarginContainer/VBoxContainer"]

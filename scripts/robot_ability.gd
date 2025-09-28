@@ -13,6 +13,9 @@ const SKILL_MAPPING: String = "mapping"
 ## LVL 1: Detect enemies, LVL 2: Detect enemies & hidden objects
 const SKILL_SONAR: String = "sonar"
 
+## Detection radiation
+const SKILL_GEIGER: String = "geiger"
+
 ## Damage reduction from zones
 const SKILL_HARDENED: String = "hardened"
 
@@ -24,6 +27,7 @@ const SKILL_HACKING_BOMBS: String = "hacking-bombs"
 
 ## LVL 1: Small suit bonus, LVL 2: Medium, LVL 3: Large
 const SKILL_SUIT: String = "suits"
+
 ## LVL 1: Rank bonus, LVL 2: Also remember last round final rank, LVL 3: Larger bonus and remember until next battle
 const SKILL_RANK: String = "rank"
 

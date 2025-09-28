@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="RobotModel" load_steps=26 format=3 uid="uid://1ifcryeo70to"]
+[gd_resource type="Resource" script_class="RobotModel" load_steps=27 format=3 uid="uid://1ifcryeo70to"]
 
 [ext_resource type="Script" uid="uid://0qri7op4mfno" path="res://scripts/robot_ability.gd" id="1_1eohl"]
 [ext_resource type="Resource" uid="uid://bu0oc7qbq770" path="res://resources/robot_abilities/battle/slots-1.tres" id="2_sdgkc"]
@@ -7,6 +7,7 @@
 [ext_resource type="Resource" uid="uid://53fx21fdmrck" path="res://resources/robot_abilities/exploration/mapping-4.tres" id="5_4g3uc"]
 [ext_resource type="Resource" uid="uid://dpy5qucyu25fx" path="res://resources/robot_abilities/exploration/bypass-2.tres" id="6_6jabs"]
 [ext_resource type="Resource" uid="uid://brhvmnis6vtk1" path="res://resources/robot_abilities/battle/suits-1.tres" id="7_ln8q2"]
+[ext_resource type="Resource" uid="uid://cuut3mf2br3dx" path="res://resources/robot_abilities/exploration/geiger-1.tres" id="7_sdgkc"]
 [ext_resource type="Resource" uid="uid://bpdab343fo7cq" path="res://resources/robot_abilities/exploration/mapping-1.tres" id="8_tvy22"]
 [ext_resource type="Resource" uid="uid://br0wnot24fw1b" path="res://resources/robot_abilities/battle/memory-1.tres" id="9_mkho0"]
 [ext_resource type="Resource" uid="uid://c2kaiyaateugc" path="res://resources/robot_abilities/battle/slots-2.tres" id="10_hy16j"]
@@ -43,7 +44,7 @@ metadata/_custom_type_script = "uid://jgu3xyjxonbb"
 script = ExtResource("24_3l7vf")
 id = "base-robot"
 model_name = "B100"
-innate_abilities = Array[ExtResource("1_1eohl")]([ExtResource("2_sdgkc"), ExtResource("3_wa3qh"), ExtResource("4_sj7dq"), ExtResource("5_4g3uc"), ExtResource("6_6jabs")])
+innate_abilities = Array[ExtResource("1_1eohl")]([ExtResource("2_sdgkc"), ExtResource("3_wa3qh"), ExtResource("4_sj7dq"), ExtResource("5_4g3uc"), ExtResource("6_6jabs"), ExtResource("7_sdgkc")])
 level_1_options = Array[ExtResource("1_1eohl")]([ExtResource("7_ln8q2")])
 level_2_options = Array[ExtResource("1_1eohl")]([ExtResource("8_tvy22"), ExtResource("3_wa3qh")])
 level_3_options = Array[ExtResource("1_1eohl")]([ExtResource("9_mkho0"), ExtResource("10_hy16j")])

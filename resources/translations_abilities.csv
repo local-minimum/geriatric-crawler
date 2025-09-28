@@ -34,6 +34,8 @@ ABILITY_MAPPING_1_DESC,Compass,Kompass
 ABILITY_MAPPING_2_DESC,Compass and limited 2D map of local terrain,Kompass och begränsad 2D-karta av närmsta omgivningen
 ABILITY_MAPPING_3_DESC,"Compass, 2D and 3D maps","Kompass, 2D- och 3D-kartor"
 ABILITY_MAPPING_4_DESC,"Compass, 2D and 3D maps with annotation","Kompass, 2D- och 3D-kartor med anoteringar"
+ABILITY_GEIGER_NAME,Geiger Counter,Geigermätare
+ABILITY_GEIGER_1_DESC,Detect radiation levels in the immediate surroundings,Detektera strälningsintensiteten i omedelbara omgivningen
 ABILITY_SONAR_NAME,Sonar,Sonar
 ABILITY_SONAR_1_DESC,Detects enemies in the vicinity,Detekterar fiender som är nära
 ABILITY_SONAR_2_DESC,Detects entities & hidden features in the vicinity,Detekterar fiender och dolda saker som är nära

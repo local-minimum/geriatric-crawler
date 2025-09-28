@@ -3,6 +3,7 @@ class_name GiegerCounterUI
 
 @export var _update_interval_msec: int = 200
 @export var _gauge: LinearGaugeUI
+@export var _container: Control
 
 var _here_ranges: Array[Array]
 var _forwards_ranges: Array[Array]
@@ -11,14 +12,33 @@ var _max_value: float = -1
 var _next_update: int
 var _prev_range_min: float
 var _prev_range_max: float
+var _available: bool
 
 func _enter_tree() -> void:
     if __SignalBus.on_move_end.connect(_handle_move_end) != OK:
         push_error("Failed to connect move end")
 
+    if __SignalBus.on_change_player.connect(_handle_change_player) != OK:
+        push_error("Failed to connect change player")
+
+    if __SignalBus.on_level_loaded.connect(_handle_level_loaded) != OK:
+        push_error("Failed to connect level loaded")
+
 func _process(_delta: float) -> void:
-    if Time.get_ticks_msec() > _next_update:
+    if _available && Time.get_ticks_msec() > _next_update:
         _calculate_values()
+
+func _handle_level_loaded(level: GridLevel) -> void:
+    print_debug("[Geiger Counter] Got new level %s" % level)
+    _sync_available(level.player.robot if level.player != null else null)
+
+func _handle_change_player(_level: GridLevel, player: GridPlayer) -> void:
+    print_debug("[Geiger Counter] Got new player %s" % player)
+    _sync_available(player.robot)
+
+func _sync_available(robot: Robot) -> void:
+    _available = robot.get_skill_level(RobotAbility.SKILL_GEIGER) > 0
+    _container.visible = _available
 
 func _calculate_values() -> void:
     _next_update = Time.get_ticks_msec() + _update_interval_msec
@@ -71,7 +91,7 @@ func _complete_move_end() -> void:
     _calculate_values()
 
 func _handle_move_end(entity: GridEntity) -> void:
-    if entity is not GridPlayer:
+    if !_available || entity is not GridPlayer:
         return
 
     _here_ranges = _get_potential_damages_at(entity.get_level(), entity.coordinates())
