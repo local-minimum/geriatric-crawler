@@ -24,8 +24,17 @@ var _astar: AStar3D
 var _astar_lookup: Dictionary[Vector3i, int]
 
 func _ready() -> void:
-    # TODO: Handle upgrade skills
-    var skill_level: int = exploration_ui.level.player.robot.get_skill_level(RobotAbility.SKILL_SONAR)
+    if __SignalBus.on_robot_gain_ability.connect(_handle_robot_gain_ability) != OK:
+        push_error("Failed to connect robot gain ability")
+
+    _sync(exploration_ui.level.player.robot)
+
+func _handle_robot_gain_ability(robot: Robot, ability: RobotAbility) -> void:
+    if ability.id == RobotAbility.SKILL_SONAR:
+        _sync(robot)
+
+func _sync(robot: Robot) -> void:
+    var skill_level: int = robot.get_skill_level(RobotAbility.SKILL_SONAR)
     sonar_root.visible = skill_level > 0
     sonar_label.text = "SNR-100 Mk %s" % IntUtils.to_roman(skill_level)
     if __SignalBus.on_level_loaded.connect(_reset_sonar) != OK:

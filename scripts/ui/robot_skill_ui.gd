@@ -17,6 +17,8 @@ class_name RobotSkillUI
 
 enum State { Option, Buyable, Bought, NotBought }
 
+var _buy_callback: Variant
+
 func _state_to_color(state: State) -> Color:
     match  state:
         State.Option: return _option_color
@@ -36,10 +38,16 @@ func _state_to_button_text(state: State, cost: int) -> String:
             push_warning("State %s doesn't have a known action" % state)
             return tr("BUY_COST").format({"cost": GlobalGameState.credits_with_sign(cost)}).to_upper()
 
-func sync(ability: RobotAbility, state: State, cost: int = 1000) -> void:
+func sync(ability: RobotAbility, state: State, cost: int, buy_callback: Callable) -> void:
+    _buy_callback = buy_callback
     _title.text = ability.full_skill_name()
     _description.text = tr(ability.description)
     _icon.texture = _generic_icon if ability.icon == null else ability.icon
     _background.color = _state_to_color(state)
     _buy_button.disabled = state != State.Buyable
     _buy_button.text = _state_to_button_text(state, cost)
+
+func _on_buy_skill_button_pressed() -> void:
+    if _buy_callback is Callable:
+        var callback: Callable = _buy_callback
+        callback.call()

@@ -23,6 +23,13 @@ func _ready() -> void:
     if __SignalBus.on_update_orientation.connect(_handle_update_orientation) != OK:
         push_error("Failed to connect on move start")
 
+    if __SignalBus.on_robot_gain_ability.connect(_handle_robot_gain_ability) != OK:
+        push_error("Failed to connect robot gain ability")
+
+func _handle_robot_gain_ability(robot: Robot, ability: RobotAbility) -> void:
+    if ability.id == RobotAbility.SKILL_MAPPING:
+        _sync_robot(exploration_ui.level.player, robot)
+
 func _handle_loaded() -> void:
     clear()
     _sync_robot(exploration_ui.level.player, exploration_ui.level.player.robot)

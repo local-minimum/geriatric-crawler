@@ -24,6 +24,13 @@ func _enter_tree() -> void:
     if __SignalBus.on_level_loaded.connect(_handle_level_loaded) != OK:
         push_error("Failed to connect level loaded")
 
+    if __SignalBus.on_robot_gain_ability.connect(_handle_gain_ability) != OK:
+        push_error("Failed to connect robot gain ability")
+
+func _handle_gain_ability(robot: Robot, ability: RobotAbility) -> void:
+    if ability.id == RobotAbility.SKILL_GEIGER:
+        _sync_available(robot)
+
 func _process(_delta: float) -> void:
     if _available && Time.get_ticks_msec() > _next_update:
         _calculate_values()

@@ -46,6 +46,7 @@ signal on_robot_death(robot: Robot)
 signal on_robot_complete_fight(robot: Robot)
 signal on_robot_loaded(robot: Robot)
 signal on_robot_exploration_damage(robot: Robot, damage: int)
+signal on_robot_gain_ability(robot: Robot, ability: RobotAbility)
 
 # Exploration
 # -> Level

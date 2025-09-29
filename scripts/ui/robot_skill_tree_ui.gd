@@ -27,6 +27,7 @@ func sync(robot: Robot, credits: int) -> void:
             credits,
             can_buy_multiple,
             robot.available_upgrade_slots() if prev_lvl_bought || can_skip_buy_tier else -1,
+            robot.obtain_upgrade,
         )
 
         prev_lvl_bought = !selected_option.is_empty()

@@ -137,6 +137,7 @@ func obtain_upgrade(reward_full_id: String) -> void:
         push_error("Reward %s not present in model %s" % [reward_full_id, model])
     else:
         _data.obtained_upgrades.append(reward)
+        __SignalBus.on_robot_gain_ability.emit(self, reward)
 
 func gain_card(card: BattleCardData) -> void:
     _data.obtained_cards.append(card)

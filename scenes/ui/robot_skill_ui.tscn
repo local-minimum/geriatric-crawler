@@ -63,3 +63,5 @@ auto_translate_mode = 2
 layout_mode = 2
 theme_override_font_sizes/font_size = 8
 text = "BUY ₳1000 "
+
+[connection signal="pressed" from="MarginContainer/Skill Contents/Actions/Buy Skill Button" to="." method="_on_buy_skill_button_pressed"]

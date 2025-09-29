@@ -23,7 +23,13 @@ var _player: GridPlayer
 var _toggled_cinematic: bool
 
 func _ready() -> void:
+    if __SignalBus.on_robot_gain_ability.connect(_handle_robot_gain_ability) != OK:
+        push_error("Failed to connect robot gain ability")
+
     visible = false
+
+func _handle_robot_gain_ability(robot: Robot, _ability: RobotAbility) -> void:
+    _sync_active_abilities(robot)
 
 func inspect(player: GridPlayer, robot: Robot, battle_player: BattlePlayer, credits: int) -> void:
     _player = player

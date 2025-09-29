@@ -37,6 +37,9 @@ func _enter_tree() -> void:
     if __SignalBus.on_level_loaded.connect(_level_loaded) != OK:
         push_error("Failed to connect level loaded")
 
+    if __SignalBus.on_robot_gain_ability.connect(_handle_robot_gain_ability) != OK:
+        push_error("Failed to connect robot gain ability")
+
     active_mapper = self
 
 func _ready() -> void:
@@ -46,6 +49,9 @@ func _ready() -> void:
     _level_loaded.call_deferred(GridLevel.active_level)
     _connect_new_player.call_deferred(GridLevel.active_level, GridLevel.active_level.player)
 
+func _handle_robot_gain_ability(_robot: Robot, ability: RobotAbility) -> void:
+    if ability.id == RobotAbility.SKILL_MAPPING:
+        _update_map()
 
 func history() -> Array[Vector3i]:
     var hist: Array[Vector3i]

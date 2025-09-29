@@ -16,6 +16,7 @@ func sync(
     credits: int,
     can_buy_multiple: bool,
     available_slots: int,
+    gain_skill_callback: Callable,
 ) -> void:
     _fights.sync(completed_fights, total_fights)
     _level_title.text = tr("TIER_COUNT").format({"level": IntUtils.to_roman(level)})
@@ -27,10 +28,17 @@ func sync(
             var ability: RobotAbility = abilities[idx]
             # TODO: Calculate cost somehow
             var cost: int  = 100
+
             var state: RobotSkillUI.State = RobotSkillUI.State.Bought if selected_abilities.has(ability) else RobotSkillUI.State.NotBought
             if !bought_for_level || can_buy_multiple:
                 state = RobotSkillUI.State.Buyable if ready_to_buy && cost < credits else RobotSkillUI.State.Option
-            _skills[idx].sync(abilities[idx], state)
+
+            var buy_callback: Callable = func () -> void:
+                if state == RobotSkillUI.State.Buyable && __GlobalGameState.withdraw_credits(cost):
+                    gain_skill_callback.call(ability.id)
+                    _skills[idx].sync(ability, RobotSkillUI.State.Bought, cost, func () -> void: pass)
+
+            _skills[idx].sync(ability, state, cost, buy_callback)
             _skills[idx].visible = true
         else:
             _skills[idx].visible = false
