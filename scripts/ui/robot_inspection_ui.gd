@@ -26,7 +26,23 @@ func _ready() -> void:
     if __SignalBus.on_robot_gain_ability.connect(_handle_robot_gain_ability) != OK:
         push_error("Failed to connect robot gain ability")
 
+    if __SignalBus.on_update_credits.connect(_handle_update_credits) != OK:
+        push_error("Failed to connect update credits")
+
+    if __SignalBus.on_robot_complete_fight.connect(_handle_robot_complete_fight) != OK:
+        push_error("Failed to connect robot complete fight")
+
     visible = false
+
+func _handle_robot_complete_fight(robot: Robot) -> void:
+    if visible:
+        _robot_skill_tree.sync(robot, __GlobalGameState.total_credits)
+
+func _handle_update_credits(credits: int, _loans: int) -> void:
+    if visible:
+        _credits_label.text = GlobalGameState.credits_with_sign(credits)
+        if _player != null:
+            _robot_skill_tree.sync(_player.robot, credits)
 
 func _handle_robot_gain_ability(robot: Robot, _ability: RobotAbility) -> void:
     _sync_active_abilities(robot)
@@ -47,7 +63,7 @@ func inspect(player: GridPlayer, robot: Robot, battle_player: BattlePlayer, cred
     else:
         _health_label.text = tr("DISEASED").to_upper()
 
-    _credits_label.text = "₳%s" % credits
+    _credits_label.text = GlobalGameState.credits_with_sign(credits)
 
     visible = true
 

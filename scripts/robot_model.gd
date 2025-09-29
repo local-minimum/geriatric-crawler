@@ -176,11 +176,11 @@ func find_skill(full_skill_id: String) -> RobotAbility:
         if idx >= 0:
             return options[idx]
 
-        print_debug("[Robot Model] '%s' not in %s bedcuase got idx %s" % [
-            full_skill_id,
-            options.map(func (op: RobotAbility) -> String: return op.full_id()),
-            idx,
-        ])
+        # print_debug("[Robot Model] '%s' not in %s bedcuase got idx %s" % [
+        #     full_skill_id,
+        #     options.map(func (op: RobotAbility) -> String: return op.full_id()),
+        #     idx,
+        # ])
 
     return null
 
