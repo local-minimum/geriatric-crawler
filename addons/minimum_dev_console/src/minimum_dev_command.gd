@@ -22,7 +22,7 @@ func in_context(context: Array[String]) -> bool:
         return false
 
     for idx: int in range(context.size()):
-        if command[idx].to_lower() != command[idx].to_lower():
+        if command[idx].to_lower() != context[idx].to_lower():
             return false
 
     return true

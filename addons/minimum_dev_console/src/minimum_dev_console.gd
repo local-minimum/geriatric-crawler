@@ -133,19 +133,27 @@ func _handle_reserved_commands(command: String) -> bool:
 func list_commands() -> void:
     var available: Dictionary[String, MinimumDevCommand]
     var depth: int = _context.size()
+    var context_command: MinimumDevCommand
 
     for command: MinimumDevCommand in commands:
+        if command.is_context(_context):
+            context_command = command
+            continue
+
         if !command.in_context(_context):
             continue
 
         var sub_command: String = command.get_subcommand(depth)
-        if !sub_command.is_empty() && !available.has(sub_command):
-            available[sub_command] = command
-        elif command.is_context(_context):
-            available[command.command[-1]] = command
+        if !sub_command.is_empty():
+            if !available.has(sub_command):
+                available[sub_command] = command
+            elif available[sub_command].command.size() > command.command.size():
+                available[command.command[-1]] = command
 
     if !_context.is_empty():
         _output_line(" ".join(_context), code_color)
+        if context_command != null && !context_command.description.is_empty():
+            _output_line(context_command.description, info_color)
 
     for cmd: String in available:
         _output_line("- %s" % available[cmd].visible_command_from_context(depth), input_color)
