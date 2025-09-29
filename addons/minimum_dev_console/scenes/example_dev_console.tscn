@@ -49,9 +49,11 @@ layout_mode = 2
 
 [node name="Contex" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
+theme_override_colors/font_color = Color(0.486275, 0.988235, 0, 1)
 
 [node name="Input" type="LineEdit" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
+keep_editing_on_text_submit = true
 
 [connection signal="text_submitted" from="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Input" to="." method="handle_receive_command"]

@@ -19,6 +19,7 @@ class_name MinimumDevConsole
 @export var code_color: Color = Color.REBECCA_PURPLE
 @export var error_color: Color = Color.CRIMSON
 
+var _history_idx: int = 0
 var _history: Array[String]
 var _context: Array[String]
 
@@ -48,6 +49,24 @@ func _handle_input_key(key: InputEventKey):
             KEY_ESCAPE:
                 toggle_visible()
                 get_viewport().set_input_as_handled()
+            KEY_UP, KEY_PAGEUP:
+                go_history(-1)
+                get_viewport().set_input_as_handled()
+            KEY_DOWN, KEY_PAGEDOWN:
+                go_history(1)
+                get_viewport().set_input_as_handled()
+
+
+func go_history(step: int) -> void:
+    _history_idx = clampi(_history_idx + step, 0, _history.size())
+    if _history_idx == _history.size():
+        input.text = ""
+    else:
+        input.text = _history[_history_idx]
+
+    input.caret_column = input.text.length()
+    input.grab_focus.call_deferred()
+
 
 ## Connect pressing clear button to this
 func handle_clear_console() -> void:
@@ -75,14 +94,14 @@ func handle_receive_command(command: String) -> void:
     _output_line("", input_color)
     _output_line("> %s" % command, input_color)
 
-    input.clear()
-    input.grab_focus.call_deferred()
+    input.text = ""
 
     if command.is_empty():
         list_commands()
         return
 
     _history.append(command)
+    _history_idx = _history.size()
 
     if _handle_reserved_commands(command):
         _scroll_to_end()
@@ -177,8 +196,7 @@ func toggle_visible() -> void:
         if output.text.is_empty():
             _output_line(welcome_message, info_color)
             print_debug("[Minimum Dev Console] Adding welcom to output")
-        input.grab_focus()
-
+        input.grab_focus.call_deferred()
 
 func output_info(message: String) -> void:
     _output_line(message, info_color)
