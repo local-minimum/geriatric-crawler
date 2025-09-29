@@ -26,6 +26,7 @@ __SignalBus="*res://scripts/signal_bus.gd"
 __SaveSystemWrapper="*res://scripts/savesystem/save_system_wrapper.gd"
 __SceneSwapper="*res://scenes/scene_swapper.tscn"
 __BindingHints="*res://scenes/binding_hints.tscn"
+__DevConsole="*res://scenes/ui/dev_console.tscn"
 
 [debug]
 
@@ -45,7 +46,7 @@ window/stretch/aspect="expand"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/grid_level_digger/plugin.cfg", "res://addons/inkgd/plugin.cfg")
+enabled=PackedStringArray("res://addons/grid_level_digger/plugin.cfg", "res://addons/inkgd/plugin.cfg", "res://addons/minimum_dev_console/plugin.cfg")
 
 [global_group]
 
@@ -156,6 +157,11 @@ hot_key_9={
 hot_key_10={
 "deadzone": 0.2,
 "events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":48,"key_label":0,"unicode":48,"location":0,"echo":false,"script":null)
+]
+}
+toggle_dev_console={
+"deadzone": 0.2,
+"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":47,"key_label":0,"unicode":47,"location":0,"echo":false,"script":null)
 ]
 }
 

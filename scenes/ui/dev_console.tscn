@@ -1,0 +1,28 @@
+[gd_scene load_steps=5 format=3 uid="uid://cotg34cmi7qmj"]
+
+[ext_resource type="PackedScene" uid="uid://c0qmcq36iacog" path="res://addons/minimum_dev_console/scenes/example_dev_console.tscn" id="1_gcis2"]
+[ext_resource type="Script" uid="uid://1oqck0dge37k" path="res://scripts/dev_console_commands/dev_credits.gd" id="2_0be3j"]
+[ext_resource type="Script" uid="uid://u6qv42vcbeyp" path="res://addons/minimum_dev_console/src/minimum_dev_command_cateogry.gd" id="3_4dryq"]
+[ext_resource type="Script" uid="uid://disv351t4kkxa" path="res://scripts/dev_console_commands/dev_robot_fight.gd" id="4_fk3y3"]
+
+[node name="Dev Console Root" type="Node"]
+
+[node name="DevConsole" parent="." node_paths=PackedStringArray("commands") instance=ExtResource("1_gcis2")]
+commands = [NodePath("../Credits"), NodePath("../Robots"), NodePath("../Robots/Fight")]
+
+[node name="Credits" type="Node" parent="."]
+script = ExtResource("2_0be3j")
+command = Array[String](["credits"])
+usage = "(gain|loose) [amount]"
+description = "Adjusts total credits by amount"
+
+[node name="Robots" type="Node" parent="."]
+script = ExtResource("3_4dryq")
+command = Array[String](["robot"])
+description = "Tweak things with robots"
+metadata/_custom_type_script = "uid://u6qv42vcbeyp"
+
+[node name="Fight" type="Node" parent="Robots"]
+script = ExtResource("4_fk3y3")
+command = Array[String](["robot", "fight"])
+description = "Increases number of fights robot has done"

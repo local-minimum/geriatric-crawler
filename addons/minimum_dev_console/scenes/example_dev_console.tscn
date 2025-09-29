@@ -1,0 +1,57 @@
+[gd_scene load_steps=3 format=3 uid="uid://c0qmcq36iacog"]
+
+[ext_resource type="Script" uid="uid://bv010s28rddm8" path="res://addons/minimum_dev_console/src/minimum_dev_console.gd" id="1_4rbt5"]
+[ext_resource type="Theme" uid="uid://xdcqs83hf0cg" path="res://addons/minimum_dev_console/scenes/console_theme.tres" id="2_cv4o4"]
+
+[node name="DevConsole" type="CanvasLayer" node_paths=PackedStringArray("container", "output", "output_scroll", "input_context", "input")]
+layer = 126
+script = ExtResource("1_4rbt5")
+container = NodePath("PanelContainer")
+output = NodePath("PanelContainer/MarginContainer/VBoxContainer/ScrollContainer/Output")
+output_scroll = NodePath("PanelContainer/MarginContainer/VBoxContainer/ScrollContainer")
+input_context = NodePath("PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Contex")
+input = NodePath("PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Input")
+welcome_message = "Welcome to the developer console.
+
+Input empty command to list options."
+code_color = Color(0.540442, 0.30747, 0.785144, 1)
+
+[node name="PanelContainer" type="PanelContainer" parent="."]
+anchors_preset = -1
+anchor_left = 0.6
+anchor_top = 0.4
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 0
+theme = ExtResource("2_cv4o4")
+
+[node name="MarginContainer" type="MarginContainer" parent="PanelContainer"]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/MarginContainer"]
+layout_mode = 2
+
+[node name="ScrollContainer" type="ScrollContainer" parent="PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+vertical_scroll_mode = 2
+
+[node name="Output" type="RichTextLabel" parent="PanelContainer/MarginContainer/VBoxContainer/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+scroll_following = true
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Contex" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="Input" type="LineEdit" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[connection signal="text_submitted" from="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Input" to="." method="handle_receive_command"]
