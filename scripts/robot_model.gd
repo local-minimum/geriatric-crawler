@@ -168,13 +168,19 @@ func find_skill_level(ability: RobotAbility) -> int:
 
     return -1
 
-func find_skill(full_id: String) -> RobotAbility:
-    var filter: Callable = func (option: RobotAbility) -> bool: return option.full_id() == full_id
+func find_skill(full_skill_id: String) -> RobotAbility:
+    var filter: Callable = func (option: RobotAbility) -> bool: return option.full_id() == full_skill_id
 
     for options: Array in [innate_abilities, level_1_options, level_2_options, level_3_options, level_4_options]:
-        var idx: int = innate_abilities.find_custom(filter)
+        var idx: int = options.find_custom(filter)
         if idx >= 0:
-            return innate_abilities[idx]
+            return options[idx]
+
+        print_debug("[Robot Model] '%s' not in %s bedcuase got idx %s" % [
+            full_skill_id,
+            options.map(func (op: RobotAbility) -> String: return op.full_id()),
+            idx,
+        ])
 
     return null
 

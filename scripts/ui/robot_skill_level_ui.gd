@@ -35,7 +35,7 @@ func sync(
 
             var buy_callback: Callable = func () -> void:
                 if state == RobotSkillUI.State.Buyable && __GlobalGameState.withdraw_credits(cost):
-                    gain_skill_callback.call(ability.id)
+                    gain_skill_callback.call(ability.full_id())
                     _skills[idx].sync(ability, RobotSkillUI.State.Bought, cost, func () -> void: pass)
 
             _skills[idx].sync(ability, state, cost, buy_callback)
