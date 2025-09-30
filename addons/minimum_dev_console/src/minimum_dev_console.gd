@@ -203,3 +203,7 @@ func toggle_visible() -> void:
 func output_info(message: String) -> void:
     _output_line(message, info_color)
     _scroll_to_end()
+
+func output_error(message: String) -> void:
+    _output_line(message, error_color)
+    _scroll_to_end()
