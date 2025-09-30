@@ -57,8 +57,10 @@ func _ready() -> void:
     # preset as a child of a node
     super()
 
-func _handle_cinematic(entity: GridEntity, is_cinematic: bool) -> void:
-    if entity == self && is_cinematic:
+func _handle_cinematic(entity: GridEntity, _is_cinematic: bool) -> void:
+    if entity == self:
+        print_debug("[Grid Player] clear all input")
+        clear_queue()
         _repeat_movement.clear()
 
 func _handle_robot_death(dead_robot: Robot) -> void:

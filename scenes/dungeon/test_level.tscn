@@ -919,6 +919,7 @@ anchor = NodePath("Anchor")
 [node name="Catapult" type="Node3D" parent="LevelGeometry/Elevation 0/Node (1, 0, 3)/Side DOWN"]
 script = ExtResource("19_hm4fr")
 _crashes_forward = true
+_crash_direction = 1
 _trigger_entire_node = true
 _trigger_sides = Array[int]([6])
 metadata/_custom_type_script = "uid://bsq3w1gkh4e0j"

@@ -58,9 +58,9 @@ static func from_directions(
         return MovementType.FORWARD
     if direction == CardinalDirections.invert(look_direction):
         return MovementType.BACK
-    if CardinalDirections.yaw_cw(direction, down)[0] == look_direction:
+    if CardinalDirections.yaw_cw(look_direction, down)[0] == direction:
         return MovementType.STRAFE_RIGHT
-    if CardinalDirections.yaw_ccw(direction, down)[0] == look_direction:
+    if CardinalDirections.yaw_ccw(look_direction, down)[0] == direction:
         return MovementType.STRAFE_LEFT
 
     push_warning("%s is not a valid movement for looking %s and down %s" % [

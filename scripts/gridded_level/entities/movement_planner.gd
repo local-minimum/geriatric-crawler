@@ -127,7 +127,9 @@ func _refuse_translation(
 ) -> void:
     var origin: Vector3 = anchor.global_position if anchor != null else node.get_center_pos()
     var edge: Vector3 = anchor.get_edge_position(move_direction) if anchor != null else origin + CardinalDirections.direction_to_vector(move_direction) * node.get_level().node_size * 0.1
-    var target: Vector3 = lerp(origin, edge, _refuse_distance_factor)
+    var distance: float = _refuse_distance_factor * 0.15 if CardinalDirections.is_parallell(move_direction, entity.down) else _refuse_distance_factor
+    print_debug("[Movement Planner] Refuse movement %s, using distance %s to edge" % [CardinalDirections.name(move_direction), distance])
+    var target: Vector3 = lerp(origin, edge, distance)
 
     @warning_ignore_start("return_value_discarded")
     var prop_tweener: PropertyTweener = tween.tween_property(

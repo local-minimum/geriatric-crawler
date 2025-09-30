@@ -37,11 +37,16 @@ func _release_entity(entity: GridEntity) -> void:
     if !_prev_coordinates.erase(entity):
         push_warning("Could not clear entity '%s' previous coordinates" % entity.name)
 
-    if _crashes_forward:
+    var node: GridNode = entity.get_grid_node()
+    if node.may_exit(entity, entity.look_direction) && _crashes_forward:
+        print_debug("[Catapult] %s may exit %s forward %s" % [entity.name, node.coordinates, CardinalDirections.name(entity.look_direction)])
         if !entity.attempt_movement(Movement.MovementType.FORWARD, false, true):
             push_warning("Failed to crash entity %s forward" % entity.name)
+
     elif _crash_direction != CardinalDirections.CardinalDirection.NONE:
-        if !entity.attempt_movement(Movement.from_directions(_crash_direction, entity.look_direction, entity.down), false, true):
+        var movement: Movement.MovementType = Movement.from_directions(_crash_direction, entity.look_direction, entity.down)
+        print_debug("[Catapult] %s may exit %s default (%s) %s" % [entity.name, node.coordinates, Movement.name(movement), CardinalDirections.name(_crash_direction)])
+        if !entity.attempt_movement(movement, false, true):
             push_warning("Failed to crash entity %s %s" % [entity.name, _crash_direction])
 
     entity.cinematic = false
