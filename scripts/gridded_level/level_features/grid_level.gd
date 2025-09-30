@@ -80,6 +80,7 @@ func _enter_tree() -> void:
 func _exit_tree() -> void:
     if active_level == self:
         active_level = null
+    __SignalBus.on_level_unloaded.emit(self)
 
 func illusory_sides() -> Array[GridNodeSide]:
     if _nodes.is_empty():

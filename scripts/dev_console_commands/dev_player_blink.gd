@@ -3,11 +3,17 @@ extends MinimumDevCommand
 func _ready() -> void:
     if __SignalBus.on_level_loaded.connect(_handle_level_loaded) != OK:
         push_error("Failed to connect level loaded")
+    if __SignalBus.on_level_unloaded.connect(_handle_level_unloaded) != OK:
+        push_error("Failed to connect level unloaded")
 
 var _level: GridLevel
 
 func _handle_level_loaded(level: GridLevel) -> void:
     _level = level
+
+func _handle_level_unloaded(level: GridLevel) -> void:
+    if _level == level:
+        _level = null
 
 func execute(parameters: String, console: MinimumDevConsole) -> bool:
     if parameters.is_empty():
@@ -21,7 +27,7 @@ func execute(parameters: String, console: MinimumDevConsole) -> bool:
     var steps: int = parameters.to_int()
 
     if steps <= 0:
-        console.output_info("Steps must be a positve number")
+        console.output_error("Steps must be a positve number")
         return false
 
     if _move_step(steps):

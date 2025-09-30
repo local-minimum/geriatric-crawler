@@ -5,8 +5,13 @@ func _ready() -> void:
         push_error("Failed to connect level loaded")
     if __SignalBus.on_robot_loaded.connect(_handle_robot_loaded) != OK:
         push_error("Failed to connect robot loaded")
+    if __SignalBus.on_level_unloaded.connect(_handle_level_unloaded) != OK:
+        push_error("Failed to connect level unloaded")
 
 var _robot: Robot
+
+func _handle_level_unloaded(_level: GridLevel) -> void:
+    _robot = null
 
 func _handle_robot_loaded(robot: Robot) -> void:
     _robot = robot

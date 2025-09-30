@@ -52,6 +52,7 @@ signal on_robot_gain_ability(robot: Robot, ability: RobotAbility)
 # -> Level
 signal on_change_player(level: GridLevel, player: GridPlayer)
 signal on_level_loaded(level: GridLevel)
+signal on_level_unloaded(level: GridLevel)
 
 # -> Zone
 signal on_enter_zone(zone: LevelZone, entity: GridEntity)
