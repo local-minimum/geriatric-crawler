@@ -50,14 +50,14 @@ static func from_directions(
     look_direction: CardinalDirections.CardinalDirection,
     down: CardinalDirections.CardinalDirection,
 ) -> MovementType:
-    if direction == CardinalDirections.CardinalDirection.DOWN:
-        return MovementType.ABS_DOWN
-    if direction == CardinalDirections.CardinalDirection.UP:
-        return MovementType.ABS_UP
     if direction == look_direction:
         return MovementType.FORWARD
     if direction == CardinalDirections.invert(look_direction):
         return MovementType.BACK
+    if direction == CardinalDirections.CardinalDirection.DOWN:
+        return MovementType.ABS_DOWN
+    if direction == CardinalDirections.CardinalDirection.UP:
+        return MovementType.ABS_UP
     if CardinalDirections.yaw_cw(look_direction, down)[0] == direction:
         return MovementType.STRAFE_RIGHT
     if CardinalDirections.yaw_ccw(look_direction, down)[0] == direction:

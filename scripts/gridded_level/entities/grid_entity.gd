@@ -251,7 +251,7 @@ func update_entity_anchorage(node: GridNode, anchor: GridAnchor, deferred: bool 
     else:
         set_grid_node(node, deferred)
         if transportation_abilities != null:
-            if transportation_abilities.has_flag(TransportationMode.FLYING):
+            if cinematic || transportation_abilities.has_flag(TransportationMode.FLYING):
                 transportation_mode.mode = TransportationMode.FLYING
             else:
                 transportation_mode.mode = TransportationMode.NONE

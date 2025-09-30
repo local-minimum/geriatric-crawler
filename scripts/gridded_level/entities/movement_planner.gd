@@ -261,9 +261,18 @@ func _handle_node_transition(
             print_debug("Outer corner")
             return handled
 
-        if target.may_enter(entity, from, move_direction, entity.down, false, false, true):
+        var is_flying: bool = entity.transportation_mode.has_flag(TransportationMode.FLYING)
+        if target.may_enter(
+            entity,
+            from,
+            move_direction,
+            CardinalDirections.CardinalDirection.NONE if is_flying else entity.down,
+            false,
+            false,
+            true
+        ):
 
-            var neighbour_anchor: GridAnchor = target.get_grid_anchor(entity.down)
+            var neighbour_anchor: GridAnchor = null if is_flying else target.get_grid_anchor(entity.down)
 
             if was_excotic_walk && !entity.can_jump_off_walls && neighbour_anchor == null:
                 return _UNHANDLED
@@ -382,7 +391,11 @@ func _handle_outer_corner_transition(
     move_direction: CardinalDirections.CardinalDirection,
     intermediate: GridNode,
 ) -> int:
-    if anchor == null || !intermediate.may_transit(entity, from, move_direction, entity.down, true):
+    if (
+        anchor == null ||
+        entity.transportation_mode.has_flag(TransportationMode.FLYING) ||
+        !intermediate.may_transit(entity, from, move_direction, entity.down, true)
+    ):
         # if anchor == null:
             # print_debug("Anchor is null")
         # else:
@@ -451,7 +464,12 @@ func _handle_node_inner_corner_transition(
 ) -> int:
     var target_anchor: GridAnchor = node.get_grid_anchor(move_direction)
 
-    if target_anchor == null || anchor == null || !target_anchor.can_anchor(entity):
+    if (
+        target_anchor == null ||
+        anchor == null ||
+        entity.transportation_mode.has_flag(TransportationMode.FLYING) ||
+        !target_anchor.can_anchor(entity)
+    ):
         print_debug("not allowed inner corner transition (has target anchor %s)" % [target_anchor != null])
         # if target_anchor != null:
         #    print_debug("%s may anchor on %s = %s" % [entity.name, target_anchor.name, target_anchor.can_anchor(entity)])
