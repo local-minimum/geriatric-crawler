@@ -84,8 +84,8 @@ func _scroll_to_end() -> void:
     await get_tree().process_frame
     output_scroll.scroll_vertical = int(output_scroll.get_v_scroll_bar().max_value)
 
-func _output_line(text: String, color: Color) -> void:
-    output.append_text("[color=#%s]%s[/color]\n" % [color.to_html(), text])
+func _output_line(text: String, color: Color, new_line: bool = true) -> void:
+    output.append_text("[color=#%s]%s[/color]%s" % [color.to_html(), text, "\n" if new_line else ""])
 
 ## Connect submitting input to this
 func handle_receive_command(command: String) -> void:
@@ -175,11 +175,13 @@ func list_commands() -> void:
             _output_line(context_command.description, info_color)
 
     for cmd: String in available:
-        _output_line("- %s" % available[cmd].visible_command_from_context(depth), input_color)
-        _output_line("  %s" % available[cmd].description, info_color)
+        _output_line("- %s " % available[cmd].visible_command_from_context(depth), input_color, false)
+        _output_line(available[cmd].description, info_color)
 
-    _output_line("- %s" % reserved_up_command, input_color)
-    _output_line("- %s" % reserved_home_command, input_color)
+    _output_line("- %s " % reserved_up_command, input_color, false)
+    _output_line("Remove outer context", info_color)
+    _output_line("- %s " % reserved_home_command, input_color, false)
+    _output_line("Clear all context", info_color)
     _scroll_to_end()
 
 func set_context(context: Array[String]) -> void:

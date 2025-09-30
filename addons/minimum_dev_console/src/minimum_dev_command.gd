@@ -64,4 +64,4 @@ func get_subcommand(context_depth: int) -> String:
     return ""
 
 func strip_cmd(cmd: String, context: Array[String]):
-    return cmd.substr(" ".join(command.slice(context.size())).length() + 1)
+    return cmd.substr(" ".join(command.slice(context.size())).length() + 1).strip_edges()
