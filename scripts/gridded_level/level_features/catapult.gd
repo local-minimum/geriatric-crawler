@@ -56,6 +56,11 @@ func _release_entity(entity: GridEntity) -> void:
     if !entity.transportation_abilities.has_flag(TransportationMode.FLYING):
         entity.transportation_mode.remove_flag(TransportationMode.FLYING)
 
+    if _orient_entity:
+        if entity is GridPlayer:
+            var player: GridPlayer = entity
+            player.stand_up()
+
     entity.cinematic = false
     entity.clear_queue()
     print_debug("[Catapult] %s released" % entity.name)
@@ -72,6 +77,10 @@ func _handle_move_end(entity: GridEntity) -> void:
         Phase.CENTERING:
             print_debug("[Catapult] %s centered" % entity.name)
             if _orient_entity:
+                if entity is GridPlayer:
+                    var player: GridPlayer = entity
+                    player.duck()
+
                 var fly_direction: CardinalDirections.CardinalDirection = field_direction
                 if !CardinalDirections.is_parallell(fly_direction, entity.look_direction):
                     var new_down: CardinalDirections.CardinalDirection = entity.look_direction

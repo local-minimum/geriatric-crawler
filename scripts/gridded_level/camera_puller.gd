@@ -65,7 +65,7 @@ func release_player(player: GridPlayer, on_released_complete: Variant = null, sp
     _tween = create_tween()
 
     @warning_ignore_start("return_value_discarded")
-    _tween.tween_property(cam, "position", player.camera_resting_position, tween_duration * speed).set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_SINE)
+    _tween.tween_property(cam, "position", player.camera_wanted_position, tween_duration * speed).set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_SINE)
     _tween.parallel().tween_method(
         func (rot: Quaternion) -> void:
             cam.rotation = rot.get_euler(),

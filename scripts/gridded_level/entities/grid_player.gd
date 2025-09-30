@@ -5,6 +5,12 @@ class_name GridPlayer
 var camera_resting_position: Vector3
 var camera_resting_rotation: Quaternion
 
+var camera_wanted_position: Vector3:
+    get():
+        if _ducking:
+            return camera_resting_position * _duck_camera_height
+        return camera_resting_position
+
 @export var allow_replays: bool = true
 
 @export var persist_repeat_moves: bool
@@ -14,6 +20,8 @@ var camera_resting_rotation: Quaternion
 @export var robot: Robot
 
 @export var key_ring: KeyRing
+
+@export_range(0, 1) var _duck_camera_height: float = 0.5
 
 var override_wall_walking: bool:
     set(value):
@@ -180,6 +188,30 @@ func _process(_delta: float) -> void:
 
 
 const _KEY_RING_KEY: String = "keys"
+
+var _ducking: bool = false
+func duck() -> void:
+    if _ducking:
+        return
+
+    _ducking = true
+    _animate_ducking_stand_up()
+
+func stand_up() -> void:
+    if !_ducking:
+        return
+
+    _ducking = false
+    _animate_ducking_stand_up()
+
+func _animate_ducking_stand_up() -> void:
+    @warning_ignore_start("return_value_discarded")
+    create_tween().tween_property(
+        camera,
+        "position",
+        camera_wanted_position,
+        0.2)
+    @warning_ignore_restore("return_value_discarded")
 
 func save() -> Dictionary:
     return {
