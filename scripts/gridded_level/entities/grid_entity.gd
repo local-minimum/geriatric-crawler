@@ -165,6 +165,8 @@ func attempt_movement(
         print_stack()
         return false
 
+    print_debug("[Grid Entity] Attempt movement %s from %s" % [Movement.name(movement), coordinates()])
+
     if !_start_movement(movement, force):
         if enqueue_if_occupied && queue_moves:
             _enqeue_movement(movement)

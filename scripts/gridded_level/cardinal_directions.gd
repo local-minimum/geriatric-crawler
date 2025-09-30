@@ -376,9 +376,11 @@ static func direction_to_rotation(up: CardinalDirection, forward: CardinalDirect
                     return Quaternion.IDENTITY
         CardinalDirection.NORTH:
             match forward:
-                CardinalDirection.DOWN: return Quaternion.from_euler(Vector3(PI * 0.5, 0, 0))
+                CardinalDirection.DOWN: return Quaternion.from_euler(Vector3(-PI * 0.5, 0, 0))
+                # CardinalDirection.DOWN: return Quaternion.from_euler(Vector3(PI * 0.5, 0, 0))
                 CardinalDirection.WEST: return Quaternion.from_euler(Vector3(PI * 0.5, PI * 0.5, 0))
                 CardinalDirection.UP: return Quaternion.from_euler(Vector3(PI * 0.5, PI, 0))
+                # CardinalDirection.UP: return Quaternion.from_euler(Vector3(PI * 0.5, PI, 0))
                 CardinalDirection.EAST: return Quaternion.from_euler(Vector3(PI * 0.5, PI * -0.5, 0))
                 _:
                     push_error(
@@ -388,7 +390,8 @@ static func direction_to_rotation(up: CardinalDirection, forward: CardinalDirect
                     return Quaternion.IDENTITY
         CardinalDirection.SOUTH:
             match forward:
-                CardinalDirection.UP: return Quaternion.from_euler(Vector3(PI * -0.5, 0, 0))
+                CardinalDirection.UP: return Quaternion.from_euler(Vector3(PI * 0.5, 0, 0))
+                # CardinalDirection.UP: return Quaternion.from_euler(Vector3(PI * -0.5, 0, 0))
                 CardinalDirection.EAST: return Quaternion.from_euler(Vector3(PI * -0.5, PI * 0.5, 0))
                 CardinalDirection.DOWN: return Quaternion.from_euler(Vector3(PI * -0.5, PI, 0))
                 CardinalDirection.WEST: return Quaternion.from_euler(Vector3(PI * -0.5, PI * -0.5, 0))
@@ -400,9 +403,11 @@ static func direction_to_rotation(up: CardinalDirection, forward: CardinalDirect
                     return Quaternion.IDENTITY
         CardinalDirection.WEST:
             match forward:
-                CardinalDirection.DOWN: return Quaternion.from_euler(Vector3(PI * 0.5, 0, PI * 0.5))
+                CardinalDirection.DOWN: return Quaternion.from_euler(Vector3(PI * -0.5, PI * -0.5, 0))
+                # CardinalDirection.DOWN: return Quaternion.from_euler(Vector3(PI * 0.5, 0, PI * 0.5))
                 CardinalDirection.NORTH: return Quaternion.from_euler(Vector3(0, 0, PI * 0.5))
-                CardinalDirection.UP: return Quaternion.from_euler(Vector3(PI * -0.5, 0, PI * -0.5))
+                CardinalDirection.UP: return Quaternion.from_euler(Vector3(PI * 0.5, PI * -0.5, 0))
+                # CardinalDirection.UP: return Quaternion.from_euler(Vector3(PI * -0.5, 0, PI * -0.5))
                 CardinalDirection.SOUTH: return Quaternion.from_euler(Vector3(0, PI, PI * -0.5))
                 _:
                     push_error(
@@ -412,9 +417,11 @@ static func direction_to_rotation(up: CardinalDirection, forward: CardinalDirect
                     return Quaternion.IDENTITY
         CardinalDirection.EAST:
             match forward:
-                CardinalDirection.DOWN: return Quaternion.from_euler(Vector3(PI * 0.5, 0, PI * -0.5))
+                CardinalDirection.DOWN: return Quaternion.from_euler(Vector3(PI * -0.5, PI * 0.5, 0))
+                # CardinalDirection.DOWN: return Quaternion.from_euler(Vector3(PI * 0.5, 0, PI * -0.5))
                 CardinalDirection.NORTH: return Quaternion.from_euler(Vector3(0, 0, PI * -0.5))
-                CardinalDirection.UP: return Quaternion.from_euler(Vector3(PI * -0.5, 0, PI * 0.5))
+                CardinalDirection.UP: return Quaternion.from_euler(Vector3(PI * 0.5, PI * 0.5, 0))
+                #CardinalDirection.UP: return Quaternion.from_euler(Vector3(PI * -0.5, 0, PI * 0.5))
                 CardinalDirection.SOUTH: return Quaternion.from_euler(Vector3(0, PI, PI * 0.5))
                 _:
                     push_error(

@@ -1,4 +1,4 @@
-[gd_scene load_steps=73 format=3 uid="uid://dwqcwbgj8p6q0"]
+[gd_scene load_steps=80 format=3 uid="uid://dwqcwbgj8p6q0"]
 
 [ext_resource type="Script" uid="uid://dqe42q7uub84r" path="res://scripts/gridded_level/level_features/grid_level.gd" id="1_dd1ob"]
 [ext_resource type="PackedScene" uid="uid://bfoog3fb4v5ij" path="res://scenes/dungeon/player.tscn" id="3_m6mav"]
@@ -78,6 +78,50 @@ albedo_texture = ExtResource("10_7gan6")
 
 [sub_resource type="QuadMesh" id="QuadMesh_wymjw"]
 material = SubResource("StandardMaterial3D_sn1co")
+
+[sub_resource type="Curve" id="Curve_hm4fr"]
+_data = [Vector2(0, 0.495086), 0.0, 0.0, 0, 0, Vector2(0.784585, 0.0297145), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="CurveTexture" id="CurveTexture_uhp52"]
+texture_mode = 1
+curve = SubResource("Curve_hm4fr")
+
+[sub_resource type="Curve" id="Curve_1jctb"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(0.660079, 1), 0.0, 0.0, 0, 0, Vector2(1, 0.00233972), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="CurveTexture" id="CurveTexture_fh06p"]
+texture_mode = 1
+curve = SubResource("Curve_1jctb")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_bqwyw"]
+emission_shape = 3
+emission_box_extents = Vector3(0.7, 0.01, 0.7)
+direction = Vector3(0, 3, 0)
+spread = 10.0
+initial_velocity_min = 2.0
+initial_velocity_max = 5.0
+gravity = Vector3(0, 0, 0)
+scale_min = 0.07
+scale_max = 0.1
+scale_curve = SubResource("CurveTexture_fh06p")
+alpha_curve = SubResource("CurveTexture_uhp52")
+turbulence_enabled = true
+turbulence_noise_strength = 0.2
+turbulence_noise_scale = 0.4
+turbulence_influence_min = 0.01
+turbulence_influence_max = 0.02
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ytmnc"]
+transparency = 1
+vertex_color_use_as_albedo = true
+albedo_color = Color(0.878198, 0.723896, 0.86542, 1)
+use_particle_trails = true
+
+[sub_resource type="RibbonTrailMesh" id="RibbonTrailMesh_bt6hk"]
+material = SubResource("StandardMaterial3D_ytmnc")
+sections = 11
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_sy7nh"]
 transparency = 1
@@ -918,11 +962,20 @@ anchor = NodePath("Anchor")
 
 [node name="Catapult" type="Node3D" parent="LevelGeometry/Elevation 0/Node (1, 0, 3)/Side DOWN"]
 script = ExtResource("19_hm4fr")
+_orient_entity = true
 _crashes_forward = true
 _crash_direction = 1
 _trigger_entire_node = true
 _trigger_sides = Array[int]([6])
 metadata/_custom_type_script = "uid://bsq3w1gkh4e0j"
+
+[node name="GPUParticles3D" type="GPUParticles3D" parent="LevelGeometry/Elevation 0/Node (1, 0, 3)/Side DOWN/Catapult"]
+amount = 11
+lifetime = 3.0
+trail_enabled = true
+trail_lifetime = 2.0
+process_material = SubResource("ParticleProcessMaterial_bqwyw")
+draw_pass_1 = SubResource("RibbonTrailMesh_bt6hk")
 
 [node name="Elevation 1" type="Node3D" parent="LevelGeometry"]
 

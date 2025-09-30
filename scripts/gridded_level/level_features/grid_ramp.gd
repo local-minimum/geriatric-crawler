@@ -83,7 +83,7 @@ func trigger(entity: GridEntity, movement: Movement.MovementType) -> void:
 
     var exit_direction: CardinalDirections.CardinalDirection = lower_exit_direction
 
-    print_debug("Entity at %s entering ramp at %s (%s is expected lower)" % [
+    print_debug("[Grid Ramp] Entity at %s entering ramp at %s (%s is expected lower)" % [
         entity.coordinates(),
         coordinates(),
         CardinalDirections.translate(coordinates(), lower_exit_direction),

@@ -65,12 +65,36 @@ func _handle_move_end(entity: GridEntity) -> void:
         Phase.CENTERING:
             print_debug("[Catapult] %s centered" % entity.name)
             if _orient_entity:
-                _entity_phases[entity] = Phase.FLYING
+                var fly_direction: CardinalDirections.CardinalDirection = field_direction
+                if !CardinalDirections.is_parallell(fly_direction, entity.look_direction):
+                    var new_down: CardinalDirections.CardinalDirection = entity.look_direction
+                    print_debug("[Catapult] orienting look %s, down %s" % [CardinalDirections.name(fly_direction), CardinalDirections.name(new_down)])
+                    var look_target: Quaternion = CardinalDirections.direction_to_rotation(CardinalDirections.invert(new_down), fly_direction)
+                    var tween: Tween = create_tween()
+                    var update_rotation: Callable = QuaternionUtils.create_tween_rotation_method(entity)
+                    @warning_ignore_start("return_value_discarded")
+                    tween.tween_method(
+                        update_rotation,
+                        entity.global_transform.basis.get_rotation_quaternion(),
+                        look_target,
+                        0.3
+                    )
+                    @warning_ignore_restore("return_value_discarded")
+
+                    if tween.finished.connect(
+                        func () -> void:
+                            entity.down = new_down
+                            entity.look_direction = fly_direction
+                            entity.orient()
+                    ) != OK:
+                        push_error("Failed to connect rotation done")
+
+                    tween.play()
+
+            if !_fly(entity) || _prev_coordinates.get(entity, Vector3i.ZERO) == entity.coordinates():
+                _entity_phases[entity] = Phase.CRASHING
             else:
-                if !_fly(entity) || _prev_coordinates.get(entity, Vector3i.ZERO) == entity.coordinates():
-                    _entity_phases[entity] = Phase.CRASHING
-                else:
-                    _entity_phases[entity] = Phase.FLYING
+                _entity_phases[entity] = Phase.FLYING
         Phase.FLYING:
             print_debug("[Catapult] %s flying" % entity.name)
             if !_fly(entity) || _prev_coordinates.get(entity, Vector3i.ZERO) == entity.coordinates():

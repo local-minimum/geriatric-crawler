@@ -54,11 +54,10 @@ func get_edge_position(edge_direction: CardinalDirections.CardinalDirection, loc
         return global_position
 
     if direction == edge_direction || CardinalDirections.invert(direction) == edge_direction:
-        push_error("%s is anchor %s, it doesn't have an edge %s" % [
+        push_warning("%s is anchor %s, it doesn't have an edge %s, using it's center" % [
             name,
             CardinalDirections.name(direction),
             CardinalDirections.name(edge_direction)])
-        print_stack()
         return global_position
 
     var offset: Vector3 = node.get_level().node_size * 0.5 * Vector3(CardinalDirections.direction_to_vectori(edge_direction))
