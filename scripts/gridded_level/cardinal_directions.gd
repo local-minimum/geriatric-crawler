@@ -106,7 +106,7 @@ static func invert(direction: CardinalDirection) -> CardinalDirection:
 
 static func yaw_ccw(look_direction: CardinalDirection, down: CardinalDirection) -> Array[CardinalDirection]:
     if is_parallell(look_direction, down):
-        push_error("Attempting to yaw %s with %s as down" % [look_direction, down])
+        push_error("Attempting to yaw %s with %s as down" % [name(look_direction), name(down)])
         print_stack()
         return [look_direction, down]
 
@@ -117,7 +117,7 @@ static func yaw_ccw(look_direction: CardinalDirection, down: CardinalDirection) 
 
 static func yaw_cw(look_direction: CardinalDirection, down: CardinalDirection) -> Array[CardinalDirection]:
     if is_parallell(look_direction, down):
-        push_error("Attempting to yaw %s with %s as down" % [look_direction, down])
+        push_error("Attempting to yaw %s with %s as down" % [name(look_direction), name(down)])
         print_stack()
         return [look_direction, down]
 
@@ -128,7 +128,7 @@ static func yaw_cw(look_direction: CardinalDirection, down: CardinalDirection) -
 
 static func pitch_up(look_direction: CardinalDirection, down: CardinalDirection) -> Array[CardinalDirection]:
     if is_parallell(look_direction, down):
-        push_error("Attempting to pitch %s with %s as down" % [look_direction, down])
+        push_error("Attempting to pitch %s with %s as down" % [name(look_direction), name(down)])
         print_stack()
         return [look_direction, down]
 
@@ -136,7 +136,7 @@ static func pitch_up(look_direction: CardinalDirection, down: CardinalDirection)
 
 static func pitch_down(look_direction: CardinalDirection, down: CardinalDirection) -> Array[CardinalDirection]:
     if is_parallell(look_direction, down):
-        push_error("Attempting to pitch %s with %s as down" % [look_direction, down])
+        push_error("Attempting to pitch %s with %s as down" % [name(look_direction), name(down)])
         print_stack()
         return [look_direction, down]
 
@@ -144,7 +144,7 @@ static func pitch_down(look_direction: CardinalDirection, down: CardinalDirectio
 
 static func roll_ccw(look_direction: CardinalDirection, down: CardinalDirection) -> Array[CardinalDirection]:
     if is_parallell(look_direction, down):
-        push_error("Attempting to bank %s with %s as down" % [look_direction, down])
+        push_error("Attempting to bank %s with %s as down" % [name(look_direction), name(down)])
         print_stack()
         return [look_direction, down]
 
@@ -155,7 +155,7 @@ static func roll_ccw(look_direction: CardinalDirection, down: CardinalDirection)
 
 static func roll_cw(look_direction: CardinalDirection, down: CardinalDirection) -> Array[CardinalDirection]:
     if is_parallell(look_direction, down):
-        push_error("Attempting to bank %s with %s as down" % [look_direction, down])
+        push_error("Attempting to bank %s with %s as down" % [name(look_direction), name(down)])
         print_stack()
         return [look_direction, down]
 

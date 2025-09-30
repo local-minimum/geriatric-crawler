@@ -45,6 +45,8 @@ var override_ceiling_walking: bool:
 func _ready() -> void:
     if __SignalBus.on_robot_death.connect(_handle_robot_death) != OK:
         push_error("Failed to connect to robot death")
+    if __SignalBus.on_cinematic.connect(_handle_cinematic) != OK:
+        push_error("Failed to connect to cinematic")
 
     camera_resting_position = camera.position
     camera_resting_rotation = camera.basis.get_rotation_quaternion()
@@ -54,6 +56,10 @@ func _ready() -> void:
     # We do super afterwards to not get uneccesary warning about player not being
     # preset as a child of a node
     super()
+
+func _handle_cinematic(entity: GridEntity, is_cinematic: bool) -> void:
+    if entity == self && is_cinematic:
+        _repeat_movement.clear()
 
 func _handle_robot_death(dead_robot: Robot) -> void:
     if robot == dead_robot:

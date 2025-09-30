@@ -10,13 +10,14 @@ enum MovementType {
     TURN_COUNTER_CLOCKWISE,
     ABS_DOWN,
     ABS_UP,
+    CENTER,
 }
 
 static func is_turn(movement: MovementType) -> bool:
     return movement == MovementType.TURN_CLOCKWISE || movement == MovementType.TURN_COUNTER_CLOCKWISE
 
 static func is_translation(movement: MovementType) -> bool:
-    return movement != MovementType.NONE && movement != MovementType.TURN_CLOCKWISE && movement != MovementType.TURN_COUNTER_CLOCKWISE
+    return movement != MovementType.NONE && !is_turn(movement)
 
 static func to_direction(
     movement: MovementType,
@@ -43,6 +44,31 @@ static func to_direction(
             return CardinalDirections.CardinalDirection.UP
 
     return CardinalDirections.CardinalDirection.NONE
+
+static func from_directions(
+    direction: CardinalDirections.CardinalDirection,
+    look_direction: CardinalDirections.CardinalDirection,
+    down: CardinalDirections.CardinalDirection,
+) -> MovementType:
+    if direction == CardinalDirections.CardinalDirection.DOWN:
+        return MovementType.ABS_DOWN
+    if direction == CardinalDirections.CardinalDirection.UP:
+        return MovementType.ABS_UP
+    if direction == look_direction:
+        return MovementType.FORWARD
+    if direction == CardinalDirections.invert(look_direction):
+        return MovementType.BACK
+    if CardinalDirections.yaw_cw(direction, down)[0] == look_direction:
+        return MovementType.STRAFE_RIGHT
+    if CardinalDirections.yaw_ccw(direction, down)[0] == look_direction:
+        return MovementType.STRAFE_LEFT
+
+    push_warning("%s is not a valid movement for looking %s and down %s" % [
+        CardinalDirections.name(direction),
+        CardinalDirections.name(look_direction),
+        CardinalDirections.name(down),
+    ])
+    return MovementType.NONE
 
 static func name(movement: MovementType, localized: bool = false) -> String:
     if localized:

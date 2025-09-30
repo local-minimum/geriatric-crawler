@@ -37,8 +37,13 @@ func move_entity(
     var was_excotic_walk: bool = entity.transportation_mode.has_any(TransportationMode.EXOTIC_WALKS)
 
     # We're in the air but moving onto an anchor of the current node
-    var handled: int = _handle_landing(movement, tween, node, anchor, move_direction)
+    var handled: int = _handle_center(movement, tween, node, anchor)
+    if handled:
+        if handled == _HANDLED_REFUSED:
+            _refuse_translation(movement, tween, node, anchor, move_direction)
+        return tween if handled != _HANDLED_EVENT_MANAGED else null
 
+    handled = _handle_landing(movement, tween, node, anchor, move_direction)
     if handled:
         if handled == _HANDLED_REFUSED:
             _refuse_translation(movement, tween, node, anchor, move_direction)
@@ -61,7 +66,6 @@ func move_entity(
 
 func rotate_entity(
     movement: Movement.MovementType,
-    clockwise: bool,
 ) -> Tween:
     var node: GridNode = entity.get_grid_node()
     if node == null:
@@ -71,10 +75,14 @@ func rotate_entity(
     var up: CardinalDirections.CardinalDirection = CardinalDirections.invert(entity.down)
 
     var target_look_direction: CardinalDirections.CardinalDirection
-    if clockwise:
-        target_look_direction = CardinalDirections.yaw_cw(entity.look_direction, entity.down)[0]
-    else:
-        target_look_direction = CardinalDirections.yaw_ccw(entity.look_direction, entity.down)[0]
+    match movement:
+        Movement.MovementType.TURN_CLOCKWISE:
+            target_look_direction = CardinalDirections.yaw_cw(entity.look_direction, entity.down)[0]
+        Movement.MovementType.TURN_COUNTER_CLOCKWISE:
+            target_look_direction = CardinalDirections.yaw_ccw(entity.look_direction, entity.down)[0]
+        _:
+            push_error("Movement %s is not a rotation" % Movement.name(movement))
+            return null
 
     var final_rotation: Transform3D = Transform3D.IDENTITY.looking_at(
         Vector3(CardinalDirections.direction_to_vectori(target_look_direction)),
@@ -118,7 +126,7 @@ func _refuse_translation(
     move_direction: CardinalDirections.CardinalDirection,
 ) -> void:
     var origin: Vector3 = anchor.global_position if anchor != null else node.get_center_pos()
-    var edge: Vector3 = anchor.get_edge_position(move_direction)
+    var edge: Vector3 = anchor.get_edge_position(move_direction) if anchor != null else origin + CardinalDirections.direction_to_vector(move_direction) * node.get_level().node_size * 0.1
     var target: Vector3 = lerp(origin, edge, _refuse_distance_factor)
 
     @warning_ignore_start("return_value_discarded")
@@ -149,6 +157,42 @@ func _refuse_translation(
     @warning_ignore_restore("return_value_discarded")
 
     print_debug("Refusing translation movement %s for %s" % [CardinalDirections.name(move_direction), entity])
+
+func _handle_center(
+    movement: Movement.MovementType,
+    tween: Tween,
+    node: GridNode,
+    anchor: GridAnchor,
+) -> int:
+    if movement != Movement.MovementType.CENTER:
+        return _UNHANDLED
+
+    if anchor != null:
+        if entity.cinematic || entity.transportation_abilities.has_flag(TransportationMode.FLYING):
+            var center: Vector3 = node.get_center_pos()
+            var prop_tweener: PropertyTweener = tween.tween_property(
+                entity,
+                "global_position",
+                center,
+                translation_time * 0.5 / animation_speed)
+
+            entity.update_entity_anchorage(node, null)
+
+            @warning_ignore_start("return_value_discarded")
+            if !tank_movement:
+                prop_tweener.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+
+            tween.connect(
+                "finished",
+                func () -> void:
+                    entity.sync_position()
+                    entity.end_movement(movement))
+            @warning_ignore_restore("return_value_discarded")
+
+            print_debug("lifting")
+            return _HANDLED
+
+    return _HANDLED_REFUSED
 
 func _handle_landing(
     movement: Movement.MovementType,

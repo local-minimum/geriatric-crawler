@@ -195,7 +195,7 @@ func attempt_movement(
         translation_direction = Movement.to_direction(movement, look_direction, down)
         tween = planner.move_entity(movement, translation_direction)
     elif Movement.is_turn(movement):
-        tween = planner.rotate_entity(movement, movement == Movement.MovementType.TURN_CLOCKWISE)
+        tween = planner.rotate_entity(movement)
 
     _handle_new_tween(tween, primary_tween)
 

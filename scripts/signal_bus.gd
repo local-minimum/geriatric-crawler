@@ -69,7 +69,7 @@ signal on_update_orientation(
     old_forward: CardinalDirections.CardinalDirection,
     forward: CardinalDirections.CardinalDirection,
 )
-signal on_cinematic(entity: GridEntity, active: bool)
+signal on_cinematic(entity: GridEntity, cinematic: bool)
 
 # -> Gride Node Feature
 signal on_change_node(feature: GridNodeFeature)
