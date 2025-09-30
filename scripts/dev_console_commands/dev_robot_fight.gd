@@ -23,6 +23,6 @@ func execute(_parameters: String, console: MinimumDevConsole) -> bool:
         console.output_info("Robot has now completed a fight")
 
     else:
-        console.output_info("No robot is known")
+        console.output_error("No robot is known")
 
     return true

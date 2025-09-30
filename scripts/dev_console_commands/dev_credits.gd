@@ -19,7 +19,7 @@ func execute(parameters: String, console: MinimumDevConsole) -> bool:
                 if value > 0:
                     if !__GlobalGameState.withdraw_credits(value):
                         NotificationsManager.warn("Dev-Console", "Could not withdraw %s credits" % value)
-                        console.output_info("Could not withdraw %s credits" % value)
+                        console.output_error("Could not withdraw %s credits" % value)
                     else:
                         console.output_info("Lost %s credits" % value)
                         return true
