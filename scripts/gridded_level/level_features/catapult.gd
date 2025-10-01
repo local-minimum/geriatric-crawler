@@ -6,6 +6,7 @@ enum Targets { EVERYONE, PLAYER, ENEMY }
 @export var _targets: Targets
 
 @export var _orient_entity: bool = false
+@export var _prefer_orient_down_down: bool = true
 
 @export var _crashes_forward: bool = false
 @export var _crash_direction: CardinalDirections.CardinalDirection = CardinalDirections.CardinalDirection.NONE
@@ -84,6 +85,9 @@ func _handle_move_end(entity: GridEntity) -> void:
                 var fly_direction: CardinalDirections.CardinalDirection = field_direction
                 if !CardinalDirections.is_parallell(fly_direction, entity.look_direction):
                     var new_down: CardinalDirections.CardinalDirection = entity.look_direction
+                    if _prefer_orient_down_down && !CardinalDirections.is_parallell(fly_direction, CardinalDirections.CardinalDirection.DOWN):
+                        new_down = CardinalDirections.CardinalDirection.DOWN
+
                     print_debug("[Catapult %s] orienting look %s, down %s" % [coordinates(), CardinalDirections.name(fly_direction), CardinalDirections.name(new_down)])
                     var look_target: Quaternion = CardinalDirections.direction_to_rotation(CardinalDirections.invert(new_down), fly_direction)
                     var tween: Tween = create_tween()
