@@ -1,0 +1,27 @@
+[gd_scene load_steps=6 format=3 uid="uid://ojp4bthbteor"]
+
+[ext_resource type="Script" uid="uid://c6733p4qj68p" path="res://scripts/gridded_level/level_features/grid_node_side.gd" id="1_4srmy"]
+[ext_resource type="Script" uid="uid://bsjvh2o2oob57" path="res://scripts/gridded_level/level_features/grid_anchor.gd" id="2_igvhk"]
+[ext_resource type="Script" uid="uid://b8a6yvndcxtpa" path="res://scripts/gridded_level/transportation_mode.gd" id="3_caj3p"]
+[ext_resource type="PackedScene" uid="uid://1apehu5b0b8f" path="res://scenes/dungeon/concreteslab_withblock_anims.tscn" id="4_4srmy"]
+
+[sub_resource type="Resource" id="Resource_p0hg4"]
+script = ExtResource("3_caj3p")
+mode = 16
+metadata/_custom_type_script = "uid://b8a6yvndcxtpa"
+
+[node name="basic_ceiling" type="Node3D" node_paths=PackedStringArray("anchor")]
+script = ExtResource("1_4srmy")
+direction = 5
+infer_direction_from_rotation = false
+anchor = NodePath("GridAnchor")
+
+[node name="GridAnchor" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.4, 0)
+script = ExtResource("2_igvhk")
+direction = 5
+required_transportation_mode = SubResource("Resource_p0hg4")
+metadata/_custom_type_script = "uid://bsjvh2o2oob57"
+
+[node name="concreteslab-withblock2" parent="." instance=ExtResource("4_4srmy")]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 2.5, 0)
