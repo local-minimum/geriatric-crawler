@@ -75,6 +75,7 @@ func _handle_move_end(entity: GridEntity) -> void:
             print_debug("[Catapult %s] %s nothing" % [coordinates(), entity.name])
             if entity.attempt_movement(Movement.MovementType.CENTER, false, true):
                 _entity_phases[entity] = Phase.CENTERING
+            _prev_coordinates[entity] = entity.coordinates()
         Phase.CENTERING:
             print_debug("[Catapult %s] %s centered" % [coordinates(), entity.name])
             if _orient_entity:
@@ -179,18 +180,12 @@ func trigger(entity: GridEntity, _movement: Movement.MovementType) -> void:
 
     print_debug("[Catapult %s] Grabbing %s" % [coordinates(), entity.name])
 
-    entity.cinematic = true
-    entity.transportation_mode.set_flag(TransportationMode.FLYING)
     _managed_entities[entity] = self
-    _entity_phases[entity] = Phase.NONE
+    _entity_phases[entity] = Phase.NONE if !entity.transportation_mode.has_flag(TransportationMode.FLYING) else Phase.CENTERING
     _entry_look_direction[entity] = entity.look_direction
 
-    _lay_claim.call_deferred(entity)
-
-func _lay_claim(entity: GridEntity) -> void:
-    _prev_coordinates[entity] = entity.coordinates()
-    if entity.attempt_movement(Movement.MovementType.CENTER, false, true):
-        _entity_phases[entity] = Phase.CENTERING
+    entity.transportation_mode.set_flag(TransportationMode.FLYING)
+    entity.cinematic = true
 
 func _managed_entity(entity: GridEntity) -> bool:
     if _managed_entities.get(entity) == self:

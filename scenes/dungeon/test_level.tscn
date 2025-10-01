@@ -1841,6 +1841,7 @@ direction = 3
 
 [node name="Catapult" parent="LevelGeometry/Elevation 4/Node (1, 4, 5)/Side UP" instance=ExtResource("17_hm4fr")]
 transform = Transform3D(4.37114e-08, 3.82137e-15, 1, 8.74228e-08, -1, 0, 1, 8.74228e-08, -4.37114e-08, 0, 2.62871, 0)
+_orient_entity = false
 _crash_direction = 0
 _trigger_sides = Array[int]([5])
 
