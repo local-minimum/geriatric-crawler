@@ -1,16 +1,17 @@
-[gd_scene load_steps=7 format=3 uid="uid://cotg34cmi7qmj"]
+[gd_scene load_steps=8 format=3 uid="uid://cotg34cmi7qmj"]
 
 [ext_resource type="PackedScene" uid="uid://c0qmcq36iacog" path="res://addons/minimum_dev_console/scenes/example_dev_console.tscn" id="1_gcis2"]
 [ext_resource type="Script" uid="uid://1oqck0dge37k" path="res://scripts/dev_console_commands/dev_credits.gd" id="2_0be3j"]
 [ext_resource type="Script" uid="uid://u6qv42vcbeyp" path="res://addons/minimum_dev_console/src/minimum_dev_command_cateogry.gd" id="3_4dryq"]
 [ext_resource type="Script" uid="uid://disv351t4kkxa" path="res://scripts/dev_console_commands/dev_robot_fight.gd" id="4_fk3y3"]
 [ext_resource type="Script" uid="uid://b4epnmpst224s" path="res://scripts/dev_console_commands/dev_player_blink.gd" id="5_mcioo"]
+[ext_resource type="Script" uid="uid://mq6pe6ye8odp" path="res://scripts/dev_console_commands/dev_player_rot.gd" id="6_kpxas"]
 [ext_resource type="Script" uid="uid://cypvqaxbcaqeh" path="res://scripts/dev_console_commands/dev_speed.gd" id="6_tqlsn"]
 
 [node name="Dev Console Root" type="Node"]
 
 [node name="DevConsole" parent="." node_paths=PackedStringArray("commands") instance=ExtResource("1_gcis2")]
-commands = [NodePath("../Credits"), NodePath("../Robots"), NodePath("../Robots/Fight"), NodePath("../Player"), NodePath("../Player/Blink"), NodePath("../Speed")]
+commands = [NodePath("../Credits"), NodePath("../Robots"), NodePath("../Robots/Fight"), NodePath("../Player"), NodePath("../Player/Blink"), NodePath("../Player/Rot"), NodePath("../Speed")]
 
 [node name="Credits" type="Node" parent="."]
 script = ExtResource("2_0be3j")
@@ -40,6 +41,12 @@ script = ExtResource("5_mcioo")
 command = Array[String](["player", "blink"])
 usage = "[steps=1]"
 description = "Number of steps to blink forward, default 1"
+
+[node name="Rot" type="Node" parent="Player"]
+script = ExtResource("6_kpxas")
+command = Array[String](["player", "rot"])
+usage = "[look] [down] [duration=0.5]"
+description = "Orients player in a new direction"
 
 [node name="Speed" type="Node" parent="."]
 script = ExtResource("6_tqlsn")

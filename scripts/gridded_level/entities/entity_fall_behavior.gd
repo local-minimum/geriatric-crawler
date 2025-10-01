@@ -51,7 +51,6 @@ func _orient_entity() -> void:
     if tween.finished.connect(
         func () -> void:
             entity.orient()
-
     ) != OK:
         push_error("Failed to connect rotation done")
         entity.orient()

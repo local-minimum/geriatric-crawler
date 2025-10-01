@@ -28,6 +28,23 @@ const ALL_PLANAR_DIRECTIONS: Array[CardinalDirection] = [
 
 #region Creation
 
+static func from_string(direction: String) -> CardinalDirection:
+    match direction.strip_edges().to_upper():
+        "N", "NORTH":
+            return CardinalDirection.NORTH
+        "S", "SOUTH":
+            return CardinalDirection.SOUTH
+        "U", "UP", "ZENITH", "Z":
+            return CardinalDirection.UP
+        "D", "DOWN", "NADIR":
+            return CardinalDirection.DOWN
+        "W", "WEST":
+            return CardinalDirection.WEST
+        "E", "EAST":
+            return CardinalDirection.EAST
+        _:
+            return CardinalDirection.NONE
+
 static func vector_to_direction(vector: Vector3i) -> CardinalDirection:
     match vector:
         Vector3i.FORWARD: return CardinalDirection.NORTH
