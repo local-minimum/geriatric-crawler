@@ -27,9 +27,9 @@ func _ready() -> void:
 func _exit_tree() -> void:
     for entity: GridEntity in _managed_entities:
         if _managed_entities[entity] == self:
-            _release_entity(entity)
+            _release_entity(entity, true)
 
-func _release_entity(entity: GridEntity) -> void:
+func _release_entity(entity: GridEntity, immediate_uncinematic: bool = false) -> void:
     if !_managed_entities.erase(entity):
         push_warning("Could not remove entity '%s' as held though it should have been there" % entity.name)
 
@@ -54,17 +54,30 @@ func _release_entity(entity: GridEntity) -> void:
         if !entity.attempt_movement(movement, false, true):
             push_warning("Failed to crash entity %s %s" % [entity.name, _crash_direction])
 
-    if !entity.transportation_abilities.has_flag(TransportationMode.FLYING):
-        entity.transportation_mode.mode = TransportationMode.NONE
-
     if _orient_entity:
         if entity is GridPlayer:
             var player: GridPlayer = entity
             player.stand_up()
 
-    entity.cinematic = false
-    entity.clear_queue()
-    print_debug("[Catapult %s] %s released" % [coordinates(), entity.name])
+    if immediate_uncinematic:
+        _cleanup_entity(entity)
+    else:
+        print_debug("[Catapult %s] %s delayed cledanup" % [coordinates(), entity.name])
+        _cleanup_entity.call_deferred(entity)
+
+func _cleanup_entity(entity: GridEntity) -> void:
+        if !entity.transportation_abilities.has_flag(TransportationMode.FLYING):
+            entity.transportation_mode.mode = TransportationMode.NONE
+
+        entity.cinematic = false
+        entity.clear_queue()
+        print_debug("[Catapult %s] Cleaned up %s, transportation %s, moving %s, cinematic %s" % [
+            coordinates(),
+            entity.name,
+            entity.transportation_mode.get_flag_names(),
+            entity.is_moving(),
+            entity.cinematic,
+        ])
 
 func _handle_move_end(entity: GridEntity) -> void:
     if _managed_entities.get(entity) != self:
@@ -98,7 +111,7 @@ func _handle_move_end(entity: GridEntity) -> void:
                         update_rotation,
                         entity.global_transform.basis.get_rotation_quaternion(),
                         look_target,
-                        0.3
+                        0.2
                     )
                     @warning_ignore_restore("return_value_discarded")
 

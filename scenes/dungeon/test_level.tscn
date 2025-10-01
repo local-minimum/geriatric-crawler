@@ -1606,6 +1606,7 @@ coordinates = Vector3i(3, 2, 2)
 
 [node name="Catapult" parent="LevelGeometry/Elevation 2/Node (3, 2, 2)/Side NORTH" instance=ExtResource("17_hm4fr")]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 1.25632, -1.25913)
+_crashes_forward = false
 _crash_direction = 0
 _trigger_sides = Array[int]([1])
 

@@ -108,8 +108,7 @@ func rotate_entity(
     if !tank_movement:
          method_tweener.set_trans(Tween.TRANS_SINE)
 
-    tween.connect(
-        "finished",
+    tween.finished.connect(
         func () -> void:
             entity.look_direction = target_look_direction
             entity.orient()
@@ -151,8 +150,7 @@ func _refuse_translation(
     if !tank_movement:
         prop_tweener.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 
-    tween.connect(
-        "finished",
+    tween.finished.connect(
         func () -> void:
             entity.sync_position()
             entity.end_movement(movement))
@@ -184,8 +182,7 @@ func _handle_center(
             if !tank_movement:
                 prop_tweener.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
 
-            tween.connect(
-                "finished",
+            tween.finished.connect(
                 func () -> void:
                     entity.sync_position()
                     entity.end_movement(movement))
@@ -230,8 +227,7 @@ func _handle_landing(
             if !tank_movement:
                 prop_tweener.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
 
-            tween.connect(
-                "finished",
+            tween.finished.connect(
                 func () -> void:
                     entity.sync_position()
                     entity.end_movement(movement))
@@ -303,8 +299,7 @@ func _handle_node_transition(
                 if !tank_movement:
                     prop_tweener.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 
-                tween.connect(
-                    "finished",
+                tween.finished.connect(
                     func () -> void:
                         entity.sync_position()
                         entity.end_movement(movement))
@@ -356,8 +351,7 @@ func _handle_node_transition(
                     final_rotation.basis,
                     translation_time / animation_speed)
 
-                tween.connect(
-                    "finished",
+                tween.finished.connect(
                     func () -> void:
                         entity.sync_position()
                         entity.look_direction = end_look_direction
@@ -369,8 +363,7 @@ func _handle_node_transition(
                 print_debug("exotic jump-off")
                 return _HANDLED
 
-            tween.connect(
-                "finished",
+            tween.finished.connect(
                 func () -> void:
                     entity.sync_position()
                     entity.remove_concurrent_movement_block()
@@ -561,8 +554,7 @@ func _handle_corner(
     if !tank_movement:
         meth_tweener2.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 
-    second_tween.connect(
-        "finished",
+    second_tween.finished.connect(
         func () -> void:
             entity.sync_position()
             entity.look_direction = updated_directions[0]
