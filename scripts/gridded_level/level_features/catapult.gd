@@ -122,6 +122,7 @@ func _handle_move_end(entity: GridEntity) -> void:
                         func () -> void:
                             entity.orient()
                             print_debug("[Catapult %s] Oriented %s to look %s, %s down" % [coordinates(), entity.name, CardinalDirections.name(entity.look_direction), CardinalDirections.name(entity.down)])
+
                     ) != OK:
                         push_error("Failed to connect rotation done")
 
@@ -193,12 +194,19 @@ func trigger(entity: GridEntity, _movement: Movement.MovementType) -> void:
 
     print_debug("[Catapult %s] Grabbing %s" % [coordinates(), entity.name])
 
+    entity.cinematic = true
+
+    if !_managed_entities.has(entity):
+        _claim_entity(entity)
+    else:
+        _claim_entity.call_deferred(entity)
+
+func _claim_entity(entity: GridEntity) -> void:
     _managed_entities[entity] = self
     _entity_phases[entity] = Phase.NONE if !entity.transportation_mode.has_flag(TransportationMode.FLYING) else Phase.CENTERING
     _entry_look_direction[entity] = entity.look_direction
 
-    entity.transportation_mode.set_flag(TransportationMode.FLYING)
-    entity.cinematic = true
+    entity.transportation_mode.mode = TransportationMode.FLYING
 
 func _managed_entity(entity: GridEntity) -> bool:
     if _managed_entities.get(entity) == self:
