@@ -46,6 +46,7 @@ var _phase: Phase = Phase.RETRACTED:
                 _sync_block_retracted()
 
 var _phase_ticks: int
+var _exposed: Array[GridEntity]
 
 func _ready() -> void:
     if __SignalBus.on_move_end.connect(_handle_move_end) != OK:
@@ -55,6 +56,12 @@ func _ready() -> void:
     _phase_ticks = _start_delay_ticks
 
 func _handle_move_end(entity: GridEntity) -> void:
+    if entity.coordinates() == coordinates():
+        if !_exposed.has(entity):
+            _exposed.append(entity)
+    elif _exposed.has(entity):
+        _exposed.erase(entity)
+
     if entity is not GridPlayer || _managed:
         return
 
@@ -62,6 +69,15 @@ func _handle_move_end(entity: GridEntity) -> void:
     if _phase_ticks <= 0:
         _phase = get_next_phase()
         _anim.play(get_animation())
+        if _phase == Phase.CRUSHING:
+            for exposed: GridEntity in _exposed:
+                if exposed is GridPlayer:
+                    var player: GridPlayer = exposed
+                    player.robot.kill()
+                elif exposed is GridEncounter:
+                    var encounter: GridEncounter = exposed
+                    push_warning("Don't know how to kill encounters yet %s survives" % exposed.name)
+
 
 func _sync_block_retracted() -> void:
     if _always_block_crusher_side:
