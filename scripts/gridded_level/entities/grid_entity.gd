@@ -83,9 +83,14 @@ func remove_concurrent_movement_block() -> void:
     _block_concurrent = false
 
 
+func force_movement(movement: Movement.MovementType) -> bool:
+    if _start_movement(movement, true):
+        return attempt_movement(movement, false, true)
+    return false
+
 func _start_movement(movement: Movement.MovementType, force: bool) -> bool:
     if Movement.MovementType.NONE == movement || falling() && !force:
-        print_debug("Movement refused: no accepting movements")
+        push_warning("%s Movement refused: not accepting movements" % name)
         return false
 
     if _active_movement == Movement.MovementType.NONE || force:

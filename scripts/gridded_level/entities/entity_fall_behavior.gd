@@ -15,7 +15,7 @@ func _process(_delta: float) -> void:
     var t: int = Time.get_ticks_msec()
     if t > next_fall:
         next_fall = t + delay_per_fall_move_msec
-        if !entity.attempt_movement(Movement.MovementType.ABS_DOWN, false, true):
-            push_warning("%s is falling, but cannot fall down" % entity.name)
+        if !entity.force_movement(Movement.MovementType.ABS_DOWN):
+            push_warning("[Falling] %s is falling, but cannot fall down" % entity.name)
         else:
-            print_debug("%s fell" % entity.name)
+            print_debug("[Falling] %s fell" % entity.name)

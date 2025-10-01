@@ -45,13 +45,13 @@ func _release_entity(entity: GridEntity, immediate_uncinematic: bool = false) ->
     var node: GridNode = entity.get_grid_node()
     if node.may_exit(entity, entity.look_direction) && _crashes_forward:
         print_debug("[Catapult %s] %s may exit %s forward %s" % [coordinates(), entity.name, node.coordinates, CardinalDirections.name(entity.look_direction)])
-        if !entity.attempt_movement(Movement.MovementType.FORWARD, false, true):
+        if !entity.force_movement(Movement.MovementType.FORWARD):
             push_warning("Failed to crash entity %s forward" % entity.name)
 
     elif _crash_direction != CardinalDirections.CardinalDirection.NONE:
         var movement: Movement.MovementType = Movement.from_directions(_crash_direction, entity.look_direction, entity.down)
         print_debug("[Catapult %s] %s may exit %s default (%s) %s" % [coordinates(), entity.name, node.coordinates, Movement.name(movement), CardinalDirections.name(_crash_direction)])
-        if !entity.attempt_movement(movement, false, true):
+        if !entity.force_movement(movement):
             push_warning("Failed to crash entity %s %s" % [entity.name, _crash_direction])
 
     if _orient_entity:
@@ -86,7 +86,7 @@ func _handle_move_end(entity: GridEntity) -> void:
     match _entity_phases.get(entity, Phase.NONE):
         Phase.NONE:
             print_debug("[Catapult %s] %s nothing" % [coordinates(), entity.name])
-            if entity.attempt_movement(Movement.MovementType.CENTER, false, true):
+            if entity.force_movement(Movement.MovementType.CENTER):
                 _entity_phases[entity] = Phase.CENTERING
             _prev_coordinates[entity] = entity.coordinates()
         Phase.CENTERING:
@@ -183,7 +183,7 @@ func _fly(entity: GridEntity) -> bool:
         _release_entity(entity)
         return false
 
-    return entity.attempt_movement(movement, false, true)
+    return entity.force_movement(movement)
 
 func trigger(entity: GridEntity, _movement: Movement.MovementType) -> void:
     _triggered = true

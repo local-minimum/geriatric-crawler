@@ -177,7 +177,11 @@ func clear_held_movement(movement: Movement.MovementType) -> void:
 var _next_move_repeat: float
 
 func _process(_delta: float) -> void:
-    if cinematic || !allow_replays || is_moving() || Time.get_ticks_msec() < _next_move_repeat:
+    if cinematic || falling():
+        _repeat_movement.clear()
+        return
+
+    if !allow_replays || is_moving() || Time.get_ticks_msec() < _next_move_repeat:
         return
 
     var count: int = _repeat_movement.size()
