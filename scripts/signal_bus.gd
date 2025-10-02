@@ -59,6 +59,10 @@ signal on_enter_zone(zone: LevelZone, entity: GridEntity)
 signal on_exit_zone(zone: LevelZone, entity: GridEntity)
 signal on_stay_zone(zone: LevelZone, entity: GridEntity)
 
+# -> Exploration Message
+## General purpose messaging to any who may be interested
+signal on_broadcast_message(id: String, message: String)
+
 # -> Grid Entity
 signal on_move_start(entity: GridEntity, from: Vector3i, translation_direction: CardinalDirections.CardinalDirection)
 signal on_move_end(entity: GridEntity)

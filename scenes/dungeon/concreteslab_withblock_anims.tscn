@@ -19,6 +19,22 @@ tracks/0/keys = {
 "values": [Vector3(0, 0, 0), Vector3(0, 0, -0.0441222), Vector3(0, 0, 2.4), Vector3(0, 0, 2.2), Vector3(0, 0, 2.4), Vector3(0, 0, 2.3), Vector3(0, 0, 2.4)]
 }
 
+[sub_resource type="Animation" id="Animation_xhu06"]
+resource_name = "Crushed"
+length = 0.1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Block:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0, 0, 2.4)]
+}
+
 [sub_resource type="Animation" id="Animation_toh1k"]
 length = 0.001
 tracks/0/type = "value"
@@ -50,22 +66,6 @@ tracks/0/keys = {
 "values": [Vector3(0, 0, 2.4), Vector3(0, 0, 0)]
 }
 
-[sub_resource type="Animation" id="Animation_xhu06"]
-resource_name = "Crushed"
-length = 0.1
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Block:position")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector3(0, 0, 2.4)]
-}
-
 [sub_resource type="Animation" id="Animation_rbiql"]
 resource_name = "Retracted"
 length = 0.1
@@ -94,6 +94,7 @@ _data = {
 [node name="concreteslab-withblock" node_paths=PackedStringArray("_anim") instance=ExtResource("1_v3lxs")]
 script = ExtResource("2_s8b33")
 _anim = NodePath("AnimationPlayer")
+_live = 1
 
 [node name="Block" parent="." index="0"]
 transform = Transform3D(100, 0, 0, 0, -2.38419e-05, 100, 0, -100, -2.38419e-05, 0, 0, -0.0441222)
