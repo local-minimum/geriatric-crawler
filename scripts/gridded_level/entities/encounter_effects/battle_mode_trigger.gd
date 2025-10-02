@@ -4,6 +4,7 @@ class_name BattleModeTrigger
 var level: GridLevel
 
 @export var enemies: Array[BattleEnemy]
+@export var reward_environmental_kill: bool = true
 
 func prepare(_encounter: GridEncounter) -> void:
     var focus: BattleEnemy = get_highest_scoring_live_enemy()

@@ -2,6 +2,13 @@ extends GridEvent
 class_name Crusher
 
 enum Phase { RETRACTED, CRUSHING, CRUSHED, RETRACTING }
+static func phase_from_int(phase_value: int) -> Phase:
+    match phase_value:
+        0: return Phase.RETRACTED
+        1: return Phase.CRUSHING
+        2: return Phase.CRUSHED
+        3: return Phase.RETRACTING
+        _: return Phase.RETRACTED
 
 @export var _managed: bool
 ## Note: This has no effect when managed
@@ -76,8 +83,7 @@ func _handle_move_end(entity: GridEntity) -> void:
                     player.robot.kill()
                 elif exposed is GridEncounter:
                     var encounter: GridEncounter = exposed
-                    push_warning("Don't know how to kill encounters yet %s survives" % exposed.name)
-
+                    encounter.kill()
 
 func _sync_block_retracted() -> void:
     if _always_block_crusher_side:
@@ -112,3 +118,35 @@ func get_animation() -> String:
         _:
             push_error("Unknown phase %s" % _phase)
             return _retracted_resting_anim
+
+func needs_saving() -> bool:
+    return true
+
+func save_key() -> String:
+    return "cr-%s-%s" % [coordinates(), CardinalDirections.name(_crusher_side)]
+
+const _PHASE_KEY: String = "phase"
+const _PHASE_TICK_KEY: String = "tick"
+const _TRIGGERED_KEY: String = "triggered"
+
+func collect_save_data() -> Dictionary:
+    return {
+        _PHASE_KEY: _phase,
+        _PHASE_TICK_KEY: _phase_ticks,
+        _TRIGGERED_KEY: _triggered,
+    }
+
+func load_save_data(_data: Dictionary) -> void:
+    _triggered = DictionaryUtils.safe_getb(_data, _TRIGGERED_KEY)
+
+    var raw_phase: int = DictionaryUtils.safe_geti(_data, _PHASE_KEY)
+    _phase = phase_from_int(raw_phase)
+    _phase_ticks = DictionaryUtils.safe_geti(_data, _PHASE_TICK_KEY)
+    _exposed.clear()
+
+    var level: GridLevel = get_level()
+    var coords: Vector3i = coordinates()
+
+    for entity: GridEntity in level.grid_entities:
+        if entity.coordinates() == coords:
+            _exposed.append(entity)

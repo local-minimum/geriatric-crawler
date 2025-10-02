@@ -215,3 +215,34 @@ func _collect_enemy_gained_cards() -> Dictionary[String, Array]:
         cards[enemy.id] = enemy_cards
 
     return cards
+
+func kill() -> void:
+    _triggered = true
+
+    if effect is BattleModeTrigger:
+        var trigger: BattleModeTrigger = effect
+        if trigger.reward_environmental_kill:
+            for enemy: BattleEnemy in trigger.enemies:
+                __GlobalGameState.deposit_credits(enemy.carried_credits)
+
+    if repeatable:
+        var node: GridNode = get_grid_node()
+        if node == null:
+            push_error("Encounter %s is out of bounds at %s, killed and repeatable!" % [name, coordinates()])
+            return
+
+        for direction: CardinalDirections.CardinalDirection in CardinalDirections.ALL_DIRECTIONS:
+            if node.may_exit(self, direction, true, true):
+                var neighbour: GridNode = node.neighbour(direction)
+                if neighbour == null:
+                    continue
+
+                if neighbour.may_enter(self, node, direction, get_grid_anchor_direction(), false, true, true):
+                    var anchor: GridAnchor = neighbour.get_grid_anchor(get_grid_anchor_direction())
+                    if anchor != null:
+                        set_grid_anchor(anchor)
+                    else:
+                        set_grid_node(neighbour)
+
+                    sync_position()
+                    break
