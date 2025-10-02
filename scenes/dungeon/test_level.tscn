@@ -1,4 +1,4 @@
-[gd_scene load_steps=72 format=3 uid="uid://dwqcwbgj8p6q0"]
+[gd_scene load_steps=73 format=3 uid="uid://dwqcwbgj8p6q0"]
 
 [ext_resource type="Script" uid="uid://dqe42q7uub84r" path="res://scripts/gridded_level/level_features/grid_level.gd" id="1_dd1ob"]
 [ext_resource type="PackedScene" uid="uid://bfoog3fb4v5ij" path="res://scenes/dungeon/player.tscn" id="3_m6mav"]
@@ -15,6 +15,7 @@
 [ext_resource type="Script" uid="uid://dmpqfljj24gh6" path="res://scripts/gridded_level/entities/encounter_effects/battle_mode_trigger.gd" id="10_rvj20"]
 [ext_resource type="Script" uid="uid://ccsqys7ldqoh" path="res://scripts/card_battle/battle_enemy.gd" id="11_fxt0s"]
 [ext_resource type="Texture2D" uid="uid://d4i1sxn0646on" path="res://sprites/enemies/training-dummy.png" id="12_26eu7"]
+[ext_resource type="PackedScene" uid="uid://jm86vuxmbiw2" path="res://scenes/dungeon/trigger_floor.tscn" id="12_hm4fr"]
 [ext_resource type="PackedScene" uid="uid://dt4v126jk07y8" path="res://scenes/dungeon/ramp.tscn" id="12_wymjw"]
 [ext_resource type="Script" uid="uid://cqlxwfe858g4h" path="res://scripts/card_battle/battle_card_data.gd" id="13_26eu7"]
 [ext_resource type="Script" uid="uid://c4gjxrt0ydalx" path="res://scripts/card_battle/enemy_battle_deck.gd" id="13_632b7"]
@@ -60,7 +61,7 @@
 [ext_resource type="Resource" uid="uid://bdwpemc2r72sv" path="res://resources/punishment_cards/insecurities_979.tres" id="48_24aia"]
 [ext_resource type="Resource" uid="uid://bm3cpmpqe3u6h" path="res://resources/punishment_cards/insecurities_999.tres" id="49_yofnv"]
 
-[sub_resource type="Resource" id="Resource_ub21w"]
+[sub_resource type="Resource" id="Resource_uhp52"]
 resource_local_to_scene = true
 script = ExtResource("4_840jk")
 mode = 61
@@ -122,7 +123,7 @@ zones = [NodePath("Zones/Radioactive Zone")]
 [node name="Player" parent="." instance=ExtResource("3_m6mav")]
 process_mode = 3
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0145968, -0.00857759, 0.00070858)
-transportation_abilities = SubResource("Resource_ub21w")
+transportation_abilities = SubResource("Resource_uhp52")
 transportation_mode = SubResource("Resource_pgxau")
 
 [node name="LevelGeometry" type="Node3D" parent="."]
@@ -395,7 +396,7 @@ coordinates = Vector3i(-1, 0, -3)
 
 [node name="Side UP" parent="LevelGeometry/Elevation 0/Node (-1, 0, -3)" instance=ExtResource("8_72dvb")]
 
-[node name="Side DOWN" parent="LevelGeometry/Elevation 0/Node (-1, 0, -3)" instance=ExtResource("9_4mxkc")]
+[node name="Side DOWN (pressure plate)" parent="LevelGeometry/Elevation 0/Node (-1, 0, -3)" instance=ExtResource("12_hm4fr")]
 
 [node name="Node (0, 0, -3)" parent="LevelGeometry/Elevation 0" instance=ExtResource("4_myev5")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -7.5)

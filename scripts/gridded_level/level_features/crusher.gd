@@ -46,6 +46,7 @@ var _phase: Phase = Phase.RETRACTED:
                 _phase_ticks = _rest_retracted_ticks
 
             Phase.CRUSHING:
+                _triggered = true
                 _sync_blocking_retracted()
                 _phase_ticks = 1
 
@@ -88,11 +89,13 @@ func _handle_broadcast_message(id: String, message: String) -> void:
 
     match message:
         _managed_crush_message:
-            _phase = Phase.CRUSHING
-            _check_killing()
+            if _phase == Phase.RETRACTED || _phase == Phase.RETRACTING:
+                _phase = Phase.CRUSHING
+                _check_killing()
         _managed_retract_message:
-            if _repeatable || !_triggered:
-                _phase = Phase.RETRACTING
+            if _live != LiveMode.LIVE_ONE_SHOT && (_phase == Phase.CRUSHING || _phase == Phase.CRUSHED):
+                if _repeatable || !_triggered:
+                    _phase = Phase.RETRACTING
 
 func _handle_move_end(entity: GridEntity) -> void:
     if entity.coordinates() == coordinates():
@@ -157,6 +160,10 @@ func get_animation() -> String:
         _:
             push_error("Unknown phase %s" % _phase)
             return _retracted_resting_anim
+
+func trigger(_entity: GridEntity, _movement: Movement.MovementType) -> void:
+    # We don't trigger this way
+    pass
 
 func needs_saving() -> bool:
     return true
