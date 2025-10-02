@@ -1,9 +1,10 @@
-[gd_scene load_steps=6 format=3 uid="uid://ojp4bthbteor"]
+[gd_scene load_steps=7 format=3 uid="uid://ojp4bthbteor"]
 
 [ext_resource type="Script" uid="uid://c6733p4qj68p" path="res://scripts/gridded_level/level_features/grid_node_side.gd" id="1_4srmy"]
 [ext_resource type="Script" uid="uid://bsjvh2o2oob57" path="res://scripts/gridded_level/level_features/grid_anchor.gd" id="2_igvhk"]
 [ext_resource type="Script" uid="uid://b8a6yvndcxtpa" path="res://scripts/gridded_level/transportation_mode.gd" id="3_caj3p"]
 [ext_resource type="PackedScene" uid="uid://1apehu5b0b8f" path="res://scenes/dungeon/concreteslab_withblock_anims.tscn" id="4_4srmy"]
+[ext_resource type="Script" uid="uid://coe1i68jqote4" path="res://scripts/broadcast_receiver.gd" id="5_igvhk"]
 
 [sub_resource type="Resource" id="Resource_p0hg4"]
 script = ExtResource("3_caj3p")
@@ -29,3 +30,8 @@ _managed = true
 _managed_crush_message = "activate"
 _managed_retract_message = "deactivate"
 _live = 2
+
+[node name="BroadcastReceiver" type="Node" parent="." node_paths=PackedStringArray("receiver")]
+script = ExtResource("5_igvhk")
+receiver = NodePath("../concreteslab-withblock2")
+metadata/_custom_type_script = "uid://coe1i68jqote4"
