@@ -25,3 +25,7 @@ metadata/_custom_type_script = "uid://bsjvh2o2oob57"
 
 [node name="concreteslab-withblock2" parent="." instance=ExtResource("4_4srmy")]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 2.5, 0)
+_managed = true
+_managed_crush_message = "activate"
+_managed_retract_message = "deactivate"
+_live = 2

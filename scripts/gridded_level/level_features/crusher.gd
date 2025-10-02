@@ -78,13 +78,13 @@ func _ready() -> void:
     _phase_ticks = _start_delay_ticks
 
 func _process(_delta: float) -> void:
-    if !_managed && (_live == LiveMode.FULL_LIVE || _live == LiveMode.LIVE_ONE_SHOT && _phase != Phase.RETRACTED):
+    if !_managed && _live == LiveMode.FULL_LIVE || _live == LiveMode.LIVE_ONE_SHOT && _phase != Phase.RETRACTED:
         if Time.get_ticks_msec() - _last_tick > _live_tick_duration_msec:
             _progress_phase_cycle()
             _last_tick = Time.get_ticks_msec()
 
 func _handle_broadcast_message(id: String, message: String) -> void:
-    if !_managed || (id != _managed_message_id && !_managed_message_id.is_empty()) :
+    if !_managed || (id != _managed_message_id && !_managed_message_id.is_empty()):
         return
 
     match message:
@@ -92,10 +92,14 @@ func _handle_broadcast_message(id: String, message: String) -> void:
             if _phase == Phase.RETRACTED || _phase == Phase.RETRACTING:
                 _phase = Phase.CRUSHING
                 _check_killing()
+                _anim.play(get_animation())
+                _last_tick = Time.get_ticks_msec()
         _managed_retract_message:
             if _live != LiveMode.LIVE_ONE_SHOT && (_phase == Phase.CRUSHING || _phase == Phase.CRUSHED):
                 if _repeatable || !_triggered:
                     _phase = Phase.RETRACTING
+        _:
+            print_debug("[Crusher %s] Got unhandled message %s from %s" % [coordinates(), message, id])
 
 func _handle_move_end(entity: GridEntity) -> void:
     if entity.coordinates() == coordinates():
