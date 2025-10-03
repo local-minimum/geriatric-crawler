@@ -9,7 +9,6 @@ const NO_CONTRACT = 99999
 @export var create_new: Control
 @export var broadcasts_lister: MenuButton
 @export var selected_container: Control
-# @export var broadcaster: EditorResourcePicker
 @export var message_id: LineEdit
 @export var change_broadcaster: Button
 @export var selected_is_broadcaster: Control
@@ -83,7 +82,17 @@ func _handle_select_broadcast(id: int) -> void:
     _selected_contract = contract
 
 func _on_create_contract_pressed() -> void:
-    pass
+    if panel.level == null:
+        push_error("Cannot create contracts outside grid levels")
+
+    var contract = BroadcastContract.new()
+    contract._broadcaster = _selection
+    panel.level.broadcasts_parent.add_child(contract, true)
+    contract.owner = panel.level.get_tree().edited_scene_root
+    _selected_contract = contract
+
+    _sync_known_contracts()
+    _sync_highlight_contract()
 
 func _sync_create(broadcaster: Node) -> void:
     if broadcaster != null && panel.level != null:
@@ -133,7 +142,7 @@ func _sync_broadcasts_lister() -> void:
         popup.add_radio_check_item(_name_contract(_known_contracts[idx]), idx)
 
 func _name_contract(contract: BroadcastContract) -> String:
-    return "Msg ID '%s' from %s to %s" % [
+    return "'%s' from %s to %s" % [
         BroadcastContract.get_message_id_text(contract),
         BroadcastContract.get_broadcaster_name(contract),
         BroadcastContract.get_reciever_count(contract),
