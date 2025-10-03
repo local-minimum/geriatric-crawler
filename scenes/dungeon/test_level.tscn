@@ -62,7 +62,7 @@
 [ext_resource type="Resource" uid="uid://bm3cpmpqe3u6h" path="res://resources/punishment_cards/insecurities_999.tres" id="49_yofnv"]
 [ext_resource type="Script" uid="uid://huxje2j21g1c" path="res://scripts/broadcast_contract.gd" id="61_uhp52"]
 
-[sub_resource type="Resource" id="Resource_1jctb"]
+[sub_resource type="Resource" id="Resource_uhp52"]
 resource_local_to_scene = true
 script = ExtResource("4_840jk")
 mode = 61
@@ -109,7 +109,7 @@ albedo_texture = ExtResource("34_rljv5")
 material = SubResource("StandardMaterial3D_jmfrw")
 size = Vector2(1.5, 1.5)
 
-[node name="TestLevel" type="Node3D" node_paths=PackedStringArray("player", "level_geometry", "punishments", "primary_entry_portal", "level_portals", "zones_parent", "zones")]
+[node name="TestLevel" type="Node3D" node_paths=PackedStringArray("player", "level_geometry", "punishments", "primary_entry_portal", "level_portals", "zones_parent", "zones", "broadcasts_parent")]
 script = ExtResource("1_dd1ob")
 level_id = "test-level"
 node_size = Vector3(2.5, 2.5, 2.5)
@@ -120,11 +120,12 @@ primary_entry_portal = NodePath("LevelGeometry/Elevation 0/Node (0, 0, 2)/Airloc
 level_portals = [NodePath("LevelGeometry/Elevation 0/Node (0, 0, 2)/Airlock"), NodePath("LevelGeometry/Elevation 1/Node (5, 1, -2)/Airlock")]
 zones_parent = NodePath("Zones")
 zones = [NodePath("Zones/Radioactive Zone")]
+broadcasts_parent = NodePath("Broadcasts")
 
 [node name="Player" parent="." instance=ExtResource("3_m6mav")]
 process_mode = 3
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0145968, -0.00857759, 0.00070858)
-transportation_abilities = SubResource("Resource_1jctb")
+transportation_abilities = SubResource("Resource_uhp52")
 transportation_mode = SubResource("Resource_pgxau")
 
 [node name="LevelGeometry" type="Node3D" parent="."]
