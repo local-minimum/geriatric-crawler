@@ -33,13 +33,13 @@ func _enter_tree() -> void:
         if panel.on_update_level.connect(_handle_update_level) != OK:
             push_error("Failed to connect update level")
 
-
     if !zone_lister.get_popup().id_pressed.is_connected(_handle_select_zone):
         if zone_lister.get_popup().id_pressed.connect(_handle_select_zone) != OK:
             push_error("Failed to connect zone lister changed")
 
 func _exit_tree() -> void:
     panel.on_update_selected_nodes.disconnect(_handle_selection_change)
+    panel.on_update_level.disconnect(_handle_update_level)
 
     for mesh: MeshInstance3D in _zone_highlights:
         mesh.queue_free()
@@ -84,7 +84,12 @@ func _handle_select_zone(id: int) -> void:
         push_error("Cannot select zones when not a grid level scene")
         return
 
-    var zone: LevelZone = level.zones[id] if id >= 0 && id < level.zones.size() else null
+    var zone: LevelZone
+    if id == NO_ZONE:
+        zone = null
+    else:
+        zone = level.zones[id] if id >= 0 && id < level.zones.size() else null
+
     if zone == selected_zone:
         return
 
@@ -152,7 +157,7 @@ func _sync_zone_lister() -> void:
     var popup: PopupMenu = zone_lister.get_popup()
     popup.clear()
 
-    popup.add_radio_check_item("[No zone selection]", NO_ZONE)
+    popup.add_radio_check_item("[No zone selected]", NO_ZONE)
 
     for idx: int in range(level.zones.size()):
         var zone: LevelZone = level.zones[idx]

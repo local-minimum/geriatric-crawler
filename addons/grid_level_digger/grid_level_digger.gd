@@ -48,6 +48,7 @@ func _on_selection_change() -> void:
             selected_nodes.append(node)
 
     panel.selected_nodes = selected_nodes
+    panel.raw_selection = selections
 
     if selected_nodes.size() > 1:
         return

@@ -2,6 +2,7 @@
 extends Panel
 class_name GridLevelDiggerPanel
 
+signal on_update_raw_selection(nodes: Array[Node])
 signal on_update_selected_nodes(nodes: Array[GridNode])
 signal on_update_level(level: GridLevel)
 
@@ -48,6 +49,11 @@ var selected_nodes: Array[GridNode]:
     set(value):
         selected_nodes = value
         on_update_selected_nodes.emit(value)
+
+var raw_selection: Array[Node]:
+    set(value):
+        raw_selection = value
+        on_update_raw_selection.emit(value)
 
 func get_level() -> GridLevel:
     return level
