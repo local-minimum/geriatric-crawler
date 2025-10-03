@@ -32,3 +32,17 @@ func _ready() -> void:
             if child is BroadcastReceiver:
                 var receiver: BroadcastReceiver = child
                 receiver.configure(type, _message_id, _messages)
+
+static func get_message_id_text(contract: BroadcastContract) -> String:
+    if contract._message_id.is_empty():
+        return "[NO MESSAGE]"
+    return contract._message_id
+
+static func get_broadcaster_name(contract: BroadcastContract) -> String:
+    if contract._broadcaster != null:
+        return contract._broadcaster.name
+
+    return "[NO BROADCASTER]"
+
+static func get_reciever_count(contract: BroadcastContract) -> int:
+    return contract._receivers.size()

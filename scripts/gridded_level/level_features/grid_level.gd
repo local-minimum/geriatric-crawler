@@ -29,6 +29,8 @@ var grid_entities: Array[GridEntity]
 @export var zones_parent: Node
 @export var zones: Array[LevelZone]
 
+@export var broadcasts_parent: Node
+
 
 var corpse: Corpse
 
