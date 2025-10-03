@@ -1,0 +1,42 @@
+[gd_scene load_steps=5 format=3 uid="uid://cmp1oo1uef4qa"]
+
+[ext_resource type="Script" uid="uid://cxxpvm8wbrkh6" path="res://addons/grid_level_digger/controls/gld_node_listing.gd" id="1_4eest"]
+[ext_resource type="Texture2D" uid="uid://kx3ihji6wr88" path="res://addons/grid_level_digger/sprites/kenney game icons/PNG/White/1x/up.png" id="2_qd7bw"]
+[ext_resource type="Texture2D" uid="uid://d0b7f5ynetioe" path="res://addons/grid_level_digger/sprites/kenney game icons/PNG/White/1x/down.png" id="3_adq7n"]
+[ext_resource type="Texture2D" uid="uid://bl86451j4x041" path="res://addons/grid_level_digger/sprites/kenney game icons/PNG/White/1x/minus.png" id="4_6g273"]
+
+[node name="Node Listing" type="HBoxContainer" node_paths=PackedStringArray("_node_field", "_move_up_button", "_move_down_button", "_remove_button")]
+script = ExtResource("1_4eest")
+_node_field = NodePath("Node Field")
+_move_up_button = NodePath("Move Up")
+_move_down_button = NodePath("Move Down")
+_remove_button = NodePath("Remove")
+
+[node name="Node Field" type="LineEdit" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Move Up" type="Button" parent="."]
+custom_minimum_size = Vector2(32, 0)
+layout_mode = 2
+icon = ExtResource("2_qd7bw")
+icon_alignment = 1
+expand_icon = true
+
+[node name="Move Down" type="Button" parent="."]
+custom_minimum_size = Vector2(32, 0)
+layout_mode = 2
+icon = ExtResource("3_adq7n")
+icon_alignment = 1
+expand_icon = true
+
+[node name="Remove" type="Button" parent="."]
+custom_minimum_size = Vector2(32, 0)
+layout_mode = 2
+icon = ExtResource("4_6g273")
+icon_alignment = 1
+expand_icon = true
+
+[connection signal="pressed" from="Move Up" to="." method="_on_move_up_pressed"]
+[connection signal="pressed" from="Move Down" to="." method="_on_move_down_pressed"]
+[connection signal="pressed" from="Remove" to="." method="_on_remove_pressed"]

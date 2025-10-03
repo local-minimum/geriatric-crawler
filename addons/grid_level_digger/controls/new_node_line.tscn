@@ -1,0 +1,23 @@
+[gd_scene load_steps=3 format=3 uid="uid://c78r58kx1pltb"]
+
+[ext_resource type="Script" uid="uid://bdy8x8k88ar1l" path="res://addons/grid_level_digger/controls/gld_new_node.gd" id="1_0yhle"]
+[ext_resource type="Texture2D" uid="uid://itbjmqb0v1wr" path="res://addons/grid_level_digger/sprites/kenney game icons/PNG/White/1x/plus.png" id="2_xg1hq"]
+
+[node name="New Node Line" type="HBoxContainer" node_paths=PackedStringArray("_node_field", "_add_button")]
+script = ExtResource("1_0yhle")
+_node_field = NodePath("New Node Field")
+_add_button = NodePath("Add Node")
+_nothing_selected_text = "[No Node Selected / Already a Receiver]"
+
+[node name="New Node Field" type="LineEdit" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Add Node" type="Button" parent="."]
+custom_minimum_size = Vector2(32, 0)
+layout_mode = 2
+icon = ExtResource("2_xg1hq")
+icon_alignment = 1
+expand_icon = true
+
+[connection signal="pressed" from="Add Node" to="." method="_on_add_node_pressed"]

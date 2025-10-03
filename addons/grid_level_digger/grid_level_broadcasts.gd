@@ -11,6 +11,13 @@ const NO_CONTRACT = 99999
 @export var selected_container: Control
 # @export var broadcaster: EditorResourcePicker
 @export var message_id: LineEdit
+@export var change_broadcaster: Button
+@export var selected_is_broadcaster: Control
+@export var receivers: VBoxContainer
+@export var new_receiver: GLDNewNode
+
+var _receiver_uis: Array[GLDNodeListing]
+var _selection: Node
 
 var _selected_contract: BroadcastContract:
     set(value):
@@ -46,9 +53,13 @@ func _exit_tree() -> void:
 
 func _handle_selection_change(selected_nodes: Array[Node]) -> void:
     if selected_nodes.size() == 1:
-        _sync_create(selected_nodes[0])
+        _selection = selected_nodes[0]
     else:
-        _sync_create(null)
+        _selection = null
+
+    _sync_create(_selection)
+    _sync_change_broadcaster()
+    _sync_new_reciever()
 
 func _handle_update_level(level: GridLevel) -> void:
     _sync_known_contracts()
@@ -128,11 +139,132 @@ func _name_contract(contract: BroadcastContract) -> String:
         BroadcastContract.get_reciever_count(contract),
     ]
 
+func _get_new_listing() -> GLDNodeListing:
+    var scene: PackedScene = load("res://addons/grid_level_digger/controls/node_listing.tscn")
+    var listing: GLDNodeListing = scene.instantiate()
+    _receiver_uis.append(listing)
+    listing.name = "Reciever %s" % _receiver_uis.size()
+    receivers.add_child(listing)
+    return listing
 
 func _sync_highlight_contract() -> void:
     if _selected_contract == null:
         selected_container.hide()
+        return
+
+    message_id.text = _selected_contract._message_id
+    selected_container.show()
+
+    _sync_change_broadcaster()
+
+    var idx: int = 0
+    while idx < _selected_contract._receivers.size():
+        var ui: GLDNodeListing
+        if idx < _receiver_uis.size():
+            ui = _receiver_uis[idx]
+        else:
+            ui = _get_new_listing()
+
+        var node: Node = _selected_contract._receivers[idx]
+        ui.set_node(
+            node,
+            func () -> void:
+                panel.undo_redo.create_action("GridLevelBroadcasts: Remove Receiver")
+                panel.undo_redo.add_do_method(self, "_remove_receiver_from_contract", _selected_contract, node)
+                panel.undo_redo.add_undo_method(self, "_add_receiver_to_contract", _selected_contract, node)
+                panel.undo_redo.commit_action()
+                ,
+            func () -> void:
+                panel.undo_redo.create_action("GridLevelBroadcasts: Move Receiver Up")
+                panel.undo_redo.add_do_method(self, "_swap_recievers", _selected_contract, idx, idx - 1)
+                panel.undo_redo.add_undo_method(self, "_swap_recievers", _selected_contract, idx, idx - 1)
+                panel.undo_redo.commit_action()
+                ,
+            func () -> void:
+                panel.undo_redo.create_action("GridLevelBroadcasts: Move Receiver Down")
+                panel.undo_redo.add_do_method(self, "_swap_recievers", _selected_contract, idx, idx + 1)
+                panel.undo_redo.add_undo_method(self, "_swap_recievers", _selected_contract, idx, idx + 1)
+                panel.undo_redo.commit_action()
+                ,
+            true,
+            idx > 0,
+            idx < _selected_contract._receivers.size() - 1,
+        )
+
+        ui.show()
+
+        idx += 1
+
+    while idx < _receiver_uis.size():
+        _receiver_uis[idx].hide()
+        idx += 1
+
+    new_receiver.move_to_front()
+    _sync_new_reciever()
+
+func _sync_change_broadcaster() -> void:
+    if _selected_contract == null:
+        return
+
+    if _selected_contract._broadcaster == _selection:
+        selected_is_broadcaster.show()
+        change_broadcaster.hide()
+    elif _selection == null:
+        selected_is_broadcaster.hide()
+        if _selected_contract._broadcaster != null:
+            change_broadcaster.text = "Remove \"%s\" as Broadcaster" % _selected_contract._broadcaster.name
+            change_broadcaster.show()
+        else:
+            change_broadcaster.hide()
     else:
-        message_id.text = _selected_contract._message_id
-        # broadcaster.text = _selected_contract._broadcaster
-        selected_container.show()
+        selected_is_broadcaster.hide()
+        change_broadcaster.text = "Set \"%s\" as Broadcaster" % _selection.name
+        change_broadcaster.show()
+
+func _swap_recievers(contract: BroadcastContract,  a: int, b: int) -> void:
+    var r: Node = contract._receivers[a]
+    contract._receivers[a] = contract._receivers[b]
+    contract._receivers[b] = r
+
+func _sync_new_reciever() -> void:
+    if _selected_contract == null:
+        return
+
+    new_receiver.set_node(_selection if !_selected_contract._receivers.has(_selection) else null, _add_reciever)
+
+func _add_reciever(node: Node) -> void:
+    if _selected_contract == null:
+        push_error("Attempted to add new receiver when there's no contract")
+        return
+
+    if _selected_contract._receivers.has(node):
+        push_error("%s is already a reciever of the selected contract" % node.name)
+        return
+
+    _selected_contract._receivers.append(node)
+    panel.undo_redo.create_action("GridLevelBroadcasts: Add Receiver")
+    panel.undo_redo.add_do_method(self, "_add_receiver_to_contract", _selected_contract, node)
+    panel.undo_redo.add_undo_method(self, "_remove_receiver_from_contract", _selected_contract, node)
+    panel.undo_redo.commit_action()
+    _sync_highlight_contract()
+
+func _add_receiver_to_contract(contract: BroadcastContract, receiver: Node) -> void:
+    contract._receivers.append(receiver)
+
+func _remove_receiver_from_contract(contract: BroadcastContract, reciever: Node) -> void:
+    contract._receivers.erase(reciever)
+
+func _on_change_broadcaster_pressed() -> void:
+    if _selected_contract == null:
+        push_error("Attempting to change broadcaster without a selected contract")
+        return
+
+    panel.undo_redo.create_action("GridLevelBroadcasts: Change Broadcaster")
+    panel.undo_redo.add_do_method(self, "_set_contract_broadcaster", _selected_contract, _selection)
+    panel.undo_redo.add_undo_method(self, "_set_contract_broadcaster", _selected_contract, _selected_contract._broadcaster)
+    panel.undo_redo.commit_action()
+    _sync_highlight_contract()
+
+
+func _set_contract_broadcaster(contract: BroadcastContract, caster: Node) -> void:
+    contract._broadcaster = caster
