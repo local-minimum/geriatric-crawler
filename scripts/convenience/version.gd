@@ -1,4 +1,8 @@
 extends Resource
+## Helper class for version checking
+##
+## Creation expected to follow semantic versioning (i.e. 0.5.2)
+## Any trailing parts like "-rc1" in "1.0.0-rc1" uses alphabetical sorting when comparing
 class_name Version
 
 @export
@@ -6,6 +10,17 @@ var _version: String
 
 var _version_tuple: Array[int]
 var _tuple_trail: String
+
+static var current: Version:
+    get():
+        if current == null:
+            var version_string: String = ProjectSettings.get_setting("application/config/version")
+            current = Version.new(version_string)
+        return current
+
+func _init(version: String = "0.0.0") -> void:
+    _version = version
+    _parse()
 
 func _parse() -> void:
     var r: RegEx = RegEx.new()
@@ -20,11 +35,8 @@ func _parse() -> void:
     _version_tuple = [major, minor, patch]
     _tuple_trail = m.get_string(4)
 
-func set_version(version: String) -> void:
-    _version = version
-    _parse()
-
-func get_version() -> String:
+## Returns the original string that created the version
+func get_version_string() -> String:
     return _version
 
 func same(other: Version) -> bool:

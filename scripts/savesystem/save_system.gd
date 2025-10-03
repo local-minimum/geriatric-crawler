@@ -109,15 +109,9 @@ func _collect_save_data(save_data: Dictionary) -> Dictionary:
 
     return updated_save_data
 
-func _get_current_app_version() -> Version:
-    var version: Version = Version.new()
-    var version_string: String = ProjectSettings.get_setting("application/config/version")
-    version.set_version(version_string)
-    return version
-
 func _collect_application_save_data() -> Dictionary:
     return {
-        _VERSION_KEY: _get_current_app_version().get_version(),
+        _VERSION_KEY: Version.current.get_version_string(),
         _LOCALE_KEY: OS.get_locale(),
         _PLATFORM_KEY: OS.get_name(),
     }
@@ -191,10 +185,9 @@ func _load_slot_into_cache(slot: int) -> bool:
         return false
 
     # Migrate old saves
-    var current_version: Version = _get_current_app_version()
-    var save_version: Version = Version.new()
+    var current_version: Version = Version.current
     var save_version_string: String = data[_APPLICATION_KEY][_VERSION_KEY]
-    save_version.set_version(save_version_string)
+    var save_version: Version = Version.new(save_version_string)
 
     if save_version.lower(current_version):
         for migration: SaveVersionMigration in migrations:
