@@ -225,6 +225,7 @@ func _swap_recievers(contract: BroadcastContract,  a: int, b: int) -> void:
     var r: Node = contract._receivers[a]
     contract._receivers[a] = contract._receivers[b]
     contract._receivers[b] = r
+    _sync_highlight_contract()
 
 func _sync_new_reciever() -> void:
     if _selected_contract == null:
@@ -246,13 +247,15 @@ func _add_reciever(node: Node) -> void:
     panel.undo_redo.add_do_method(self, "_add_receiver_to_contract", _selected_contract, node)
     panel.undo_redo.add_undo_method(self, "_remove_receiver_from_contract", _selected_contract, node)
     panel.undo_redo.commit_action()
-    _sync_highlight_contract()
 
 func _add_receiver_to_contract(contract: BroadcastContract, receiver: Node) -> void:
-    contract._receivers.append(receiver)
+    if !contract._receivers.has(receiver):
+        contract._receivers.append(receiver)
+    _sync_highlight_contract()
 
 func _remove_receiver_from_contract(contract: BroadcastContract, reciever: Node) -> void:
     contract._receivers.erase(reciever)
+    _sync_highlight_contract()
 
 func _on_change_broadcaster_pressed() -> void:
     if _selected_contract == null:
@@ -263,8 +266,8 @@ func _on_change_broadcaster_pressed() -> void:
     panel.undo_redo.add_do_method(self, "_set_contract_broadcaster", _selected_contract, _selection)
     panel.undo_redo.add_undo_method(self, "_set_contract_broadcaster", _selected_contract, _selected_contract._broadcaster)
     panel.undo_redo.commit_action()
-    _sync_highlight_contract()
 
 
 func _set_contract_broadcaster(contract: BroadcastContract, caster: Node) -> void:
     contract._broadcaster = caster
+    _sync_highlight_contract()
