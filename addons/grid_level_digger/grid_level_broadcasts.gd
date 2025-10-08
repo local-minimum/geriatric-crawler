@@ -18,6 +18,7 @@ const NO_CONTRACT = 99999
 @export var new_message: GLDNewNode
 @export var broadcast_color: Color = Color.ORANGE_RED
 @export var receiver_color: Color = Color.ALICE_BLUE
+@export var faulty_color: Color = Color.HOT_PINK
 @export var bounding_box_grow: float = 0.1
 
 var _receiver_uis: Array[GLDNodeListing]
@@ -180,6 +181,7 @@ func _get_new_message_listing() -> GLDNodeListing:
 func _sync_selected_contract() -> void:
     if _selected_contract == null:
         selected_container.hide()
+        _sync_protocol_highlight()
         return
 
     message_id.text = _selected_contract._message_id
@@ -389,6 +391,9 @@ var _require_update_highlight: bool = true
 var _contract_highlights: Array[MeshInstance3D]
 
 func _sync_protocol_highlight() -> void:
+    if !_require_update_highlight:
+        return
+
     _require_update_highlight = false
 
     for mesh: MeshInstance3D in _contract_highlights:
@@ -400,29 +405,55 @@ func _sync_protocol_highlight() -> void:
     if _selected_contract == null || level == null:
         return
 
-    var caster: Broadcaster = BroadcastContract.get_broadcaster(_selected_contract)
-    var arrow_origin: AABB
+    var caster: Node = BroadcastContract.get_broadcaster(_selected_contract)
+    var caster_bounds: AABB
+    var faulty_caster: bool
     if caster != null:
-        var node: Node3D = NodeUtils.find_parent_types(caster, ["GridNodeFeature", "GridNodeSide", "GridNode", "Node3D"])
-        if node != null:
-            var bounds: AABB = AABBUtils.bounding_box(node)
-            bounds = bounds.grow(bounding_box_grow)
-            arrow_origin = bounds
-            var box: MeshInstance3D = DebugDraw.box(
-                level,
-                bounds.get_center(),
-                bounds.size,
-                broadcast_color,
-                false,
-            )
-            _contract_highlights.append(box)
-            print_debug("[GLD Broadcasts] caster %s highlight added %s" % [node, bounds])
-        else:
-            print_debug("[GLD Broadcasts] caster %s has no node3d parent" % node)
+        caster_bounds = _draw_highlight_caster(caster, level, broadcast_color)
+    elif _selected_contract._broadcaster != null:
+        caster_bounds = _draw_highlight_caster(caster, level, faulty_color)
+        caster = _selected_contract._broadcaster
+        faulty_caster = true
     else:
         print_debug("[GLD Broadcasts] couldn't find the broadcaster of caster %s " % _selected_contract._broadcaster)
 
     for receiver: BroadcastReceiver in BroadcastContract.get_receivers(_selected_contract):
+        _draw_highlight_target(receiver, level, caster, caster_bounds, receiver_color, faulty_color if faulty_caster else broadcast_color)
+
+    for orphan: Node in BroadcastContract.get_orphan_receivers(_selected_contract):
+        _draw_highlight_target(orphan, level, caster, caster_bounds, faulty_color, faulty_color if faulty_caster else broadcast_color)
+
+func _draw_highlight_caster(
+    caster: Node,
+    level: GridLevel,
+    color: Color,
+) -> AABB:
+    var caster_bounds: AABB
+    var node: Node3D = NodeUtils.find_parent_types(caster, ["GridNodeFeature", "GridNodeSide", "GridNode", "Node3D"])
+    if node != null:
+        caster_bounds = AABBUtils.bounding_box(node).grow(bounding_box_grow)
+        var box: MeshInstance3D = DebugDraw.box(
+            level,
+            caster_bounds.get_center(),
+            caster_bounds.size,
+            color,
+            false,
+        )
+        _contract_highlights.append(box)
+        print_debug("[GLD Broadcasts] caster %s highlight added %s" % [node, caster_bounds])
+    else:
+        print_debug("[GLD Broadcasts] caster %s has no node3d parent" % node)
+
+    return caster_bounds
+
+func _draw_highlight_target(
+    receiver: Node,
+    level: GridLevel,
+    caster: Broadcaster,
+    caster_bounds: AABB,
+    target_color: Color,
+    arrow_color: Color,
+) -> void:
         var node: Node3D = NodeUtils.find_parent_types(receiver, ["GridNodeFeature", "GridNodeSide", "GridNode", "Node3D"])
         if node != null:
             var bounds: AABB = AABBUtils.bounding_box(node)
@@ -431,19 +462,19 @@ func _sync_protocol_highlight() -> void:
                 level,
                 bounds.get_center(),
                 bounds.size,
-                receiver_color,
+                target_color,
                 false,
             )
             _contract_highlights.append(box)
 
             if caster != null:
-                var from: Vector3 = AABBUtils.closest_surface_point(arrow_origin, bounds.get_center())
+                var from: Vector3 = AABBUtils.closest_surface_point(caster_bounds, bounds.get_center())
                 var to: Vector3 = AABBUtils.closest_surface_point(bounds, from)
                 var arrow: MeshInstance3D = DebugDraw.arrow(
                     level,
                     from,
                     to,
-                    broadcast_color,
+                    arrow_color,
                 )
                 _contract_highlights.append(arrow)
             print_debug("[GLD Broadcasts] reciever %s added %s" % [node, bounds])

@@ -58,3 +58,15 @@ static func get_receivers(contract: BroadcastContract) -> Array[BroadcastReceive
                 receivers.append(child)
 
     return receivers
+
+static func get_orphan_receivers(contract: BroadcastContract) -> Array[Node]:
+    var orphans: Array[Node]
+
+    for node: Node in contract._receivers:
+        if node is BroadcastReceiver:
+            continue
+
+        if node.find_children("", "BroadcastReceiver").is_empty():
+            orphans.append(node)
+
+    return orphans
