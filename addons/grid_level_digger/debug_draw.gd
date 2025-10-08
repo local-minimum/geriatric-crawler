@@ -194,6 +194,7 @@ static func arrow(
     shaft_width: float = 0.1,
     head_width: float = 0.2,
     head_proportion: float = 0.15,
+    normal: Vector3 = Vector3.UP,
 ) -> MeshInstance3D:
     if node == null:
         push_error("Node is null")
@@ -212,7 +213,7 @@ static func arrow(
     mat.cull_mode = BaseMaterial3D.CULL_DISABLED
 
     var vector: Vector3 = target - origin
-    var ortho: Vector3 = Quaternion.from_euler(Vector3(0, PI * 0.5, 0)) * vector.normalized()
+    var ortho: Vector3 = vector.cross(normal).normalized()
     var head_offset: Vector3 = vector * (1 - head_proportion)
 
     var head_start_mid: Vector3 = origin + head_offset

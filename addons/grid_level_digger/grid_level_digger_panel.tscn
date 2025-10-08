@@ -542,85 +542,109 @@ layout_mode = 2
 disabled = true
 text = "Delete Zone"
 
-[node name="Coms" type="MarginContainer" parent="VBoxContainer/TabContainer" node_paths=PackedStringArray("panel", "new_help", "create_new_info", "create_new", "broadcasts_lister", "selected_container", "message_id", "change_broadcaster", "selected_is_broadcaster", "receivers", "new_receiver")]
+[node name="Coms" type="MarginContainer" parent="VBoxContainer/TabContainer" node_paths=PackedStringArray("panel", "new_help", "create_new_info", "create_new", "broadcasts_lister", "selected_container", "message_id", "change_broadcaster", "selected_is_broadcaster", "receivers", "new_receiver", "messages", "new_message")]
 layout_mode = 2
 theme_override_constants/margin_left = 4
 theme_override_constants/margin_right = 4
 script = ExtResource("15_85lwi")
 panel = NodePath("../../..")
-new_help = NodePath("VBoxContainer/New Help")
-create_new_info = NodePath("VBoxContainer/Create New/New Broadcaster")
-create_new = NodePath("VBoxContainer/Create New")
-broadcasts_lister = NodePath("VBoxContainer/Broadcast Selector")
-selected_container = NodePath("VBoxContainer/Selected Details")
-message_id = NodePath("VBoxContainer/Selected Details/Message ID/Message ID")
-change_broadcaster = NodePath("VBoxContainer/Selected Details/Change Broadcaster")
-selected_is_broadcaster = NodePath("VBoxContainer/Selected Details/Selected Is broadcaster")
-receivers = NodePath("VBoxContainer/Selected Details/Receivers")
-new_receiver = NodePath("VBoxContainer/Selected Details/Receivers/New Reciever")
+new_help = NodePath("ScrollContainer/VBoxContainer/New Help")
+create_new_info = NodePath("ScrollContainer/VBoxContainer/Create New/New Broadcaster")
+create_new = NodePath("ScrollContainer/VBoxContainer/Create New")
+broadcasts_lister = NodePath("ScrollContainer/VBoxContainer/Broadcast Selector")
+selected_container = NodePath("ScrollContainer/VBoxContainer/Selected Details")
+message_id = NodePath("ScrollContainer/VBoxContainer/Selected Details/Message ID/Message ID")
+change_broadcaster = NodePath("ScrollContainer/VBoxContainer/Selected Details/Change Broadcaster")
+selected_is_broadcaster = NodePath("ScrollContainer/VBoxContainer/Selected Details/Selected Is broadcaster")
+receivers = NodePath("ScrollContainer/VBoxContainer/Selected Details/Receivers")
+new_receiver = NodePath("ScrollContainer/VBoxContainer/Selected Details/Receivers/New Reciever")
+messages = NodePath("ScrollContainer/VBoxContainer/Selected Details/Messages")
+new_message = NodePath("ScrollContainer/VBoxContainer/Selected Details/Messages/New Message Line")
+broadcast_color = Color(1, 0.266667, 0, 0.72549)
+receiver_color = Color(0.889817, 0.413823, 0.0995842, 0.72549)
+bounding_box_grow = null
 metadata/_tab_index = 5
 
-[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/TabContainer/Coms"]
+[node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer/TabContainer/Coms"]
 layout_mode = 2
+horizontal_scroll_mode = 0
+vertical_scroll_mode = 2
 
-[node name="New Help" type="Label" parent="VBoxContainer/TabContainer/Coms/VBoxContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/TabContainer/Coms/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="New Help" type="Label" parent="VBoxContainer/TabContainer/Coms/ScrollContainer/VBoxContainer"]
 custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
 text = "To create a new BroadcastingContract first select a node that has a Broadcaster under it."
 autowrap_mode = 2
 
-[node name="Create New" type="HFlowContainer" parent="VBoxContainer/TabContainer/Coms/VBoxContainer"]
+[node name="Create New" type="HFlowContainer" parent="VBoxContainer/TabContainer/Coms/ScrollContainer/VBoxContainer"]
 visible = false
 layout_mode = 2
 
-[node name="New Broadcaster" type="Label" parent="VBoxContainer/TabContainer/Coms/VBoxContainer/Create New"]
+[node name="New Broadcaster" type="Label" parent="VBoxContainer/TabContainer/Coms/ScrollContainer/VBoxContainer/Create New"]
 layout_mode = 2
 text = "Using \"{node}\" as Broadcaster (in its tree)"
 
-[node name="Create Contract" type="Button" parent="VBoxContainer/TabContainer/Coms/VBoxContainer/Create New"]
+[node name="Create Contract" type="Button" parent="VBoxContainer/TabContainer/Coms/ScrollContainer/VBoxContainer/Create New"]
 layout_mode = 2
 text = "Create new contract"
 
-[node name="HSeparator" type="HSeparator" parent="VBoxContainer/TabContainer/Coms/VBoxContainer"]
+[node name="HSeparator" type="HSeparator" parent="VBoxContainer/TabContainer/Coms/ScrollContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="Broadcast Selector" type="MenuButton" parent="VBoxContainer/TabContainer/Coms/VBoxContainer"]
+[node name="Broadcast Selector" type="MenuButton" parent="VBoxContainer/TabContainer/Coms/ScrollContainer/VBoxContainer"]
 layout_mode = 2
 disabled = true
 text = "Current scene not a grid level"
 
-[node name="Selected Details" type="VBoxContainer" parent="VBoxContainer/TabContainer/Coms/VBoxContainer"]
+[node name="Selected Details" type="VBoxContainer" parent="VBoxContainer/TabContainer/Coms/ScrollContainer/VBoxContainer"]
+visible = false
 layout_mode = 2
 
-[node name="Message ID" type="HBoxContainer" parent="VBoxContainer/TabContainer/Coms/VBoxContainer/Selected Details"]
+[node name="Message ID" type="HBoxContainer" parent="VBoxContainer/TabContainer/Coms/ScrollContainer/VBoxContainer/Selected Details"]
 layout_mode = 2
 
-[node name="Message ID Label" type="Label" parent="VBoxContainer/TabContainer/Coms/VBoxContainer/Selected Details/Message ID"]
+[node name="Message ID Label" type="Label" parent="VBoxContainer/TabContainer/Coms/ScrollContainer/VBoxContainer/Selected Details/Message ID"]
 layout_mode = 2
 text = "Message ID"
 
-[node name="Message ID" type="LineEdit" parent="VBoxContainer/TabContainer/Coms/VBoxContainer/Selected Details/Message ID"]
+[node name="Message ID" type="LineEdit" parent="VBoxContainer/TabContainer/Coms/ScrollContainer/VBoxContainer/Selected Details/Message ID"]
 layout_mode = 2
 size_flags_horizontal = 3
 alignment = 2
 
-[node name="Selected Is broadcaster" type="Label" parent="VBoxContainer/TabContainer/Coms/VBoxContainer/Selected Details"]
+[node name="Selected Is broadcaster" type="Label" parent="VBoxContainer/TabContainer/Coms/ScrollContainer/VBoxContainer/Selected Details"]
 layout_mode = 2
 text = "Selected node is the Broadcaster"
 
-[node name="Change Broadcaster" type="Button" parent="VBoxContainer/TabContainer/Coms/VBoxContainer/Selected Details"]
+[node name="Change Broadcaster" type="Button" parent="VBoxContainer/TabContainer/Coms/ScrollContainer/VBoxContainer/Selected Details"]
 layout_mode = 2
 text = "Set \"{node}\" as Broadcaster"
 
-[node name="Receivers Title" type="Label" parent="VBoxContainer/TabContainer/Coms/VBoxContainer/Selected Details"]
+[node name="Receivers Title" type="Label" parent="VBoxContainer/TabContainer/Coms/ScrollContainer/VBoxContainer/Selected Details"]
 layout_mode = 2
 text = "Receivers"
 
-[node name="Receivers" type="VBoxContainer" parent="VBoxContainer/TabContainer/Coms/VBoxContainer/Selected Details"]
+[node name="Receivers" type="VBoxContainer" parent="VBoxContainer/TabContainer/Coms/ScrollContainer/VBoxContainer/Selected Details"]
 layout_mode = 2
 
-[node name="New Reciever" parent="VBoxContainer/TabContainer/Coms/VBoxContainer/Selected Details/Receivers" instance=ExtResource("17_uu5qx")]
+[node name="New Reciever" parent="VBoxContainer/TabContainer/Coms/ScrollContainer/VBoxContainer/Selected Details/Receivers" instance=ExtResource("17_uu5qx")]
 layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/TabContainer/Coms/ScrollContainer/VBoxContainer/Selected Details"]
+layout_mode = 2
+text = "Messages"
+
+[node name="Messages" type="VBoxContainer" parent="VBoxContainer/TabContainer/Coms/ScrollContainer/VBoxContainer/Selected Details"]
+layout_mode = 2
+
+[node name="New Message Line" parent="VBoxContainer/TabContainer/Coms/ScrollContainer/VBoxContainer/Selected Details/Messages" instance=ExtResource("17_uu5qx")]
+layout_mode = 2
+_nothing_selected_text = ""
 
 [node name="Style" type="MarginContainer" parent="VBoxContainer/TabContainer"]
 visible = false
@@ -782,8 +806,8 @@ metadata/_custom_type_script = "uid://2cl0qyqo8sb5"
 [connection signal="pressed" from="VBoxContainer/TabContainer/Zones/ScrollContainer/VBoxContainer/HBoxContainer/Remove From Zone" to="VBoxContainer/TabContainer/Zones" method="_on_remove_from_zone_pressed"]
 [connection signal="pressed" from="VBoxContainer/TabContainer/Zones/ScrollContainer/VBoxContainer/HBoxContainer2/Set Selection As Zone" to="VBoxContainer/TabContainer/Zones" method="_on_set_selection_as_zone_pressed"]
 [connection signal="pressed" from="VBoxContainer/TabContainer/Zones/ScrollContainer/VBoxContainer/HBoxContainer2/Delete Zone" to="VBoxContainer/TabContainer/Zones" method="_on_delete_zone_pressed"]
-[connection signal="pressed" from="VBoxContainer/TabContainer/Coms/VBoxContainer/Create New/Create Contract" to="VBoxContainer/TabContainer/Coms" method="_on_create_contract_pressed"]
-[connection signal="pressed" from="VBoxContainer/TabContainer/Coms/VBoxContainer/Selected Details/Change Broadcaster" to="VBoxContainer/TabContainer/Coms" method="_on_change_broadcaster_pressed"]
+[connection signal="pressed" from="VBoxContainer/TabContainer/Coms/ScrollContainer/VBoxContainer/Create New/Create Contract" to="VBoxContainer/TabContainer/Coms" method="_on_create_contract_pressed"]
+[connection signal="pressed" from="VBoxContainer/TabContainer/Coms/ScrollContainer/VBoxContainer/Selected Details/Change Broadcaster" to="VBoxContainer/TabContainer/Coms" method="_on_change_broadcaster_pressed"]
 [connection signal="toggled" from="VBoxContainer/TabContainer/Style/ScrollContainer/VBoxContainer/Style Container/Dig Node/GridNodeUsed" to="VBoxContainer/TabContainer/Style/ScrollContainer/VBoxContainer/Style Container" method="_on_grid_node_used_toggled"]
 [connection signal="resource_changed" from="VBoxContainer/TabContainer/Style/ScrollContainer/VBoxContainer/Style Container/Dig Node/GridNodePicker" to="VBoxContainer/TabContainer/Style/ScrollContainer/VBoxContainer/Style Container" method="_on_grid_node_picker_resource_changed"]
 [connection signal="toggled" from="VBoxContainer/TabContainer/Style/ScrollContainer/VBoxContainer/Style Container/Dig Wall/GridWallUsed" to="VBoxContainer/TabContainer/Style/ScrollContainer/VBoxContainer/Style Container" method="_on_grid_wall_used_toggled"]

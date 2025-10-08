@@ -12,6 +12,7 @@ _nothing_selected_text = "[No Node Selected / Already a Receiver]"
 [node name="New Node Field" type="LineEdit" parent="."]
 layout_mode = 2
 size_flags_horizontal = 3
+editable = false
 
 [node name="Add Node" type="Button" parent="."]
 custom_minimum_size = Vector2(32, 0)
@@ -20,4 +21,6 @@ icon = ExtResource("2_xg1hq")
 icon_alignment = 1
 expand_icon = true
 
+[connection signal="focus_exited" from="New Node Field" to="." method="_on_new_node_field_focus_exited"]
+[connection signal="text_submitted" from="New Node Field" to="." method="_on_new_node_field_text_submitted"]
 [connection signal="pressed" from="Add Node" to="." method="_on_add_node_pressed"]

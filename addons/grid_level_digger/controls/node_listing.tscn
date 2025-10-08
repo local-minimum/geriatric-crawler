@@ -15,6 +15,7 @@ _remove_button = NodePath("Remove")
 [node name="Node Field" type="LineEdit" parent="."]
 layout_mode = 2
 size_flags_horizontal = 3
+editable = false
 
 [node name="Move Up" type="Button" parent="."]
 custom_minimum_size = Vector2(32, 0)
@@ -37,6 +38,8 @@ icon = ExtResource("4_6g273")
 icon_alignment = 1
 expand_icon = true
 
+[connection signal="focus_exited" from="Node Field" to="." method="_on_node_field_focus_exited"]
+[connection signal="text_submitted" from="Node Field" to="." method="_on_node_field_text_submitted"]
 [connection signal="pressed" from="Move Up" to="." method="_on_move_up_pressed"]
 [connection signal="pressed" from="Move Down" to="." method="_on_move_down_pressed"]
 [connection signal="pressed" from="Remove" to="." method="_on_remove_pressed"]
