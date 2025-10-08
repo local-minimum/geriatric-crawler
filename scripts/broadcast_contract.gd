@@ -9,29 +9,16 @@ class_name BroadcastContract
 func _ready() -> void:
     var type: Broadcaster.BroadcasterType = Broadcaster.BroadcasterType.NONE
 
-    if _broadcaster is Broadcaster:
-        var caster: Broadcaster = _broadcaster
+
+    var caster: Broadcaster = get_broadcaster(self)
+    if caster != null:
         type = caster.configure(_message_id, _messages)
-    else:
-        for node: Node in _broadcaster.find_children("", "Broadcaster"):
-            if node is Broadcaster:
-                var caster: Broadcaster = node
-                type = caster.configure(_message_id, _messages)
-                if type != Broadcaster.BroadcasterType.NONE:
-                    break
 
     if type == Broadcaster.BroadcasterType.NONE:
         push_error("No broadcast was configured for contract %s with id '%s'" % [name, _message_id])
 
-    for node: Node in _receivers:
-        if node is BroadcastReceiver:
-            var receiver: BroadcastReceiver = node
-            receiver.configure(type, _message_id, _messages)
-
-        for child: Node in node.find_children("", "BroadcastReceiver"):
-            if child is BroadcastReceiver:
-                var receiver: BroadcastReceiver = child
-                receiver.configure(type, _message_id, _messages)
+    for reciever: BroadcastReceiver in get_receivers(self):
+        reciever.configure(type, _message_id, _messages)
 
 static func get_message_id_text(contract: BroadcastContract) -> String:
     if contract._message_id.is_empty():
@@ -46,3 +33,28 @@ static func get_broadcaster_name(contract: BroadcastContract) -> String:
 
 static func get_reciever_count(contract: BroadcastContract) -> int:
     return contract._receivers.size()
+
+static func get_broadcaster(contract: BroadcastContract) -> Broadcaster:
+    if contract._broadcaster == null:
+        return null
+
+    if contract._broadcaster is Broadcaster:
+        return contract._broadcaster
+
+    for node: Node in contract._broadcaster.find_children("", "Broadcaster"):
+        if node is Broadcaster:
+            return node
+    return null
+
+static func get_receivers(contract: BroadcastContract) -> Array[BroadcastReceiver]:
+    var receivers: Array[BroadcastReceiver]
+
+    for node: Node in contract._receivers:
+        if node is BroadcastReceiver:
+            receivers.append(node)
+
+        for child: Node in node.find_children("", "BroadcastReceiver"):
+            if child is BroadcastReceiver:
+                receivers.append(child)
+
+    return receivers
