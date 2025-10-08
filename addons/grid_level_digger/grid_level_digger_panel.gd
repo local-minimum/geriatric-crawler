@@ -40,10 +40,13 @@ var all_level_nodes: Array[GridNode] = []
 @export var manipulate_tab: Control
 @export var style_tab: Control
 
+@export var styles: GridLevelStyle
 @export var node_digger: GridNodeDigger
 @export var level_actions: GridLevelActions
 @export var manipulator: GridLevelManipulator
 @export var zones: GridLevelZoner
+
+@export var settings_storage: SaveStorageProvider
 
 var selected_nodes: Array[GridNode]:
     set(value):
@@ -54,6 +57,11 @@ var raw_selection: Array[Node]:
     set(value):
         raw_selection = value
         on_update_raw_selection.emit(value)
+
+func _enter_tree() -> void:
+    _load_settings()
+    if styles.on_style_updated.connect(_handle_style_updated) != OK:
+        push_error("Failed to connect style updated")
 
 func get_level() -> GridLevel:
     return level
@@ -245,3 +253,14 @@ func remove_debug_nodes() -> void:
     _clear_node_debug_center()
     _clear_node_debug_anchors()
     node_digger.remove_debug_nodes()
+
+var _stored_settings: Dictionary
+const _STYLE_KEY: String = "style"
+
+func _handle_style_updated() -> void:
+    _stored_settings[_STYLE_KEY] = styles.collect_save_data()
+    settings_storage.store_data(0, _stored_settings)
+
+func _load_settings() -> void:
+    _stored_settings = settings_storage.retrieve_data(0, true)
+    styles.load_from_save(DictionaryUtils.safe_getd(_stored_settings, _STYLE_KEY, {}, false))

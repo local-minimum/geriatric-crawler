@@ -6,7 +6,6 @@ signal on_style_updated
 
 var _forcing_resource_change: bool
 
-
 func has_any_side_resource_selected() -> bool:
     return (
         (_grid_wall_resource != null if _grid_wall_used else false) ||
@@ -15,8 +14,13 @@ func has_any_side_resource_selected() -> bool:
     )
 
 @export var _grid_node_picker: ValidatingEditorNodePicker
+@export var _grid_node_use: CheckBox
 var _grid_node_resource: Resource
-var _grid_node_used: bool = true
+var _grid_node_used: bool:
+    get():
+        return _grid_node_use.toggle_mode
+    set(value):
+        _grid_node_use.toggle_mode = value
 
 func get_node_resource() -> Resource:
     return _grid_node_resource if _grid_node_used else null
@@ -44,8 +48,13 @@ func _on_grid_node_picker_resource_changed(resource:Resource) -> void:
     on_style_updated.emit()
 
 @export var grid_ceiling_picker: ValidatingEditorNodePicker
+@export var _grid_ceiling_use: CheckBox
 var _grid_ceiling_resource: Resource
-var _grid_ceiling_used: bool = true
+var _grid_ceiling_used: bool:
+    get():
+        return _grid_ceiling_use.toggle_mode
+    set(value):
+        _grid_ceiling_use.toggle_mode = value
 
 func get_ceiling_resource() -> Resource:
     return _grid_ceiling_resource if _grid_ceiling_used else null
@@ -71,8 +80,13 @@ func _on_grid_ceiling_picker_resource_changed(resource:Resource) -> void:
     on_style_updated.emit()
 
 @export var grid_floor_picker: ValidatingEditorNodePicker
+@export var _grid_floor_use: CheckBox
 var _grid_floor_resource: Resource
-var _grid_floor_used: bool = true
+var _grid_floor_used: bool:
+    get():
+        return _grid_floor_use.toggle_mode
+    set(value):
+        _grid_floor_use.toggle_mode = value
 
 func get_floor_resource() -> Resource:
     return _grid_floor_resource if _grid_floor_used else null
@@ -98,8 +112,13 @@ func _on_grid_floor_picker_resource_changed(resource:Resource) -> void:
     on_style_updated.emit()
 
 @export var grid_wall_picker: ValidatingEditorNodePicker
+@export var _grid_wall_use: CheckBox
 var _grid_wall_resource: Resource
-var _grid_wall_used: bool = true
+var _grid_wall_used: bool:
+    get():
+        return _grid_wall_use.toggle_mode
+    set(value):
+        _grid_wall_use.toggle_mode = value
 
 func get_wall_resource() -> Resource:
     return _grid_wall_resource if _grid_wall_used else null
@@ -124,20 +143,16 @@ func _on_grid_wall_picker_resource_changed(resource:Resource) -> void:
 
     on_style_updated.emit()
 
-func _on_grid_ceiling_used_toggled(toggled_on:bool) -> void:
-    _grid_ceiling_used = toggled_on
+func _on_grid_ceiling_used_toggled(_toggled_on: bool) -> void:
     on_style_updated.emit()
 
-func _on_grid_floor_used_toggled(toggled_on:bool) -> void:
-    _grid_floor_used = toggled_on
+func _on_grid_floor_used_toggled(_toggled_on: bool) -> void:
     on_style_updated.emit()
 
-func _on_grid_wall_used_toggled(toggled_on:bool) -> void:
-    _grid_wall_used = toggled_on
+func _on_grid_wall_used_toggled(_toggled_on: bool) -> void:
     on_style_updated.emit()
 
-func _on_grid_node_used_toggled(toggled_on:bool) -> void:
-    _grid_node_used = toggled_on
+func _on_grid_node_used_toggled(_toggled_on: bool) -> void:
     on_style_updated.emit()
 
 func get_resource_from_direction(dir: CardinalDirections.CardinalDirection) -> Resource:
@@ -148,3 +163,58 @@ func get_resource_from_direction(dir: CardinalDirections.CardinalDirection) -> R
     elif dir == CardinalDirections.CardinalDirection.DOWN:
         return _grid_floor_resource if _grid_floor_used else null
     return null
+
+const _NODE_KEY: String = "node"
+const _NODE_USED_KEY: String = "node-used"
+const _CEILING_KEY: String = "ceiling"
+const _CEILING_USED_KEY: String = "ceiling-used"
+const _WALL_KEY: String = "wall"
+const _WALL_USED_KEY: String = "wall-used"
+const _FLOOR_KEY: String = "floor"
+const _FLOOR_USED_KEY: String = "floor-used"
+
+func collect_save_data() -> Dictionary:
+    return {
+        _NODE_KEY: _grid_node_resource.resource_path if _grid_node_resource != null else "",
+        _NODE_USED_KEY: _grid_node_used,
+        _CEILING_KEY: _grid_ceiling_resource.resource_path if _grid_ceiling_resource != null else "",
+        _CEILING_USED_KEY: _grid_ceiling_used,
+        _FLOOR_KEY: _grid_floor_resource.resource_path if _grid_floor_resource != null else "",
+        _FLOOR_USED_KEY: _grid_floor_used,
+        _WALL_KEY: _grid_wall_resource.resource_path if _grid_wall_resource != null else "",
+        _WALL_USED_KEY: _grid_wall_used,
+    }
+
+func load_from_save(data: Dictionary) -> void:
+    _grid_node_used = DictionaryUtils.safe_getb(data, _NODE_USED_KEY, true, false)
+    _grid_ceiling_used = DictionaryUtils.safe_getb(data, _CEILING_USED_KEY, true, false)
+    _grid_wall_used = DictionaryUtils.safe_getb(data, _WALL_USED_KEY, true, false)
+    _grid_floor_used = DictionaryUtils.safe_getb(data, _FLOOR_USED_KEY, true, false)
+
+    var path: String = DictionaryUtils.safe_gets(data, _NODE_KEY, "", false)
+    if path.is_empty() || !path.begins_with("res://"):
+        _grid_node_resource = null
+    else:
+        _grid_node_resource = load(path)
+    _grid_node_picker.edited_resource = _grid_node_resource
+
+    path = DictionaryUtils.safe_gets(data, _CEILING_KEY, "", false)
+    if path.is_empty() || !path.begins_with("res://"):
+        _grid_ceiling_resource = null
+    else:
+        _grid_ceiling_resource = load(path)
+    grid_ceiling_picker.edited_resource = _grid_ceiling_resource
+
+    path = DictionaryUtils.safe_gets(data, _WALL_KEY, "", false)
+    if path.is_empty() || !path.begins_with("res://"):
+        _grid_wall_resource = null
+    else:
+        _grid_wall_resource = load(path)
+    grid_wall_picker.edited_resource = _grid_wall_resource
+
+    path = DictionaryUtils.safe_gets(data, _FLOOR_KEY, "", false)
+    if path.is_empty() || !path.begins_with("res://"):
+        _grid_floor_resource = null
+    else:
+        _grid_floor_resource = load(path)
+    grid_floor_picker.edited_resource = _grid_floor_resource

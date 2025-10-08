@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=3 uid="uid://w1rjgsij34eh"]
+[gd_scene load_steps=19 format=3 uid="uid://w1rjgsij34eh"]
 
 [ext_resource type="Script" uid="uid://hktghyj0gdcj" path="res://addons/grid_level_digger/grid_level_digger_panel.gd" id="1_fy27w"]
 [ext_resource type="Script" uid="uid://dq6vmugrwwqs6" path="res://addons/grid_level_digger/grid_node_digger.gd" id="2_6po18"]
@@ -17,8 +17,9 @@
 [ext_resource type="Script" uid="uid://dg1kfg5kfauqu" path="res://addons/grid_level_digger/grid_level_zoner.gd" id="13_cnqku"]
 [ext_resource type="Script" uid="uid://4m6hlxyo7gor" path="res://addons/grid_level_digger/grid_level_broadcasts.gd" id="15_85lwi"]
 [ext_resource type="PackedScene" uid="uid://c78r58kx1pltb" path="res://addons/grid_level_digger/controls/new_node_line.tscn" id="17_uu5qx"]
+[ext_resource type="Script" uid="uid://bemcpr6cqtnb3" path="res://addons/minimum_convenience/scripts/save/disk_json_storage_provider.gd" id="18_uy6lp"]
 
-[node name="GridLevelDiggerPanel" type="Panel" node_paths=PackedStringArray("tab_container", "about_tab", "level_tab", "digging_tab", "manipulate_tab", "style_tab", "node_digger", "level_actions", "manipulator", "zones")]
+[node name="GridLevelDiggerPanel" type="Panel" node_paths=PackedStringArray("tab_container", "about_tab", "level_tab", "digging_tab", "manipulate_tab", "style_tab", "styles", "node_digger", "level_actions", "manipulator", "zones", "settings_storage")]
 custom_minimum_size = Vector2(500, 600)
 anchors_preset = 9
 anchor_bottom = 1.0
@@ -31,10 +32,12 @@ level_tab = NodePath("VBoxContainer/TabContainer/Level")
 digging_tab = NodePath("VBoxContainer/TabContainer/Dig")
 manipulate_tab = NodePath("VBoxContainer/TabContainer/Update")
 style_tab = NodePath("VBoxContainer/TabContainer/Style")
+styles = NodePath("VBoxContainer/TabContainer/Style/ScrollContainer/VBoxContainer/Style Container")
 node_digger = NodePath("VBoxContainer/TabContainer/Dig/ScrollContainer/VBoxContainer/Grid Node Digger")
 level_actions = NodePath("VBoxContainer/TabContainer/Level/ScrollContainer/VBoxContainer/GridLevelActions")
 manipulator = NodePath("VBoxContainer/TabContainer/Update/ScrollContainer/VBoxContainer/Manipulator")
 zones = NodePath("VBoxContainer/TabContainer/Zones")
+settings_storage = NodePath("Tool Settings Storage")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 1
@@ -661,13 +664,17 @@ horizontal_scroll_mode = 0
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Style Container" type="VBoxContainer" parent="VBoxContainer/TabContainer/Style/ScrollContainer/VBoxContainer" node_paths=PackedStringArray("_grid_node_picker", "grid_ceiling_picker", "grid_floor_picker", "grid_wall_picker")]
+[node name="Style Container" type="VBoxContainer" parent="VBoxContainer/TabContainer/Style/ScrollContainer/VBoxContainer" node_paths=PackedStringArray("_grid_node_picker", "_grid_node_use", "grid_ceiling_picker", "_grid_ceiling_use", "grid_floor_picker", "_grid_floor_use", "grid_wall_picker", "_grid_wall_use")]
 layout_mode = 2
 script = ExtResource("12_56aqn")
 _grid_node_picker = NodePath("Dig Node/GridNodePicker")
+_grid_node_use = NodePath("Dig Node/GridNodeUsed")
 grid_ceiling_picker = NodePath("Dig Ceiling/GridCeilingPicker")
+_grid_ceiling_use = NodePath("Dig Ceiling/GridCeilingUsed")
 grid_floor_picker = NodePath("Dig Floor/GridFloorPicker")
+_grid_floor_use = NodePath("Dig Floor/GridFloorUsed")
 grid_wall_picker = NodePath("Dig Wall/GridWallPicker")
+_grid_wall_use = NodePath("Dig Wall/GridWallUsed")
 
 [node name="Dig Node" type="HBoxContainer" parent="VBoxContainer/TabContainer/Style/ScrollContainer/VBoxContainer/Style Container"]
 layout_mode = 2
@@ -763,6 +770,10 @@ toggle_mode = true
 script = ExtResource("11_uh4v4")
 root_class_name = "GridNodeSide"
 metadata/_custom_type_script = "uid://2cl0qyqo8sb5"
+
+[node name="Tool Settings Storage" type="Node" parent="."]
+script = ExtResource("18_uy6lp")
+save_file_pattern = "res://.godot/gld_settings.json"
 
 [connection signal="pressed" from="VBoxContainer/TabContainer/Level/ScrollContainer/VBoxContainer/GridLevelActions/Refresh level nodes" to="VBoxContainer/TabContainer/Level/ScrollContainer/VBoxContainer/GridLevelActions" method="_on_refresh_level_nodes_pressed"]
 [connection signal="pressed" from="VBoxContainer/TabContainer/Level/ScrollContainer/VBoxContainer/GridLevelActions/Align All Nodes" to="VBoxContainer/TabContainer/Level/ScrollContainer/VBoxContainer/GridLevelActions" method="_on_align_all_nodes_pressed"]
