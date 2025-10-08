@@ -16,7 +16,7 @@
 [ext_resource type="Script" uid="uid://bkjlt23hansuv" path="res://scripts/savesystem/save_system.gd" id="8_r0fvi"]
 [ext_resource type="Script" uid="uid://bemcpr6cqtnb3" path="res://scripts/savesystem/disk_json_storage_provider.gd" id="9_6wr2n"]
 [ext_resource type="Script" uid="uid://dk1kwquttgwfc" path="res://scripts/savesystem/migrations/migrate_save_v0.0.2.gd" id="9_iow36"]
-[ext_resource type="Script" uid="uid://bjkpx0v0d0vky" path="res://scripts/convenience/version.gd" id="10_5eye7"]
+[ext_resource type="Script" uid="uid://bjkpx0v0d0vky" path="res://addons/minimum_convenience/scripts/version.gd" id="10_5eye7"]
 [ext_resource type="Script" uid="uid://tgtpk0qo2xx7" path="res://scripts/savesystem/extensions/global_game_state_saver.gd" id="10_6wr2n"]
 [ext_resource type="Theme" uid="uid://clwuiynrim13h" path="res://themes/dialog_theme.tres" id="11_44jdn"]
 [ext_resource type="Script" uid="uid://cewd737qkspe7" path="res://scripts/savesystem/extensions/chap_saver.gd" id="11_yckko"]

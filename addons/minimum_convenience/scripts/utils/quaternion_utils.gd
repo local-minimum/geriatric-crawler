@@ -16,3 +16,11 @@ static func create_tween_rotation_method(node: Node3D, global_space: bool = true
 
     return func (value: Quaternion) -> void:
         node.rotation = value.get_euler()
+
+static func create_tween_lookat_method(node: Node3D, target: Node3D, up: Vector3 = Vector3.UP) -> Callable:
+    var start_rotation: Quaternion = node.global_basis.get_rotation_quaternion()
+
+    return func (progress: float) -> void:
+        var look_at: Quaternion = Basis.looking_at(target.global_position - node.global_position, up).get_rotation_quaternion()
+        var rot: Quaternion = lerp(start_rotation, look_at, progress)
+        node.global_rotation = rot.get_euler()

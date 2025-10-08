@@ -403,9 +403,9 @@ func _sync_protocol_highlight() -> void:
     var caster: Broadcaster = BroadcastContract.get_broadcaster(_selected_contract)
     var arrow_origin: AABB
     if caster != null:
-        var node: Node3D = find_parent_types(caster, ["GridNodeFeature", "GridNodeSide", "GridNode", "Node3D"])
+        var node: Node3D = NodeUtils.find_parent_types(caster, ["GridNodeFeature", "GridNodeSide", "GridNode", "Node3D"])
         if node != null:
-            var bounds: AABB = bounding_box(node)
+            var bounds: AABB = AABBUtils.bounding_box(node)
             bounds = bounds.grow(bounding_box_grow)
             arrow_origin = bounds
             var box: MeshInstance3D = DebugDraw.box(
@@ -423,9 +423,9 @@ func _sync_protocol_highlight() -> void:
         print_debug("[GLD Broadcasts] couldn't find the broadcaster of caster %s " % _selected_contract._broadcaster)
 
     for receiver: BroadcastReceiver in BroadcastContract.get_receivers(_selected_contract):
-        var node: Node3D = find_parent_types(receiver, ["GridNodeFeature", "GridNodeSide", "GridNode", "Node3D"])
+        var node: Node3D = NodeUtils.find_parent_types(receiver, ["GridNodeFeature", "GridNodeSide", "GridNode", "Node3D"])
         if node != null:
-            var bounds: AABB = bounding_box(node)
+            var bounds: AABB = AABBUtils.bounding_box(node)
             bounds = bounds.grow(bounding_box_grow)
             var box: MeshInstance3D = DebugDraw.box(
                 level,
@@ -437,8 +437,8 @@ func _sync_protocol_highlight() -> void:
             _contract_highlights.append(box)
 
             if caster != null:
-                var from: Vector3 = closest_surface_point(arrow_origin, bounds.get_center())
-                var to: Vector3 = closest_surface_point(bounds, from)
+                var from: Vector3 = AABBUtils.closest_surface_point(arrow_origin, bounds.get_center())
+                var to: Vector3 = AABBUtils.closest_surface_point(bounds, from)
                 var arrow: MeshInstance3D = DebugDraw.arrow(
                     level,
                     from,
@@ -449,77 +449,3 @@ func _sync_protocol_highlight() -> void:
             print_debug("[GLD Broadcasts] reciever %s added %s" % [node, bounds])
         else:
             print_debug("[GLD Broadcasts] reciever %s has no node3d parent" % node)
-
-
-static func find_parent_types(node: Node, types: Array[String]) -> Node:
-    for type: String in types:
-        var parent: Node = find_parent_type(node, type)
-        if parent != null:
-            return parent
-
-    return null
-
-static func find_parent_type(node: Node, type: String) -> Node:
-    if node == null:
-        return null
-
-    if node.is_class(type):
-        return node
-    else:
-        var script: Script = node.get_script()
-        if script != null:
-            if script.get_global_name() == type:
-                return node
-
-            while script != null:
-                script = script.get_base_script()
-                if script != null && script.get_global_name() == type:
-                    return node
-
-
-    return find_parent_type(node.get_parent(), type)
-
-static func bounding_box(node: Node3D) -> AABB:
-    var bounding: AABB
-    for child: MeshInstance3D in node.find_children("", "MeshInstance3D", true, false):
-        var box: AABB = child.global_transform * child.get_aabb()
-        if bounding.size.length_squared() == 0:
-            bounding = box
-        else:
-            bounding = bounding.merge(box)
-
-    return bounding
-
-static func closest_surface_point(box: AABB, point: Vector3) -> Vector3:
-    if box.has_point(point):
-        var corners: Array[Vector3] = box_corners(box)
-        corners.sort_custom(
-            func (a: Vector3, b: Vector3) -> bool:
-                return a.distance_squared_to(point) < b.distance_squared_to(point)
-        )
-        var p: Plane = Plane((corners[1] - corners[0]).cross(corners[2] - corners[0]).normalized(), corners[0])
-        return p.project(point)
-
-    return Vector3(
-        clampf(point.x, box.position.x, box.end.x),
-        clampf(point.y, box.position.y, box.end.y),
-        clampf(point.z, box.position.z, box.end.z),
-    )
-
-
-static func box_corners(box: AABB) -> Array[Vector3]:
-    var pos: Vector3 = box.position
-    var end: Vector3 = box.end
-    return [
-        pos,
-
-        Vector3(pos.x, pos.y, end.z),
-        Vector3(pos.x, end.y, end.z),
-        Vector3(pos.x, end.y, pos.z),
-
-        Vector3(end.x, pos.y, pos.z),
-        Vector3(end.x, end.y, pos.z),
-        Vector3(end.x, pos.y, end.z),
-
-        end,
-    ]

@@ -1,6 +1,6 @@
 [gd_scene load_steps=17 format=3 uid="uid://brs7iebucvyh5"]
 
-[ext_resource type="Script" uid="uid://dn88c6xiunk4h" path="res://scripts/convenience/binding_hints.gd" id="1_ee3mc"]
+[ext_resource type="Script" uid="uid://dn88c6xiunk4h" path="res://addons/minimum_convenience/scripts/utils/binding_hints.gd" id="1_ee3mc"]
 [ext_resource type="Texture2D" uid="uid://csqsnn3cea1g7" path="res://sprites/icons/mouse-left.png" id="2_rep5b"]
 [ext_resource type="Texture2D" uid="uid://ddl4ienmr8um2" path="res://sprites/kenny game icons/buttonA.png" id="2_t3gm5"]
 [ext_resource type="Texture2D" uid="uid://ds6yn7qnrcnap" path="res://sprites/kenny game icons/buttonB.png" id="3_ccxro"]
