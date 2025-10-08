@@ -8,16 +8,14 @@ signal on_arrive_entity(teleporter: GridTeleporter, entity: GridEntity)
 @export var teleports_player: bool = true
 
 @export var teleports_non_players: bool
-
 @export var look_direction: CardinalDirections.CardinalDirection
-
 @export var anchor_direction: CardinalDirections.CardinalDirection
-
 @export var inactive_scale: float = 0.3
-
 @export var effect: Node3D
-
 @export var rotation_speed: float = 1
+
+@export var mid_time_delay_uncinematic: float = 0.1
+
 
 func _ready() -> void:
     if __SignalBus.on_move_end.connect(_handle_teleport) != OK:
@@ -88,7 +86,6 @@ func trigger(entity: GridEntity, movement: Movement.MovementType) -> void:
     _show_effect(entity)
 
     entity.cinematic = true
-    # TODO: Play some nice effect
 
 func _show_effect(entity: GridEntity) -> void:
     if effect == null || exit == null:
@@ -145,9 +142,10 @@ func _handle_teleport(entity: GridEntity) -> void:
 
             entity.sync_position()
             entity.clear_queue()
+            await get_tree().create_timer(mid_time_delay_uncinematic).timeout
+            entity.cinematic = false
             ,
         func () -> void:
-            entity.cinematic = false
             _teleporting.erase(entity)
             on_arrive_entity.emit(exit, entity)
             ,
