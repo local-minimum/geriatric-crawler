@@ -70,7 +70,7 @@ vertical_alignment = 1
 [node name="TabContainer" type="TabContainer" parent="VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
-current_tab = 5
+current_tab = 6
 
 [node name="About" type="MarginContainer" parent="VBoxContainer/TabContainer"]
 visible = false
@@ -543,6 +543,7 @@ disabled = true
 text = "Delete Zone"
 
 [node name="Coms" type="MarginContainer" parent="VBoxContainer/TabContainer" node_paths=PackedStringArray("panel", "new_help", "create_new_info", "create_new", "broadcasts_lister", "selected_container", "message_id", "change_broadcaster", "selected_is_broadcaster", "receivers", "new_receiver", "messages", "new_message")]
+visible = false
 layout_mode = 2
 theme_override_constants/margin_left = 4
 theme_override_constants/margin_right = 4
@@ -562,7 +563,6 @@ messages = NodePath("ScrollContainer/VBoxContainer/Selected Details/Messages")
 new_message = NodePath("ScrollContainer/VBoxContainer/Selected Details/Messages/New Message Line")
 broadcast_color = Color(1, 0.266667, 0, 0.72549)
 receiver_color = Color(0.889817, 0.413823, 0.0995842, 0.72549)
-bounding_box_grow = null
 metadata/_tab_index = 5
 
 [node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer/TabContainer/Coms"]
@@ -647,7 +647,6 @@ layout_mode = 2
 _nothing_selected_text = ""
 
 [node name="Style" type="MarginContainer" parent="VBoxContainer/TabContainer"]
-visible = false
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_constants/margin_left = 4

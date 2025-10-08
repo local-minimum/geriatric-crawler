@@ -1,7 +1,7 @@
 [gd_scene load_steps=14 format=3 uid="uid://xqedv5aeal6n"]
 
 [ext_resource type="Script" uid="uid://bkjlt23hansuv" path="res://scripts/savesystem/save_system.gd" id="1_iwv0b"]
-[ext_resource type="Script" uid="uid://bemcpr6cqtnb3" path="res://scripts/savesystem/disk_json_storage_provider.gd" id="2_7c2yx"]
+[ext_resource type="Script" uid="uid://bemcpr6cqtnb3" path="res://addons/minimum_convenience/scripts/save/disk_json_storage_provider.gd" id="2_7c2yx"]
 [ext_resource type="Script" uid="uid://dk1kwquttgwfc" path="res://scripts/savesystem/migrations/migrate_save_v0.0.2.gd" id="2_gk5mi"]
 [ext_resource type="Script" uid="uid://b5qjiwnmmx7i3" path="res://scripts/gridded_level/gridded_level_saver.gd" id="3_a0ogi"]
 [ext_resource type="Script" uid="uid://bjkpx0v0d0vky" path="res://addons/minimum_convenience/scripts/version.gd" id="3_dvfyy"]
