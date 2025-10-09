@@ -2,54 +2,31 @@
 extends VBoxContainer
 class_name GridLevelManipulator
 
-@export
-var panel: GridLevelDiggerPanel
+@export var panel: GridLevelDiggerPanel
 
-@export
-var node_type_label: Label
-
-@export
-var coordinates_label: Label
-
-@export
-var sync_position_btn: Button
-
-@export
-var infer_coordinates_btn: Button
-
-@export
-var style: GridLevelStyle
-
-@export
-var remove_neighbour_in_front_button: Button
-
-@export
-var add_wall_button: Button
-
-@export
-var remove_wall_button: Button
-
-@export
-var remove_neighbour_up_button: Button
-
-@export
-var add_ceiling_button: Button
-
-@export
-var remove_ceiling_button: Button
-
-@export
-var remove_neighbour_down_button: Button
-
-@export
-var add_floor_button: Button
-
-@export
-var remove_floor_button: Button
+@export var node_type_label: Label
+@export var coordinates_label: Label
+@export var sync_position_btn: Button
+@export var infer_coordinates_btn: Button
+@export var style: GridLevelStyle
+@export var remove_neighbour_in_front_button: Button
+@export var add_wall_button: Button
+@export var remove_wall_button: Button
+@export var remove_neighbour_up_button: Button
+@export var add_ceiling_button: Button
+@export var remove_ceiling_button: Button
+@export var remove_neighbour_down_button: Button
+@export var add_floor_button: Button
+@export var remove_floor_button: Button
+@export var own_nav: GridLevelNav
 
 func _ready() -> void:
     style.on_style_updated.connect(_on_style_update)
-    panel.node_digger.on_new_lookdirection.connect(sync)
+    if panel.node_digger.nav.on_update_nav.connect(_sync) != OK:
+        push_error("Failed to connect update nav")
+    if own_nav.on_update_nav.connect(_sync) != OK:
+        push_error("Failed to connect update nav")
+
     _on_style_update()
 
 var _may_add_wall_style: bool
@@ -71,13 +48,15 @@ func _on_style_update() -> void:
     add_wall_button.disabled = !_may_add_wall_style || _has_wall
 
 func sync() -> void:
-    var node: GridNode = panel.get_grid_node()
-    _sync_node_neibours_buttons(node)
-    _sync_node_side_buttons(node)
+    _sync(panel.coordinates)
+
+func _sync(coordinates: Vector3i, look_direction: CardinalDirections.CardinalDirection = CardinalDirections.CardinalDirection.NONE) -> void:
+    var node: GridNode = panel.get_grid_node_at(coordinates)
+    _sync_node_neibours_buttons(node, look_direction)
+    _sync_node_side_buttons(node, look_direction)
 
     if panel.inside_level:
-        var coords: Vector3i = panel.coordinates
-        var coords_have_node: bool = panel.get_grid_node_at(coords) != null
+        var coords_have_node: bool = node != null
 
         if coords_have_node:
             node_type_label.text = "Node"
@@ -90,7 +69,7 @@ func sync() -> void:
             sync_position_btn.visible = false
             infer_coordinates_btn.visible = false
 
-        coordinates_label.text = "%s" % coords
+        coordinates_label.text = "%s" % coordinates
         coordinates_label.visible = true
 
     else:
@@ -99,8 +78,8 @@ func sync() -> void:
         infer_coordinates_btn.visible = false
         coordinates_label.visible = false
 
-func _sync_node_side_buttons(node: GridNode) -> void:
-    var forward: CardinalDirections.CardinalDirection = panel.node_digger.look_direction
+func _sync_node_side_buttons(node: GridNode, look_direction: CardinalDirections.CardinalDirection) -> void:
+    var forward: CardinalDirections.CardinalDirection = look_direction
     var has_node: bool = node != null
     var ceiling_neighbour: GridNode = panel.get_grid_node_at(CardinalDirections.translate(node.coordinates, CardinalDirections.CardinalDirection.UP)) if has_node else null
     var floor_neighbour: GridNode = panel.get_grid_node_at(CardinalDirections.translate(node.coordinates, CardinalDirections.CardinalDirection.DOWN)) if has_node else null
@@ -133,10 +112,10 @@ func _sync_node_side_buttons(node: GridNode) -> void:
     add_wall_button.disabled = !_may_add_wall_style || _has_wall || !has_node
     remove_wall_button.disabled = !_has_wall
 
-func _sync_node_neibours_buttons(node: GridNode) -> void:
+func _sync_node_neibours_buttons(node: GridNode, look_direction: CardinalDirections.CardinalDirection) -> void:
     var has_up: bool =  node != null && panel.get_grid_node_at(CardinalDirections.translate(node.coordinates, CardinalDirections.CardinalDirection.UP)) != null
     var has_down: bool = node != null && panel.get_grid_node_at(CardinalDirections.translate(node.coordinates, CardinalDirections.CardinalDirection.DOWN)) != null
-    var has_forward: bool = node != null && panel.get_grid_node_at(CardinalDirections.translate(node.coordinates, panel.node_digger.look_direction)) != null
+    var has_forward: bool = node != null && panel.get_grid_node_at(CardinalDirections.translate(node.coordinates, look_direction)) != null
 
     remove_neighbour_down_button.disabled = !has_down
     remove_neighbour_up_button.disabled = !has_up
@@ -184,7 +163,7 @@ func _on_infer_coordinates_pressed() -> void:
 
 # Removing neighbours
 func _on_remove_node_in_front_pressed() -> void:
-    var node: GridNode = panel.get_grid_node_at(CardinalDirections.translate(panel.get_focus_node().coordinates, panel.node_digger.look_direction))
+    var node: GridNode = panel.get_grid_node_at(CardinalDirections.translate(panel.get_focus_node().coordinates, panel.look_direction))
     if node != null:
         print_debug("[GLD Manipulator] Removing in front %s" % node.get_node_and_resource("."))
         panel.remove_grid_node(node)
@@ -210,15 +189,15 @@ func _on_remove_node_down_pressed() -> void:
 # Adding sides
 func _on_add_wall_in_front_pressed() -> void:
     var node: GridNode = panel.get_focus_node()
-    var neighbor: GridNode = panel.get_grid_node_at(CardinalDirections.translate(node.coordinates, panel.node_digger.look_direction))
+    var neighbor: GridNode = panel.get_grid_node_at(CardinalDirections.translate(node.coordinates, panel.look_direction))
     panel.node_digger.add_node_side(
         style.get_wall_resource(),
         panel.level,
         node,
-        panel.node_digger.look_direction,
+        panel.look_direction,
         true,
     )
-    _sync_node_side_buttons(node)
+    _sync_node_side_buttons(node, panel.look_direction)
 
 func _on_add_floor_pressed() -> void:
     var node: GridNode = panel.get_focus_node()
@@ -230,7 +209,7 @@ func _on_add_floor_pressed() -> void:
         CardinalDirections.CardinalDirection.DOWN,
         true,
     )
-    _sync_node_side_buttons(node)
+    _sync_node_side_buttons(node, panel.look_direction)
 
 func _on_add_ceiling_pressed() -> void:
     var node: GridNode = panel.get_focus_node()
@@ -242,7 +221,7 @@ func _on_add_ceiling_pressed() -> void:
         CardinalDirections.CardinalDirection.UP,
         true,
     )
-    _sync_node_side_buttons(node)
+    _sync_node_side_buttons(node, panel.look_direction)
 
 # Remove sidde
 
@@ -252,7 +231,7 @@ func _on_remove_ceiling_pressed() -> void:
         var neighbor: GridNode = panel.get_grid_node_at(CardinalDirections.translate(node.coordinates, CardinalDirections.CardinalDirection.UP))
         panel.node_digger.remove_node_side(neighbor, CardinalDirections.CardinalDirection.DOWN)
     await get_tree().create_timer(0.1).timeout
-    _sync_node_side_buttons(node)
+    _sync_node_side_buttons(node, panel.look_direction)
 
 func _on_remove_floor_pressed() -> void:
     var node: GridNode = panel.get_focus_node()
@@ -260,12 +239,12 @@ func _on_remove_floor_pressed() -> void:
         var neighbor: GridNode = panel.get_grid_node_at(CardinalDirections.translate(node.coordinates, CardinalDirections.CardinalDirection.DOWN))
         panel.node_digger.remove_node_side(neighbor, CardinalDirections.CardinalDirection.UP)
     await get_tree().create_timer(0.1).timeout
-    _sync_node_side_buttons(node)
+    _sync_node_side_buttons(node, panel.look_direction)
 
 func _on_remove_wall_in_front_pressed() -> void:
     var node: GridNode = panel.get_focus_node()
-    if !panel.node_digger.remove_node_side(node, panel.node_digger.look_direction):
-        var neighbor: GridNode = panel.get_grid_node_at(CardinalDirections.translate(node.coordinates, panel.node_digger.look_direction))
-        panel.node_digger.remove_node_side(neighbor, CardinalDirections.invert(panel.node_digger.look_direction))
+    if !panel.node_digger.remove_node_side(node, panel.look_direction):
+        var neighbor: GridNode = panel.get_grid_node_at(CardinalDirections.translate(node.coordinates, panel.look_direction))
+        panel.node_digger.remove_node_side(neighbor, CardinalDirections.invert(panel.look_direction))
     await get_tree().create_timer(0.1).timeout
-    _sync_node_side_buttons(node)
+    _sync_node_side_buttons(node, panel.look_direction)

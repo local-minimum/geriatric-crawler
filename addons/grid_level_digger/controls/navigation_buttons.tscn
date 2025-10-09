@@ -1,0 +1,64 @@
+[gd_scene load_steps=10 format=3 uid="uid://b8ubdi65g1kxb"]
+
+[ext_resource type="Script" uid="uid://ekkjcrb4angp" path="res://addons/grid_level_digger/grid_level_nav.gd" id="1_jh4x1"]
+[ext_resource type="Texture2D" uid="uid://dmv01r0dwqxop" path="res://addons/grid_level_digger/sprites/kenney game icons/PNG/White/1x/open-xflipped.png" id="2_mydyv"]
+[ext_resource type="Texture2D" uid="uid://bdr6ttygg68cw" path="res://addons/grid_level_digger/sprites/kenney game icons/PNG/White/1x/arrowUp.png" id="3_4tshj"]
+[ext_resource type="Texture2D" uid="uid://c5mnpbvtmp3o2" path="res://addons/grid_level_digger/sprites/kenney game icons/PNG/White/1x/open.png" id="4_l6pj7"]
+[ext_resource type="Texture2D" uid="uid://kx3ihji6wr88" path="res://addons/grid_level_digger/sprites/kenney game icons/PNG/White/1x/up.png" id="5_585j6"]
+[ext_resource type="Texture2D" uid="uid://cgieiirmncbj7" path="res://addons/grid_level_digger/sprites/kenney game icons/PNG/White/1x/arrowLeft.png" id="6_b2t1e"]
+[ext_resource type="Texture2D" uid="uid://cp6jnxtmrxel6" path="res://addons/grid_level_digger/sprites/kenney game icons/PNG/White/1x/arrowDown.png" id="7_rcmbb"]
+[ext_resource type="Texture2D" uid="uid://bqpbcv4tfwq2h" path="res://addons/grid_level_digger/sprites/kenney game icons/PNG/White/1x/arrowRight.png" id="8_j6yp6"]
+[ext_resource type="Texture2D" uid="uid://d0b7f5ynetioe" path="res://addons/grid_level_digger/sprites/kenney game icons/PNG/White/1x/down.png" id="9_4qx5w"]
+
+[node name="Navigation Buttons" type="GridContainer"]
+columns = 4
+script = ExtResource("1_jh4x1")
+
+[node name="Turn Left" type="Button" parent="."]
+layout_mode = 2
+theme_override_constants/icon_max_width = 24
+icon = ExtResource("2_mydyv")
+
+[node name="Forward" type="Button" parent="."]
+layout_mode = 2
+theme_override_constants/icon_max_width = 24
+icon = ExtResource("3_4tshj")
+
+[node name="Turn Right" type="Button" parent="."]
+layout_mode = 2
+theme_override_constants/icon_max_width = 24
+icon = ExtResource("4_l6pj7")
+
+[node name="Up" type="Button" parent="."]
+layout_mode = 2
+theme_override_constants/icon_max_width = 24
+icon = ExtResource("5_585j6")
+
+[node name="Strafe Left" type="Button" parent="."]
+layout_mode = 2
+theme_override_constants/icon_max_width = 24
+icon = ExtResource("6_b2t1e")
+
+[node name="Back" type="Button" parent="."]
+layout_mode = 2
+theme_override_constants/icon_max_width = 24
+icon = ExtResource("7_rcmbb")
+
+[node name="Strafe Right" type="Button" parent="."]
+layout_mode = 2
+theme_override_constants/icon_max_width = 24
+icon = ExtResource("8_j6yp6")
+
+[node name="Down" type="Button" parent="."]
+layout_mode = 2
+theme_override_constants/icon_max_width = 24
+icon = ExtResource("9_4qx5w")
+
+[connection signal="pressed" from="Turn Left" to="." method="_on_turn_left_pressed"]
+[connection signal="pressed" from="Forward" to="." method="_on_forward_pressed"]
+[connection signal="pressed" from="Turn Right" to="." method="_on_turn_right_pressed"]
+[connection signal="pressed" from="Up" to="." method="_on_up_pressed"]
+[connection signal="pressed" from="Strafe Left" to="." method="_on_strafe_left_pressed"]
+[connection signal="pressed" from="Back" to="." method="_on_back_pressed"]
+[connection signal="pressed" from="Strafe Right" to="." method="_on_strafe_right_pressed"]
+[connection signal="pressed" from="Down" to="." method="_on_down_pressed"]

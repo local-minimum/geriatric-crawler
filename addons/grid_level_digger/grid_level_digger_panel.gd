@@ -25,12 +25,19 @@ var inside_level: bool:
 
 var coordinates: Vector3i = Vector3i.ZERO : set = _set_coords
 func _set_coords(value: Vector3i) -> void:
+    print_debug("[GLD Panel] %s -> %s" % [coordinates, value])
     coordinates = value
+    var node_idx: int = all_level_nodes.find_custom(func (n: GridNode) -> bool: return n.coordinates == value)
+    _node = all_level_nodes[node_idx] if node_idx >= 0 else null
+    _anchor = null
+
     _draw_debug_node_meshes()
+    _draw_debug_arrow()
 
 var undo_redo: EditorUndoRedoManager
 
 var all_level_nodes: Array[GridNode] = []
+var _debug_arrow_mesh: MeshInstance3D
 
 @export var tab_container: TabContainer
 
@@ -45,8 +52,11 @@ var all_level_nodes: Array[GridNode] = []
 @export var level_actions: GridLevelActions
 @export var manipulator: GridLevelManipulator
 @export var zones: GridLevelZoner
+@export var update_nav: GridLevelNav
 
 @export var settings_storage: SaveStorageProvider
+
+var look_direction: CardinalDirections.CardinalDirection = CardinalDirections.CardinalDirection.NORTH
 
 var selected_nodes: Array[GridNode]:
     set(value):
@@ -62,6 +72,20 @@ func _enter_tree() -> void:
     _load_settings()
     if styles.on_style_updated.connect(_handle_style_updated) != OK:
         push_error("Failed to connect style updated")
+
+    if node_digger.nav.on_update_nav.connect(_handle_update_nav) != OK:
+        push_error("Failed to connect update nav")
+
+    if update_nav.on_update_nav.connect(_handle_update_nav) != OK:
+        push_error("Failed to connect update nav")
+
+func _exit_tree() -> void:
+    _remove_debug_arrow()
+
+func _handle_update_nav(coords: Vector3i, direction: CardinalDirections.CardinalDirection) -> void:
+    coordinates = coords
+    look_direction = direction
+    _draw_debug_arrow()
 
 func get_level() -> GridLevel:
     return level
@@ -252,7 +276,7 @@ func remove_debug_nodes() -> void:
     _clear_node_debug_frame()
     _clear_node_debug_center()
     _clear_node_debug_anchors()
-    node_digger.remove_debug_nodes()
+    _remove_debug_arrow()
 
 var _stored_settings: Dictionary
 const _STYLE_KEY: String = "style"
@@ -264,3 +288,21 @@ func _handle_style_updated() -> void:
 func _load_settings() -> void:
     _stored_settings = settings_storage.retrieve_data(0, true)
     styles.load_from_save(DictionaryUtils.safe_getd(_stored_settings, _STYLE_KEY, {}, false))
+
+func _draw_debug_arrow() -> void:
+    _remove_debug_arrow()
+
+    var center: Vector3 = GridLevel.node_center(level, coordinates)
+    var target: Vector3 = center + CardinalDirections.direction_to_vector(look_direction) * 0.75
+
+    _debug_arrow_mesh = DebugDraw.arrow(
+        level,
+        center,
+        target,
+        Color.MAGENTA,
+    )
+
+func _remove_debug_arrow() -> void:
+    if _debug_arrow_mesh != null:
+        _debug_arrow_mesh.queue_free()
+        _debug_arrow_mesh = null

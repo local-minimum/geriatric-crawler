@@ -2,40 +2,23 @@
 extends VBoxContainer
 class_name GridNodeDigger
 
-signal on_new_lookdirection()
+@export var panel: GridLevelDiggerPanel
 
-@export
-var panel: GridLevelDiggerPanel
+@export var nav: GridLevelNav
 
-@export
-var style: GridLevelStyle
+@export var style: GridLevelStyle
 
-@export
-var level_actions: GridLevelActions
+@export var level_actions: GridLevelActions
 
-@export
-var auto_digg_btn: CheckButton
+@export var auto_digg_btn: CheckButton
+@export var auto_clear_sides: CheckButton
+@export var auto_add_sides: CheckButton
+@export var preserve_vertical_btn: CheckButton
 
-@export
-var auto_clear_sides: CheckButton
-
-@export
-var auto_add_sides: CheckButton
-
-@export
-var preserve_vertical_btn: CheckButton
-
-@export
-var cam_offset_x: SpinBox
-
-@export
-var cam_offset_y: SpinBox
-
-@export
-var cam_offset_z: SpinBox
-
-@export
-var place_node_btn: Button
+@export var cam_offset_x: SpinBox
+@export var cam_offset_y: SpinBox
+@export var cam_offset_z: SpinBox
+@export var place_node_btn: Button
 
 func _ready() -> void:
     if auto_clear_sides != null:
@@ -44,6 +27,12 @@ func _ready() -> void:
         auto_add_sides.button_pressed = true
 
     style.on_style_updated.connect(_sync_features)
+
+    if nav.on_update_nav.connect(_handle_update_nav) != OK:
+        push_error("Failed to connect update nav")
+
+func _handle_update_nav(_coordinates: Vector3i, _look_direction: CardinalDirections.CardinalDirection) -> void:
+    sync()
 
 func _sync_features() -> void:
     auto_digg_btn.disabled = !style.has_grid_node_resource_selected()
@@ -66,8 +55,6 @@ func _sync_features() -> void:
 
 func sync() -> void:
     var node: GridNode = panel.get_grid_node()
-
-    _sync_look_direction(0)
 
     if !_cam_offset_synced:
         _cam_offset_syncing = true
@@ -119,55 +106,6 @@ func _on_cam_offset_x_value_changed(value:float) -> void:
     if _cam_offset_syncing: return
     _cam_offset.x = value
     _sync_viewport_camera()
-
-var look_direction: CardinalDirections.CardinalDirection = CardinalDirections.CardinalDirection.NORTH
-
-func _on_down_pressed() -> void:
-    _enact_translation(Movement.MovementType.ABS_DOWN)
-
-func _on_strafe_right_pressed() -> void:
-    _enact_translation(Movement.MovementType.STRAFE_RIGHT)
-
-func _on_back_pressed() -> void:
-    _enact_translation(Movement.MovementType.BACK)
-
-func _on_strafe_left_pressed() -> void:
-    _enact_translation(Movement.MovementType.STRAFE_LEFT)
-
-func _on_up_pressed() -> void:
-    _enact_translation(Movement.MovementType.ABS_UP)
-
-func _on_forward_pressed() -> void:
-    _enact_translation(Movement.MovementType.FORWARD)
-
-func _on_turn_right_pressed() -> void:
-    look_direction = CardinalDirections.yaw_cw(look_direction, CardinalDirections.CardinalDirection.DOWN)[0]
-    _sync_look_direction(PI * 0.5)
-    on_new_lookdirection.emit()
-
-func _on_turn_left_pressed() -> void:
-    look_direction = CardinalDirections.yaw_ccw(look_direction, CardinalDirections.CardinalDirection.DOWN)[0]
-    _sync_look_direction(-PI * 0.5)
-    on_new_lookdirection.emit()
-
-var _debug_arrow_mesh: MeshInstance3D
-
-func _sync_look_direction(rot: float) -> void:
-    _draw_debug_arrow()
-    _sync_viewport_camera()
-
-func _enact_translation(movement: Movement.MovementType) -> void:
-    if !Movement.is_translation(movement) || panel.level == null: return
-
-    var direction: CardinalDirections.CardinalDirection = Movement.to_direction(movement, look_direction, CardinalDirections.CardinalDirection.DOWN)
-
-    panel.coordinates = CardinalDirections.translate(panel.coordinates, direction)
-
-    _sync_viewport_camera()
-    _draw_debug_arrow()
-
-    _perform_auto_dig(direction)
-    sync()
 
 func _perform_auto_dig(dig_direction: CardinalDirections.CardinalDirection, ignore_auto_dig: bool = false) -> void:
     if !(_auto_dig || ignore_auto_dig) || panel.level == null:
@@ -339,12 +277,11 @@ func _undo_auto_dig_node(coordinates: Vector3i) -> void:
     panel.remove_grid_node(node)
     node.queue_free()
 
-
 func _sync_viewport_camera() -> void:
     if _follow_cam:
-        var position = GridLevel.node_position_from_coordinates(panel.level, panel.coordinates)
-        var target = position + CardinalDirections.direction_to_vector(look_direction)
-        var cam_position: Vector3 = position + CardinalDirections.direction_to_planar_rotation(look_direction) * _cam_offset
+        var position: Vector3 = GridLevel.node_position_from_coordinates(panel.level, panel.coordinates)
+        var target: Vector3 = position + CardinalDirections.direction_to_vector(nav.look_direction)
+        var cam_position: Vector3 = position + CardinalDirections.direction_to_planar_rotation(nav.look_direction) * _cam_offset
 
         # TODO: Figure out how to know which viewport to update
         var view: SubViewport = EditorInterface.get_editor_viewport_3d(0)
@@ -352,27 +289,6 @@ func _sync_viewport_camera() -> void:
         var cam: Camera3D = view.get_camera_3d()
         cam.global_position = cam_position
         cam.look_at(target)
-
-func _draw_debug_arrow() -> void:
-    _remove_debug_arrow()
-
-    var center: Vector3 = GridLevel.node_center(panel.level, panel.coordinates)
-    var target: Vector3 = center + CardinalDirections.direction_to_vector(look_direction) * 0.75
-
-    _debug_arrow_mesh = DebugDraw.arrow(
-        panel.level,
-        center,
-        target,
-        Color.MAGENTA,
-    )
-
-func remove_debug_nodes() -> void:
-    _remove_debug_arrow()
-
-func _remove_debug_arrow() -> void:
-    if _debug_arrow_mesh != null:
-        _debug_arrow_mesh.queue_free()
-        _debug_arrow_mesh = null
 
 func _on_place_node_pressed() -> void:
     _perform_auto_dig(CardinalDirections.CardinalDirection.NONE, true)
