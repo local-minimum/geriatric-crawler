@@ -1,0 +1,26 @@
+[gd_scene load_steps=6 format=3 uid="uid://bt4sp4re4itrv"]
+
+[ext_resource type="Script" uid="uid://c6733p4qj68p" path="res://scripts/gridded_level/level_features/grid_node_side.gd" id="1_yrdlk"]
+[ext_resource type="Script" uid="uid://bsjvh2o2oob57" path="res://scripts/gridded_level/level_features/grid_anchor.gd" id="2_ergh5"]
+[ext_resource type="Script" uid="uid://b8a6yvndcxtpa" path="res://scripts/gridded_level/transportation_mode.gd" id="3_7hnlv"]
+[ext_resource type="PackedScene" uid="uid://x6pgsb3ypjsm" path="res://models/cubeside-flat.fbx" id="4_yrdlk"]
+
+[sub_resource type="Resource" id="Resource_p5glw"]
+script = ExtResource("3_7hnlv")
+mode = 8
+metadata/_custom_type_script = "uid://b8a6yvndcxtpa"
+
+[node name="BasicWall" type="Node3D" node_paths=PackedStringArray("anchor")]
+script = ExtResource("1_yrdlk")
+direction = 1
+anchor = NodePath("GridAnchor")
+
+[node name="GridAnchor" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.25, -1.15)
+script = ExtResource("2_ergh5")
+direction = 1
+required_transportation_mode = SubResource("Resource_p5glw")
+metadata/_custom_type_script = "uid://bsjvh2o2oob57"
+
+[node name="cubeside-flat" parent="." instance=ExtResource("4_yrdlk")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.25, -1.25)
