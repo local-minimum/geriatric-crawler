@@ -220,12 +220,46 @@ func remove_node_side(
 
     var side = GridNodeSide.get_node_side(node, side_direction)
     if side != null:
-        side.queue_free()
-        EditorInterface.mark_scene_as_unsaved()
+        panel.undo_redo.create_action("GridLevelDigger: Remove %s @ %s %s" % [side.name, node.coordinates, CardinalDirections.name(side_direction)])
+
+        panel.undo_redo.add_do_method(self, "_do_remove_node_side", side)
+        panel.undo_redo.add_undo_method(self, "_do_readd_node_side", node, side_direction, side.scene_file_path)
+
+        panel.undo_redo.commit_action()
         return true
     return false
 
+func _do_remove_node_side(side: GridNodeSide) -> void:
+    side.queue_free()
+    EditorInterface.mark_scene_as_unsaved()
+
+func _do_readd_node_side(node: GridNode, direction: CardinalDirections.CardinalDirection, resource_path: String) -> void:
+    var resource: Resource = load(resource_path)
+    if resource == null:
+        resource = style.get_resource_from_direction(direction)
+
+    _do_add_node_side(resource, panel.level, node, direction, true)
+
 func add_node_side(
+    resource: Resource,
+    level: GridLevel,
+    node: GridNode,
+    side_direction: CardinalDirections.CardinalDirection,
+    treat_elevation_as_separate: bool,
+) -> void:
+    panel.undo_redo.create_action("GridLevelDigger: Add side %s @ %s" % [CardinalDirections.name(side_direction), node.coordinates])
+
+    panel.undo_redo.add_do_method(self, "_do_add_node_side", resource, level, node, side_direction, treat_elevation_as_separate)
+    panel.undo_redo.add_undo_method(self, "_do_remove_side_from_node", node, side_direction)
+
+    panel.undo_redo.commit_action()
+
+func _do_remove_side_from_node(node: GridNode, side_direction: CardinalDirections.CardinalDirection) -> void:
+    var side = GridNodeSide.get_node_side(node, side_direction)
+    if side != null:
+        _do_remove_node_side(side)
+
+func _do_add_node_side(
     resource: Resource,
     level: GridLevel,
     node: GridNode,

@@ -261,6 +261,7 @@ func _swap_recievers(contract: BroadcastContract,  a: int, b: int) -> void:
     var r: Node = contract._receivers[a]
     contract._receivers[a] = contract._receivers[b]
     contract._receivers[b] = r
+    EditorInterface.mark_scene_as_unsaved()
     _sync_selected_contract()
 
 func _sync_new_reciever() -> void:
@@ -287,11 +288,13 @@ func _add_receiver_to_contract(contract: BroadcastContract, receiver: Node) -> v
     if !contract._receivers.has(receiver):
         contract._receivers.append(receiver)
         _require_update_highlight = true
+        EditorInterface.mark_scene_as_unsaved()
     _sync_selected_contract()
 
 func _remove_receiver_from_contract(contract: BroadcastContract, reciever: Node) -> void:
     contract._receivers.erase(reciever)
     _require_update_highlight = true
+    EditorInterface.mark_scene_as_unsaved()
     _sync_selected_contract()
 
 func _sync_messages() -> void:
@@ -351,6 +354,7 @@ func _swap_messages(contract: BroadcastContract,  a: int, b: int) -> void:
     var r: String = contract._messages[a]
     contract._messages[a] = contract._messages[b]
     contract._messages[b] = r
+    EditorInterface.mark_scene_as_unsaved()
     _sync_selected_contract()
 
 func _add_message(message: String) -> void:
@@ -365,10 +369,12 @@ func _add_message(message: String) -> void:
 
 func _add_message_to_contract(contract: BroadcastContract, message: String) -> void:
     contract._messages.append(message)
+    EditorInterface.mark_scene_as_unsaved()
     _sync_selected_contract()
 
 func _remove_message_from_contract(contract: BroadcastContract, message_idx: int) -> void:
     contract._messages.remove_at(message_idx)
+    EditorInterface.mark_scene_as_unsaved()
     _sync_selected_contract()
 
 func _on_change_broadcaster_pressed() -> void:
@@ -385,6 +391,7 @@ func _on_change_broadcaster_pressed() -> void:
 func _set_contract_broadcaster(contract: BroadcastContract, caster: Node) -> void:
     contract._broadcaster = caster
     _require_update_highlight = true
+    EditorInterface.mark_scene_as_unsaved()
     _sync_selected_contract()
 
 var _require_update_highlight: bool = true

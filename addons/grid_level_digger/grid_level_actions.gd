@@ -19,6 +19,7 @@ var organize_btn: Button
 var organize_by_elevation: bool = true
 
 func _on_align_all_nodes_pressed() -> void:
+    var changed: bool = false
     panel.undo_redo.create_action("GridLevelAction: Sync all node positions")
 
     for node: GridNode in panel.all_level_nodes:
@@ -27,8 +28,11 @@ func _on_align_all_nodes_pressed() -> void:
         if node.global_position != new_position:
             panel.undo_redo.add_do_property(node, "global_position", new_position)
             panel.undo_redo.add_undo_property(node, "global_position", node.global_position)
+            changed = true
 
     panel.undo_redo.commit_action()
+    if changed:
+        EditorInterface.mark_scene_as_unsaved()
 
 func _on_set_all_wall_rotations_pressed() -> void:
     for node: GridNode in panel.all_level_nodes:
