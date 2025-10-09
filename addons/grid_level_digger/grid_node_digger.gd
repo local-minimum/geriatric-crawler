@@ -149,6 +149,28 @@ func _perform_auto_dig(dig_direction: CardinalDirections.CardinalDirection, igno
             elif _preserve_vertical && !CardinalDirections.is_planar_cardinal(dir):
                 add_node_side(side_resource, level, target_node, dir, _preserve_vertical)
 
+func swap_node_side_for_style(
+    node: GridNode,
+    side_direction: CardinalDirections.CardinalDirection
+) -> bool:
+    if node == null:
+        return false
+
+    var side = GridNodeSide.get_node_side(node, side_direction)
+    var new_style: String = style.get_resource_path_from_direction(side_direction)
+
+    if side == null || side.scene_file_path == new_style || !TextUtils.is_resource_path(new_style):
+        return false
+
+    panel.undo_redo.create_action("GridLevelDigger: Swap side model %s @ %s %s" % [side.name, node.coordinates, CardinalDirections.name(side_direction)])
+
+    panel.undo_redo.add_do_method(self, "_do_swap_node_side", node, side_direction, style.get_resource_path_from_direction(side_direction))
+    panel.undo_redo.add_undo_method(self, "_do_swap_node_side", node, side_direction, side.scene_file_path)
+
+    panel.undo_redo.commit_action()
+
+    return true
+
 func remove_node_side(
     node: GridNode,
     side_direction: CardinalDirections.CardinalDirection,
@@ -166,6 +188,28 @@ func remove_node_side(
         panel.undo_redo.commit_action()
         return true
     return false
+
+func _do_swap_node_side(node: GridNode, side_direction: CardinalDirections.CardinalDirection, new_side: String) -> void:
+    if !TextUtils.is_resource_path(new_side):
+        return
+
+    var resource: Resource = load(new_side)
+    if resource == null:
+        return
+
+    var old_side: GridNodeSide = GridNodeSide.get_node_side(node, side_direction)
+    print_debug("[GLD] Removing %s of origin %s from %s" % [old_side.name, old_side.scene_file_path, node.coordinates])
+    # Cannot queue free because then won't add side
+    old_side.free()
+
+    print_debug("[GLD] Adding %s to %s" % [resource.resource_path, node.coordinates])
+    _do_add_node_side(
+        resource,
+        panel.level,
+        node,
+        side_direction,
+        true,
+    )
 
 func _do_remove_node_side(side: GridNodeSide) -> void:
     side.queue_free()
@@ -204,18 +248,13 @@ func _do_add_node_side(
     side_direction: CardinalDirections.CardinalDirection,
     treat_elevation_as_separate: bool,
 ) -> void:
-    print_debug("%s %s %s with using %s" % [
-        node.name,
-        CardinalDirections.name(side_direction),
-        "Elevation separate" if treat_elevation_as_separate else "Elevation included",
-        resource
-    ])
     if node == null || resource == null:
-        print_debug("Refused wall because lacking resouces or node")
+        print_debug("[GLD] Refused wall because lacking resouces or node")
         return
 
     var side = GridNodeSide.get_node_side(node, side_direction)
     if side != null:
+        print_debug("[GLD] Refused adding side because already exist %s" % [side.name])
         return
 
     var raw_node: Node = resource.instantiate()

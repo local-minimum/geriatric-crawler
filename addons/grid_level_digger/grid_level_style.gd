@@ -59,6 +59,9 @@ var _grid_ceiling_used: bool:
 func get_ceiling_resource() -> Resource:
     return _grid_ceiling_resource if _grid_ceiling_used else null
 
+func get_ceiling_resource_path() -> String:
+    return _grid_ceiling_resource.resource_path if _grid_ceiling_resource != null && _grid_ceiling_used else ""
+
 func _on_grid_ceiling_picker_resource_changed(resource:Resource) -> void:
     if _forcing_resource_change:
         return
@@ -91,6 +94,9 @@ var _grid_floor_used: bool:
 func get_floor_resource() -> Resource:
     return _grid_floor_resource if _grid_floor_used else null
 
+func get_floor_resource_path() -> String:
+    return _grid_floor_resource.resource_path if _grid_floor_resource != null && _grid_floor_used else ""
+
 func _on_grid_floor_picker_resource_changed(resource:Resource) -> void:
     if _forcing_resource_change:
         on_style_updated.emit()
@@ -122,6 +128,9 @@ var _grid_wall_used: bool:
 
 func get_wall_resource() -> Resource:
     return _grid_wall_resource if _grid_wall_used else null
+
+func get_wall_resource_path() -> String:
+    return _grid_wall_resource.resource_path if _grid_wall_resource != null && _grid_wall_used else ""
 
 func _on_grid_wall_picker_resource_changed(resource:Resource) -> void:
     if _forcing_resource_change:
@@ -163,6 +172,15 @@ func get_resource_from_direction(dir: CardinalDirections.CardinalDirection) -> R
     elif dir == CardinalDirections.CardinalDirection.DOWN:
         return _grid_floor_resource if _grid_floor_used else null
     return null
+
+func get_resource_path_from_direction(dir: CardinalDirections.CardinalDirection) -> String:
+    if CardinalDirections.is_planar_cardinal(dir):
+        return get_wall_resource_path()
+    elif dir == CardinalDirections.CardinalDirection.UP:
+        return get_ceiling_resource_path()
+    elif dir == CardinalDirections.CardinalDirection.DOWN:
+        return get_floor_resource_path()
+    return ""
 
 const _NODE_KEY: String = "node"
 const _NODE_USED_KEY: String = "node-used"

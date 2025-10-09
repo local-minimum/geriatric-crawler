@@ -99,6 +99,7 @@ func get_grid_node_at(coordinates: Vector3i) -> GridNode:
         return null
     return all_level_nodes[idx]
 
+## The node at current coordinates
 func get_focus_node() -> GridNode:
     return get_grid_node_at(coordinates)
 
