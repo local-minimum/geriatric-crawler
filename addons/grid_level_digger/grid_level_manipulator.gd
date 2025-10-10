@@ -312,6 +312,6 @@ func _show_style_window(direction: CardinalDirections.CardinalDirection) -> void
 
     styler.configure(side, panel)
 
-    EditorInterface.popup_dialog_centered(_style_window, Vector2i(400, 600))
+    EditorInterface.popup_dialog_centered(_style_window, Vector2i(600, 800))
 
     print_debug("[GLD Manipulator] Created style window!")

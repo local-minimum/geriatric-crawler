@@ -1,0 +1,40 @@
+[gd_scene load_steps=3 format=3 uid="uid://xy32bh1gwiur"]
+
+[ext_resource type="Script" uid="uid://hyn2oi16ogk6" path="res://addons/grid_level_digger/controls/material_selection_listing.gd" id="1_12frh"]
+[ext_resource type="Texture2D" uid="uid://y6v7yxoyr5tx" path="res://addons/grid_level_digger/sprites/filled_2x2.png" id="2_kwqeu"]
+
+[node name="Material Listing" type="PanelContainer" node_paths=PackedStringArray("_texture", "_label", "_use_button")]
+custom_minimum_size = Vector2(300, 0)
+script = ExtResource("1_12frh")
+_fallback_texture = ExtResource("2_kwqeu")
+_texture = NodePath("HBoxContainer/Material Preview")
+_label = NodePath("HBoxContainer/Material Path")
+_use_button = NodePath("HBoxContainer/Use")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+custom_minimum_size = Vector2(0, 64)
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Material Preview" type="TextureRect" parent="HBoxContainer"]
+custom_minimum_size = Vector2(84, 84)
+layout_mode = 2
+texture = ExtResource("2_kwqeu")
+expand_mode = 4
+stretch_mode = 5
+
+[node name="Material Path" type="Label" parent="HBoxContainer"]
+custom_minimum_size = Vector2(20, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 20
+text = "Texture path"
+vertical_alignment = 2
+autowrap_mode = 3
+
+[node name="Use" type="Button" parent="HBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Use"
+
+[connection signal="pressed" from="HBoxContainer/Use" to="." method="_on_use_pressed"]
