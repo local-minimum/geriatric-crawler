@@ -2,20 +2,18 @@ extends Node3D
 class_name GridNodeSide
 
 @export var direction: CardinalDirections.CardinalDirection = CardinalDirections.CardinalDirection.DOWN
-
 @export var infer_direction_from_rotation: bool = true
-
 @export var anchor: GridAnchor
-
 @export var negative_anchor: GridAnchor
-
 @export var illosory: bool
+@export var _material_overrides: Dictionary[String, String]
 
 func is_two_sided() -> bool:
     return negative_anchor != null
 
 func _ready() -> void:
     set_direction_from_rotation(self)
+    GridNodeSide.apply_material_overrides(self)
 
 var _parent_node: GridNode
 var _inverse_parent_node: GridNode
@@ -72,10 +70,11 @@ static func set_direction_from_rotation(node_side: GridNodeSide) -> void:
     if node_side.negative_anchor != null:
         node_side.negative_anchor.direction = CardinalDirections.invert(node_side.direction)
 
-static func get_node_side(node: GridNode, side_direction: CardinalDirections.CardinalDirection) -> GridNodeSide:
+static func get_node_side(node: GridNode, side_direction: CardinalDirections.CardinalDirection, warn_missing: bool = true) -> GridNodeSide:
     if node == null:
-        push_warning("Calling to get a node side of null element")
-        print_stack()
+        if warn_missing:
+            push_warning("Calling to get a node side of null element")
+            print_stack()
         return null
 
     for side: GridNodeSide in node.find_children("", "GridNodeSide"):
@@ -83,3 +82,72 @@ static func get_node_side(node: GridNode, side_direction: CardinalDirections.Car
             return side
 
     return null
+
+static func get_used_materials(side: GridNodeSide) -> Dictionary[String, String]:
+    var ret: Dictionary[String, String]
+    var root_path: NodePath = side.get_path()
+    for child: Node in side.find_children("", "MeshInstance3D", true, true):
+        if child is MeshInstance3D:
+            var m_instance: MeshInstance3D = child
+            var base_path: String = m_instance.get_path().slice(root_path.get_name_count())
+            for surface_idx: int in range(m_instance.mesh.get_surface_count()):
+                var mat: Material = m_instance.mesh.surface_get_material(surface_idx)
+                ret["%s|%s" % [base_path, surface_idx]] = mat.resource_path
+
+    return ret
+
+static func get_meshinstance_from_override_path(side: GridNodeSide, path: String) -> MeshInstance3D:
+    var real_path: String = path.split("|")[0]
+    var child: Node = side.get_node(real_path)
+    if child is MeshInstance3D:
+        return child
+    return null
+
+static func get_meshinstance_surface_index_from_override_path(side: GridNodeSide, path: String) -> int:
+    if !path.contains("|"):
+        push_warning("Side %s has invalid override path %s" % [side, path])
+        return -1
+
+    var surface: String = path.split("|")[1]
+    if !surface.is_valid_int():
+        push_warning("Side %s has invalid surface index %s, must be an int" % [side, surface])
+        return -1
+
+    var value: int = surface.to_int()
+    if value < 0:
+        push_warning("Side %s has invalid surface index %s, must be zero ro positive" % [side, surface])
+        return -1
+
+    return value
+
+
+static func apply_material_overrides(side: GridNodeSide) -> void:
+    for path: String in side._material_overrides:
+        var m_instance: MeshInstance3D = get_meshinstance_from_override_path(side, path)
+        if m_instance == null:
+            push_warning("Side %s has override for '%s' but this is not a mesh instance 3d" % [side, path])
+            continue
+
+        var surface_idx: int = get_meshinstance_surface_index_from_override_path(side, path)
+        if surface_idx < 0:
+            continue
+
+        var mat_path: String = side._material_overrides[path]
+        if !TextUtils.is_resource_path(mat_path):
+            push_warning("Side %s references a material '%s' but this is not a valid resource path" % [
+                side,
+                mat_path
+            ])
+            continue
+
+        var material: Material = load(mat_path)
+        if material == null:
+            push_warning("Side %s references a material '%s' for surface %s of %s but it doesn't exist" % [
+                side,
+                mat_path,
+                surface_idx,
+                m_instance,
+            ])
+            continue
+
+        m_instance.mesh.surface_set_material(surface_idx, material)

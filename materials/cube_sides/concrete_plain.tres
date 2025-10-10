@@ -1,0 +1,7 @@
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://dwrjtf154jfus"]
+
+[resource]
+resource_name = "Concrete"
+vertex_color_use_as_albedo = true
+albedo_color = Color(0.719993, 0.650651, 0.573457, 1)
+emission_enabled = true

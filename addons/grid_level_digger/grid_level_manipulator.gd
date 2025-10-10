@@ -11,6 +11,7 @@ class_name GridLevelManipulator
 @export var style: GridLevelStyle
 @export var remove_neighbour_in_front_button: Button
 @export var swap_wall_button: Button
+@export var style_wall_button: Button
 @export var add_wall_button: Button
 @export var remove_wall_button: Button
 @export var remove_neighbour_up_button: Button
@@ -32,6 +33,11 @@ func _ready() -> void:
 
     _on_style_update()
 
+func _exit_tree() -> void:
+    if _style_window != null:
+        _style_window.queue_free()
+        _style_window = null
+
 var _may_add_wall_style: bool
 var _has_wall: bool
 
@@ -40,6 +46,7 @@ var _has_ceiling: bool
 
 var _may_add_floor_style: bool
 var _has_floor: bool
+var _style_window: Window
 
 func _on_style_update() -> void:
     _may_add_wall_style = style.get_wall_resource() != null
@@ -112,6 +119,7 @@ func _sync_node_side_buttons(node: GridNode, look_direction: CardinalDirections.
 
     var _wall: GridNodeSide = GridNodeSide.get_node_side(node, forward) if has_node else null
     swap_wall_button.disabled = _wall == null || !_may_add_wall_style || style.get_wall_resource_path() == _wall.scene_file_path
+    style_wall_button.disabled = _wall == null
     _has_wall = _wall != null && _wall.anchor != null
     # if !_has_wall && wall_neighbour != null:
     #    _wall = GridNodeSide.get_node_side(wall_neighbour, CardinalDirections.invert(forward))
@@ -274,3 +282,36 @@ func _on_swap_ceiling_pressed() -> void:
     panel.node_digger.swap_node_side_for_style(node, CardinalDirections.CardinalDirection.UP)
     await get_tree().create_timer(0.1).timeout
     _sync_node_side_buttons(node, CardinalDirections.CardinalDirection.UP)
+
+func _on_style_wall_in_front_pressed() -> void:
+    _show_style_window(panel.look_direction)
+
+func _show_style_window(direction: CardinalDirections.CardinalDirection) -> void:
+    var grid_node: GridNode = panel.get_grid_node()
+    var side: GridNodeSide = GridNodeSide.get_node_side(grid_node, direction)
+    if side == null:
+        return
+
+    if _style_window != null:
+        _style_window.queue_free()
+
+    _style_window = Window.new()
+    _style_window.close_requested.connect(
+        func() -> void:
+            _style_window.queue_free()
+            _style_window = null
+    )
+    _style_window.initial_position = Window.WINDOW_INITIAL_POSITION_CENTER_SCREEN_WITH_KEYBOARD_FOCUS
+    _style_window.popup_window = true
+
+    _style_window.title = "Style Wall"
+    var scene: PackedScene = load("res://addons/grid_level_digger/controls/node_side_styler.tscn")
+    var styler: GridLevelNodeSideStyler = scene.instantiate()
+
+    _style_window.add_child(styler)
+
+    styler.configure(side, panel)
+
+    EditorInterface.popup_dialog_centered(_style_window, Vector2i(400, 600))
+
+    print_debug("[GLD Manipulator] Created style window!")

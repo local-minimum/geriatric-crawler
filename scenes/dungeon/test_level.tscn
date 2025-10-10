@@ -1,4 +1,4 @@
-[gd_scene load_steps=76 format=3 uid="uid://dwqcwbgj8p6q0"]
+[gd_scene load_steps=75 format=3 uid="uid://dwqcwbgj8p6q0"]
 
 [ext_resource type="Script" uid="uid://dqe42q7uub84r" path="res://scripts/gridded_level/level_features/grid_level.gd" id="1_dd1ob"]
 [ext_resource type="PackedScene" uid="uid://bfoog3fb4v5ij" path="res://scenes/dungeon/player.tscn" id="3_m6mav"]
@@ -14,7 +14,6 @@
 [ext_resource type="Texture2D" uid="uid://cfgpkpq4rx67j" path="res://sprites/treasure-chest-closed.png" id="10_7gan6"]
 [ext_resource type="Script" uid="uid://dmpqfljj24gh6" path="res://scripts/gridded_level/entities/encounter_effects/battle_mode_trigger.gd" id="10_rvj20"]
 [ext_resource type="Script" uid="uid://ccsqys7ldqoh" path="res://scripts/card_battle/battle_enemy.gd" id="11_fxt0s"]
-[ext_resource type="Script" uid="uid://c6733p4qj68p" path="res://scripts/gridded_level/level_features/grid_node_side.gd" id="12_1jctb"]
 [ext_resource type="Texture2D" uid="uid://d4i1sxn0646on" path="res://sprites/enemies/training-dummy.png" id="12_26eu7"]
 [ext_resource type="PackedScene" uid="uid://bt4sp4re4itrv" path="res://scenes/dungeon/basic_wall_flat.tscn" id="12_fh06p"]
 [ext_resource type="PackedScene" uid="uid://jm86vuxmbiw2" path="res://scenes/dungeon/trigger_floor.tscn" id="12_hm4fr"]
@@ -64,7 +63,7 @@
 [ext_resource type="Resource" uid="uid://bm3cpmpqe3u6h" path="res://resources/punishment_cards/insecurities_999.tres" id="49_yofnv"]
 [ext_resource type="Script" uid="uid://huxje2j21g1c" path="res://scripts/broadcast_contract.gd" id="61_uhp52"]
 
-[sub_resource type="Resource" id="Resource_fh06p"]
+[sub_resource type="Resource" id="Resource_1jctb"]
 resource_local_to_scene = true
 script = ExtResource("4_840jk")
 mode = 61
@@ -127,7 +126,7 @@ broadcasts_parent = NodePath("Broadcasts")
 [node name="Player" parent="." instance=ExtResource("3_m6mav")]
 process_mode = 3
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0145968, -0.00857759, 0.00070858)
-transportation_abilities = SubResource("Resource_fh06p")
+transportation_abilities = SubResource("Resource_1jctb")
 transportation_mode = SubResource("Resource_pgxau")
 
 [node name="LevelGeometry" type="Node3D" parent="."]
@@ -340,17 +339,13 @@ coordinates = Vector3i(-3, 0, -1)
 
 [node name="Side DOWN" parent="LevelGeometry/Elevation 0/Node (-3, 0, -1)" instance=ExtResource("9_4mxkc")]
 
-[node name="Side WEST" type="Node3D" parent="LevelGeometry/Elevation 0/Node (-3, 0, -1)" node_paths=PackedStringArray("anchor") instance=ExtResource("12_fh06p")]
+[node name="Side WEST" parent="LevelGeometry/Elevation 0/Node (-3, 0, -1)" instance=ExtResource("12_fh06p")]
 transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0, 0)
-script = ExtResource("12_1jctb")
 direction = 3
-anchor = NodePath("GridAnchor")
 
-[node name="Side EAST" type="Node3D" parent="LevelGeometry/Elevation 0/Node (-3, 0, -1)" node_paths=PackedStringArray("anchor") instance=ExtResource("12_fh06p")]
+[node name="Side EAST" parent="LevelGeometry/Elevation 0/Node (-3, 0, -1)" instance=ExtResource("12_fh06p")]
 transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 0, 0, 0)
-script = ExtResource("12_1jctb")
 direction = 4
-anchor = NodePath("GridAnchor")
 
 [node name="Node (-3, 0, -2)" parent="LevelGeometry/Elevation 0" instance=ExtResource("4_myev5")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.5, 0, -5)
@@ -364,11 +359,9 @@ coordinates = Vector3i(-3, 0, -2)
 transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0, 0)
 direction = 3
 
-[node name="Side EAST" type="Node3D" parent="LevelGeometry/Elevation 0/Node (-3, 0, -2)" node_paths=PackedStringArray("anchor") instance=ExtResource("12_fh06p")]
+[node name="Side EAST" parent="LevelGeometry/Elevation 0/Node (-3, 0, -2)" instance=ExtResource("12_fh06p")]
 transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 0, 0, 0)
-script = ExtResource("12_1jctb")
 direction = 4
-anchor = NodePath("GridAnchor")
 
 [node name="Node (-3, 0, -3)" parent="LevelGeometry/Elevation 0" instance=ExtResource("4_myev5")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.5, 0, -7.5)

@@ -304,7 +304,7 @@ horizontal_scroll_mode = 0
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Manipulator" type="VBoxContainer" parent="VBoxContainer/TabContainer/Update/ScrollContainer/VBoxContainer" node_paths=PackedStringArray("panel", "node_type_label", "coordinates_label", "sync_position_btn", "infer_coordinates_btn", "style", "remove_neighbour_in_front_button", "swap_wall_button", "add_wall_button", "remove_wall_button", "remove_neighbour_up_button", "swap_ceiling_button", "add_ceiling_button", "remove_ceiling_button", "remove_neighbour_down_button", "swap_floor_button", "add_floor_button", "remove_floor_button", "own_nav")]
+[node name="Manipulator" type="VBoxContainer" parent="VBoxContainer/TabContainer/Update/ScrollContainer/VBoxContainer" node_paths=PackedStringArray("panel", "node_type_label", "coordinates_label", "sync_position_btn", "infer_coordinates_btn", "style", "remove_neighbour_in_front_button", "swap_wall_button", "style_wall_button", "add_wall_button", "remove_wall_button", "remove_neighbour_up_button", "swap_ceiling_button", "add_ceiling_button", "remove_ceiling_button", "remove_neighbour_down_button", "swap_floor_button", "add_floor_button", "remove_floor_button", "own_nav")]
 layout_mode = 2
 script = ExtResource("12_veu6e")
 panel = NodePath("../../../../../..")
@@ -315,6 +315,7 @@ infer_coordinates_btn = NodePath("Current Node/Infer Coordinates")
 style = NodePath("../../../../Style/ScrollContainer/VBoxContainer/Style Container")
 remove_neighbour_in_front_button = NodePath("In front/Remove Node In Front")
 swap_wall_button = NodePath("In front/Swap Wall In Front")
+style_wall_button = NodePath("In front/Style Wall In Front")
 add_wall_button = NodePath("In front/Add Wall In Front")
 remove_wall_button = NodePath("In front/Remove Wall In Front")
 remove_neighbour_up_button = NodePath("Ceiling/Remove Node Up")
@@ -368,15 +369,24 @@ size_flags_horizontal = 3
 [node name="Swap Wall In Front" type="Button" parent="VBoxContainer/TabContainer/Update/ScrollContainer/VBoxContainer/Manipulator/In front"]
 layout_mode = 2
 tooltip_text = "Swap out current scene for the styled scene"
+disabled = true
 text = "Swap"
+
+[node name="Style Wall In Front" type="Button" parent="VBoxContainer/TabContainer/Update/ScrollContainer/VBoxContainer/Manipulator/In front"]
+layout_mode = 2
+tooltip_text = "Swap out materials in scene"
+disabled = true
+text = "Style"
 
 [node name="Remove Wall In Front" type="Button" parent="VBoxContainer/TabContainer/Update/ScrollContainer/VBoxContainer/Manipulator/In front"]
 layout_mode = 2
+disabled = true
 text = "Remove
 "
 
 [node name="Add Wall In Front" type="Button" parent="VBoxContainer/TabContainer/Update/ScrollContainer/VBoxContainer/Manipulator/In front"]
 layout_mode = 2
+disabled = true
 text = "Add"
 
 [node name="Remove Node In Front" type="Button" parent="VBoxContainer/TabContainer/Update/ScrollContainer/VBoxContainer/Manipulator/In front"]
@@ -397,14 +407,17 @@ size_flags_horizontal = 3
 [node name="Swap Ceiling" type="Button" parent="VBoxContainer/TabContainer/Update/ScrollContainer/VBoxContainer/Manipulator/Ceiling"]
 layout_mode = 2
 tooltip_text = "Swap out current scene for the styled scene"
+disabled = true
 text = "Swap"
 
 [node name="Remove Ceiling" type="Button" parent="VBoxContainer/TabContainer/Update/ScrollContainer/VBoxContainer/Manipulator/Ceiling"]
 layout_mode = 2
+disabled = true
 text = "Remove"
 
 [node name="Add Ceiling" type="Button" parent="VBoxContainer/TabContainer/Update/ScrollContainer/VBoxContainer/Manipulator/Ceiling"]
 layout_mode = 2
+disabled = true
 text = "Add"
 
 [node name="Remove Node Up" type="Button" parent="VBoxContainer/TabContainer/Update/ScrollContainer/VBoxContainer/Manipulator/Ceiling"]
@@ -425,15 +438,18 @@ size_flags_horizontal = 3
 [node name="Swap Floor" type="Button" parent="VBoxContainer/TabContainer/Update/ScrollContainer/VBoxContainer/Manipulator/Floor"]
 layout_mode = 2
 tooltip_text = "Swap out current scene for the styled scene"
+disabled = true
 text = "Swap"
 
 [node name="Remove Floor" type="Button" parent="VBoxContainer/TabContainer/Update/ScrollContainer/VBoxContainer/Manipulator/Floor"]
 layout_mode = 2
+disabled = true
 text = "Remove
 "
 
 [node name="Add Floor" type="Button" parent="VBoxContainer/TabContainer/Update/ScrollContainer/VBoxContainer/Manipulator/Floor"]
 layout_mode = 2
+disabled = true
 text = "Add"
 
 [node name="Remove Node Down" type="Button" parent="VBoxContainer/TabContainer/Update/ScrollContainer/VBoxContainer/Manipulator/Floor"]
@@ -769,6 +785,7 @@ save_file_pattern = "res://.godot/gld_settings.json"
 [connection signal="pressed" from="VBoxContainer/TabContainer/Update/ScrollContainer/VBoxContainer/Manipulator/Current Node/Infer Coordinates" to="VBoxContainer/TabContainer/Update/ScrollContainer/VBoxContainer/Manipulator" method="_on_infer_coordinates_pressed"]
 [connection signal="pressed" from="VBoxContainer/TabContainer/Update/ScrollContainer/VBoxContainer/Manipulator/Current Node/Sync Position" to="VBoxContainer/TabContainer/Update/ScrollContainer/VBoxContainer/Manipulator" method="_on_sync_position_pressed"]
 [connection signal="pressed" from="VBoxContainer/TabContainer/Update/ScrollContainer/VBoxContainer/Manipulator/In front/Swap Wall In Front" to="VBoxContainer/TabContainer/Update/ScrollContainer/VBoxContainer/Manipulator" method="_on_swap_wall_scene_pressed"]
+[connection signal="pressed" from="VBoxContainer/TabContainer/Update/ScrollContainer/VBoxContainer/Manipulator/In front/Style Wall In Front" to="VBoxContainer/TabContainer/Update/ScrollContainer/VBoxContainer/Manipulator" method="_on_style_wall_in_front_pressed"]
 [connection signal="pressed" from="VBoxContainer/TabContainer/Update/ScrollContainer/VBoxContainer/Manipulator/In front/Remove Wall In Front" to="VBoxContainer/TabContainer/Update/ScrollContainer/VBoxContainer/Manipulator" method="_on_remove_wall_in_front_pressed"]
 [connection signal="pressed" from="VBoxContainer/TabContainer/Update/ScrollContainer/VBoxContainer/Manipulator/In front/Add Wall In Front" to="VBoxContainer/TabContainer/Update/ScrollContainer/VBoxContainer/Manipulator" method="_on_add_wall_in_front_pressed"]
 [connection signal="pressed" from="VBoxContainer/TabContainer/Update/ScrollContainer/VBoxContainer/Manipulator/In front/Remove Node In Front" to="VBoxContainer/TabContainer/Update/ScrollContainer/VBoxContainer/Manipulator" method="_on_remove_node_in_front_pressed"]

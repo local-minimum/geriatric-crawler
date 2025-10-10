@@ -1,0 +1,49 @@
+[gd_scene load_steps=3 format=3 uid="uid://72j60jnpek4h"]
+
+[ext_resource type="Script" uid="uid://d2fo4f7dqexgd" path="res://addons/grid_level_digger/grid_level_node_side_styler.gd" id="1_mqcou"]
+[ext_resource type="Texture2D" uid="uid://b5bp8l6hg83yq" path="res://addons/grid_level_digger/sprites/kenney game icons/PNG/White/2x/wrench.png" id="2_h6fol"]
+
+[node name="Node Side Styler Window" type="Control" node_paths=PackedStringArray("_side_info", "_targets")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_mqcou")
+_side_info = NodePath("MarginContainer/VBoxContainer/Title/Side Info")
+_targets = NodePath("MarginContainer/VBoxContainer/Targets")
+metadata/_custom_type_script = "uid://d2fo4f7dqexgd"
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 4
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 4
+theme_override_constants/margin_bottom = 4
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+
+[node name="Title" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/Title"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Side"
+
+[node name="Side Info" type="Label" parent="MarginContainer/VBoxContainer/Title"]
+layout_mode = 2
+
+[node name="Targets" type="MenuButton" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Select Target"
+icon = ExtResource("2_h6fol")
+flat = false
+expand_icon = true
