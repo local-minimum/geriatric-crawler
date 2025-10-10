@@ -81,6 +81,9 @@ func _enter_tree() -> void:
 
 func _exit_tree() -> void:
     _remove_debug_arrow()
+    styles.on_style_updated.disconnect(_handle_style_updated)
+    node_digger.nav.on_update_nav.disconnect(_handle_update_nav)
+    update_nav.on_update_nav.disconnect(_handle_update_nav)
 
 func _handle_update_nav(coords: Vector3i, direction: CardinalDirections.CardinalDirection) -> void:
     coordinates = coords
