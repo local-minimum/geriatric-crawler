@@ -42,6 +42,3 @@ static func find_message_segment_end(text: String, start: int, segment: Segment)
             return text.length()
 
     return text.length()
-
-static func is_resource_path(path: String) -> bool:
-    return path.begins_with("res://")
