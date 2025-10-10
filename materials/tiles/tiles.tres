@@ -1,0 +1,17 @@
+[gd_resource type="StandardMaterial3D" load_steps=6 format=3 uid="uid://csq8rvt37xowc"]
+
+[ext_resource type="Texture2D" uid="uid://b0ouc40fspava" path="res://materials/tiles/bathroom_tiles_baseColor.png" id="1_ocx1v"]
+[ext_resource type="Texture2D" uid="uid://d0kx2dp7wryga" path="res://materials/tiles/bathroom_tiles_occlusion.png" id="2_au7yo"]
+[ext_resource type="Texture2D" uid="uid://bbqengppjikqr" path="res://materials/tiles/bathroom_tiles_metallic.png" id="3_3wmx6"]
+[ext_resource type="Texture2D" uid="uid://bdvkfca4leutc" path="res://materials/tiles/bathroom_tiles_normal.png" id="4_3gl8c"]
+[ext_resource type="Texture2D" uid="uid://bcftmaixijaqe" path="res://materials/tiles/bathroom_tiles_roughness.png" id="5_678jo"]
+
+[resource]
+albedo_texture = ExtResource("1_ocx1v")
+metallic = 1.0
+metallic_texture = ExtResource("3_3wmx6")
+roughness_texture = ExtResource("5_678jo")
+normal_enabled = true
+normal_texture = ExtResource("4_3gl8c")
+ao_enabled = true
+ao_texture = ExtResource("2_au7yo")

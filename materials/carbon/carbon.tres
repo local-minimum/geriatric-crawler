@@ -1,0 +1,17 @@
+[gd_resource type="StandardMaterial3D" load_steps=6 format=3 uid="uid://q68n4457kjxn"]
+
+[ext_resource type="Texture2D" uid="uid://clbyqchi1fyif" path="res://materials/carbon/carbon_fibre_baseColor.png" id="1_xl8ic"]
+[ext_resource type="Texture2D" uid="uid://cnkmwmmgar6kr" path="res://materials/carbon/carbon_fibre_occlusion.png" id="2_hncpb"]
+[ext_resource type="Texture2D" uid="uid://c0o2k3sri4bt5" path="res://materials/carbon/carbon_fibre_metallic.png" id="3_7m4cw"]
+[ext_resource type="Texture2D" uid="uid://dkqbtlj5mn3qc" path="res://materials/carbon/carbon_fibre_normal.png" id="4_bd3mn"]
+[ext_resource type="Texture2D" uid="uid://bvncgd1o0d6p5" path="res://materials/carbon/carbon_fibre_roughness.png" id="5_511cj"]
+
+[resource]
+albedo_texture = ExtResource("1_xl8ic")
+metallic = 1.0
+metallic_texture = ExtResource("3_7m4cw")
+roughness_texture = ExtResource("5_511cj")
+normal_enabled = true
+normal_texture = ExtResource("4_bd3mn")
+ao_enabled = true
+ao_texture = ExtResource("2_hncpb")
