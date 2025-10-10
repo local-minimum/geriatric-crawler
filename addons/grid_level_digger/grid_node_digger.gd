@@ -159,7 +159,7 @@ func swap_node_side_for_style(
     var side = GridNodeSide.get_node_side(node, side_direction)
     var new_style: String = style.get_resource_path_from_direction(side_direction)
 
-    if side == null || side.scene_file_path == new_style || !TextUtils.is_resource_path(new_style):
+    if side == null || side.scene_file_path == new_style || !ResourceUtils.valid_abs_resource_path(new_style):
         return false
 
     panel.undo_redo.create_action("GridLevelDigger: Swap side model %s @ %s %s" % [side.name, node.coordinates, CardinalDirections.name(side_direction)])
@@ -190,7 +190,7 @@ func remove_node_side(
     return false
 
 func _do_swap_node_side(node: GridNode, side_direction: CardinalDirections.CardinalDirection, new_side: String) -> void:
-    if !TextUtils.is_resource_path(new_side):
+    if !ResourceUtils.valid_abs_resource_path(new_side):
         return
 
     var resource: Resource = load(new_side)

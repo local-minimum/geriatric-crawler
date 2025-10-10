@@ -210,28 +210,28 @@ func load_from_save(data: Dictionary) -> void:
     _grid_floor_used = DictionaryUtils.safe_getb(data, _FLOOR_USED_KEY, true, false)
 
     var path: String = DictionaryUtils.safe_gets(data, _NODE_KEY, "", false)
-    if path.is_empty() || !path.begins_with("res://"):
+    if !ResourceUtils.valid_abs_resource_path(path):
         _grid_node_resource = null
     else:
         _grid_node_resource = load(path)
     _grid_node_picker.edited_resource = _grid_node_resource
 
     path = DictionaryUtils.safe_gets(data, _CEILING_KEY, "", false)
-    if path.is_empty() || !path.begins_with("res://"):
+    if !ResourceUtils.valid_abs_resource_path(path):
         _grid_ceiling_resource = null
     else:
         _grid_ceiling_resource = load(path)
     grid_ceiling_picker.edited_resource = _grid_ceiling_resource
 
     path = DictionaryUtils.safe_gets(data, _WALL_KEY, "", false)
-    if path.is_empty() || !path.begins_with("res://"):
+    if !ResourceUtils.valid_abs_resource_path(path):
         _grid_wall_resource = null
     else:
         _grid_wall_resource = load(path)
     grid_wall_picker.edited_resource = _grid_wall_resource
 
     path = DictionaryUtils.safe_gets(data, _FLOOR_KEY, "", false)
-    if path.is_empty() || !path.begins_with("res://"):
+    if !ResourceUtils.valid_abs_resource_path(path):
         _grid_floor_resource = null
     else:
         _grid_floor_resource = load(path)

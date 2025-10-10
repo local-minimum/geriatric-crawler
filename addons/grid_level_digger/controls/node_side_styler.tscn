@@ -13,6 +13,7 @@ grow_vertical = 2
 script = ExtResource("1_mqcou")
 _side_info = NodePath("MarginContainer/VBoxContainer/Title/Side Info")
 _targets = NodePath("MarginContainer/VBoxContainer/Targets")
+_materials_root = "res://materials"
 metadata/_custom_type_script = "uid://d2fo4f7dqexgd"
 
 [node name="MarginContainer" type="MarginContainer" parent="."]

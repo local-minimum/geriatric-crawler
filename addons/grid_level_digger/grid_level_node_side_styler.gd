@@ -4,6 +4,7 @@ class_name GridLevelNodeSideStyler
 
 @export var _side_info: Label
 @export var _targets: MenuButton
+@export var _materials_root: String = "res://"
 
 var _key_lookup: Array[String]
 var _used_materials: Dictionary[String, String]
@@ -34,6 +35,26 @@ func configure(side: GridNodeSide, panel: GridLevelDiggerPanel) -> void:
     if popup.id_pressed.connect(_handle_change_target) != OK:
         push_error("Failed to connect id pressed")
 
+    gather_available_materials()
+
 func _handle_change_target(id: int) -> void:
     var key: String = _key_lookup[id]
     print_debug("Inspecting %s with material %s" % [key, _used_materials[key]])
+
+func gather_available_materials() -> Array[Material]:
+    var mats: Array[Material]
+    for path: String in ResourceUtils.find_resources(
+        _materials_root,
+        ".tres,.material",
+        _is_allowed_material
+    ):
+        var mat: Material = load(path)
+        if mat != null:
+            mats.push_back(mat)
+            print_debug("Found material at '%s'" % mat.resource_path)
+
+    return mats
+
+static func _is_allowed_material(path: String) -> bool:
+    var resource: Resource = load(path)
+    return resource is StandardMaterial3D or resource is ShaderMaterial or resource is ORMMaterial3D

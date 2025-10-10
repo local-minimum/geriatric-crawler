@@ -133,7 +133,7 @@ static func apply_material_overrides(side: GridNodeSide) -> void:
             continue
 
         var mat_path: String = side._material_overrides[path]
-        if !TextUtils.is_resource_path(mat_path):
+        if !ResourceUtils.valid_abs_resource_path(mat_path):
             push_warning("Side %s references a material '%s' but this is not a valid resource path" % [
                 side,
                 mat_path
