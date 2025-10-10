@@ -53,7 +53,7 @@ func _on_style_update() -> void:
     _sync_node_side_buttons(panel.get_focus_node(), panel.look_direction)
 
 func sync() -> void:
-    _sync(panel.coordinates)
+    _sync(panel.coordinates, panel.look_direction)
 
 func _sync(coordinates: Vector3i, look_direction: CardinalDirections.CardinalDirection = CardinalDirections.CardinalDirection.NONE) -> void:
     var node: GridNode = panel.get_grid_node_at(coordinates)
