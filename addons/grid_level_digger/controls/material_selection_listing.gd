@@ -15,6 +15,7 @@ func configure(material: Material, color: Color, on_use: Variant) -> void:
     _use_button.disabled = on_use is not Callable
 
     _label.text = material.resource_path
+    _label.add_theme_color_override("font_color", color)
 
     _material = material
     if material is StandardMaterial3D:
@@ -27,7 +28,7 @@ func configure(material: Material, color: Color, on_use: Variant) -> void:
         _texture.modulate = std_mat.albedo_color
 
     else:
-        print_debug("Don't know how to preview %s" % material)
+        print_debug("[GLD Material Selection Listing] Don't know how to preview %s" % material)
         _texture.texture = _fallback_texture
 
 func _on_use_pressed() -> void:

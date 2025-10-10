@@ -152,6 +152,8 @@ func _on_sync_position_pressed() -> void:
 
             panel.undo_redo.commit_action()
 
+            EditorInterface.mark_scene_as_unsaved()
+
 func _on_infer_coordinates_pressed() -> void:
     var node: GridNode = panel.get_focus_node()
     var level: GridLevel = panel.get_level()
@@ -176,6 +178,8 @@ func _on_infer_coordinates_pressed() -> void:
             panel.undo_redo.commit_action()
 
             panel.coordinates = new_coordinates
+
+            EditorInterface.mark_scene_as_unsaved()
 
 # Removing neighbours
 func _on_remove_node_in_front_pressed() -> void:

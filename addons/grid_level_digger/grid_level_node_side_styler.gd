@@ -30,27 +30,34 @@ func configure(side: GridNodeSide, panel: GridLevelDiggerPanel) -> void:
     popup.clear()
     _key_lookup.clear()
 
-    for path: String in _used_materials:
-        var m_instance: MeshInstance3D = GridNodeSide.get_meshinstance_from_override_path(side, path)
+    for key: String in _used_materials:
         var idx: int = _key_lookup.size()
-        _key_lookup.append(path)
-        if m_instance == null:
-            popup.add_radio_check_item("[Missing node: %s]" % path.split("|")[0])
-        else:
-            var surface: int = GridNodeSide.get_meshinstance_surface_index_from_override_path(side, path)
-
-            if surface < 0:
-                popup.add_radio_check_item("[Invalid surface: %s of %s]" % [surface, m_instance.name])
-            else:
-                popup.add_radio_check_item("%s [Surface %s]" % [m_instance.name, surface])
+        _key_lookup.append(key)
+        popup.add_radio_check_item(_humanize_key(key))
 
     if popup.id_pressed.connect(_handle_change_target) != OK:
         push_error("Failed to connect id pressed")
 
     _material_options = gather_available_materials()
 
+func _humanize_key(path: String) -> String:
+    var m_instance: MeshInstance3D = GridNodeSide.get_meshinstance_from_override_path(_side, path)
+    if m_instance == null:
+        return "[Missing node: %s]" % path.split("|")[0]
+    else:
+        var surface: int = GridNodeSide.get_meshinstance_surface_index_from_override_path(_side, path)
+
+        if surface < 0:
+            return "[Invalid surface: %s of %s]" % [surface, m_instance.name]
+        else:
+            return "%s [Surface %s]" % [m_instance.name, surface]
+
+    return path
+
 func _handle_change_target(id: int) -> void:
     var key: String = _key_lookup[id]
+    _targets.text = _humanize_key(key)
+
     print_debug("Inspecting %s with material %s" % [key, _used_materials[key]])
 
     for listing: MaterialSelectionListing in _showing_mats:
@@ -71,7 +78,21 @@ func _handle_change_target(id: int) -> void:
             continue
 
         list = scene.instantiate()
-        list.configure(mat, _default_color, null)
+        list.configure(
+            mat,
+            _override_not_in_use if _side._material_overrides.get(key, "") == mat.resource_path else _default_color,
+            func() -> void:
+                _panel.undo_redo.create_action("GridLevelDigger: Swap side material %s" % _humanize_key(key))
+
+                _panel.undo_redo.add_do_method(self, "_do_set_override", _side, key, mat.resource_path)
+                if _side._material_overrides.has(key):
+                    _panel.undo_redo.add_undo_method(self, "_do_set_override", _side, key, used_mat_path)
+                else:
+                    _panel.undo_redo.add_undo_method(self, "_do_erase_override", _side, key, used_mat)
+
+                _panel.undo_redo.commit_action()
+                ,
+        )
         _showing_mats.append(list)
         _materials_parent.add_child(list)
 
@@ -88,6 +109,15 @@ func gather_available_materials() -> Array[Material]:
             print_debug("Found material at '%s'" % mat.resource_path)
 
     return mats
+
+func _do_set_override(side: GridNodeSide, key: String, path: String) -> void:
+    side._material_overrides[key] = path
+    GridNodeSide.apply_material_overrride(side, key)
+    EditorInterface.mark_scene_as_unsaved()
+
+func _erase_override(side: GridNodeSide, key: String, default: Material) -> void:
+    GridNodeSide.revert_material_overrride(side, key, default)
+    EditorInterface.mark_scene_as_unsaved()
 
 static func _is_allowed_material(path: String) -> bool:
     var resource: Resource = load(path)

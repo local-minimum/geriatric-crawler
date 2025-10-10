@@ -90,7 +90,7 @@ static func _find_resources(
         if !allow_hidden && dir_path.begins_with("."):
             continue
 
-        var full_dir_path: String = ("%s%s" % [dir.get_current_dir(), dir_path]) if dir.get_current_dir().ends_with("//") else ("%s%s" % [dir.get_current_dir(), dir_path])
+        var full_dir_path: String = ("%s%s" % [dir.get_current_dir(), dir_path]) if dir.get_current_dir().ends_with("//") else ("%s/%s" % [dir.get_current_dir(), dir_path])
 
         _find_resources(
             results,

@@ -133,6 +133,8 @@ func _do_create_zone(resource: Resource, nodes: Array[GridNode]) -> void:
 
     level.zones.append(zone)
     selected_zone = zone
+
+    EditorInterface.mark_scene_as_unsaved()
     print_debug("[Grid Level Zoner] Added new zone %s" % _name_zone(zone))
 
 func _name_zone(zone: LevelZone) -> String: return "%s [%s]: %s node%s" % [zone.name, zone.get_script().get_global_name(), zone.nodes.size(), "" if zone.nodes.size() == 1 else "s"]
@@ -217,6 +219,8 @@ func _do_erase_zone(idx: int) -> void:
     panel.level.zones.erase(zone)
     zone.free()
 
+    EditorInterface.mark_scene_as_unsaved()
+
     if updated_select:
         selected_zone = null
 
@@ -260,6 +264,7 @@ func _do_add_to_zone(zone: LevelZone, nodes: Array[GridNode]) -> void:
         updated = true
 
     if updated:
+        EditorInterface.mark_scene_as_unsaved()
         _sync_zone_lister()
         _sync_zone_highlight()
 
@@ -286,5 +291,6 @@ func _do_remove_from_zone(zone: LevelZone, nodes: Array[GridNode]) -> void:
             updated = true
 
     if updated:
+        EditorInterface.mark_scene_as_unsaved()
         _sync_zone_lister()
         _sync_zone_highlight()

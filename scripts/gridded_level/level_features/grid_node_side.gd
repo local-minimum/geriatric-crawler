@@ -123,22 +123,27 @@ static func get_meshinstance_surface_index_from_override_path(side: GridNodeSide
 
 static func apply_material_overrides(side: GridNodeSide) -> void:
     for path: String in side._material_overrides:
-        var m_instance: MeshInstance3D = get_meshinstance_from_override_path(side, path)
+        apply_material_overrride(side, path)
+
+static func apply_material_overrride(side: GridNodeSide, key: String) -> void:
+    if side._material_overrides.has(key):
+
+        var m_instance: MeshInstance3D = get_meshinstance_from_override_path(side, key)
         if m_instance == null:
-            push_warning("Side %s has override for '%s' but this is not a mesh instance 3d" % [side, path])
-            continue
+            push_warning("Side %s has override for '%s' but this is not a mesh instance 3d" % [side, key])
+            return
 
-        var surface_idx: int = get_meshinstance_surface_index_from_override_path(side, path)
+        var surface_idx: int = get_meshinstance_surface_index_from_override_path(side, key)
         if surface_idx < 0:
-            continue
+            return
 
-        var mat_path: String = side._material_overrides[path]
+        var mat_path: String = side._material_overrides[key]
         if !ResourceUtils.valid_abs_resource_path(mat_path):
             push_warning("Side %s references a material '%s' but this is not a valid resource path" % [
                 side,
                 mat_path
             ])
-            continue
+            return
 
         var material: Material = load(mat_path)
         if material == null:
@@ -148,6 +153,22 @@ static func apply_material_overrides(side: GridNodeSide) -> void:
                 surface_idx,
                 m_instance,
             ])
-            continue
+            return
 
         m_instance.mesh.surface_set_material(surface_idx, material)
+
+static func revert_material_overrride(side: GridNodeSide, key: String, default: Material) -> void:
+    @warning_ignore_start("return_value_discarded")
+    side._material_overrides.erase(key)
+    @warning_ignore_restore("return_value_discarded")
+
+    var m_instance: MeshInstance3D = get_meshinstance_from_override_path(side, key)
+    if m_instance == null:
+        push_warning("Side %s has override for '%s' but this is not a mesh instance 3d" % [side, key])
+        return
+
+    var surface_idx: int = get_meshinstance_surface_index_from_override_path(side, key)
+    if surface_idx < 0:
+        return
+
+    m_instance.mesh.surface_set_material(surface_idx, default)
