@@ -156,11 +156,14 @@ static func apply_material_overrride(side: GridNodeSide, key: String) -> void:
             return
 
         m_instance.mesh.surface_set_material(surface_idx, material)
+        print_debug("[Grid Node Side] Applying material override %s to mesh %s [surface %s]" % [material.resource_path, m_instance.name, surface_idx])
 
 static func revert_material_overrride(side: GridNodeSide, key: String, default: Material) -> void:
+    var d: Dictionary[String, String] = side._material_overrides.duplicate()
     @warning_ignore_start("return_value_discarded")
-    side._material_overrides.erase(key)
+    d.erase(key)
     @warning_ignore_restore("return_value_discarded")
+    side._material_overrides = d
 
     var m_instance: MeshInstance3D = get_meshinstance_from_override_path(side, key)
     if m_instance == null:

@@ -8,7 +8,6 @@ class_name MaterialSelectionListing
 @export var _use_button: Button
 
 var _on_use: Variant
-var _material: Material
 
 func configure(material: Material, color: Color, on_use: Variant) -> void:
     _on_use = on_use
@@ -17,7 +16,6 @@ func configure(material: Material, color: Color, on_use: Variant) -> void:
     _label.text = material.resource_path
     _label.add_theme_color_override("font_color", color)
 
-    _material = material
     if material is StandardMaterial3D:
         var std_mat: StandardMaterial3D = material
         if std_mat.albedo_texture == null:
@@ -33,4 +31,4 @@ func configure(material: Material, color: Color, on_use: Variant) -> void:
 
 func _on_use_pressed() -> void:
     if _on_use is Callable:
-        _on_use.call(_material)
+        _on_use.call()
