@@ -54,21 +54,24 @@ func _humanize_key(path: String) -> String:
 
     return path
 
-func _handle_change_target(id: int) -> void:
-    var key: String = _key_lookup[id]
-    _targets.text = _humanize_key(key)
+var _key: String
+var used_mat: Material
 
-    print_debug("Inspecting %s with material %s" % [key, _used_materials[key]])
+func _handle_change_target(id: int) -> void:
+    _key = _key_lookup[id]
+    _targets.text = _humanize_key(_key)
+
+    print_debug("Inspecting %s with material %s" % [_key, _used_materials[_key]])
 
     for listing: MaterialSelectionListing in _showing_mats:
         listing.queue_free()
     _showing_mats.clear()
 
-    var used_mat_path: String = _used_materials[key]
+    var used_mat_path: String = _used_materials[_key]
     var scene: PackedScene = load("res://addons/grid_level_digger/controls/material_listing.tscn")
 
     var list: MaterialSelectionListing = scene.instantiate()
-    var used_mat: Material = load(used_mat_path)
+    used_mat = load(used_mat_path)
     list.configure(used_mat, _in_use_color, null)
     _showing_mats.append(list)
     _materials_parent.add_child(list)
@@ -78,27 +81,39 @@ func _handle_change_target(id: int) -> void:
             continue
 
         list = scene.instantiate()
-        _configure_listing(list, mat, key, used_mat, true)
+        _configure_listing(list, mat, true)
         _showing_mats.append(list)
         _materials_parent.add_child(list)
 
-func _configure_listing(list: MaterialSelectionListing, mat: Material, key: String, used_mat: Material, allow_use: bool) -> void:
+func _listing_color(mat_displayed: bool, has_override: bool) -> Color:
+    if mat_displayed:
+        return _in_use_color
+    if has_override:
+        return _override_not_in_use
+    return _default_color
+
+func _configure_listing(list: MaterialSelectionListing, mat: Material, allow_use: bool) -> void:
     var on_use: Variant = null
+    var overrides: LevelMaterialOverrides = _panel.material_overrides
+    var target: MeshInstance3D = GridNodeSide.get_meshinstance_from_override_path(_side, _key)
+    var surface_idx: int = GridNodeSide.get_meshinstance_surface_index_from_override_path(_side, _key)
+
+    var has_override: bool = overrides.has(target.scene_file_path, surface_idx)
     if allow_use:
         on_use = func() -> void:
-            _panel.undo_redo.create_action("GridLevelDigger: Swap side material %s" % _humanize_key(key))
+            _panel.undo_redo.create_action("GridLevelDigger: Swap side material %s" % _humanize_key(_key))
 
-            _panel.undo_redo.add_do_method(self, "_do_set_override", _side, key, mat.resource_path)
-            if _side._material_overrides.has(key):
-                _panel.undo_redo.add_undo_method(self, "_do_set_override", _side, key, used_mat.resource_path)
+            _panel.undo_redo.add_do_method(self, "_do_set_override", _side, _key, mat)
+            if has_override:
+                _panel.undo_redo.add_undo_method(self, "_do_set_override", _side, _key, used_mat)
             else:
-                _panel.undo_redo.add_undo_method(self, "_do_erase_override", _side, key, used_mat)
+                _panel.undo_redo.add_undo_method(self, "_do_erase_override", _side, _key, used_mat)
 
             _panel.undo_redo.commit_action()
 
     list.configure(
         mat,
-        _override_not_in_use if _side._material_overrides.get(key, "") == mat.resource_path else _default_color,
+        _listing_color(mat == target.get_surface_override_material(surface_idx), has_override),
         on_use,
     )
 
@@ -116,18 +131,59 @@ func gather_available_materials() -> Array[Material]:
 
     return mats
 
-func _do_set_override(side: GridNodeSide, key: String, path: String) -> void:
-    side._material_overrides = side._material_overrides.merged({key: path}, true)
-    GridNodeSide.apply_material_overrride(side, key)
+func _do_set_override(side: GridNodeSide, key: String, material: Material) -> void:
+    var target: MeshInstance3D = GridNodeSide.get_meshinstance_from_override_path(side, key)
+    var surface_idx: int = GridNodeSide.get_meshinstance_surface_index_from_override_path(side, key)
+
+    if target == null || surface_idx < 0 || surface_idx >= target.get_surface_override_material_count():
+        push_error("Invalid override target=%s, surface index=%s (valid 0-%s)" % [target, surface_idx, 0 if target == null else target.get_surface_override_material_count()])
+        return
+
+    if _panel.material_overrides == null:
+        var level: GridLevel = _panel.level
+        if level == null:
+            push_error("We cannot set an override without having a level")
+            return
+
+        var overrides = LevelMaterialOverrides.new()
+        overrides.level = level
+        level.add_child(overrides)
+        overrides.owner = level.get_tree().edited_scene_root
+        _panel.material_overrides = overrides
+
+    _panel.material_overrides.add_override(
+        target.scene_file_path,
+        surface_idx,
+        material,
+        target.get_path(),
+    )
+
+    used_mat = material
+    _used_materials[key] = material.resource_path
 
     # TODO: Update listing to reflect new state
     EditorInterface.mark_scene_as_unsaved()
 
 func _erase_override(side: GridNodeSide, key: String, default: Material) -> void:
+    if _panel.material_overrides == null:
+        push_error("There are no overrides to this level")
+        return
+
+    var target: MeshInstance3D = GridNodeSide.get_meshinstance_from_override_path(side, key)
+    var surface_idx: int = GridNodeSide.get_meshinstance_surface_index_from_override_path(side, key)
+
+    if target == null || surface_idx < 0 || surface_idx >= target.get_surface_override_material_count():
+        push_error("Invalid override target=%s, surface index=%s (valid 0-%s)" % [target, surface_idx, 0 if target == null else target.get_surface_override_material_count()])
+        return
+
+    if _panel.material_overrides.remove_override(target.scene_file_path, surface_idx):
+        EditorInterface.mark_scene_as_unsaved()
+
     GridNodeSide.revert_material_overrride(side, key, default)
+    used_mat = default
+    _used_materials[key] = default.resource_path
 
     # TODO: Update listing to reflect new state
-    EditorInterface.mark_scene_as_unsaved()
 
 static func _is_allowed_material(path: String) -> bool:
     var resource: Resource = load(path)

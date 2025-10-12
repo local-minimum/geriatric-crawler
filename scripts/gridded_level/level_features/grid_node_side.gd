@@ -6,14 +6,12 @@ class_name GridNodeSide
 @export var anchor: GridAnchor
 @export var negative_anchor: GridAnchor
 @export var illosory: bool
-@export var _material_overrides: Dictionary[String, String]
 
 func is_two_sided() -> bool:
     return negative_anchor != null
 
 func _ready() -> void:
     set_direction_from_rotation(self)
-    GridNodeSide.apply_material_overrides(self)
 
 var _parent_node: GridNode
 var _inverse_parent_node: GridNode
@@ -121,50 +119,7 @@ static func get_meshinstance_surface_index_from_override_path(side: GridNodeSide
     return value
 
 
-static func apply_material_overrides(side: GridNodeSide) -> void:
-    for path: String in side._material_overrides:
-        apply_material_overrride(side, path)
-
-static func apply_material_overrride(side: GridNodeSide, key: String) -> void:
-    if side._material_overrides.has(key):
-
-        var m_instance: MeshInstance3D = get_meshinstance_from_override_path(side, key)
-        if m_instance == null:
-            push_warning("Side %s has override for '%s' but this is not a mesh instance 3d" % [side, key])
-            return
-
-        var surface_idx: int = get_meshinstance_surface_index_from_override_path(side, key)
-        if surface_idx < 0:
-            return
-
-        var mat_path: String = side._material_overrides[key]
-        if !ResourceUtils.valid_abs_resource_path(mat_path):
-            push_warning("Side %s references a material '%s' but this is not a valid resource path" % [
-                side,
-                mat_path
-            ])
-            return
-
-        var material: Material = load(mat_path)
-        if material == null:
-            push_warning("Side %s references a material '%s' for surface %s of %s but it doesn't exist" % [
-                side,
-                mat_path,
-                surface_idx,
-                m_instance,
-            ])
-            return
-
-        m_instance.mesh.surface_set_material(surface_idx, material)
-        print_debug("[Grid Node Side] Applying material override %s to mesh %s [surface %s]" % [material.resource_path, m_instance.name, surface_idx])
-
 static func revert_material_overrride(side: GridNodeSide, key: String, default: Material) -> void:
-    var d: Dictionary[String, String] = side._material_overrides.duplicate()
-    @warning_ignore_start("return_value_discarded")
-    d.erase(key)
-    @warning_ignore_restore("return_value_discarded")
-    side._material_overrides = d
-
     var m_instance: MeshInstance3D = get_meshinstance_from_override_path(side, key)
     if m_instance == null:
         push_warning("Side %s has override for '%s' but this is not a mesh instance 3d" % [side, key])

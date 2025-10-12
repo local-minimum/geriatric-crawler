@@ -9,10 +9,26 @@ signal on_update_level(level: GridLevel)
 var level: GridLevel:
     set(value):
         if inside_level:
+            if level != value:
+                material_overrides = null
+
             level = value
+
             on_update_level.emit(level if inside_level else null)
         else:
+            if level != value:
+                material_overrides = null
+
             level = value
+
+var material_overrides: LevelMaterialOverrides:
+    get():
+        var _level: GridLevel = level
+        if _level == null:
+            return null
+        if material_overrides != null:
+            material_overrides = ArrayUtils.first_or_default(_level.find_children("", "LevelMaterialOverrides"))
+        return material_overrides
 
 var _node: GridNode
 var _anchor: GridAnchor
