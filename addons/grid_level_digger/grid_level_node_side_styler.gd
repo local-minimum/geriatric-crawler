@@ -231,8 +231,6 @@ static func _is_allowed_material(path: String) -> bool:
     var resource: Resource = load(path)
     return resource is StandardMaterial3D or resource is ShaderMaterial or resource is ORMMaterial3D
 
-# Look into make unique button to clone the GridNodeSide resource
-
 func _on_highlight_pressed() -> void:
     _on_highlight_toggled(_highlight_checkbox.button_pressed)
 
