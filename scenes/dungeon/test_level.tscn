@@ -1,4 +1,4 @@
-[gd_scene load_steps=75 format=3 uid="uid://dwqcwbgj8p6q0"]
+[gd_scene load_steps=79 format=3 uid="uid://dwqcwbgj8p6q0"]
 
 [ext_resource type="Script" uid="uid://dqe42q7uub84r" path="res://scripts/gridded_level/level_features/grid_level.gd" id="1_dd1ob"]
 [ext_resource type="PackedScene" uid="uid://bfoog3fb4v5ij" path="res://scenes/dungeon/player.tscn" id="3_m6mav"]
@@ -62,8 +62,11 @@
 [ext_resource type="Resource" uid="uid://bdwpemc2r72sv" path="res://resources/punishment_cards/insecurities_979.tres" id="48_24aia"]
 [ext_resource type="Resource" uid="uid://bm3cpmpqe3u6h" path="res://resources/punishment_cards/insecurities_999.tres" id="49_yofnv"]
 [ext_resource type="Script" uid="uid://huxje2j21g1c" path="res://scripts/broadcast_contract.gd" id="61_uhp52"]
+[ext_resource type="Script" uid="uid://c831gkti0wysb" path="res://addons/grid_level_digger/level_material_overrides.gd" id="63_ytmnc"]
+[ext_resource type="Script" uid="uid://d4jalrj3vayrc" path="res://addons/grid_level_digger/material_override.gd" id="64_bt6hk"]
+[ext_resource type="Material" uid="uid://csq8rvt37xowc" path="res://materials/tiles/tiles.tres" id="65_ytmnc"]
 
-[sub_resource type="Resource" id="Resource_1jctb"]
+[sub_resource type="Resource" id="Resource_vupyu"]
 resource_local_to_scene = true
 script = ExtResource("4_840jk")
 mode = 61
@@ -110,6 +113,14 @@ albedo_texture = ExtResource("34_rljv5")
 material = SubResource("StandardMaterial3D_jmfrw")
 size = Vector2(1.5, 1.5)
 
+[sub_resource type="Resource" id="Resource_bt6hk"]
+script = ExtResource("64_bt6hk")
+override_material = ExtResource("65_ytmnc")
+target_scene_file_path = "res://models/cubeside-flat.fbx"
+relative_path = "Cube"
+surface_idx = 0
+known_usage_path = "/root/@EditorNode@21272/@Panel@14/@VBoxContainer@15/DockHSplitLeftL/DockHSplitLeftR/DockHSplitMain/@VBoxContainer@26/DockVSplitCenter/@VSplitContainer@54/@VBoxContainer@55/@EditorMainScreen@102/MainScreen/@CanvasItemEditor@11482/@VSplitContainer@11134/@HSplitContainer@11136/@HSplitContainer@11138/@Control@11139/@SubViewportContainer@11140/@SubViewport@11141/TestLevel/LevelGeometry/Elevation 0/Node (-3, 0, -3)/Side NORTH/cubeside-flat"
+
 [node name="TestLevel" type="Node3D" node_paths=PackedStringArray("player", "level_geometry", "punishments", "primary_entry_portal", "level_portals", "zones_parent", "zones", "broadcasts_parent")]
 script = ExtResource("1_dd1ob")
 level_id = "test-level"
@@ -126,7 +137,7 @@ broadcasts_parent = NodePath("Broadcasts")
 [node name="Player" parent="." instance=ExtResource("3_m6mav")]
 process_mode = 3
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0145968, -0.00857759, 0.00070858)
-transportation_abilities = SubResource("Resource_1jctb")
+transportation_abilities = SubResource("Resource_vupyu")
 transportation_mode = SubResource("Resource_pgxau")
 
 [node name="LevelGeometry" type="Node3D" parent="."]
@@ -376,9 +387,6 @@ transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0, 
 direction = 3
 
 [node name="Side NORTH" parent="LevelGeometry/Elevation 0/Node (-3, 0, -3)" instance=ExtResource("12_fh06p")]
-_material_overrides = Dictionary[String, String]({
-"cubeside-flat/Cube|0": "res://materials/carbon/carbon.tres"
-})
 
 [node name="Node (-2, 0, -3)" parent="LevelGeometry/Elevation 0" instance=ExtResource("4_myev5")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 0, -7.5)
@@ -2062,3 +2070,8 @@ _receivers = [NodePath("../../LevelGeometry/Elevation 0/Node (-1, 0, -1)/Side UP
 _message_id = "pressure-plate-1"
 _messages = Array[String](["activate", "deactivate"])
 metadata/_custom_type_script = "uid://huxje2j21g1c"
+
+[node name="Material Overrides" type="Node" parent="." node_paths=PackedStringArray("level")]
+script = ExtResource("63_ytmnc")
+level = NodePath("..")
+_overrides = Array[ExtResource("64_bt6hk")]([SubResource("Resource_bt6hk")])
