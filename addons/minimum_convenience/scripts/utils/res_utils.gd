@@ -99,3 +99,34 @@ static func _find_resources(
             filter,
             allow_hidden,
         )
+
+
+static func list_resource_parentage(node: Node, until: String = "") -> Array[Array]:
+    var res: Array[Array]
+    var terminate: bool
+
+    while true:
+        if !node.scene_file_path.is_empty():
+            var info: Array[String] = [node.get_path(), node.scene_file_path]
+            res.append(info)
+
+        node = node.get_parent()
+
+        if node == null || terminate:
+            break
+
+        if !until.is_empty() && ("%s" % node.get_path()) == until:
+            terminate = true
+
+    return res
+
+static func find_first_node_using_resource(root: Node, scene_file_path: String) -> Node:
+    for child: Node in root.get_children():
+        if child.scene_file_path == scene_file_path:
+            return child
+
+        var target: Node = find_first_node_using_resource(child, scene_file_path)
+        if target != null:
+            return target
+
+    return null

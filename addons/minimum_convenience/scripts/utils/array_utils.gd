@@ -76,6 +76,11 @@ static func first(arr: Array, predicate: Callable) -> Variant:
 
     return null
 
+static func first_or_default(arr: Array, default: Variant = null) -> Variant:
+    if arr.is_empty():
+        return default
+    return arr[0]
+
 ## Returns page of array reducing page sizes to accomodate previous page and next page items as needed
 static func paginate_with_nav_reservation(arr: Array, page_idx: int, page_size: int) -> Array:
     var size: int = arr.size()
