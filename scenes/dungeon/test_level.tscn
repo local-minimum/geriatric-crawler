@@ -64,7 +64,7 @@
 [ext_resource type="Script" uid="uid://huxje2j21g1c" path="res://scripts/broadcast_contract.gd" id="61_uhp52"]
 [ext_resource type="Script" uid="uid://c831gkti0wysb" path="res://addons/grid_level_digger/level_material_overrides.gd" id="63_ytmnc"]
 [ext_resource type="Script" uid="uid://d4jalrj3vayrc" path="res://addons/grid_level_digger/material_override.gd" id="64_bt6hk"]
-[ext_resource type="Material" uid="uid://csq8rvt37xowc" path="res://materials/tiles/tiles.tres" id="65_ytmnc"]
+[ext_resource type="Material" uid="uid://q68n4457kjxn" path="res://materials/carbon/carbon.tres" id="65_ytmnc"]
 
 [sub_resource type="Resource" id="Resource_bt6hk"]
 resource_local_to_scene = true

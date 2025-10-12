@@ -3,12 +3,14 @@ extends Control
 class_name GridLevelNodeSideStyler
 
 @export var _side_info: Label
+@export var _highlight_checkbox: CheckBox
 @export var _targets: MenuButton
 @export var _materials_root: String = "res://"
 @export var _materials_parent: Container
 @export var _in_use_color: Color = Color.DEEP_PINK
 @export var _override_not_in_use: Color = Color.REBECCA_PURPLE
 @export var _default_color: Color = Color.DARK_KHAKI
+@export var _highlight_meshes_color: Color = Color.DEEP_PINK
 
 
 var _side: GridNodeSide
@@ -17,12 +19,18 @@ var _key_lookup: Array[String]
 var _used_materials: Dictionary[String, String]
 var _material_options: Array[Material]
 var _showing_mats: Array[MaterialSelectionListing]
+var _highlights: Array[MeshInstance3D]
+
+func _exit_tree() -> void:
+    _clear_highlights()
 
 func configure(side: GridNodeSide, panel: GridLevelDiggerPanel) -> void:
     _side = side
     _panel = panel
 
     _side_info.text = "%s / %s" % [side.name, CardinalDirections.name(side.direction)]
+
+    _highlight_checkbox.button_pressed = panel.preview_style_targets
 
     _used_materials = GridNodeSide.get_used_materials(side)
 
@@ -42,6 +50,11 @@ func configure(side: GridNodeSide, panel: GridLevelDiggerPanel) -> void:
 
     if popup.item_count > 0:
         _handle_change_target(0)
+
+    if _highlight_checkbox.button_pressed:
+        _sync_highlights(true)
+
+    print_debug("[GLD Styler] Configured!")
 
 func _humanize_key(path: String) -> String:
     var m_instance: MeshInstance3D = GridNodeSide.get_meshinstance_from_override_path(_side, path)
@@ -219,3 +232,53 @@ static func _is_allowed_material(path: String) -> bool:
     return resource is StandardMaterial3D or resource is ShaderMaterial or resource is ORMMaterial3D
 
 # Look into make unique button to clone the GridNodeSide resource
+
+func _on_highlight_pressed() -> void:
+    _on_highlight_toggled(_highlight_checkbox.button_pressed)
+
+func _on_highlight_toggled(toggled_on:bool) -> void:
+    _panel.preview_style_targets = toggled_on
+    _sync_highlights(toggled_on)
+    print_debug("[GLD Styler] Should show hightlight %s" % toggled_on)
+
+
+func _clear_highlights() -> void:
+    for m_instance: MeshInstance3D in _highlights:
+        m_instance.queue_free()
+    _highlights.clear()
+
+func _sync_highlights(shown: bool) -> void:
+    _clear_highlights()
+
+    if !shown:
+        print_debug("[GLD Styler] Not showing highlights")
+        return
+
+    var target: MeshInstance3D = GridNodeSide.get_meshinstance_from_override_path(_side, _key)
+    if target == null:
+        push_error("[GLD Styler] Have a target, side %s with key %s lacks this!" % [_side, _key])
+        return
+
+    var parentage: Array[Array] = ResourceUtils.list_resource_parentage(target)
+    if parentage.is_empty():
+        push_error("[GLD Styler] Have a parent that is a scene, %s lacks this!" % target)
+        return
+
+    var target_scene_file_path: String = parentage[0][1]
+
+    for node: Node in ResourceUtils.find_all_nodes_using_resource(_panel.level.level_geometry, target_scene_file_path):
+        if node is Node3D:
+            var bounds: AABB = AABBUtils.bounding_box(node).grow(0.1)
+
+            var box: MeshInstance3D = DebugDraw.box(
+                _panel.level,
+                bounds.get_center(),
+                bounds.size,
+                _highlight_meshes_color,
+                false,
+            )
+
+            _highlights.append(box)
+
+
+    print_debug("[GLD Styler] showing %s highlights using resource '%s'" % [_highlights.size(), target_scene_file_path])

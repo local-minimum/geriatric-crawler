@@ -30,6 +30,20 @@ var material_overrides: LevelMaterialOverrides:
             material_overrides = ArrayUtils.first_or_default(_level.find_children("", "LevelMaterialOverrides"))
         return material_overrides
 
+var preview_style_targets: bool:
+    get():
+        return DictionaryUtils.safe_getb(
+            DictionaryUtils.safe_getd(_stored_settings, _GENERAL_KEY, {}, false),
+            _PREVIEW_STYLE_TARGETS_KEY,
+            false,
+            false,
+        )
+
+    set(value):
+        var general: Dictionary = DictionaryUtils.safe_getd(_stored_settings, _GENERAL_KEY, {}, false)
+        general[_PREVIEW_STYLE_TARGETS_KEY] = value
+        settings_storage.store_data(0, _stored_settings)
+
 var _node: GridNode
 var _anchor: GridAnchor
 
@@ -300,6 +314,8 @@ func remove_debug_nodes() -> void:
 
 var _stored_settings: Dictionary
 const _STYLE_KEY: String = "style"
+const _GENERAL_KEY: String = "general"
+const _PREVIEW_STYLE_TARGETS_KEY: String = "preview-style-targeets"
 
 func _handle_style_updated() -> void:
     _stored_settings[_STYLE_KEY] = styles.collect_save_data()

@@ -121,13 +121,25 @@ static func list_resource_parentage(node: Node, until: String = "") -> Array[Arr
 
     return res
 
-static func find_first_node_using_resource(root: Node, scene_file_path: String) -> Node:
-    for child: Node in root.get_children(false):
+static func find_first_node_using_resource(root: Node, scene_file_path: String, internal: bool = false) -> Node:
+    for child: Node in root.get_children(internal):
         if child.scene_file_path == scene_file_path:
             return child
 
-        var target: Node = find_first_node_using_resource(child, scene_file_path)
+        var target: Node = find_first_node_using_resource(child, scene_file_path, internal)
         if target != null:
             return target
 
     return null
+
+static func find_all_nodes_using_resource(root: Node, scene_file_path: String, internal: bool = false) -> Array[Node]:
+    var nodes: Array[Node]
+
+    for child: Node in root.get_children(internal):
+        if child.scene_file_path == scene_file_path:
+            nodes.append(child)
+            continue
+
+        nodes.append_array(find_all_nodes_using_resource(child, scene_file_path, internal))
+
+    return nodes
