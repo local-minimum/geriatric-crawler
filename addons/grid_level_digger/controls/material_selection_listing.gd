@@ -8,13 +8,13 @@ class_name MaterialSelectionListing
 @export var _use_button: Button
 
 var _on_use: Variant
+var mat: Material
 
 func configure(material: Material, color: Color, on_use: Variant) -> void:
-    _on_use = on_use
-    _use_button.disabled = on_use is not Callable
+    mat = material
 
     _label.text = material.resource_path
-    _label.add_theme_color_override("font_color", color)
+    update(color, on_use)
 
     if material is StandardMaterial3D:
         var std_mat: StandardMaterial3D = material
@@ -28,6 +28,12 @@ func configure(material: Material, color: Color, on_use: Variant) -> void:
     else:
         print_debug("[GLD Material Selection Listing] Don't know how to preview %s" % material)
         _texture.texture = _fallback_texture
+
+func update(color: Color, on_use: Variant) -> void:
+    _on_use = on_use
+    _use_button.disabled = on_use is not Callable
+
+    _label.add_theme_color_override("font_color", color)
 
 func _on_use_pressed() -> void:
     if _on_use is Callable:

@@ -36,9 +36,9 @@ func remove_override(target_scene_file_path: String, surface_idx: int) -> bool:
     return true
 
 
-func has(target_scene_file_path: String, surface_idx: int) -> bool:
+func get_override(target_scene_file_path: String, surface_idx: int) -> MaterialOverride:
     for override: MaterialOverride in _overrides:
         if override.target_scene_file_path == target_scene_file_path && override.surface_idx == surface_idx:
-            return true
+            return override
 
-    return false
+    return null

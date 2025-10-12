@@ -94,17 +94,16 @@ func _listing_color(mat_displayed: bool, has_override: bool) -> Color:
 
 func _configure_listing(list: MaterialSelectionListing, mat: Material, allow_use: bool) -> void:
     var on_use: Variant = null
-    var overrides: LevelMaterialOverrides = _panel.material_overrides
     var target: MeshInstance3D = GridNodeSide.get_meshinstance_from_override_path(_side, _key)
     var surface_idx: int = GridNodeSide.get_meshinstance_surface_index_from_override_path(_side, _key)
 
-    var has_override: bool = overrides.has(target.scene_file_path, surface_idx)
+    var override: MaterialOverride = _panel.material_overrides.has(target.scene_file_path, surface_idx)
     if allow_use:
         on_use = func() -> void:
             _panel.undo_redo.create_action("GridLevelDigger: Swap side material %s" % _humanize_key(_key))
 
             _panel.undo_redo.add_do_method(self, "_do_set_override", _side, _key, mat)
-            if has_override:
+            if override != null:
                 _panel.undo_redo.add_undo_method(self, "_do_set_override", _side, _key, used_mat)
             else:
                 _panel.undo_redo.add_undo_method(self, "_do_erase_override", _side, _key, used_mat)
@@ -113,9 +112,35 @@ func _configure_listing(list: MaterialSelectionListing, mat: Material, allow_use
 
     list.configure(
         mat,
-        _listing_color(mat == target.get_surface_override_material(surface_idx), has_override),
+        _listing_color(mat == target.get_surface_override_material(surface_idx), override != null && override.override_material == mat),
         on_use,
     )
+
+func _update_listing() -> void:
+    var target: MeshInstance3D = GridNodeSide.get_meshinstance_from_override_path(_side, _key)
+    var surface_idx: int = GridNodeSide.get_meshinstance_surface_index_from_override_path(_side, _key)
+    var override: MaterialOverride = _panel.material_overrides.has(target.scene_file_path, surface_idx)
+
+    for list: MaterialSelectionListing in _showing_mats:
+        var on_use: Variant = null
+        if list.mat != used_mat:
+            on_use = func() -> void:
+                _panel.undo_redo.create_action("GridLevelDigger: Swap side material %s" % _humanize_key(_key))
+
+                _panel.undo_redo.add_do_method(self, "_do_set_override", _side, _key, list.mat)
+                if override != null:
+                    _panel.undo_redo.add_undo_method(self, "_do_set_override", _side, _key, used_mat)
+                else:
+                    _panel.undo_redo.add_undo_method(self, "_do_erase_override", _side, _key, used_mat)
+
+                _panel.undo_redo.commit_action()
+
+
+        list.update(
+            _listing_color(list.mat == used_mat, override != null && override.override_material == list.mat),
+            on_use
+        )
+
 
 func gather_available_materials() -> Array[Material]:
     var mats: Array[Material]
@@ -161,7 +186,7 @@ func _do_set_override(side: GridNodeSide, key: String, material: Material) -> vo
     used_mat = material
     _used_materials[key] = material.resource_path
 
-    # TODO: Update listing to reflect new state
+    _update_listing()
     EditorInterface.mark_scene_as_unsaved()
 
 func _erase_override(side: GridNodeSide, key: String, default: Material) -> void:
@@ -183,11 +208,10 @@ func _erase_override(side: GridNodeSide, key: String, default: Material) -> void
     used_mat = default
     _used_materials[key] = default.resource_path
 
-    # TODO: Update listing to reflect new state
+    _update_listing()
 
 static func _is_allowed_material(path: String) -> bool:
     var resource: Resource = load(path)
     return resource is StandardMaterial3D or resource is ShaderMaterial or resource is ORMMaterial3D
 
 # Look into make unique button to clone the GridNodeSide resource
-# How to store overriude state so that it is only one stored for all of shared material
