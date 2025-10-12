@@ -16,10 +16,12 @@ class_name GridLevelManipulator
 @export var remove_wall_button: Button
 @export var remove_neighbour_up_button: Button
 @export var swap_ceiling_button: Button
+@export var style_ceiling_button: Button
 @export var add_ceiling_button: Button
 @export var remove_ceiling_button: Button
 @export var remove_neighbour_down_button: Button
 @export var swap_floor_button: Button
+@export var style_floor_button: Button
 @export var add_floor_button: Button
 @export var remove_floor_button: Button
 @export var own_nav: GridLevelNav
@@ -99,6 +101,7 @@ func _sync_node_side_buttons(node: GridNode, look_direction: CardinalDirections.
 
     var _ceiling: GridNodeSide = GridNodeSide.get_node_side(node, CardinalDirections.CardinalDirection.UP) if has_node else null
     swap_ceiling_button.disabled = _ceiling == null || !_may_add_ceiling_style || style.get_ceiling_resource_path() == _ceiling.scene_file_path
+    style_ceiling_button.disabled = _ceiling == null
     _has_ceiling = _ceiling != null && _ceiling.anchor != null
     #if !_has_ceiling && ceiling_neighbour != null:
     #    _ceiling = GridNodeSide.get_node_side(ceiling_neighbour, CardinalDirections.CardinalDirection.DOWN)
@@ -109,6 +112,7 @@ func _sync_node_side_buttons(node: GridNode, look_direction: CardinalDirections.
 
     var _floor: GridNodeSide = GridNodeSide.get_node_side(node, CardinalDirections.CardinalDirection.DOWN) if has_node else null
     swap_floor_button.disabled = _floor == null || !_may_add_floor_style || style.get_floor_resource_path() == _floor.scene_file_path
+    style_floor_button.disabled = _floor == null
     _has_floor = _floor != null && _floor.anchor != null
     # if !_has_floor && floor_neighbour != null:
     #    _floor = GridNodeSide.get_node_side(floor_neighbour, CardinalDirections.CardinalDirection.UP)
@@ -289,6 +293,12 @@ func _on_swap_ceiling_pressed() -> void:
 
 func _on_style_wall_in_front_pressed() -> void:
     _show_style_window(panel.look_direction)
+
+func _on_style_ceiling_pressed() -> void:
+    _show_style_window(CardinalDirections.CardinalDirection.UP)
+
+func _on_style_floor_pressed() -> void:
+    _show_style_window(CardinalDirections.CardinalDirection.DOWN)
 
 func _show_style_window(direction: CardinalDirections.CardinalDirection) -> void:
     var grid_node: GridNode = panel.get_grid_node()

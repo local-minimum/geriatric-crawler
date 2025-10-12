@@ -42,6 +42,7 @@ var preview_style_targets: bool:
     set(value):
         var general: Dictionary = DictionaryUtils.safe_getd(_stored_settings, _GENERAL_KEY, {}, false)
         general[_PREVIEW_STYLE_TARGETS_KEY] = value
+        _stored_settings[_GENERAL_KEY] = general
         settings_storage.store_data(0, _stored_settings)
 
 var _node: GridNode
