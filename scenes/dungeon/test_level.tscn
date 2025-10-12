@@ -66,7 +66,7 @@
 [ext_resource type="Script" uid="uid://d4jalrj3vayrc" path="res://addons/grid_level_digger/material_override.gd" id="64_bt6hk"]
 [ext_resource type="Material" uid="uid://csq8rvt37xowc" path="res://materials/tiles/tiles.tres" id="65_ytmnc"]
 
-[sub_resource type="Resource" id="Resource_vupyu"]
+[sub_resource type="Resource" id="Resource_bt6hk"]
 resource_local_to_scene = true
 script = ExtResource("4_840jk")
 mode = 61
@@ -113,13 +113,13 @@ albedo_texture = ExtResource("34_rljv5")
 material = SubResource("StandardMaterial3D_jmfrw")
 size = Vector2(1.5, 1.5)
 
-[sub_resource type="Resource" id="Resource_bt6hk"]
+[sub_resource type="Resource" id="Resource_ytmnc"]
 script = ExtResource("64_bt6hk")
 override_material = ExtResource("65_ytmnc")
 target_scene_file_path = "res://models/cubeside-flat.fbx"
 relative_path = "Cube"
 surface_idx = 0
-known_usage_path = "/root/@EditorNode@21272/@Panel@14/@VBoxContainer@15/DockHSplitLeftL/DockHSplitLeftR/DockHSplitMain/@VBoxContainer@26/DockVSplitCenter/@VSplitContainer@54/@VBoxContainer@55/@EditorMainScreen@102/MainScreen/@CanvasItemEditor@11482/@VSplitContainer@11134/@HSplitContainer@11136/@HSplitContainer@11138/@Control@11139/@SubViewportContainer@11140/@SubViewport@11141/TestLevel/LevelGeometry/Elevation 0/Node (-3, 0, -3)/Side NORTH/cubeside-flat"
+known_usage_path = "Elevation 0/Node (-3, 0, -3)/Side NORTH/cubeside-flat"
 
 [node name="TestLevel" type="Node3D" node_paths=PackedStringArray("player", "level_geometry", "punishments", "primary_entry_portal", "level_portals", "zones_parent", "zones", "broadcasts_parent")]
 script = ExtResource("1_dd1ob")
@@ -137,7 +137,7 @@ broadcasts_parent = NodePath("Broadcasts")
 [node name="Player" parent="." instance=ExtResource("3_m6mav")]
 process_mode = 3
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0145968, -0.00857759, 0.00070858)
-transportation_abilities = SubResource("Resource_vupyu")
+transportation_abilities = SubResource("Resource_bt6hk")
 transportation_mode = SubResource("Resource_pgxau")
 
 [node name="LevelGeometry" type="Node3D" parent="."]
@@ -2074,4 +2074,4 @@ metadata/_custom_type_script = "uid://huxje2j21g1c"
 [node name="Material Overrides" type="Node" parent="." node_paths=PackedStringArray("level")]
 script = ExtResource("63_ytmnc")
 level = NodePath("..")
-_overrides = Array[ExtResource("64_bt6hk")]([SubResource("Resource_bt6hk")])
+_overrides = Array[ExtResource("64_bt6hk")]([SubResource("Resource_ytmnc")])

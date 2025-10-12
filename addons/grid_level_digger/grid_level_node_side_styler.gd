@@ -40,6 +40,9 @@ func configure(side: GridNodeSide, panel: GridLevelDiggerPanel) -> void:
 
     _material_options = gather_available_materials()
 
+    if popup.item_count > 0:
+        _handle_change_target(0)
+
 func _humanize_key(path: String) -> String:
     var m_instance: MeshInstance3D = GridNodeSide.get_meshinstance_from_override_path(_side, path)
     if m_instance == null:
@@ -190,7 +193,7 @@ func _do_set_override(side: GridNodeSide, key: String, material: Material) -> vo
         EditorInterface.mark_scene_as_unsaved()
 
 
-func _erase_override(side: GridNodeSide, key: String, default: Material) -> void:
+func _do_erase_override(side: GridNodeSide, key: String, default: Material) -> void:
     if _panel.material_overrides == null:
         push_error("There are no overrides to this level")
         return

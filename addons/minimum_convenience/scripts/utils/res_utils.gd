@@ -122,7 +122,7 @@ static func list_resource_parentage(node: Node, until: String = "") -> Array[Arr
     return res
 
 static func find_first_node_using_resource(root: Node, scene_file_path: String) -> Node:
-    for child: Node in root.get_children():
+    for child: Node in root.get_children(false):
         if child.scene_file_path == scene_file_path:
             return child
 

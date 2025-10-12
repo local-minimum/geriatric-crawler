@@ -17,16 +17,20 @@ func add_override(target: MeshInstance3D, surface_idx: int, material: Material) 
         return false
 
     var target_scene_file_path: String = parentage[0][1]
-    var parent_path: String = parentage[0][0]
-    var target_path: String = target.get_path()
-    if target_path.begins_with(parent_path):
-        # print_debug("[Level Material Overrides] trimming target path '%s' with parent '%s'" % [target_path, parent_path])
-        target_path = target_path.substr(parent_path.length())
-    else:
-        push_error("[Level Material Overrides] found scene-parent doesn't share path with target %s vs %s" % [parent_path, target_path])
+    var parent_full_path: String = parentage[0][0]
+    var parent: Node = get_node(parent_full_path)
+    if parent == null:
+        push_error("[Level Material Overrides] Failed to locate parent %s" % parent_full_path)
         return false
 
-    target_path = target_path.trim_prefix("/")
+    var parent_path: String = level.level_geometry.get_path_to(parent)
+    var target_path: String = parent.get_path_to(target)
+
+    if parent_path.is_empty() || target_path.is_empty():
+        push_error("[Level Material Overrides] failed to get paths to parent '%s' and its target '%s'" % [parent_path, target])
+        return false
+
+    print_debug("[Level Material Overrides] trimmed target path '%s'" % [target_path])
 
     if target_scene_file_path.is_empty():
         push_error("[Level Material Overrides] we must have a target with scene file path, %s lacks this!" % target)

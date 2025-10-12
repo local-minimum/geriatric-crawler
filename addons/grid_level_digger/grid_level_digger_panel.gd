@@ -26,7 +26,7 @@ var material_overrides: LevelMaterialOverrides:
         var _level: GridLevel = level
         if _level == null:
             return null
-        if material_overrides != null:
+        if material_overrides == null:
             material_overrides = ArrayUtils.first_or_default(_level.find_children("", "LevelMaterialOverrides"))
         return material_overrides
 
