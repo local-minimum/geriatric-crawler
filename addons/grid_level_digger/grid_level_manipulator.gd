@@ -318,7 +318,7 @@ func _show_style_window(direction: CardinalDirections.CardinalDirection) -> void
     _style_window.initial_position = Window.WINDOW_INITIAL_POSITION_CENTER_SCREEN_WITH_KEYBOARD_FOCUS
     _style_window.popup_window = true
 
-    _style_window.title = "Style Wall"
+    _style_window.title = "Style Side"
     var scene: PackedScene = load("res://addons/grid_level_digger/controls/node_side_styler.tscn")
     var styler: GridLevelNodeSideStyler = scene.instantiate()
 

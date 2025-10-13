@@ -67,7 +67,7 @@ vertical_alignment = 1
 [node name="TabContainer" type="TabContainer" parent="VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
-current_tab = 3
+current_tab = 2
 
 [node name="About" type="MarginContainer" parent="VBoxContainer/TabContainer"]
 visible = false
@@ -170,7 +170,6 @@ layout_mode = 2
 text = "Hide Ceilings"
 
 [node name="Dig" type="MarginContainer" parent="VBoxContainer/TabContainer"]
-visible = false
 layout_mode = 2
 size_flags_vertical = 3
 tooltip_text = "Blocking out the level by moving the selection around"
@@ -251,6 +250,13 @@ allow_lesser = true
 prefix = "Z"
 select_all_on_focus = true
 
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/TabContainer/Dig/ScrollContainer/VBoxContainer/Grid Node Digger/HBoxContainer/VBoxContainer2"]
+layout_mode = 2
+
+[node name="Dig Out" type="Button" parent="VBoxContainer/TabContainer/Dig/ScrollContainer/VBoxContainer/Grid Node Digger/HBoxContainer/VBoxContainer2/HBoxContainer"]
+layout_mode = 2
+text = "Dig Out..."
+
 [node name="Spacer" type="Control" parent="VBoxContainer/TabContainer/Dig/ScrollContainer/VBoxContainer/Grid Node Digger/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
@@ -290,6 +296,7 @@ layout_mode = 2
 theme_override_constants/margin_left = 8
 
 [node name="Update" type="MarginContainer" parent="VBoxContainer/TabContainer"]
+visible = false
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_constants/margin_left = 4
@@ -791,6 +798,7 @@ save_file_pattern = "res://.godot/gld_settings.json"
 [connection signal="value_changed" from="VBoxContainer/TabContainer/Dig/ScrollContainer/VBoxContainer/Grid Node Digger/HBoxContainer/VBoxContainer2/Follow Offset/Cam Offset X" to="VBoxContainer/TabContainer/Dig/ScrollContainer/VBoxContainer/Grid Node Digger" method="_on_cam_offset_x_value_changed"]
 [connection signal="value_changed" from="VBoxContainer/TabContainer/Dig/ScrollContainer/VBoxContainer/Grid Node Digger/HBoxContainer/VBoxContainer2/Follow Offset/Cam Offset Y" to="VBoxContainer/TabContainer/Dig/ScrollContainer/VBoxContainer/Grid Node Digger" method="_on_cam_offset_y_value_changed"]
 [connection signal="value_changed" from="VBoxContainer/TabContainer/Dig/ScrollContainer/VBoxContainer/Grid Node Digger/HBoxContainer/VBoxContainer2/Follow Offset/Cam Offset Z" to="VBoxContainer/TabContainer/Dig/ScrollContainer/VBoxContainer/Grid Node Digger" method="_on_cam_offset_z_value_changed"]
+[connection signal="pressed" from="VBoxContainer/TabContainer/Dig/ScrollContainer/VBoxContainer/Grid Node Digger/HBoxContainer/VBoxContainer2/HBoxContainer/Dig Out" to="VBoxContainer/TabContainer/Dig/ScrollContainer/VBoxContainer/Grid Node Digger" method="_on_dig_out_pressed"]
 [connection signal="toggled" from="VBoxContainer/TabContainer/Dig/ScrollContainer/VBoxContainer/Grid Node Digger/HBoxContainer/VBoxContainer/Auto-Dig" to="VBoxContainer/TabContainer/Dig/ScrollContainer/VBoxContainer/Grid Node Digger" method="_on_auto_dig_toggled"]
 [connection signal="toggled" from="VBoxContainer/TabContainer/Dig/ScrollContainer/VBoxContainer/Grid Node Digger/HBoxContainer/VBoxContainer/Auto-Clear" to="VBoxContainer/TabContainer/Dig/ScrollContainer/VBoxContainer/Grid Node Digger" method="_on_auto_clear_toggled"]
 [connection signal="toggled" from="VBoxContainer/TabContainer/Dig/ScrollContainer/VBoxContainer/Grid Node Digger/HBoxContainer/VBoxContainer/Preserve Vertical" to="VBoxContainer/TabContainer/Dig/ScrollContainer/VBoxContainer/Grid Node Digger" method="_on_preserve_vertical_toggled"]

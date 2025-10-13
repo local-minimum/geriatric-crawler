@@ -43,3 +43,21 @@ static func closest_surface_point(box: AABB, point: Vector3) -> Vector3:
         clampf(point.y, box.position.y, box.end.y),
         clampf(point.z, box.position.z, box.end.z),
     )
+
+
+static func create_around(center: Vector3, size: Vector3) -> AABB:
+    return AABB(center - size * 0.5, size)
+
+static func create_around_coordinates(coordinates: Vector3i, size: Vector3i, node_size: Vector3, node_spacing) -> AABB:
+    var unit: Vector3 = node_spacing + node_size
+    var centerf: Vector3 = Vector3(coordinates) * unit + node_size.y * Vector3.UP * 0.5
+    var sizef: Vector3 = Vector3(size) * unit
+
+    if size.x % 2 == 0:
+        centerf.x += 0.5 * unit.x
+    if size.y % 2 == 0:
+        centerf.y += 0.5 * unit.y
+    if size.z % 2 == 0:
+        centerf.z += 0.5 * unit.z
+
+    return create_around(centerf, sizef)

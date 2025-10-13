@@ -45,6 +45,31 @@ var preview_style_targets: bool:
         _stored_settings[_GENERAL_KEY] = general
         settings_storage.store_data(0, _stored_settings)
 
+var digout_size: Vector3i:
+    get():
+        return DictionaryUtils.safe_getv3i(
+            DictionaryUtils.safe_getd(_stored_settings, _GENERAL_KEY, {}, false),
+            _DIGOUT_SIZE,
+            Vector3i(3, 1, 3),
+            false,
+        ).maxi(1)
+
+var digout_preserve: bool:
+    get():
+        return DictionaryUtils.safe_getb(
+            DictionaryUtils.safe_getd(_stored_settings, _GENERAL_KEY, {}, false),
+            _DIGOUT_PRESERVE,
+            false,
+            false,
+        )
+
+func set_digout_settings(size: Vector3i, preserve: bool) -> void:
+        var general: Dictionary = DictionaryUtils.safe_getd(_stored_settings, _GENERAL_KEY, {}, false)
+        general[_DIGOUT_PRESERVE] = preserve
+        general[_DIGOUT_SIZE] = size.maxi(1)
+        _stored_settings[_GENERAL_KEY] = general
+        settings_storage.store_data(0, _stored_settings)
+
 var _node: GridNode
 var _anchor: GridAnchor
 
@@ -104,17 +129,29 @@ func _enter_tree() -> void:
     if styles.on_style_updated.connect(_handle_style_updated) != OK:
         push_error("Failed to connect style updated")
 
-    if node_digger.nav.on_update_nav.connect(_handle_update_nav) != OK:
-        push_error("Failed to connect update nav")
+    register_nav(node_digger.nav)
+    register_nav(update_nav)
 
-    if update_nav.on_update_nav.connect(_handle_update_nav) != OK:
-        push_error("Failed to connect update nav")
+var _navs: Array[GridLevelNav]
 
 func _exit_tree() -> void:
     _remove_debug_arrow()
+
     styles.on_style_updated.disconnect(_handle_style_updated)
-    node_digger.nav.on_update_nav.disconnect(_handle_update_nav)
-    update_nav.on_update_nav.disconnect(_handle_update_nav)
+
+    for nav: GridLevelNav in _navs:
+        nav.on_update_nav.disconnect(_handle_update_nav)
+    _navs.clear()
+
+func register_nav(nav: GridLevelNav) -> void:
+    if nav.on_update_nav.connect(_handle_update_nav) != OK:
+        push_error("Failed to connect update nav")
+        _navs.append(nav)
+
+func unregister_nav(nav: GridLevelNav) -> void:
+    if _navs.has(nav):
+        nav.on_update_nav.disconnect(_handle_update_nav)
+        _navs.erase(nav)
 
 func _handle_update_nav(coords: Vector3i, direction: CardinalDirections.CardinalDirection) -> void:
     coordinates = coords
@@ -317,6 +354,8 @@ var _stored_settings: Dictionary
 const _STYLE_KEY: String = "style"
 const _GENERAL_KEY: String = "general"
 const _PREVIEW_STYLE_TARGETS_KEY: String = "preview-style-targeets"
+const _DIGOUT_SIZE: String = "digout-size"
+const _DIGOUT_PRESERVE: String = "digout-preserve"
 
 func _handle_style_updated() -> void:
     _stored_settings[_STYLE_KEY] = styles.collect_save_data()
