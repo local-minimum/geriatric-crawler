@@ -80,14 +80,32 @@ func _on_erase_out_pressed() -> void:
         if node != null:
             preexisting[coords] = node
 
-    # TODO:Figure out proper undo
-    _do_erase(preexisting)
+    var hull: Dictionary[Vector3i, GridNode]
+    if _preserve.button_pressed:
+        for coords: Vector3i in VectorUtils.all_surrounding_coordinates(min, _size):
+            var node: GridNode = _panel.get_grid_node_at(coords)
+            if node != null:
+                hull[coords] = node
 
-func _do_erase(nodes: Dictionary[Vector3i, GridNode]) -> void:
+    # TODO:Figure out proper undo
+    _do_erase(preexisting, hull)
+
+func _do_erase(nodes: Dictionary[Vector3i, GridNode], to_repair: Dictionary[Vector3i, GridNode]) -> void:
+    var level: GridLevel = _panel.level
+    var styles: GridLevelStyle = _panel.styles
+
     for coords: Vector3i in nodes:
         var node: GridNode = nodes[coords]
         _panel.remove_grid_node(node)
         node.queue_free()
+
+    for coords: Vector3i in to_repair:
+        for side_direction: CardinalDirections.CardinalDirection in CardinalDirections.ALL_DIRECTIONS:
+            var neighbor: Vector3i = CardinalDirections.translate(coords, side_direction)
+            if nodes.has(neighbor):
+                var node_side: GridNodeSide = GridNodeSide.get_node_side(to_repair[coords], side_direction)
+                if node_side == null:
+                    _add_side_to_node(to_repair[coords], side_direction, styles, level)
 
     EditorInterface.mark_scene_as_unsaved()
 
@@ -104,14 +122,14 @@ func _on_dig_out_pressed() -> void:
         if node != null:
             preexisting[coords] = node
 
+    if _preserve.button_pressed:
+        for coords: Vector3i in preexisting:
+            to_dig.erase(coords)
+
     for coords: Vector3i in VectorUtils.all_surrounding_coordinates(min, _size):
         var node: GridNode = _panel.get_grid_node_at(coords)
         if node != null:
             preexisting[coords] = node
-
-    if _preserve.button_pressed:
-        for coords: Vector3i in preexisting:
-            to_dig.erase(coords)
 
     # TODO: Figure out proper undo
     _do_digout(to_dig, preexisting, _preserve.button_pressed)
@@ -129,11 +147,19 @@ func _do_digout(to_dig: Array[Vector3i], preexisting: Dictionary[Vector3i, GridN
 
             for side_direction: CardinalDirections.CardinalDirection in CardinalDirections.ALL_DIRECTIONS:
                 var neighbor: Vector3i = CardinalDirections.translate(coords, side_direction)
-                if preexisting.has(neighbor):
-                    var node_side: GridNodeSide = GridNodeSide.get_node_side(preexisting[neighbor], side_direction)
+                if preexisting.has(neighbor) || to_dig.has(neighbor):
+                    # Check own side
+                    var node_side: GridNodeSide = GridNodeSide.get_node_side(preexisting[coords], side_direction)
                     if node_side != null:
                         node_side.queue_free()
-                elif !to_dig.has(neighbor):
+
+                    if preexisting.has(neighbor):
+                        # Check neighbour matching side
+                        node_side = GridNodeSide.get_node_side(preexisting[neighbor], CardinalDirections.invert(side_direction))
+                        if node_side != null:
+                            node_side.queue_free()
+
+                else:
                     _add_side_to_node(preexisting[coords], side_direction, styles, level)
 
         else:
@@ -161,13 +187,13 @@ func _do_digout(to_dig: Array[Vector3i], preexisting: Dictionary[Vector3i, GridN
                     continue
 
                 if preexisting.has(neighbor):
-                    if !preserve:
-                        var inv_side_direction: CardinalDirections.CardinalDirection = CardinalDirections.invert(side_direction)
-                        var node_side: GridNodeSide = GridNodeSide.get_node_side(preexisting[neighbor], inv_side_direction)
-                        if node_side != null:
-                            node_side.queue_free()
-
-                    continue
+                    var inv_side_direction: CardinalDirections.CardinalDirection = CardinalDirections.invert(side_direction)
+                    var node_side: GridNodeSide = GridNodeSide.get_node_side(preexisting[neighbor], inv_side_direction)
+                    if node_side != null && !preserve:
+                        node_side.queue_free()
+                        continue
+                    elif node_side == null && preserve:
+                        continue
 
                 _add_side_to_node(node, side_direction, styles, level)
 
