@@ -96,16 +96,16 @@ static func all_surrounding_coordinates(start: Vector3i, size: Vector3i) -> Arra
             for z: int in range(start.z, max_z + 1):
                 if x == start.x:
                     res.append(Vector3i(x - 1, y, z))
-                elif x == max_x:
+                if x == max_x:
                     res.append(Vector3i(x + 1, y, z))
 
                 if y == start.y:
                     res.append(Vector3i(x, y - 1, z))
-                elif y == max_y:
+                if y == max_y:
                     res.append(Vector3i(x, y + 1, z))
 
                 if z == start.z:
                     res.append(Vector3i(x, y, z - 1))
-                elif z == max_z:
+                if z == max_z:
                     res.append(Vector3i(x, y, z + 1))
     return res

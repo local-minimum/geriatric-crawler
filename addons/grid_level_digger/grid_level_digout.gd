@@ -73,7 +73,7 @@ func _handle_nav(coordinates: Vector3i, _look_directoin: CardinalDirections.Card
     )
 
 func _on_erase_out_pressed() -> void:
-    var min: Vector3i = _panel.coordinates - _size / 2
+    var min: Vector3i = _panel.coordinates - (_size - Vector3i.ONE) / 2
     var preexisting: Dictionary[Vector3i, GridNode]
     for coords: Vector3i in VectorUtils.all_coordinates_within(min, _size):
         var node: GridNode = _panel.get_grid_node_at(coords)
@@ -96,7 +96,7 @@ func _on_dig_out_pressed() -> void:
         push_error("[GLD Dig-Out] Must have at least a grid node active and selected in the style tab to dig-out!")
         return
 
-    var min: Vector3i = _panel.coordinates - _size / 2
+    var min: Vector3i = _panel.coordinates - (_size - Vector3i.ONE) / 2
     var preexisting: Dictionary[Vector3i, GridNode]
     var to_dig: Array[Vector3i] = VectorUtils.all_coordinates_within(min, _size)
     for coords: Vector3i in to_dig:
@@ -129,10 +129,12 @@ func _do_digout(to_dig: Array[Vector3i], preexisting: Dictionary[Vector3i, GridN
 
             for side_direction: CardinalDirections.CardinalDirection in CardinalDirections.ALL_DIRECTIONS:
                 var neighbor: Vector3i = CardinalDirections.translate(coords, side_direction)
-                if to_dig.has(neighbor):
-                    var node_side: GridNodeSide = GridNodeSide.get_node_side(preexisting[coords], side_direction)
+                if preexisting.has(neighbor):
+                    var node_side: GridNodeSide = GridNodeSide.get_node_side(preexisting[neighbor], side_direction)
                     if node_side != null:
                         node_side.queue_free()
+                elif !to_dig.has(neighbor):
+                    _add_side_to_node(preexisting[coords], side_direction, styles, level)
 
         else:
             var node: GridNode = node_resource.instantiate()
@@ -158,34 +160,36 @@ func _do_digout(to_dig: Array[Vector3i], preexisting: Dictionary[Vector3i, GridN
                 if to_dig.has(neighbor):
                     continue
 
-                if preexisting.has(coords):
+                if preexisting.has(neighbor):
                     if !preserve:
                         var inv_side_direction: CardinalDirections.CardinalDirection = CardinalDirections.invert(side_direction)
-                        var node_side: GridNodeSide = GridNodeSide.get_node_side(preexisting[coords], inv_side_direction)
+                        var node_side: GridNodeSide = GridNodeSide.get_node_side(preexisting[neighbor], inv_side_direction)
                         if node_side != null:
                             node_side.queue_free()
 
                     continue
 
-                var side_resource: PackedScene = styles.get_resource_from_direction(side_direction)
-                var side: GridNodeSide = side_resource.instantiate()
-
-                side.direction = side_direction
-                side.name = "Side %s" % CardinalDirections.name(side_direction)
-
-                node.add_child(side, true)
-
-                side.position = Vector3.ZERO
-                if CardinalDirections.is_planar_cardinal(side_direction):
-                    side.global_rotation = CardinalDirections.direction_to_planar_rotation(side_direction).get_euler()
-
-                side.owner = level.get_tree().edited_scene_root
-
-                if side.infer_direction_from_rotation:
-                    GridNodeSide.set_direction_from_rotation(side)
-
+                _add_side_to_node(node, side_direction, styles, level)
 
     EditorInterface.mark_scene_as_unsaved()
+
+func _add_side_to_node(node: GridNode, side_direction: CardinalDirections.CardinalDirection, styles: GridLevelStyle, level: GridLevel) -> void:
+    var side_resource: PackedScene = styles.get_resource_from_direction(side_direction)
+    var side: GridNodeSide = side_resource.instantiate()
+
+    side.direction = side_direction
+    side.name = "Side %s" % CardinalDirections.name(side_direction)
+
+    node.add_child(side, true)
+
+    side.position = Vector3.ZERO
+    if CardinalDirections.is_planar_cardinal(side_direction):
+        side.global_rotation = CardinalDirections.direction_to_planar_rotation(side_direction).get_euler()
+
+    side.owner = level.get_tree().edited_scene_root
+
+    if side.infer_direction_from_rotation:
+        GridNodeSide.set_direction_from_rotation(side)
 
 func _on_preserve_existing_toggled(toggled_on:bool) -> void:
     # If we want to highlight preserving differently then we should do so from here
