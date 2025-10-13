@@ -80,12 +80,22 @@ layout_mode = 2
 tooltip_text = "If true, leaves existing geometry  intact"
 text = "Preserve Existing Sides"
 
-[node name="Dig-Out" type="Button" parent="MarginContainer/VBoxContainer"]
+[node name="VBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
+
+[node name="Dig-Out" type="Button" parent="MarginContainer/VBoxContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
 text = "Dig Out!"
+
+[node name="Erase-Out" type="Button" parent="MarginContainer/VBoxContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Erase!"
 
 [connection signal="value_changed" from="MarginContainer/VBoxContainer/HBoxContainer/X Size" to="." method="_on_x_size_value_changed"]
 [connection signal="value_changed" from="MarginContainer/VBoxContainer/HBoxContainer/Y Size" to="." method="_on_y_size_value_changed"]
 [connection signal="value_changed" from="MarginContainer/VBoxContainer/HBoxContainer/Z Size" to="." method="_on_z_size_value_changed"]
 [connection signal="toggled" from="MarginContainer/VBoxContainer/Preserve Existing" to="." method="_on_preserve_existing_toggled"]
-[connection signal="pressed" from="MarginContainer/VBoxContainer/Dig-Out" to="." method="_on_dig_out_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/VBoxContainer/Dig-Out" to="." method="_on_dig_out_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/VBoxContainer/Erase-Out" to="." method="_on_erase_out_pressed"]

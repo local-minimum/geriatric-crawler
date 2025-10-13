@@ -72,8 +72,121 @@ func _handle_nav(coordinates: Vector3i, _look_directoin: CardinalDirections.Card
         false,
     )
 
+func _on_erase_out_pressed() -> void:
+    var min: Vector3i = _panel.coordinates - _size / 2
+    var preexisting: Dictionary[Vector3i, GridNode]
+    for coords: Vector3i in VectorUtils.all_coordinates_within(min, _size):
+        var node: GridNode = _panel.get_grid_node_at(coords)
+        if node != null:
+            preexisting[coords] = node
+
+    # TODO:Figure out proper undo
+    _do_erase(preexisting)
+
+func _do_erase(nodes: Dictionary[Vector3i, GridNode]) -> void:
+    for coords: Vector3i in nodes:
+        var node: GridNode = nodes[coords]
+        _panel.remove_grid_node(node)
+        node.queue_free()
+
+    EditorInterface.mark_scene_as_unsaved()
+
 func _on_dig_out_pressed() -> void:
-    pass
+    if !_panel.styles.has_grid_node_resource_selected():
+        push_error("[GLD Dig-Out] Must have at least a grid node active and selected in the style tab to dig-out!")
+        return
+
+    var min: Vector3i = _panel.coordinates - _size / 2
+    var preexisting: Dictionary[Vector3i, GridNode]
+    var to_dig: Array[Vector3i] = VectorUtils.all_coordinates_within(min, _size)
+    for coords: Vector3i in to_dig:
+        var node: GridNode = _panel.get_grid_node_at(coords)
+        if node != null:
+            preexisting[coords] = node
+
+    for coords: Vector3i in VectorUtils.all_surrounding_coordinates(min, _size):
+        var node: GridNode = _panel.get_grid_node_at(coords)
+        if node != null:
+            preexisting[coords] = node
+
+    if _preserve.button_pressed:
+        for coords: Vector3i in preexisting:
+            to_dig.erase(coords)
+
+    # TODO: Figure out proper undo
+    _do_digout(to_dig, preexisting, _preserve.button_pressed)
+
+func _do_digout(to_dig: Array[Vector3i], preexisting: Dictionary[Vector3i, GridNode], preserve: bool) -> void:
+    var level: GridLevel = _panel.level
+    var level_actions: GridLevelActions = _panel.level_actions
+    var styles: GridLevelStyle = _panel.styles
+    var node_resource: PackedScene = styles.get_node_resource()
+
+    for coords: Vector3i in to_dig:
+        if preexisting.has(coords):
+            if preserve:
+                continue
+
+            for side_direction: CardinalDirections.CardinalDirection in CardinalDirections.ALL_DIRECTIONS:
+                var neighbor: Vector3i = CardinalDirections.translate(coords, side_direction)
+                if to_dig.has(neighbor):
+                    var node_side: GridNodeSide = GridNodeSide.get_node_side(preexisting[coords], side_direction)
+                    if node_side != null:
+                        node_side.queue_free()
+
+        else:
+            var node: GridNode = node_resource.instantiate()
+
+            node.coordinates = coords
+            node.name = "Node %s" % coords
+
+            var new_position: Vector3 = GridLevel.node_position_from_coordinates(level, node.coordinates)
+            var node_parent: Node3D = (
+                GridLevelActions.get_or_add_elevation_parent(level, node.coordinates.y)
+                if level_actions.organize_by_elevation else
+                GridLevel.get_level_geometry_root(level)
+            )
+
+            _panel.add_grid_node(node)
+            node_parent.add_child(node, true)
+
+            node.global_position = new_position
+            node.owner = level.get_tree().edited_scene_root
+
+            for side_direction: CardinalDirections.CardinalDirection in CardinalDirections.ALL_DIRECTIONS:
+                var neighbor: Vector3i = CardinalDirections.translate(coords, side_direction)
+                if to_dig.has(neighbor):
+                    continue
+
+                if preexisting.has(coords):
+                    if !preserve:
+                        var inv_side_direction: CardinalDirections.CardinalDirection = CardinalDirections.invert(side_direction)
+                        var node_side: GridNodeSide = GridNodeSide.get_node_side(preexisting[coords], inv_side_direction)
+                        if node_side != null:
+                            node_side.queue_free()
+
+                    continue
+
+                var side_resource: PackedScene = styles.get_resource_from_direction(side_direction)
+                var side: GridNodeSide = side_resource.instantiate()
+
+                side.direction = side_direction
+                side.name = "Side %s" % CardinalDirections.name(side_direction)
+
+                node.add_child(side, true)
+
+                side.position = Vector3.ZERO
+                if CardinalDirections.is_planar_cardinal(side_direction):
+                    side.global_rotation = CardinalDirections.direction_to_planar_rotation(side_direction).get_euler()
+
+                side.owner = level.get_tree().edited_scene_root
+
+                if side.infer_direction_from_rotation:
+                    GridNodeSide.set_direction_from_rotation(side)
+
+
+    EditorInterface.mark_scene_as_unsaved()
 
 func _on_preserve_existing_toggled(toggled_on:bool) -> void:
+    # If we want to highlight preserving differently then we should do so from here
     pass

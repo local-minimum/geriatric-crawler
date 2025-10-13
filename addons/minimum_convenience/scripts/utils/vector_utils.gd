@@ -74,3 +74,38 @@ static func flip_sign_first_non_null(a: Vector3i) -> Vector3i:
         return Vector3i(a.x, -a.y, a.z)
 
     return Vector3i(a.x, a.y, -a.z)
+
+static func all_coordinates_within(start: Vector3i, size: Vector3i) -> Array[Vector3i]:
+    var res: Array[Vector3i]
+
+    for x: int in range(start.x, start.x + size.x):
+        for y: int in range(start.y, start.y + size.y):
+            for z: int in range(start.z, start.z + size.z):
+                res.append(Vector3i(x, y, z))
+
+    return res
+
+static func all_surrounding_coordinates(start: Vector3i, size: Vector3i) -> Array[Vector3i]:
+    var res: Array[Vector3i]
+    var max_x: int = start.x + size.x - 1
+    var max_y: int = start.y + size.y - 1
+    var max_z: int = start.z + size.z - 1
+
+    for x: int in range(start.x, max_x + 1):
+        for y: int in range(start.y, max_y + 1):
+            for z: int in range(start.z, max_z + 1):
+                if x == start.x:
+                    res.append(Vector3i(x - 1, y, z))
+                elif x == max_x:
+                    res.append(Vector3i(x + 1, y, z))
+
+                if y == start.y:
+                    res.append(Vector3i(x, y - 1, z))
+                elif y == max_y:
+                    res.append(Vector3i(x, y + 1, z))
+
+                if z == start.z:
+                    res.append(Vector3i(x, y, z - 1))
+                elif z == max_z:
+                    res.append(Vector3i(x, y, z + 1))
+    return res
