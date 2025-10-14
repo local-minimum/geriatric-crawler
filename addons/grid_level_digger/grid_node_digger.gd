@@ -32,6 +32,8 @@ func _ready() -> void:
         push_error("Failed to connect update nav")
 
 func _handle_update_nav(_coordinates: Vector3i, _look_direction: CardinalDirections.CardinalDirection) -> void:
+    if _auto_dig:
+        _perform_auto_dig(_look_direction)
     sync()
 
 func _sync_features() -> void:
