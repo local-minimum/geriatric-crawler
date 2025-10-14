@@ -85,7 +85,7 @@ static func all_coordinates_within(start: Vector3i, size: Vector3i) -> Array[Vec
 
     return res
 
-static func all_surrounding_coordinates(start: Vector3i, size: Vector3i) -> Array[Vector3i]:
+static func all_surrounding_coordinates(start: Vector3i, size: Vector3i, corners_and_edges: bool = false) -> Array[Vector3i]:
     var res: Array[Vector3i]
     var max_x: int = start.x + size.x - 1
     var max_y: int = start.y + size.y - 1
@@ -96,16 +96,59 @@ static func all_surrounding_coordinates(start: Vector3i, size: Vector3i) -> Arra
             for z: int in range(start.z, max_z + 1):
                 if x == start.x:
                     res.append(Vector3i(x - 1, y, z))
+
+                    if y == start.y:
+                        res.append(Vector3i(x - 1, y - 1, z))
+                    if y == max_y:
+                        res.append(Vector3i(x - 1, y + 1, z))
+
+                    if z == start.z:
+                        res.append(Vector3i(x - 1, y, z - 1))
+                    if z == max_z:
+                        res.append(Vector3i(x - 1, y, z + 1))
+
                 if x == max_x:
                     res.append(Vector3i(x + 1, y, z))
 
+                    if y == start.y:
+                        res.append(Vector3i(x + 1, y - 1, z))
+                    if y == max_y:
+                        res.append(Vector3i(x + 1, y + 1, z))
+
+                    if z == start.z:
+                        res.append(Vector3i(x + 1, y, z - 1))
+                    if z == max_z:
+                        res.append(Vector3i(x + 1, y, z + 1))
+
                 if y == start.y:
                     res.append(Vector3i(x, y - 1, z))
+
+                    if z == start.z:
+                        res.append(Vector3i(x, y - 1, z - 1))
+                    if z == max_z:
+                        res.append(Vector3i(x, y - 1, z + 1))
+
                 if y == max_y:
                     res.append(Vector3i(x, y + 1, z))
+
+                    if z == start.z:
+                        res.append(Vector3i(x, y + 1, z - 1))
+                    if z == max_z:
+                        res.append(Vector3i(x, y + 1, z + 1))
 
                 if z == start.z:
                     res.append(Vector3i(x, y, z - 1))
                 if z == max_z:
                     res.append(Vector3i(x, y, z + 1))
+
+    if corners_and_edges:
+        res.append(Vector3i(start.x - 1, start.y - 1, start.z - 1))
+        res.append(Vector3i(start.x - 1, start.y - 1, max_z + 1))
+        res.append(Vector3i(start.x - 1, max_y + 1, start.z - 1))
+        res.append(Vector3i(start.x - 1, max_y + 1, max_z + 1))
+        res.append(Vector3i(max_x + 1, start.y - 1, start.z - 1))
+        res.append(Vector3i(max_x + 1, start.y - 1, max_z + 1))
+        res.append(Vector3i(max_x + 1, max_y + 1, start.z - 1))
+        res.append(Vector3i(max_x + 1, max_y + 1, max_z + 1))
+
     return res

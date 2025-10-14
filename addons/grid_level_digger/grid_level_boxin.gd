@@ -58,7 +58,7 @@ func _on_x_size_value_changed(value:float) -> void:
 func _handle_nav(coordinates: Vector3i, _look_directoin: CardinalDirections.CardinalDirection) -> void:
     _clear_highlights()
 
-    var bounds: AABB = AABBUtils.create_around_coordinates(coordinates, _size, _panel.level.node_size, _panel.level.node_spacing)
+    var bounds: AABB = AABBUtils.create_around_coordinates(coordinates, _size, _panel.level.node_size, _panel.level.node_spacing).grow(0.1)
     _preview_highlight = DebugDraw.box(
         _panel.level,
         bounds.get_center(),
@@ -101,7 +101,7 @@ func _on_box_in_pressed() -> void:
 
     var min: Vector3i = _panel.coordinates - (_size - Vector3i.ONE) / 2
     var preexisting: Dictionary[Vector3i, GridNode]
-    var to_dig: Array[Vector3i] = VectorUtils.all_surrounding_coordinates(min, _size)
+    var to_dig: Array[Vector3i] = VectorUtils.all_surrounding_coordinates(min, _size, true)
 
     for coords: Vector3i in to_dig:
         var node: GridNode = _panel.get_grid_node_at(coords)
@@ -115,7 +115,7 @@ func _on_box_in_pressed() -> void:
     # Inside the shell
     var inside: Dictionary[Vector3i, GridNode]
     min = _panel.coordinates - (_size - 2 * Vector3i.ONE) / 2
-    for coords: Vector3i in VectorUtils.all_surrounding_coordinates(min, _size):
+    for coords: Vector3i in VectorUtils.all_surrounding_coordinates(min, _size, true):
         var node: GridNode = _panel.get_grid_node_at(coords)
         if node != null:
             inside[coords] = node
@@ -185,3 +185,5 @@ func _do_boxin(center: Vector3i, to_dig: Array[Vector3i], preexisting: Dictionar
                     var node_side: GridNodeSide = GridNodeSide.get_node_side(inside[neighbor], inv_side_direction)
                     if node_side == null:
                         _add_side_to_node(inside[neighbor], inv_side_direction, styles, level)
+
+    EditorInterface.mark_scene_as_unsaved()
