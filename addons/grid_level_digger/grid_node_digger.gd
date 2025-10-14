@@ -332,30 +332,46 @@ func _sync_viewport_camera() -> void:
 func _on_place_node_pressed() -> void:
     _perform_auto_dig(CardinalDirections.CardinalDirection.NONE, true)
 
-var _digout_window: Window
+var _popup_window: Window
 
 func _on_dig_out_pressed() -> void:
-    if _digout_window != null:
-        _digout_window.queue_free()
-
-    _digout_window = Window.new()
-    _digout_window.close_requested.connect(
-        func() -> void:
-            _digout_window.queue_free()
-            _digout_window = null
-    )
-    _digout_window.initial_position = Window.WINDOW_INITIAL_POSITION_CENTER_SCREEN_WITH_KEYBOARD_FOCUS
-    _digout_window.popup_window = true
-
-    _digout_window.title = "Dig Out"
+    _spawn_window("Dig Out")
 
     # TODO: Make ui
     var scene: PackedScene = load("res://addons/grid_level_digger/grid_level_digout_ui.tscn")
     var digout: GridLevelDigout = scene.instantiate()
 
-    _digout_window.add_child(digout)
+    _popup_window.add_child(digout)
     digout.configure(panel)
 
-    EditorInterface.popup_dialog_centered(_digout_window, Vector2i(450, 300))
+    EditorInterface.popup_dialog_centered(_popup_window, Vector2i(450, 300))
 
     print_debug("[GLD Digger] Dig Out window created")
+
+func _on_box_in_pressed() -> void:
+    _spawn_window("Box In")
+
+    var scene: PackedScene = load("res://addons/grid_level_digger/grid_level_boxin_ui.tscn")
+    var digout: GridLevelBoxIn = scene.instantiate()
+
+    _popup_window.add_child(digout)
+    digout.configure(panel)
+
+    EditorInterface.popup_dialog_centered(_popup_window, Vector2i(450, 300))
+    print_debug("[GLD Digger] Box In window created")
+
+
+func _spawn_window(title: String) -> void:
+    if _popup_window != null:
+        _popup_window.queue_free()
+
+    _popup_window = Window.new()
+    _popup_window.close_requested.connect(
+        func() -> void:
+            _popup_window.queue_free()
+            _popup_window = null
+    )
+    _popup_window.initial_position = Window.WINDOW_INITIAL_POSITION_CENTER_SCREEN_WITH_KEYBOARD_FOCUS
+    _popup_window.popup_window = true
+
+    _popup_window.title = title

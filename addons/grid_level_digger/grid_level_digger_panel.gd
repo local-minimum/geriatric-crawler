@@ -70,6 +70,31 @@ func set_digout_settings(size: Vector3i, preserve: bool) -> void:
         _stored_settings[_GENERAL_KEY] = general
         settings_storage.store_data(0, _stored_settings)
 
+var boxin_size: Vector3i:
+    get():
+        return DictionaryUtils.safe_getv3i(
+            DictionaryUtils.safe_getd(_stored_settings, _GENERAL_KEY, {}, false),
+            _BOXIN_SIZE,
+            Vector3i(12, 12, 12),
+            false,
+        ).maxi(1)
+
+var boxin_preserve: bool:
+    get():
+        return DictionaryUtils.safe_getb(
+            DictionaryUtils.safe_getd(_stored_settings, _GENERAL_KEY, {}, false),
+            _BOXIN_PRESERVE,
+            false,
+            false,
+        )
+
+func set_boxin_settings(size: Vector3i, preserve: bool) -> void:
+        var general: Dictionary = DictionaryUtils.safe_getd(_stored_settings, _GENERAL_KEY, {}, false)
+        general[_BOXIN_PRESERVE] = preserve
+        general[_BOXIN_SIZE] = size.maxi(1)
+        _stored_settings[_GENERAL_KEY] = general
+        settings_storage.store_data(0, _stored_settings)
+
 var _node: GridNode
 var _anchor: GridAnchor
 
@@ -356,6 +381,8 @@ const _GENERAL_KEY: String = "general"
 const _PREVIEW_STYLE_TARGETS_KEY: String = "preview-style-targeets"
 const _DIGOUT_SIZE: String = "digout-size"
 const _DIGOUT_PRESERVE: String = "digout-preserve"
+const _BOXIN_SIZE: String = "boxin-size"
+const _BOXIN_PRESERVE: String = "boxin-preserve"
 
 func _handle_style_updated() -> void:
     _stored_settings[_STYLE_KEY] = styles.collect_save_data()
