@@ -56,8 +56,30 @@ func _find_copy_work(side: GridNodeSide) -> void:
 func _on_create__style_pressed() -> void:
     _on_create_pressed(true)
 
+
+var _swaps: Dictionary[String, String]
+var level_scene: String
+
 func _on_create_pressed(set_style: bool = false) -> void:
-    pass
+    _swaps.clear()
+    level_scene = EditorInterface.get_edited_scene_root().scene_file_path
+    var suffix: String = suffix.placeholder_text if suffix.text.is_empty() else suffix.text
+
+    _to_copy.sort_custom(func (a: Array, b: Array) -> bool:
+        var a_path: String = a[1]
+        var b_path: String = b[1]
+
+        return a_path.count("/") > b_path.count("/")
+    )
+
+    for part: Array in _to_copy:
+        var target: String = _get_target_path(part[0], suffix)
+        if part[2]:
+            await _make_duplicate(part[0], target)
+        else:
+            await _make_new_inherited(part[0], target)
+
+    EditorInterface.open_scene_from_path(level_scene)
 
 func _on_variant_suffix_text_changed(new_text: String) -> void:
     _sync_suffix(suffix.placeholder_text if new_text.is_empty() else new_text)
@@ -119,3 +141,73 @@ func _get_target_path(path: String, suffix: String) -> String:
 
     r_match.get_start(1)
     return "%s/%s%s.%s" % [basedir, filename.substr(0, r_match.get_start(1)), suffix, r_match.get_string(2)]
+
+func _make_duplicate(path: String, new_path: String):
+    var resource: Resource = load(path)
+    if ResourceSaver.save(resource, new_path) != OK:
+        push_error("[GLD Variant Maker] could not save '%s' to '%s'" % [path, new_path])
+
+    await _wait_for_scene(new_path)
+
+    EditorInterface.open_scene_from_path(new_path)
+
+    if _make_all_meshes_unique(new_path):
+        for node: Node in ResourceUtils.find_all_nodes_with_scene_file_paths(_panel.edited_scene_root):
+            if _swaps.has(node.scene_file_path):
+                var replacement_resouce: PackedScene = load(_swaps[node.scene_file_path])
+                var replacement: Node = replacement_resouce.instantiate()
+
+                node.get_parent().add_child(replacement)
+                replacement.owner = _panel.edited_scene_root.owner
+
+                if node is Node3D and replacement is Node3D:
+                    var transform: Transform3D = (node as Node3D).global_transform
+                    (replacement as Node3D).global_transform = transform
+                elif node is Node2D and replacement is Node2D:
+                    var transform: Transform2D = (node as Node2D).global_transform
+                    (replacement as Node2D).global_transform = transform
+                else:
+                    push_warning("[GLD Variant Maker] Cannot copy transforms / layout of %s to %s" % [node, replacement])
+
+                print_debug("[GLD Variant Maker] Swapping out '%s' @ '%s' for scene from %s" % [node.name, _panel.edited_scene_root.get_path_to(node), replacement.scene_file_path])
+                node.free()
+
+    EditorInterface.save_scene_as.call_deferred(new_path, true)
+    _swaps[path] = new_path
+
+    print_debug("[GLD Variant Maker] made duplicate scene '%s'" % new_path)
+
+func _make_new_inherited(path: String, new_path: String):
+    EditorInterface.open_scene_from_path(path, true)
+    EditorInterface.save_scene_as.call_deferred(new_path, true)
+
+    await _wait_for_scene(new_path)
+
+    _swaps[path] = new_path
+
+    print_debug("[GLD Variant Maker] made new inherited scene '%s'" % new_path)
+
+func _make_all_meshes_unique(path: String) -> bool:
+    var root: Node = _panel.edited_scene_root
+    if root.scene_file_path != path:
+        push_error("[GLD Variant Maker] Edited Scene '%s' is not the expected '%s'" % [root.scene_file_path, path])
+        return false
+
+    for m_instance: MeshInstance3D in root.find_children("", "MeshInstance3D"):
+        print_debug("[GLD Variant Maker] Will make mesh of '%s' in '%s' unique" % [m_instance.get_path(), root.scene_file_path])
+        m_instance.mesh = m_instance.mesh.duplicate(true)
+
+    return true
+
+func _wait_for_scene(path: String, timeeout: int = 5000):
+    var dir: DirAccess = DirAccess.open(path.get_base_dir())
+    if dir == null:
+        return
+
+    var start: int = Time.get_ticks_msec()
+
+    while !dir.file_exists(path.get_file()):
+        await get_tree().create_timer(0.1).timeout
+
+        if Time.get_ticks_msec() - start > timeeout:
+            break

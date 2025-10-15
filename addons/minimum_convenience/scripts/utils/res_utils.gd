@@ -143,3 +143,16 @@ static func find_all_nodes_using_resource(root: Node, scene_file_path: String, i
         nodes.append_array(find_all_nodes_using_resource(child, scene_file_path, internal))
 
     return nodes
+
+
+static func find_all_nodes_with_scene_file_paths(root: Node, internal: bool = false) -> Array[Node]:
+    var nodes: Array[Node]
+
+    for child: Node in root.get_children(internal):
+        if !child.scene_file_path.is_empty():
+            nodes.append(child)
+            continue
+
+        nodes.append_array(find_all_nodes_with_scene_file_paths(child, internal))
+
+    return nodes

@@ -117,6 +117,13 @@ func _set_coords(value: Vector3i) -> void:
 
 var undo_redo: EditorUndoRedoManager
 
+var _edited_scene_getter: Variant
+var edited_scene_root: Node:
+    get():
+        if _edited_scene_getter is Callable:
+            return _edited_scene_getter.call()
+        return null
+
 var all_level_nodes: Array[GridNode] = []
 var _debug_arrow_mesh: MeshInstance3D
 

@@ -11,6 +11,7 @@ var editor_selection: EditorSelection
 func _enter_tree() -> void:
     panel = TOOL_PANEL.instantiate()
     panel.undo_redo = get_undo_redo()
+    panel._edited_scene_getter = _get_edited_scene_root
 
     add_control_to_container(EditorPlugin.CONTAINER_INSPECTOR_BOTTOM, panel)
 
@@ -19,6 +20,9 @@ func _enter_tree() -> void:
 
     # Get the proper initial state
     _on_selection_change()
+
+func _get_edited_scene_root() -> Node:
+    return get_editor_interface().get_edited_scene_root()
 
 func _exit_tree() -> void:
     remove_control_from_container(EditorPlugin.CONTAINER_INSPECTOR_BOTTOM, panel)
