@@ -166,9 +166,10 @@ func _make_duplicate(path: String, new_path: String):
 
                 var replacement_resouce: PackedScene = load(_swaps[node.scene_file_path])
                 var replacement: Node = replacement_resouce.instantiate()
+                var name: String = node.name
 
                 node.get_parent().add_child(replacement)
-                replacement.owner = _panel.edited_scene_root.owner
+                replacement.owner = node.get_tree().edited_scene_root
 
                 if node is Node3D and replacement is Node3D:
                     var transform: Transform3D = (node as Node3D).global_transform
@@ -181,6 +182,7 @@ func _make_duplicate(path: String, new_path: String):
 
                 print_debug("[GLD Variant Maker] Swapping out '%s' @ '%s' for scene from %s" % [node.name, _panel.edited_scene_root.get_path_to(node), replacement.scene_file_path])
                 node.free()
+                replacement.name = name
 
     EditorInterface.save_scene_as.call_deferred(new_path, true)
 
