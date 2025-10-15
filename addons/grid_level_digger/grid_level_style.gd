@@ -173,6 +173,25 @@ func get_resource_from_direction(dir: CardinalDirections.CardinalDirection) -> R
         return _grid_floor_resource if _grid_floor_used else null
     return null
 
+func set_resource(dir: CardinalDirections.CardinalDirection, resource: Resource) -> void:
+    if CardinalDirections.is_planar_cardinal(dir):
+        _grid_wall_resource = resource
+        grid_wall_picker.edited_resource = resource
+        _grid_wall_used = true
+        _grid_wall_use.button_pressed = true
+    elif dir == CardinalDirections.CardinalDirection.UP:
+        _grid_ceiling_resource = resource
+        grid_ceiling_picker.edited_resource = resource
+        _grid_ceiling_used = true
+        _grid_ceiling_use.button_pressed = true
+    elif dir == CardinalDirections.CardinalDirection.DOWN:
+        _grid_floor_resource = resource
+        grid_floor_picker.edited_resource = resource
+        _grid_floor_used = true
+        _grid_floor_use.button_pressed = true
+
+    on_style_updated.emit()
+
 func get_resource_path_from_direction(dir: CardinalDirections.CardinalDirection) -> String:
     if CardinalDirections.is_planar_cardinal(dir):
         return get_wall_resource_path()

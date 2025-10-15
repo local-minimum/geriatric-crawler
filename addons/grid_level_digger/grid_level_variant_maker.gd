@@ -9,6 +9,9 @@ class_name GridLevelVariantMaker
 @export var create_buttons: Array[Button]
 
 var _panel: GridLevelDiggerPanel
+var _direction: CardinalDirections.CardinalDirection
+var _root_from: String
+
 ## [Resource Path, Relative Node Path, Duplicate (true) vs New Inherited (false)]
 var _to_copy: Array[Array]
 var _regexp: RegEx
@@ -19,6 +22,8 @@ func _init() -> void:
 
 func configure(panel: GridLevelDiggerPanel, side: GridNodeSide) -> void:
     _panel = panel
+    _direction = side.direction
+
     template.text = side.scene_file_path
 
     _find_copy_work(side)
@@ -27,6 +32,7 @@ func configure(panel: GridLevelDiggerPanel, side: GridNodeSide) -> void:
 func _find_copy_work(side: GridNodeSide) -> void:
     _to_copy.clear()
     _to_copy.append([side.scene_file_path, "", true])
+    _root_from = side.scene_file_path
     var _listed: Array[String]
 
     for m_instance: MeshInstance3D in side.find_children("", "MeshInstance3D", true, false):
@@ -83,6 +89,13 @@ func _on_create_pressed(set_style: bool = false) -> void:
             await _make_duplicate(part[0], target)
         else:
             await _make_new_inherited(part[0], target)
+
+    for new_scene: String in _swaps.values():
+        # TODO: CLean-up / close these scenes
+        pass
+
+    if set_style:
+        _panel.styles.set_resource(_direction, load(_swaps[_root_from]))
 
     EditorInterface.open_scene_from_path(level_scene)
 
@@ -185,7 +198,6 @@ func _make_duplicate(path: String, new_path: String):
                 replacement.name = name
 
     EditorInterface.save_scene_as.call_deferred(new_path, true)
-
     print_debug("[GLD Variant Maker] made duplicate scene '%s'" % new_path)
 
 func _make_new_inherited(path: String, new_path: String):
