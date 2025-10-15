@@ -101,7 +101,7 @@ static func _find_resources(
         )
 
 
-## Returns an array of [Node Path, Node Scene File Paht]:s
+## Returns an array of [Node Path, Node Scene File Path]:s
 static func list_resource_parentage(node: Node, until: String = "") -> Array[Array]:
     var res: Array[Array]
     var terminate: bool

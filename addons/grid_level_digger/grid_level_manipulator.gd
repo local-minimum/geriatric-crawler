@@ -4,27 +4,35 @@ class_name GridLevelManipulator
 
 @export var panel: GridLevelDiggerPanel
 
+@export var own_nav: GridLevelNav
+
 @export var node_type_label: Label
 @export var coordinates_label: Label
 @export var sync_position_btn: Button
 @export var infer_coordinates_btn: Button
 @export var style: GridLevelStyle
+
+@export_group("In front")
 @export var remove_neighbour_in_front_button: Button
 @export var swap_wall_button: Button
+@export var variant_wall_button: Button
 @export var style_wall_button: Button
 @export var add_wall_button: Button
 @export var remove_wall_button: Button
+
+@export_group("Up")
 @export var remove_neighbour_up_button: Button
 @export var swap_ceiling_button: Button
 @export var style_ceiling_button: Button
 @export var add_ceiling_button: Button
 @export var remove_ceiling_button: Button
+
+@export_group("Down")
 @export var remove_neighbour_down_button: Button
 @export var swap_floor_button: Button
 @export var style_floor_button: Button
 @export var add_floor_button: Button
 @export var remove_floor_button: Button
-@export var own_nav: GridLevelNav
 
 func _ready() -> void:
     style.on_style_updated.connect(_on_style_update)
@@ -36,9 +44,9 @@ func _ready() -> void:
     _on_style_update()
 
 func _exit_tree() -> void:
-    if _style_window != null:
-        _style_window.queue_free()
-        _style_window = null
+    if _window != null:
+        _window.queue_free()
+        _window = null
 
 var _may_add_wall_style: bool
 var _has_wall: bool
@@ -48,7 +56,7 @@ var _has_ceiling: bool
 
 var _may_add_floor_style: bool
 var _has_floor: bool
-var _style_window: Window
+var _window: Window
 
 func _on_style_update() -> void:
     _may_add_wall_style = style.get_wall_resource() != null
@@ -124,6 +132,7 @@ func _sync_node_side_buttons(node: GridNode, look_direction: CardinalDirections.
     var _wall: GridNodeSide = GridNodeSide.get_node_side(node, forward) if has_node else null
     swap_wall_button.disabled = _wall == null || !_may_add_wall_style || style.get_wall_resource_path() == _wall.scene_file_path
     style_wall_button.disabled = _wall == null
+    variant_wall_button.disabled = _wall == null
     _has_wall = _wall != null && _wall.anchor != null
     # if !_has_wall && wall_neighbour != null:
     #    _wall = GridNodeSide.get_node_side(wall_neighbour, CardinalDirections.invert(forward))
@@ -306,26 +315,52 @@ func _show_style_window(direction: CardinalDirections.CardinalDirection) -> void
     if side == null:
         return
 
-    if _style_window != null:
-        _style_window.queue_free()
-
-    _style_window = Window.new()
-    _style_window.close_requested.connect(
-        func() -> void:
-            _style_window.queue_free()
-            _style_window = null
-    )
-    _style_window.initial_position = Window.WINDOW_INITIAL_POSITION_CENTER_SCREEN_WITH_KEYBOARD_FOCUS
-    _style_window.popup_window = true
-
-    _style_window.title = "Style Side"
+    _spawn_window("Style Side")
     var scene: PackedScene = load("res://addons/grid_level_digger/controls/node_side_styler.tscn")
     var styler: GridLevelNodeSideStyler = scene.instantiate()
 
-    _style_window.add_child(styler)
+    _window.add_child(styler)
 
     styler.configure(side, panel)
 
-    EditorInterface.popup_dialog_centered(_style_window, Vector2i(600, 800))
+    EditorInterface.popup_dialog_centered(_window, Vector2i(600, 800))
 
     print_debug("[GLD Manipulator] Created style window!")
+
+func _spawn_window(title: String) -> void:
+    if _window != null:
+        _window.queue_free()
+
+    _window = Window.new()
+    _window.close_requested.connect(
+        func() -> void:
+            _window.queue_free()
+            _window = null
+    )
+    _window.initial_position = Window.WINDOW_INITIAL_POSITION_CENTER_SCREEN_WITH_KEYBOARD_FOCUS
+    _window.popup_window = true
+
+    _window.title = title
+
+
+func _on_variant_wall_in_front_pressed() -> void:
+    _show_make_variant_window(panel.look_direction)
+
+func _show_make_variant_window(direction: CardinalDirections.CardinalDirection) -> void:
+    var grid_node: GridNode = panel.get_grid_node()
+    var side: GridNodeSide = GridNodeSide.get_node_side(grid_node, direction)
+    if side == null:
+        return
+
+    _spawn_window("Make Variant")
+
+    var scene: PackedScene = load("res://addons/grid_level_digger/grid_level_variant_maker_ui.tscn")
+    var variant_maker: GridLevelVariantMaker = scene.instantiate()
+
+    _window.add_child(variant_maker)
+
+    variant_maker.configure(panel, side)
+
+    EditorInterface.popup_dialog_centered(_window, Vector2i(800, 500))
+
+    print_debug("[GLD Manipulator] Created make variant window!")

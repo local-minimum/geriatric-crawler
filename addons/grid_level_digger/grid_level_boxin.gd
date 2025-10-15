@@ -35,10 +35,12 @@ func configure(panel: GridLevelDiggerPanel) -> void:
     _handle_nav(panel.coordinates, panel.look_direction)
 
 func _exit_tree() -> void:
-    _panel.set_boxin_settings(_size, _preserve.button_pressed)
-    _panel.unregister_nav(_nav)
+    if _panel != null:
+        _panel.set_boxin_settings(_size, _preserve.button_pressed)
+        _panel.unregister_nav(_nav)
 
-    _nav.on_update_nav.disconnect(_handle_nav)
+    if _nav.on_update_nav.is_connected(_handle_nav):
+        _nav.on_update_nav.disconnect(_handle_nav)
 
     _clear_highlights()
     print_debug("[GDL Box In] Exit tree")

@@ -1,0 +1,99 @@
+[gd_scene load_steps=2 format=3 uid="uid://cy40ufuuu4npt"]
+
+[ext_resource type="Script" uid="uid://doy54yi6tt5nd" path="res://addons/grid_level_digger/grid_level_variant_maker.gd" id="1_iciq4"]
+
+[node name="GridLevelVariantMakerUi" type="MarginContainer" node_paths=PackedStringArray("template", "suffix", "warning", "create_files_list", "create_buttons")]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+mouse_filter = 0
+script = ExtResource("1_iciq4")
+template = NodePath("MarginContainer/VBoxContainer/GridContainer/Template")
+suffix = NodePath("MarginContainer/VBoxContainer/GridContainer/Variant Suffix")
+warning = NodePath("MarginContainer/VBoxContainer/Warnings")
+create_files_list = NodePath("MarginContainer/VBoxContainer/MarginContainer/To Create List")
+create_buttons = [NodePath("MarginContainer/VBoxContainer/HBoxContainer/Create"), NodePath("MarginContainer/VBoxContainer/HBoxContainer/Create & Style")]
+metadata/_custom_type_script = "uid://doy54yi6tt5nd"
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 4
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 4
+theme_override_constants/margin_bottom = 4
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="GridContainer" type="GridContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/h_separation = 16
+theme_override_constants/v_separation = 4
+columns = 2
+
+[node name="Template Label" type="Label" parent="MarginContainer/VBoxContainer/GridContainer"]
+layout_mode = 2
+text = "Template"
+
+[node name="Template" type="LineEdit" parent="MarginContainer/VBoxContainer/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+alignment = 2
+editable = false
+
+[node name="Variant Suffix Label" type="Label" parent="MarginContainer/VBoxContainer/GridContainer"]
+layout_mode = 2
+text = "Variant Suffix"
+
+[node name="Variant Suffix" type="LineEdit" parent="MarginContainer/VBoxContainer/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "_alt"
+alignment = 2
+
+[node name="To Create Label" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Tasks:"
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 8
+
+[node name="To Create List" type="Label" parent="MarginContainer/VBoxContainer/MarginContainer"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+text = "File_xxx.tscn"
+autowrap_mode = 3
+
+[node name="Warnings" type="Label" parent="MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.940228, 0, 0.172013, 1)
+text = "Variant filename already exists!"
+autowrap_mode = 3
+
+[node name="Spacer" type="Control" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Create" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Create"
+
+[node name="Create & Style" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Create &  Set As Style"
+
+[connection signal="text_changed" from="MarginContainer/VBoxContainer/GridContainer/Variant Suffix" to="." method="_on_variant_suffix_text_changed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/HBoxContainer/Create" to="." method="_on_create_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/HBoxContainer/Create & Style" to="." method="_on_create__style_pressed"]
