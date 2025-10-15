@@ -143,6 +143,8 @@ func _get_target_path(path: String, suffix: String) -> String:
     return "%s/%s%s.%s" % [basedir, filename.substr(0, r_match.get_start(1)), suffix, r_match.get_string(2)]
 
 func _make_duplicate(path: String, new_path: String):
+    print_debug("[GLD Variant Maker] make duplicate scene form '%s'" % path)
+
     var resource: Resource = load(path)
     if ResourceSaver.save(resource, new_path) != OK:
         push_error("[GLD Variant Maker] could not save '%s' to '%s'" % [path, new_path])
@@ -178,6 +180,8 @@ func _make_duplicate(path: String, new_path: String):
     print_debug("[GLD Variant Maker] made duplicate scene '%s'" % new_path)
 
 func _make_new_inherited(path: String, new_path: String):
+    print_debug("[GLD Variant Maker] make new inherited scene form '%s'" % path)
+
     EditorInterface.open_scene_from_path(path, true)
     EditorInterface.save_scene_as.call_deferred(new_path, true)
 
@@ -194,7 +198,7 @@ func _make_all_meshes_unique(path: String) -> bool:
         return false
 
     for m_instance: MeshInstance3D in root.find_children("", "MeshInstance3D"):
-        print_debug("[GLD Variant Maker] Will make mesh of '%s' in '%s' unique" % [m_instance.get_path(), root.scene_file_path])
+        print_debug("[GLD Variant Maker] Will make mesh of '%s' in '%s' unique" % [root.get_path_to(m_instance), root.scene_file_path])
         m_instance.mesh = m_instance.mesh.duplicate(true)
 
     return true
