@@ -1,0 +1,26 @@
+[gd_scene load_steps=6 format=3 uid="uid://dvtwb41vgfjlf"]
+
+[ext_resource type="Script" uid="uid://c6733p4qj68p" path="res://scripts/gridded_level/level_features/grid_node_side.gd" id="1_de4hi"]
+[ext_resource type="Script" uid="uid://bsjvh2o2oob57" path="res://scripts/gridded_level/level_features/grid_anchor.gd" id="2_yi1eq"]
+[ext_resource type="Script" uid="uid://b8a6yvndcxtpa" path="res://scripts/gridded_level/transportation_mode.gd" id="3_q023i"]
+[ext_resource type="PackedScene" uid="uid://cy5j5h858l1vt" path="res://models/concreteslab_alt.tscn" id="4_de4hi"]
+
+[sub_resource type="Resource" id="Resource_p5glw"]
+script = ExtResource("3_q023i")
+mode = 8
+metadata/_custom_type_script = "uid://b8a6yvndcxtpa"
+
+[node name="BasicWall" type="Node3D" node_paths=PackedStringArray("anchor")]
+script = ExtResource("1_de4hi")
+direction = 1
+anchor = NodePath("GridAnchor")
+
+[node name="GridAnchor" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.25, -1.15)
+script = ExtResource("2_yi1eq")
+direction = 1
+required_transportation_mode = SubResource("Resource_p5glw")
+metadata/_custom_type_script = "uid://bsjvh2o2oob57"
+
+[node name="concreteslab" type="Node3D" parent="." instance=ExtResource("4_de4hi")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.25, -1.25)
