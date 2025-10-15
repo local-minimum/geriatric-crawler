@@ -69,6 +69,11 @@ func _on_create_pressed(set_style: bool = false) -> void:
         var a_path: String = a[1]
         var b_path: String = b[1]
 
+        if b_path.is_empty():
+            return true
+        elif a_path.is_empty():
+            return false
+
         return a_path.count("/") > b_path.count("/")
     )
 
@@ -140,7 +145,7 @@ func _get_target_path(path: String, suffix: String) -> String:
 
 
     r_match.get_start(1)
-    return "%s/%s%s.%s" % [basedir, filename.substr(0, r_match.get_start(1)), suffix, r_match.get_string(2)]
+    return "%s/%s%s.tscn" % [basedir, filename.substr(0, r_match.get_start(1)), suffix]
 
 func _make_duplicate(path: String, new_path: String):
     print_debug("[GLD Variant Maker] make duplicate scene form '%s'" % path)
@@ -149,6 +154,7 @@ func _make_duplicate(path: String, new_path: String):
     if ResourceSaver.save(resource, new_path) != OK:
         push_error("[GLD Variant Maker] could not save '%s' to '%s'" % [path, new_path])
 
+    _swaps[path] = new_path
     await _wait_for_scene(new_path)
 
     EditorInterface.open_scene_from_path(new_path)
@@ -156,6 +162,8 @@ func _make_duplicate(path: String, new_path: String):
     if _make_all_meshes_unique(new_path):
         for node: Node in ResourceUtils.find_all_nodes_with_scene_file_paths(_panel.edited_scene_root):
             if _swaps.has(node.scene_file_path):
+                await _wait_for_scene(_swaps[node.scene_file_path])
+
                 var replacement_resouce: PackedScene = load(_swaps[node.scene_file_path])
                 var replacement: Node = replacement_resouce.instantiate()
 
@@ -175,19 +183,18 @@ func _make_duplicate(path: String, new_path: String):
                 node.free()
 
     EditorInterface.save_scene_as.call_deferred(new_path, true)
-    _swaps[path] = new_path
 
     print_debug("[GLD Variant Maker] made duplicate scene '%s'" % new_path)
 
 func _make_new_inherited(path: String, new_path: String):
     print_debug("[GLD Variant Maker] make new inherited scene form '%s'" % path)
 
+    _swaps[path] = new_path
+
     EditorInterface.open_scene_from_path(path, true)
     EditorInterface.save_scene_as.call_deferred(new_path, true)
 
     await _wait_for_scene(new_path)
-
-    _swaps[path] = new_path
 
     print_debug("[GLD Variant Maker] made new inherited scene '%s'" % new_path)
 
@@ -197,9 +204,11 @@ func _make_all_meshes_unique(path: String) -> bool:
         push_error("[GLD Variant Maker] Edited Scene '%s' is not the expected '%s'" % [root.scene_file_path, path])
         return false
 
-    for m_instance: MeshInstance3D in root.find_children("", "MeshInstance3D"):
-        print_debug("[GLD Variant Maker] Will make mesh of '%s' in '%s' unique" % [root.get_path_to(m_instance), root.scene_file_path])
-        m_instance.mesh = m_instance.mesh.duplicate(true)
+    # TODO: Fix this to make standard meshes that are not derived from models unique!
+
+    # for m_instance: MeshInstance3D in root.find_children("", "MeshInstance3D"):
+    #    print_debug("[GLD Variant Maker] Will make mesh of '%s' in '%s' unique" % [root.get_path_to(m_instance), root.scene_file_path])
+    #    m_instance.mesh = m_instance.mesh.duplicate(true)
 
     return true
 
