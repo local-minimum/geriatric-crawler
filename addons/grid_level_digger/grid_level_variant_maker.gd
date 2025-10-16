@@ -14,6 +14,8 @@ var _direction: CardinalDirections.CardinalDirection
 var _root_from: String
 var _highlight: MeshInstance3D
 
+static var _start_with_suffix: String
+
 ## [Resource Path, Relative Node Path, Duplicate (true) vs New Inherited (false)]
 var _to_copy: Array[Array]
 var _regexp: RegEx
@@ -34,9 +36,10 @@ func configure(panel: GridLevelDiggerPanel, side: GridNodeSide, close: Callable)
     _close = close
 
     template.text = side.scene_file_path
+    suffix.text = _start_with_suffix
 
     _find_copy_work(side)
-    _sync_suffix(suffix.placeholder_text)
+    _sync_suffix(suffix.placeholder_text if suffix.text.is_empty() else suffix.text)
     _highlight_targets(side)
 
 func _highlight_targets(side: GridNodeSide) -> void:
@@ -58,7 +61,7 @@ func _find_copy_work(side: GridNodeSide) -> void:
     for m_instance: MeshInstance3D in side.find_children("", "MeshInstance3D", true, false):
         var parts: Array[Array] = ResourceUtils.list_resource_parentage(m_instance, side.get_path())
         parts.reverse()
-        print_debug("[GLD Variant Maker] Found Mesh '%s' with parentage (%s) %s" % [m_instance.name, parts.size(), parts])
+        print_debug("[GLD Variant Maker] Found Mesh '%s' with parentage depth %s" % [m_instance.name, parts.size()])
         var idx = -1
         for part: Array[String] in parts:
             idx += 1
@@ -70,23 +73,22 @@ func _find_copy_work(side: GridNodeSide) -> void:
 
             var relative: String = node_path.trim_prefix(side.get_path())
             relative = relative.trim_prefix("/")
-            print_debug("[GLD Variant Maker] Looking for node-path '%s'" % relative)
 
             if _listed.has(relative):
                 continue
 
             _to_copy.append([resource_path, relative, idx != parts.size() - 1])
             _listed.append(relative)
-
+            print_debug("[GLD Variant Maker] Added job on '%s' resource %s" % [relative, resource_path])
 
 func _on_create__style_pressed() -> void:
     _on_create_pressed(true)
-
 
 var _swaps: Dictionary[String, String]
 var level_scene: String
 
 func _on_create_pressed(set_style: bool = false) -> void:
+    _start_with_suffix = ""
     _swaps.clear()
     level_scene = EditorInterface.get_edited_scene_root().scene_file_path
     var suffix: String = suffix.placeholder_text if suffix.text.is_empty() else suffix.text
@@ -122,9 +124,11 @@ func _on_create_pressed(set_style: bool = false) -> void:
             push_warning("[GLD Variant Maker] Cannot update style because failed to create new scene or not yet created")
 
     EditorInterface.open_scene_from_path(level_scene)
+
     _close.call()
 
 func _on_variant_suffix_text_changed(new_text: String) -> void:
+    _start_with_suffix = new_text
     _sync_suffix(suffix.placeholder_text if new_text.is_empty() else new_text)
 
 
@@ -235,6 +239,7 @@ func _make_new_inherited(path: String, new_path: String):
 
     await _wait_for_scene(new_path)
 
+    _make_all_meshes_unique(new_path)
     print_debug("[GLD Variant Maker] made new inherited scene '%s'" % new_path)
 
 func _make_all_meshes_unique(path: String) -> bool:
@@ -245,9 +250,9 @@ func _make_all_meshes_unique(path: String) -> bool:
 
     # TODO: Fix this to make standard meshes that are not derived from models unique!
 
-    # for m_instance: MeshInstance3D in root.find_children("", "MeshInstance3D"):
-    #    print_debug("[GLD Variant Maker] Will make mesh of '%s' in '%s' unique" % [root.get_path_to(m_instance), root.scene_file_path])
-    #    m_instance.mesh = m_instance.mesh.duplicate(true)
+    for m_instance: MeshInstance3D in root.find_children("", "MeshInstance3D"):
+        print_debug("[GLD Variant Maker] Will make mesh of '%s' in '%s' unique" % [root.get_path_to(m_instance), root.scene_file_path])
+    #    m_instance.mesh = m_instance.mesh.duplicate()
 
     return true
 
