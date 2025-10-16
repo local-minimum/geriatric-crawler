@@ -251,6 +251,10 @@ func _make_all_meshes_unique(path: String) -> bool:
     # TODO: Fix this to make standard meshes that are not derived from models unique!
 
     for m_instance: MeshInstance3D in root.find_children("", "MeshInstance3D"):
+        if ResourceUtils.in_instanced_scene_under_parent(root, m_instance):
+            # push_warning("[GLD Variant Maker] Mesh of '%s' in '%s' should not be made unique because part of other scene" % [root.get_path_to(m_instance), root.scene_file_path])
+            continue
+
         print_debug("[GLD Variant Maker] Will make mesh of '%s' in '%s' unique" % [root.get_path_to(m_instance), root.scene_file_path])
     #    m_instance.mesh = m_instance.mesh.duplicate()
 

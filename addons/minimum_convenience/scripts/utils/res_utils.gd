@@ -121,6 +121,23 @@ static func list_resource_parentage(node: Node, until: String = "") -> Array[Arr
 
     return res
 
+## This assumes node is in fact a child of parent, the function will not check that
+static func in_instanced_scene_under_parent(parent: Node, node: Node) -> bool:
+    while true:
+        if node == parent:
+            return false
+
+        if !node.scene_file_path.is_empty():
+            # print_debug("[Resource Utils] %s has path %s and thus not part of %s" % [node, node.scene_file_path, parent])
+            return true
+
+        node = node.get_parent()
+
+        if node == null:
+            break
+
+    return false
+
 static func find_first_node_using_resource(root: Node, scene_file_path: String, internal: bool = false) -> Node:
     for child: Node in root.get_children(internal):
         if child.scene_file_path == scene_file_path:
