@@ -87,6 +87,7 @@ func _on_create__style_pressed() -> void:
     _on_create_pressed(true)
 
 var _swaps: Dictionary[String, String]
+var _roots: Dictionary[String, Node]
 var level_scene: String
 
 func _on_create_pressed(set_style: bool = false) -> void:
@@ -114,10 +115,8 @@ func _on_create_pressed(set_style: bool = false) -> void:
         else:
             _make_new_inherited(part[0], target)
 
-    print_debug("[GLD Variant Maker] Closing newly created scene tabs")
     for new_scene: String in _swaps.values():
-        # TODO: CLean-up / close these scenes
-        pass
+        print_debug("[GLD Variant Maker] Wanting to close newly created scene '%s' with parentage %s" % [new_scene, _roots[new_scene].get_path()])
 
     if set_style:
         if _swaps.has(_root_from):
@@ -233,9 +232,12 @@ func _make_duplicate(path: String, new_path: String):
         push_error("[GLD Variant Maker] could not save '%s' to '%s'" % [path, new_path])
 
     _swaps[path] = new_path
+
     await _wait_for_scene(new_path)
 
     EditorInterface.open_scene_from_path(new_path)
+
+    _roots[new_path] = _panel.edited_scene_root
 
     if _make_all_meshes_unique(new_path):
         for node: Node in ResourceUtils.find_all_nodes_with_scene_file_paths(_panel.edited_scene_root):
@@ -274,6 +276,8 @@ func _make_new_inherited(path: String, new_path: String):
     EditorInterface.save_scene_as(new_path, true)
 
     await _wait_for_scene(new_path)
+
+    _roots[new_path] = _panel.edited_scene_root
 
     _make_all_meshes_unique(new_path)
     EditorInterface.save_scene_as(new_path, true)
