@@ -276,6 +276,8 @@ func _make_new_inherited(path: String, new_path: String):
     await _wait_for_scene(new_path)
 
     _make_all_meshes_unique(new_path)
+    EditorInterface.save_scene_as(new_path, true)
+
     print_debug("[GLD Variant Maker] made new inherited scene '%s'" % new_path)
 
 func _make_all_meshes_unique(path: String) -> bool:
