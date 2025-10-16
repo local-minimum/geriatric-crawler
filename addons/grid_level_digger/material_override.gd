@@ -43,18 +43,19 @@ func apply(root: Node) -> void:
                 target_scene_file_path,
             ])
 
-    var node: Node = ResourceUtils.find_first_node_using_resource(root, target_scene_file_path)
-    if node != null && node is MeshInstance3D:
+    var node: Node = ResourceUtils.find_first_node_using_resource(root, target_scene_file_path, true)
+    if node != null:
         if _apply(node):
             print_debug("[Material Override] Applied %s to %s surface %s" % [override_material, node, surface_idx])
             var new_target_path: String = root.get_path_to(node)
             known_usage_path = new_target_path
             return
 
-    push_warning("[Material Override] Failed to apply %s to %s, no usaged found under %s" % [
+    push_warning("[Material Override] Failed to apply %s to %s, no usaged found under %s (search turned up %s)" % [
         override_material,
         target_scene_file_path,
         root,
+        node,
     ])
 
 
