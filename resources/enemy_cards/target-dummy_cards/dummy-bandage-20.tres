@@ -10,7 +10,6 @@ target = 2
 min_effect = 1
 max_effect = 3
 effect_crit_base = 2
-crits_on_allies = true
 crits_on_enemies = false
 metadata/_custom_type_script = "uid://b1hgbfym62rba"
 
@@ -20,7 +19,5 @@ id = "dummy-bandage-20"
 name = "CARD_BANDAGE"
 card_owner = 2
 rank = 20
-suit = 0
 primary_effects = Array[ExtResource("1_jept6")]([SubResource("Resource_nww15")])
-secondary_effects = Array[int]([])
 metadata/_custom_type_script = "uid://cqlxwfe858g4h"

@@ -5,13 +5,11 @@
 
 [sub_resource type="Resource" id="Resource_1wvdc"]
 script = ExtResource("1_1wvdc")
-mode = 0
 target = 65
 min_effect = 2
 max_effect = 4
 effect_crit_base = 2
 crits_on_allies = false
-crits_on_enemies = true
 metadata/_custom_type_script = "uid://b1hgbfym62rba"
 
 [resource]

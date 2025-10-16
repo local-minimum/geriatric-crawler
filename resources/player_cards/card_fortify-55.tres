@@ -10,7 +10,6 @@ target = 68
 min_effect = 1
 max_effect = 6
 effect_crit_base = 1
-crits_on_allies = true
 crits_on_enemies = false
 metadata/_custom_type_script = "uid://b1hgbfym62rba"
 
@@ -18,7 +17,6 @@ metadata/_custom_type_script = "uid://b1hgbfym62rba"
 script = ExtResource("2_a4005")
 id = "fortify-55"
 name = "CARD_FORTIFY"
-card_owner = 0
 rank = 55
 suit = 6
 primary_effects = Array[ExtResource("1_bla2r")]([SubResource("Resource_fjm50")])

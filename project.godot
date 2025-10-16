@@ -15,7 +15,7 @@ config/version="0.0.2"
 run/main_scene="uid://5mvkmlsl4h3x"
 config/use_custom_user_dir=true
 config/custom_user_dir_name="Unknown Incubator/Geriatric Crawler"
-config/features=PackedStringArray("4.4", "Forward Plus")
+config/features=PackedStringArray("4.5", "Forward Plus")
 config/icon="res://icon.svg"
 
 [autoload]
