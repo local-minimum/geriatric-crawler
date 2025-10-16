@@ -17,6 +17,7 @@ suffix = NodePath("MarginContainer/VBoxContainer/GridContainer/Variant Suffix")
 warning = NodePath("MarginContainer/VBoxContainer/Warnings")
 create_files_list = NodePath("MarginContainer/VBoxContainer/MarginContainer/To Create List")
 create_buttons = [NodePath("MarginContainer/VBoxContainer/HBoxContainer/Create"), NodePath("MarginContainer/VBoxContainer/HBoxContainer/Create & Style")]
+_highlight_color = Color(0.4, 0.8, 0.6666667, 0.15686275)
 metadata/_custom_type_script = "uid://doy54yi6tt5nd"
 
 [node name="MarginContainer" type="MarginContainer" parent="."]

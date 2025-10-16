@@ -69,7 +69,7 @@
 [ext_resource type="Material" uid="uid://q68n4457kjxn" path="res://materials/carbon/carbon.tres" id="65_ytmnc"]
 [ext_resource type="Material" uid="uid://csq8rvt37xowc" path="res://materials/tiles/tiles.tres" id="68_hp2am"]
 
-[sub_resource type="Resource" id="Resource_hp2am"]
+[sub_resource type="Resource" id="Resource_vupyu"]
 resource_local_to_scene = true
 script = ExtResource("4_840jk")
 mode = 61
@@ -134,7 +134,7 @@ script = ExtResource("64_bt6hk")
 override_material = ExtResource("68_hp2am")
 target_scene_file_path = "res://models/concreteslab.fbx"
 relative_path = "Cube"
-known_usage_path = "Elevation 0/Node (3, 0, 3)/Side WEST/concreteslab"
+known_usage_path = "Elevation 0/Node (0, 0, 1)/Side DOWN/concreteslab"
 
 [node name="TestLevel" type="Node3D" node_paths=PackedStringArray("player", "level_geometry", "punishments", "primary_entry_portal", "level_portals", "zones_parent", "zones", "broadcasts_parent")]
 script = ExtResource("1_dd1ob")
@@ -152,7 +152,7 @@ broadcasts_parent = NodePath("Broadcasts")
 [node name="Player" parent="." instance=ExtResource("3_m6mav")]
 process_mode = 3
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0145968, -0.00857759, 0.00070858)
-transportation_abilities = SubResource("Resource_hp2am")
+transportation_abilities = SubResource("Resource_vupyu")
 transportation_mode = SubResource("Resource_pgxau")
 
 [node name="LevelGeometry" type="Node3D" parent="."]
@@ -863,9 +863,11 @@ direction = 4
 
 [node name="Side DOWN" parent="LevelGeometry/Elevation 0/Node (0, 0, 0)" instance=ExtResource("9_4mxkc")]
 
-[node name="Side WEST" parent="LevelGeometry/Elevation 0/Node (0, 0, 0)" instance=ExtResource("6_5axwy")]
-transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0, 0)
+[node name="Side WEST" type="Node3D" parent="LevelGeometry/Elevation 0/Node (0, 0, 0)" node_paths=PackedStringArray("anchor") instance=ExtResource("17_vupyu")]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 0, 0, 0)
+script = ExtResource("18_hp2am")
 direction = 3
+anchor = NodePath("GridAnchor")
 
 [node name="Node (-1, 0, 0)" parent="LevelGeometry/Elevation 0" instance=ExtResource("4_myev5")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.5, 0, 0)
@@ -4257,11 +4259,9 @@ direction = 4
 
 [node name="Side DOWN" parent="LevelGeometry/Elevation -1/Node (-2, -1, -2)" instance=ExtResource("9_4mxkc")]
 
-[node name="Side SOUTH" type="Node3D" parent="LevelGeometry/Elevation -1/Node (-2, -1, -2)" node_paths=PackedStringArray("anchor") instance=ExtResource("17_vupyu")]
+[node name="Side SOUTH" parent="LevelGeometry/Elevation -1/Node (-2, -1, -2)" instance=ExtResource("17_vupyu")]
 transform = Transform3D(-1, 0, -1.509958e-07, 0, 1, 0, 1.509958e-07, 0, -1, 0, 0, 0)
-script = ExtResource("18_hp2am")
 direction = 2
-anchor = NodePath("GridAnchor")
 
 [node name="Node (-5, -1, -5)" parent="LevelGeometry/Elevation -1" instance=ExtResource("4_myev5")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12.5, -2.5, -12.5)

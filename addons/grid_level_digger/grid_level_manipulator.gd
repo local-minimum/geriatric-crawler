@@ -327,21 +327,23 @@ func _show_style_window(direction: CardinalDirections.CardinalDirection) -> void
 
     print_debug("[GLD Manipulator] Created style window!")
 
-func _spawn_window(title: String) -> void:
+func _spawn_window(title: String) -> Callable:
     if _window != null:
         _window.queue_free()
 
     _window = Window.new()
-    _window.close_requested.connect(
-        func() -> void:
-            _window.queue_free()
-            _window = null
-    )
+
+    var on_close: Callable = func() -> void:
+        _window.queue_free()
+        _window = null
+
+    _window.close_requested.connect(on_close)
     _window.initial_position = Window.WINDOW_INITIAL_POSITION_CENTER_SCREEN_WITH_KEYBOARD_FOCUS
     _window.popup_window = true
 
     _window.title = title
 
+    return on_close
 
 func _on_variant_wall_in_front_pressed() -> void:
     _show_make_variant_window(panel.look_direction)
@@ -352,14 +354,14 @@ func _show_make_variant_window(direction: CardinalDirections.CardinalDirection) 
     if side == null:
         return
 
-    _spawn_window("Make Variant")
+    var on_close_window: Callable = _spawn_window("Make Variant")
 
     var scene: PackedScene = load("res://addons/grid_level_digger/grid_level_variant_maker_ui.tscn")
     var variant_maker: GridLevelVariantMaker = scene.instantiate()
 
     _window.add_child(variant_maker)
 
-    variant_maker.configure(panel, side)
+    variant_maker.configure(panel, side, on_close_window)
 
     EditorInterface.popup_dialog_centered(_window, Vector2i(800, 500))
 

@@ -7,27 +7,47 @@ class_name GridLevelVariantMaker
 @export var warning: Label
 @export var create_files_list: Label
 @export var create_buttons: Array[Button]
+@export var _highlight_color: Color = Color.MEDIUM_AQUAMARINE
 
 var _panel: GridLevelDiggerPanel
 var _direction: CardinalDirections.CardinalDirection
 var _root_from: String
+var _highlight: MeshInstance3D
 
 ## [Resource Path, Relative Node Path, Duplicate (true) vs New Inherited (false)]
 var _to_copy: Array[Array]
 var _regexp: RegEx
+var _close: Callable
 
 func _init() -> void:
     _regexp = RegEx.new()
     _regexp.compile("(\\.|_[^_]+\\.)(.+$)")
 
-func configure(panel: GridLevelDiggerPanel, side: GridNodeSide) -> void:
+func _exit_tree() -> void:
+    if _highlight != null:
+        _highlight.queue_free()
+        _highlight = null
+
+func configure(panel: GridLevelDiggerPanel, side: GridNodeSide, close: Callable) -> void:
     _panel = panel
     _direction = side.direction
+    _close = close
 
     template.text = side.scene_file_path
 
     _find_copy_work(side)
     _sync_suffix(suffix.placeholder_text)
+    _highlight_targets(side)
+
+func _highlight_targets(side: GridNodeSide) -> void:
+    var bounds: AABB = AABBUtils.bounding_box(side).grow(0.1)
+    _highlight = DebugDraw.box(
+        _panel.level,
+        bounds.get_center(),
+        bounds.size,
+        _highlight_color,
+        false,
+    )
 
 func _find_copy_work(side: GridNodeSide) -> void:
     _to_copy.clear()
@@ -102,6 +122,7 @@ func _on_create_pressed(set_style: bool = false) -> void:
             push_warning("[GLD Variant Maker] Cannot update style because failed to create new scene or not yet created")
 
     EditorInterface.open_scene_from_path(level_scene)
+    _close.call()
 
 func _on_variant_suffix_text_changed(new_text: String) -> void:
     _sync_suffix(suffix.placeholder_text if new_text.is_empty() else new_text)
