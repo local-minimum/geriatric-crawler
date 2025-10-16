@@ -226,7 +226,7 @@ func _make_duplicate(path: String, new_path: String):
                 node.free()
                 replacement.name = name
 
-    EditorInterface.save_scene_as.call_deferred(new_path, true)
+    EditorInterface.save_scene_as(new_path, true)
     print_debug("[GLD Variant Maker] made duplicate scene '%s'" % new_path)
 
 func _make_new_inherited(path: String, new_path: String):
@@ -235,7 +235,7 @@ func _make_new_inherited(path: String, new_path: String):
     _swaps[path] = new_path
 
     EditorInterface.open_scene_from_path(path, true)
-    EditorInterface.save_scene_as.call_deferred(new_path, true)
+    EditorInterface.save_scene_as(new_path, true)
 
     await _wait_for_scene(new_path)
 
