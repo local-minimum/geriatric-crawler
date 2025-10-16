@@ -86,16 +86,20 @@ func _on_create_pressed(set_style: bool = false) -> void:
     for part: Array in _to_copy:
         var target: String = _get_target_path(part[0], suffix)
         if part[2]:
-            await _make_duplicate(part[0], target)
+            _make_duplicate(part[0], target)
         else:
-            await _make_new_inherited(part[0], target)
+            _make_new_inherited(part[0], target)
 
+    print_debug("[GLD Variant Maker] Closing newly created scene tabs")
     for new_scene: String in _swaps.values():
         # TODO: CLean-up / close these scenes
         pass
 
     if set_style:
-        _panel.styles.set_resource(_direction, load(_swaps[_root_from]))
+        if _swaps.has(_root_from):
+            _panel.styles.set_resource(_direction, load(_swaps[_root_from]))
+        else:
+            push_warning("[GLD Variant Maker] Cannot update style because failed to create new scene or not yet created")
 
     EditorInterface.open_scene_from_path(level_scene)
 
