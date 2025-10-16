@@ -6,6 +6,9 @@ class_name LevelMaterialOverrides
 @export var _overrides: Array[MaterialOverride]
 
 func _ready() -> void:
+    apply()
+
+func apply() -> void:
     for override: MaterialOverride in _overrides:
         override.apply(level.level_geometry)
 

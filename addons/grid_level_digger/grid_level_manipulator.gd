@@ -333,9 +333,12 @@ func _spawn_window(title: String) -> Callable:
 
     _window = Window.new()
 
-    var on_close: Callable = func() -> void:
+    var on_close: Callable = func(post_close: Variant = null) -> void:
         _window.queue_free()
         _window = null
+
+        if post_close is Callable:
+            post_close.call()
 
     _window.close_requested.connect(on_close)
     _window.initial_position = Window.WINDOW_INITIAL_POSITION_CENTER_SCREEN_WITH_KEYBOARD_FOCUS

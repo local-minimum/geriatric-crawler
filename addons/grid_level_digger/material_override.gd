@@ -67,13 +67,23 @@ func _apply(node: Node) -> bool:
         return false
 
     elif child is not MeshInstance3D:
-        push_error("[Material Override] Target %s is not a MeshInstance3D" % child)
+        push_error("[Material Override] Target %s of %s '%s' is not a MeshInstance3D" % [child, node, relative_path])
         return false
 
     var m_instance: MeshInstance3D = child
-    if surface_idx >= m_instance.get_surface_override_material_count():
-        push_error("[Material Override] %s only has %s surfaces, asking to apply %s doesn't work" % [
+    if m_instance.mesh == null:
+        push_error("[Material Override] %s of %s '%s' has no mesh" % [
             m_instance,
+            node,
+            relative_path,
+        ])
+        return false
+
+    if surface_idx > 0 && surface_idx >= m_instance.get_surface_override_material_count():
+        push_error("[Material Override] %s of %s '%s' only has %s surfaces, asking to apply %s doesn't work" % [
+            m_instance,
+            node,
+            relative_path,
             m_instance.get_surface_override_material_count(),
             surface_idx,
         ])

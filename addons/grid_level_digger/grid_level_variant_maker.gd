@@ -127,32 +127,41 @@ func _on_create_pressed(set_style: bool = false) -> void:
 
     EditorInterface.open_scene_from_path(level_scene)
 
-    if _panel.edited_scene_root != _node.get_tree().edited_scene_root:
-            push_error("[GLD Variant Maker] Cannot safely swap out node side because we aren't focusing the right scene %s vs %s" % [
-                _panel.edited_scene_root,
-                _node.get_tree().edited_scene_root,
-            ])
+    var panel: GridLevelDiggerPanel = _panel
+    var grid_node: GridNode = _node
+    var direction: CardinalDirections.CardinalDirection = _direction
+    var new_resource: String = _swaps.get(_root_from)
 
-    else:
-        if _swaps.has(_root_from):
-            if _panel.node_digger.swap_node_side(
-                _node,
-                _direction,
-                _swaps[_root_from],
-            ):
-                EditorInterface.mark_scene_as_unsaved()
+    _close.call(
+        func () -> void:
+            await grid_node.get_tree().create_timer(0.5).timeout
+
+            if panel.edited_scene_root != grid_node.get_tree().edited_scene_root:
+                    push_error("[GLD Variant Maker] Cannot safely swap out node side because we aren't focusing the right scene %s vs %s" % [
+                        panel.edited_scene_root,
+                        grid_node.get_tree().edited_scene_root,
+                    ])
+
             else:
-                push_error("[GLD Variant Maker] Failed to swap out %s's %s side for '%s'" % [
-                    _node,
-                    CardinalDirections.name(_direction),
-                    _swaps[_root_from]
-                ])
+                if !new_resource.is_empty():
+                    if panel.node_digger.swap_node_side(
+                        grid_node,
+                        direction,
+                        new_resource,
+                    ):
+                        EditorInterface.save_scene()
+                        EditorInterface.reload_scene_from_path(panel.edited_scene_root.scene_file_path)
+                    else:
+                        push_error("[GLD Variant Maker] Failed to swap out %s's %s side for '%s'" % [
+                            grid_node,
+                            CardinalDirections.name(direction),
+                            new_resource,
+                        ])
 
-        else:
+                else:
 
-            push_warning("[GLD Variant Maker] Cannot swap out side because lacking info about variant root")
-
-    _close.call()
+                    push_warning("[GLD Variant Maker] Cannot swap out side because lacking info about variant root")
+    )
 
 func _on_variant_suffix_text_changed(new_text: String) -> void:
     _start_with_suffix = new_text

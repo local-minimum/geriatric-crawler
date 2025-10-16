@@ -167,10 +167,18 @@ func swap_node_side(
     resource_path: String,
 ) -> bool:
     if node == null:
+        push_error("[GLD Digger] Cannot swap side if node is null")
         return false
 
     var side = GridNodeSide.get_node_side(node, side_direction)
     if side == null || side.scene_file_path == resource_path || !ResourceUtils.valid_abs_resource_path(resource_path):
+        if side == null:
+            push_error("[GLD Digger] Cannot swap side if side %s is null of %s" % [CardinalDirections.name(side_direction), node])
+        if side.scene_file_path == resource_path:
+            push_warning("[GLD Digger] Refuse to swap side if side %s because new side has same resource path '%s'" % [side, resource_path])
+        if !ResourceUtils.valid_abs_resource_path(resource_path):
+            push_error("[GLD Digger] Cannot swap side if side %s to '%s' because it's not a valid resource path" % [side, resource_path])
+
         return false
 
     panel.undo_redo.create_action("GridLevelDigger: Swap side model %s @ %s %s" % [side.name, node.coordinates, CardinalDirections.name(side_direction)])
@@ -209,11 +217,11 @@ func _do_swap_node_side(node: GridNode, side_direction: CardinalDirections.Cardi
         return
 
     var old_side: GridNodeSide = GridNodeSide.get_node_side(node, side_direction)
-    print_debug("[GLD] Removing %s of origin %s from %s" % [old_side.name, old_side.scene_file_path, node.coordinates])
+    print_debug("[GLD Digger] Removing %s of origin %s from %s" % [old_side.name, old_side.scene_file_path, node])
     # Cannot queue free because then won't add side
     old_side.free()
 
-    print_debug("[GLD] Adding %s to %s" % [resource.resource_path, node.coordinates])
+    print_debug("[GLD Digger] Adding %s to %s" % [resource.resource_path, node.coordinates])
     _do_add_node_side(
         resource,
         panel.level,
@@ -260,17 +268,17 @@ func _do_add_node_side(
     treat_elevation_as_separate: bool,
 ) -> void:
     if node == null || resource == null:
-        print_debug("[GLD] Refused wall because lacking resouces or node")
+        print_debug("[GLD Digger] Refused wall because lacking resouces or node")
         return
 
     var side = GridNodeSide.get_node_side(node, side_direction)
     if side != null:
-        print_debug("[GLD] Refused adding side because already exist %s" % [side.name])
+        print_debug("[GLD Digger] Refused adding side because already exist %s" % [side.name])
         return
 
     var raw_node: Node = resource.instantiate()
     if raw_node is not GridNodeSide:
-        push_error("Grid Node template is not a GridNode")
+        push_error("[GLD Digger] Grid Node template is not a GridNode")
         raw_node.queue_free()
         return
 
@@ -295,7 +303,7 @@ func _do_add_node_side(
 func _do_auto_dig_node(level: GridLevel, grid_node_resource: Resource, coordinates: Vector3i) -> void:
     var raw_node: Node = grid_node_resource.instantiate()
     if raw_node is not GridNode:
-        push_error("Grid Node template is not a GridNode")
+        push_error("[GLD Digger] Grid Node template is not a GridNode")
         raw_node.queue_free()
         return
 
