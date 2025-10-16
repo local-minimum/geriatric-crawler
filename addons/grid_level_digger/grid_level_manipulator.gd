@@ -361,7 +361,7 @@ func _show_make_variant_window(direction: CardinalDirections.CardinalDirection) 
 
     _window.add_child(variant_maker)
 
-    variant_maker.configure(panel, side, on_close_window)
+    variant_maker.configure(panel, grid_node, side, on_close_window)
 
     EditorInterface.popup_dialog_centered(_window, Vector2i(800, 500))
 

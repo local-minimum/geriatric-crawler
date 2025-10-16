@@ -18,6 +18,7 @@ static var _start_with_suffix: String
 
 ## [Resource Path, Relative Node Path, Duplicate (true) vs New Inherited (false)]
 var _to_copy: Array[Array]
+var _node: GridNode
 var _regexp: RegEx
 var _close: Callable
 
@@ -30,8 +31,9 @@ func _exit_tree() -> void:
         _highlight.queue_free()
         _highlight = null
 
-func configure(panel: GridLevelDiggerPanel, side: GridNodeSide, close: Callable) -> void:
+func configure(panel: GridLevelDiggerPanel, grid_node: GridNode, side: GridNodeSide, close: Callable) -> void:
     _panel = panel
+    _node = grid_node
     _direction = side.direction
     _close = close
 
@@ -124,6 +126,31 @@ func _on_create_pressed(set_style: bool = false) -> void:
             push_warning("[GLD Variant Maker] Cannot update style because failed to create new scene or not yet created")
 
     EditorInterface.open_scene_from_path(level_scene)
+
+    if _panel.edited_scene_root != _node.get_tree().edited_scene_root:
+            push_error("[GLD Variant Maker] Cannot safely swap out node side because we aren't focusing the right scene %s vs %s" % [
+                _panel.edited_scene_root,
+                _node.get_tree().edited_scene_root,
+            ])
+
+    else:
+        if _swaps.has(_root_from):
+            if _panel.node_digger.swap_node_side(
+                _node,
+                _direction,
+                _swaps[_root_from],
+            ):
+                EditorInterface.mark_scene_as_unsaved()
+            else:
+                push_error("[GLD Variant Maker] Failed to swap out %s's %s side for '%s'" % [
+                    _node,
+                    CardinalDirections.name(_direction),
+                    _swaps[_root_from]
+                ])
+
+        else:
+
+            push_warning("[GLD Variant Maker] Cannot swap out side because lacking info about variant root")
 
     _close.call()
 
@@ -248,15 +275,13 @@ func _make_all_meshes_unique(path: String) -> bool:
         push_error("[GLD Variant Maker] Edited Scene '%s' is not the expected '%s'" % [root.scene_file_path, path])
         return false
 
-    # TODO: Fix this to make standard meshes that are not derived from models unique!
-
     for m_instance: MeshInstance3D in root.find_children("", "MeshInstance3D"):
         if ResourceUtils.in_instanced_scene_under_parent(root, m_instance):
             # push_warning("[GLD Variant Maker] Mesh of '%s' in '%s' should not be made unique because part of other scene" % [root.get_path_to(m_instance), root.scene_file_path])
             continue
 
         print_debug("[GLD Variant Maker] Will make mesh of '%s' in '%s' unique" % [root.get_path_to(m_instance), root.scene_file_path])
-    #    m_instance.mesh = m_instance.mesh.duplicate()
+        m_instance.mesh = m_instance.mesh.duplicate()
 
     return true
 
