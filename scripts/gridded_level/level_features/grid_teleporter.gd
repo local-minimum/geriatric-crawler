@@ -1,15 +1,14 @@
 extends GridEvent
 class_name GridTeleporter
 
-signal on_arrive_entity(teleporter: GridTeleporter, entity: GridEntity)
-
 @export var exit: GridTeleporter
 
 @export var teleports_player: bool = true
-
 @export var teleports_non_players: bool
+
 @export var look_direction: CardinalDirections.CardinalDirection
 @export var anchor_direction: CardinalDirections.CardinalDirection
+@export var instant: bool
 @export var inactive_scale: float = 0.3
 @export var effect: Node3D
 @export var rotation_speed: float = 1
@@ -83,6 +82,9 @@ func trigger(entity: GridEntity, movement: Movement.MovementType) -> void:
 
     super.trigger(entity, movement)
 
+    if instant:
+        return
+
     _show_effect(entity)
 
     entity.cinematic = true
@@ -118,41 +120,50 @@ func _handle_teleport(entity: GridEntity) -> void:
     if !_teleporting.has(entity):
         return
 
+    if instant:
+        _arrive_entity(entity)
+        _teleporting.erase(entity)
+        __SignalBus.on_teleporter_arrive_entity.emit(exit, entity)
+        return
+
     await get_tree().create_timer(0.1).timeout
 
     FaderUI.fade(
         FaderUI.FadeTarget.EXPLORATION_VIEW,
         func() -> void:
-            var exit_node: GridNode = exit.get_grid_node()
-            if exit_node == null:
-                entity.cinematic = false
-                push_error("Failed to teleport because there was no exit")
-                return
-
-            var exit_anchor: GridAnchor = exit_node.get_grid_anchor(exit.anchor_direction)
-            if exit_anchor != null:
-                entity.down = exit.anchor_direction
-                entity.set_grid_anchor(exit_anchor)
-            else:
-                entity.set_grid_node(exit_node)
-
-            if exit.look_direction != CardinalDirections.CardinalDirection.NONE:
-                entity.look_direction = exit.look_direction
-                entity.orient()
-
-            entity.sync_position()
+            _arrive_entity(entity)
             entity.clear_queue()
             await get_tree().create_timer(mid_time_delay_uncinematic).timeout
             entity.cinematic = false
             ,
         func () -> void:
             _teleporting.erase(entity)
-            on_arrive_entity.emit(exit, entity)
+            __SignalBus.on_teleporter_arrive_entity.emit(exit, entity)
             ,
         Color.ALICE_BLUE,
     )
 
     print_debug("Handle teleport of %s from %s to %s" % [entity, coordinates(), "%s" % exit.coordinates() if exit != null else "Nowhere"])
+
+func _arrive_entity(entity: GridEntity) -> void:
+    var exit_node: GridNode = exit.get_grid_node()
+    if exit_node == null:
+        entity.cinematic = false
+        push_error("Failed to teleport because there was no exit")
+        return
+
+    var exit_anchor: GridAnchor = exit_node.get_grid_anchor(exit.anchor_direction)
+    if exit_anchor != null:
+        entity.down = exit.anchor_direction
+        entity.set_grid_anchor(exit_anchor)
+    else:
+        entity.set_grid_node(exit_node)
+
+    if exit.look_direction != CardinalDirections.CardinalDirection.NONE:
+        entity.look_direction = exit.look_direction
+        entity.orient()
+
+    entity.sync_position()
 
 func _process(delta: float) -> void:
     if effect == null || !effect.visible || !_teleporting.is_empty():

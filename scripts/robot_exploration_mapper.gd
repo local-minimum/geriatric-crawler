@@ -40,6 +40,9 @@ func _enter_tree() -> void:
     if __SignalBus.on_robot_gain_ability.connect(_handle_robot_gain_ability) != OK:
         push_error("Failed to connect robot gain ability")
 
+    if __SignalBus.on_teleporter_arrive_entity.connect(_handle_teleport) != OK:
+            push_error("Failed to connect teleporter")
+
     active_mapper = self
 
 func _ready() -> void:
@@ -79,16 +82,15 @@ func _exit_tree() -> void:
     if active_mapper == self:
         active_mapper = null
 
+    if __SignalBus.on_teleporter_arrive_entity.is_connected(_handle_teleport):
+        __SignalBus.on_teleporter_arrive_entity.disconnect(_handle_teleport)
+
 func _level_loaded(level: GridLevel) -> void:
     _level = level
 
     for door: GridDoor in _level.doors():
         if !door.on_door_state_chaged.is_connected(_update_map) && door.on_door_state_chaged.connect(_update_map) != OK:
             push_error("Failed to connect door state change")
-
-    for teleporter: GridTeleporter in _level.teleporters():
-        if !teleporter.on_arrive_entity.is_connected(_handle_teleport) && teleporter.on_arrive_entity.connect(_handle_teleport) != OK:
-            push_error("Failed to connect teleporter")
 
 func _handle_teleport(_teleporter: GridTeleporter, entity: GridEntity) -> void:
     if entity == _player:

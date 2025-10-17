@@ -79,6 +79,9 @@ signal on_cinematic(entity: GridEntity, cinematic: bool)
 signal on_change_node(feature: GridNodeFeature)
 signal on_change_anchor(feature: GridNodeFeature)
 
+# --> Teleporter
+signal on_teleporter_arrive_entity(teleporter: GridTeleporter, entity: GridEntity)
+
 # -> Interactable
 signal on_allow_interactions(interactable: Interactable)
 signal on_disallow_interactions(interactable: Interactable)
