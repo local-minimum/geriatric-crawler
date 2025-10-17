@@ -9,6 +9,8 @@ var automation: GridDoor.OpenAutomation
 var close_automation: GridDoor.CloseAutomation
 
 func _ready() -> void:
+    super._ready()
+
     if __SignalBus.on_move_start.connect(_handle_entity_move_start) != OK:
         push_error("Failed to connect on move start")
     if __SignalBus.on_move_end.connect(_handle_move_end) != OK:

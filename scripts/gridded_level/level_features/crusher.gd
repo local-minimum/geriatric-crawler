@@ -27,6 +27,7 @@ static func phase_from_int(phase_value: int) -> Phase:
 @export var _always_block_crusher_side: bool = true
 @export var _block_retracting_seconds: float = 0.3
 @export var _crusher_side: CardinalDirections.CardinalDirection = CardinalDirections.CardinalDirection.UP
+@export var _crush_check_delay: float = 0.05
 @export var _anim: AnimationPlayer
 
 @export var _retracted_resting_anim: String = "Retracted"
@@ -68,6 +69,11 @@ var _exposed: Array[GridEntity]
 var _last_tick: int
 
 func _ready() -> void:
+    super._ready()
+
+    if __SignalBus.on_change_node.connect(_handle_change_node) != OK:
+        push_error("Failed to connect change node")
+
     if __SignalBus.on_move_end.connect(_handle_move_end) != OK:
         push_error("Failed to connect move end")
 
@@ -84,14 +90,14 @@ func _process(_delta: float) -> void:
             _last_tick = Time.get_ticks_msec()
 
 func _handle_broadcast_message(id: String, message: String) -> void:
-    if !_managed || (id != _managed_message_id && !_managed_message_id.is_empty()):
+    if !available() || !_managed || (id != _managed_message_id && !_managed_message_id.is_empty()):
         return
 
     match message:
         _managed_crush_message:
             if _phase == Phase.RETRACTED || _phase == Phase.RETRACTING:
                 _phase = Phase.CRUSHING
-                _check_killing()
+                _check_crushing()
                 _anim.play(get_animation())
                 _last_tick = Time.get_ticks_msec()
         _managed_retract_message:
@@ -101,13 +107,18 @@ func _handle_broadcast_message(id: String, message: String) -> void:
         _:
             print_debug("[Crusher %s] Got unhandled message %s from %s" % [coordinates(), message, id])
 
-func _handle_move_end(entity: GridEntity) -> void:
+func _handle_change_node(feature: GridNodeFeature) -> void:
+    if feature is not GridEntity:
+        return
+
+    var entity: GridEntity = feature
     if entity.coordinates() == coordinates():
         if !_exposed.has(entity):
             _exposed.append(entity)
     elif _exposed.has(entity):
         _exposed.erase(entity)
 
+func _handle_move_end(entity: GridEntity) -> void:
     if entity is not GridPlayer || _managed:
         return
 
@@ -120,16 +131,41 @@ func _progress_phase_cycle() -> void:
             _phase = get_next_phase()
             _anim.play(get_animation())
             if _phase == Phase.CRUSHING:
-                _check_killing()
+                _check_crushing()
 
-func _check_killing() -> void:
+func _check_crushing() -> void:
+    await get_tree().create_timer(_crush_check_delay).timeout
+    var crush_direction: CardinalDirections.CardinalDirection = CardinalDirections.invert(_crusher_side)
+    var node: GridNode = get_grid_node()
+
+    var neighbour: GridNode = null
+    match node.has_side(crush_direction):
+        GridNode.NodeSideState.ILLUSORY, GridNode.NodeSideState.NONE:
+            neighbour = node.neighbour(crush_direction)
+        GridNode.NodeSideState.DOOR:
+            var door: GridDoor = node.get_door(crush_direction)
+            if door != null && door.lock_state == GridDoor.LockState.OPEN:
+                neighbour = node.neighbour(crush_direction)
+
     for exposed: GridEntity in _exposed:
-        if exposed is GridPlayer:
-            var player: GridPlayer = exposed
-            player.robot.kill()
-        elif exposed is GridEncounter:
-            var encounter: GridEncounter = exposed
-            encounter.kill()
+        var moved: bool = false
+
+        if (
+            neighbour != null &&
+            node.may_exit(exposed, crush_direction, false, true) &&
+            neighbour.may_enter(exposed, node, crush_direction, exposed.get_grid_anchor_direction(), false, false, true)
+        ):
+            moved = exposed.force_movement(
+                Movement.from_directions(crush_direction, exposed.look_direction, exposed.down)
+            )
+
+        if !moved:
+            if exposed is GridPlayer:
+                var player: GridPlayer = exposed
+                player.robot.kill()
+            elif exposed is GridEncounter:
+                var encounter: GridEncounter = exposed
+                encounter.kill()
 
 func _sync_blocking_retracted() -> void:
     if _always_block_crusher_side:
@@ -144,6 +180,8 @@ func get_next_phase() -> Phase:
         Phase.CRUSHING:
             return Phase.CRUSHED
         Phase.CRUSHED:
+            if !available():
+                return Phase.CRUSHED
             return Phase.RETRACTING
         Phase.RETRACTING:
             return Phase.RETRACTED

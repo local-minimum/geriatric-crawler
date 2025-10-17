@@ -19,6 +19,13 @@ var _triggered: bool
 func _init() -> void:
     add_to_group(GRID_EVENT_GROUP)
 
+func _ready() -> void:
+    var side: GridNodeSide = GridNodeSide.find_node_side_parent(self, true)
+    if side != null:
+        if side.has_meta("repeatable"):
+            _repeatable = side.get_meta("repeatable")
+            print_debug("[Grid Event] %s overrides if repeatable of %s to %s" % [side, self, _repeatable])
+
 func available() -> bool: return _repeatable || !_triggered
 
 ## If a translation should trigger the event

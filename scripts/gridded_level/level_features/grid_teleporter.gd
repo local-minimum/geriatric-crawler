@@ -17,6 +17,8 @@ class_name GridTeleporter
 
 
 func _ready() -> void:
+    super._ready()
+
     if __SignalBus.on_move_end.connect(_handle_teleport) != OK:
         push_error("Failed to connect on move end")
 

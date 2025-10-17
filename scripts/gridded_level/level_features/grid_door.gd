@@ -64,6 +64,8 @@ var _check_move_end_do_autoclose: Array[GridEntity]
 
 
 func _ready() -> void:
+    super._ready()
+
     if __SignalBus.on_move_start.connect(_handle_on_move_start) != OK:
         push_error("Failed to connect on move start")
     if __SignalBus.on_move_end.connect(_handle_on_move_end) != OK:

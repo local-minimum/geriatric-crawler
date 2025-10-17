@@ -21,6 +21,8 @@ var field_direction: CardinalDirections.CardinalDirection:
         return CardinalDirections.invert(_trigger_sides[0])
 
 func _ready() -> void:
+    super._ready()
+
     if __SignalBus.on_move_end.connect(_handle_move_end) != OK:
         push_error("Failed to connect move end")
 

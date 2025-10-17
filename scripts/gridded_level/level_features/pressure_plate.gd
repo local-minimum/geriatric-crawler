@@ -14,6 +14,8 @@ class_name PressurePlate
 var _triggering: Array[GridNodeFeature]
 
 func _ready() -> void:
+    super._ready()
+
     if __SignalBus.on_change_node.connect(_handle_feature_move) != OK:
         push_warning("Failed to connect change node")
 

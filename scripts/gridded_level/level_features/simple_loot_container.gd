@@ -18,6 +18,8 @@ func _enter_tree() -> void:
     _inv = Inventory.InventorySubscriber.new()
 
 func _ready() -> void:
+    super._ready()
+
     var mat: Material = _mesh.get_active_material(0)
     if mat.get_reference_count() > 1:
         _mesh.material_overlay = mat.duplicate()

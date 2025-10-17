@@ -478,7 +478,7 @@ direction = 4
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.5, 0, 0)
 coordinates = Vector3i(1, 0, 0)
 
-[node name="Side DOWN" parent="LevelGeometry/Elevation 0/Node (1, 0, 0)" instance=ExtResource("9_4mxkc")]
+[node name="Side DOWN" parent="LevelGeometry/Elevation 0/Node (1, 0, 0)" instance=ExtResource("12_hm4fr")]
 
 [node name="Node (3, 0, -1)" parent="LevelGeometry/Elevation 0" instance=ExtResource("4_myev5")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.5, 0, -2.5)
@@ -876,13 +876,14 @@ direction = 4
 
 [node name="Node (0, 0, 0)" parent="LevelGeometry/Elevation 0" instance=ExtResource("4_myev5")]
 
-[node name="Side UP" parent="LevelGeometry/Elevation 0/Node (0, 0, 0)" instance=ExtResource("8_72dvb")]
-
 [node name="Side DOWN" parent="LevelGeometry/Elevation 0/Node (0, 0, 0)" instance=ExtResource("9_4mxkc")]
 
 [node name="Side WEST" parent="LevelGeometry/Elevation 0/Node (0, 0, 0)" instance=ExtResource("17_vupyu")]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 0, 0, 0)
 direction = 3
+
+[node name="Side UP" parent="LevelGeometry/Elevation 0/Node (0, 0, 0)" instance=ExtResource("16_ub21w")]
+metadata/repeatable = false
 
 [node name="Node (-1, 0, 0)" parent="LevelGeometry/Elevation 0" instance=ExtResource("4_myev5")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.5, 0, 0)
@@ -10120,6 +10121,13 @@ _receivers = [NodePath("../../LevelGeometry/Elevation 0/Node (-1, 0, -1)/Side UP
 _message_id = "pressure-plate-1"
 _messages = Array[String](["activate", "deactivate"])
 metadata/_custom_type_script = "uid://huxje2j21g1c"
+
+[node name="Single Crush" type="Node" parent="Broadcasts" node_paths=PackedStringArray("_broadcaster", "_receivers")]
+script = ExtResource("61_uhp52")
+_broadcaster = NodePath("../../LevelGeometry/Elevation 0/Node (1, 0, 0)/Side DOWN")
+_receivers = [NodePath("../../LevelGeometry/Elevation 0/Node (0, 0, 0)/Side UP")]
+_message_id = "single-crush"
+_messages = Array[String](["activate", "deactivate"])
 
 [node name="Material Overrides" type="Node" parent="." node_paths=PackedStringArray("level")]
 script = ExtResource("63_ytmnc")
