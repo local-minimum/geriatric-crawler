@@ -1,0 +1,32 @@
+[gd_scene load_steps=7 format=3 uid="uid://vsw0nyjtf0nj"]
+
+[ext_resource type="Script" uid="uid://c6733p4qj68p" path="res://scripts/gridded_level/level_features/grid_node_side.gd" id="1_2ffq0"]
+[ext_resource type="Script" uid="uid://bsjvh2o2oob57" path="res://scripts/gridded_level/level_features/grid_anchor.gd" id="2_bpuv6"]
+[ext_resource type="Script" uid="uid://b8a6yvndcxtpa" path="res://scripts/gridded_level/transportation_mode.gd" id="3_gyxv8"]
+
+[sub_resource type="Resource" id="Resource_p5glw"]
+script = ExtResource("3_gyxv8")
+mode = 8
+metadata/_custom_type_script = "uid://b8a6yvndcxtpa"
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_c7x4w"]
+
+[sub_resource type="QuadMesh" id="QuadMesh_2ffq0"]
+material = SubResource("StandardMaterial3D_c7x4w")
+size = Vector2(2.5, 2.5)
+
+[node name="BasicWall" type="Node3D" node_paths=PackedStringArray("anchor")]
+script = ExtResource("1_2ffq0")
+direction = 1
+anchor = NodePath("GridAnchor")
+
+[node name="GridAnchor" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.25, -1.15)
+script = ExtResource("2_bpuv6")
+direction = 1
+required_transportation_mode = SubResource("Resource_p5glw")
+metadata/_custom_type_script = "uid://bsjvh2o2oob57"
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.25, -1.25)
+mesh = SubResource("QuadMesh_2ffq0")

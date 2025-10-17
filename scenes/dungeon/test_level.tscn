@@ -1,4 +1,4 @@
-[gd_scene load_steps=84 format=3 uid="uid://dwqcwbgj8p6q0"]
+[gd_scene load_steps=88 format=3 uid="uid://dwqcwbgj8p6q0"]
 
 [ext_resource type="Script" uid="uid://dqe42q7uub84r" path="res://scripts/gridded_level/level_features/grid_level.gd" id="1_dd1ob"]
 [ext_resource type="PackedScene" uid="uid://bfoog3fb4v5ij" path="res://scenes/dungeon/player.tscn" id="3_m6mav"]
@@ -32,13 +32,14 @@
 [ext_resource type="PackedScene" uid="uid://bo7t6vucyhsis" path="res://scenes/dungeon/radioactive_zone.tscn" id="17_jqdjk"]
 [ext_resource type="PackedScene" uid="uid://dvtwb41vgfjlf" path="res://scenes/dungeon/basic_alt.tscn" id="17_vupyu"]
 [ext_resource type="PackedScene" uid="uid://ci70efr3ftt6k" path="res://scenes/dungeon/airlock.tscn" id="18_24aia"]
-[ext_resource type="Script" uid="uid://c6733p4qj68p" path="res://scripts/gridded_level/level_features/grid_node_side.gd" id="18_hp2am"]
 [ext_resource type="Resource" uid="uid://bodhea2xa1exq" path="res://resources/enemy_cards/target-dummy_cards/dummy-blank-700.tres" id="18_j1mj1"]
 [ext_resource type="Resource" uid="uid://cgq448x54hl2k" path="res://resources/enemy_cards/target-dummy_cards/dummy-shield-up-65.tres" id="19_7gan6"]
 [ext_resource type="Resource" uid="uid://ea7mbheiqimg" path="res://resources/enemy_cards/target-dummy_cards/dummy-shield-up-330.tres" id="20_sn1co"]
 [ext_resource type="Resource" uid="uid://c0fagwlpy72ds" path="res://resources/enemy_cards/target-dummy_cards/dummy-shield-up-950.tres" id="21_wymjw"]
+[ext_resource type="PackedScene" uid="uid://vsw0nyjtf0nj" path="res://scenes/dungeon/basic_wall_flatter.tscn" id="22_dj7w5"]
 [ext_resource type="Script" uid="uid://dtq2v31avcen2" path="res://scripts/card_battle/battle_brain.gd" id="22_rcxcv"]
 [ext_resource type="Script" uid="uid://qbk2psf0rmnw" path="res://scripts/card_battle/battle_strategy.gd" id="22_sy7nh"]
+[ext_resource type="PackedScene" uid="uid://h4wicnumysl8" path="res://scenes/dungeon/basic_wall_flatter2.tscn" id="24_hlfpo"]
 [ext_resource type="Script" uid="uid://6vnrccj8frlq" path="res://scripts/card_battle/battle_enemy_target_system.gd" id="25_s5loo"]
 [ext_resource type="Script" uid="uid://bl72bpxm44td8" path="res://scripts/key_master.gd" id="32_wymjw"]
 [ext_resource type="Resource" uid="uid://ctc6pq4wyhidi" path="res://resources/enemy_cards/killer_cards/killer-cleanup-130.tres" id="34_dnq43"]
@@ -68,8 +69,9 @@
 [ext_resource type="Script" uid="uid://d4jalrj3vayrc" path="res://addons/grid_level_digger/material_override.gd" id="64_bt6hk"]
 [ext_resource type="Material" uid="uid://q68n4457kjxn" path="res://materials/carbon/carbon.tres" id="65_ytmnc"]
 [ext_resource type="Material" uid="uid://csq8rvt37xowc" path="res://materials/tiles/tiles.tres" id="68_hp2am"]
+[ext_resource type="Material" uid="uid://bj5v2jy08vqs8" path="res://materials/bricks/bricks.tres" id="70_hlfpo"]
 
-[sub_resource type="Resource" id="Resource_vupyu"]
+[sub_resource type="Resource" id="Resource_0qu4m"]
 resource_local_to_scene = true
 script = ExtResource("4_840jk")
 mode = 61
@@ -136,6 +138,20 @@ target_scene_file_path = "res://models/concreteslab.fbx"
 relative_path = "Cube"
 known_usage_path = "Elevation 0/Node (0, 0, 1)/Side DOWN/concreteslab"
 
+[sub_resource type="Resource" id="Resource_k7vkx"]
+script = ExtResource("64_bt6hk")
+override_material = ExtResource("68_hp2am")
+target_scene_file_path = "res://scenes/dungeon/basic_wall_flatter.tscn"
+relative_path = "MeshInstance3D"
+known_usage_path = "Elevation -1/Node (-2, -1, -2)/Side EAST"
+
+[sub_resource type="Resource" id="Resource_ihkrm"]
+script = ExtResource("64_bt6hk")
+override_material = ExtResource("70_hlfpo")
+target_scene_file_path = "res://scenes/dungeon/basic_wall_flatter2.tscn"
+relative_path = "MeshInstance3D"
+known_usage_path = "Elevation -1/Node (-2, -1, -2)/Side SOUTH"
+
 [node name="TestLevel" type="Node3D" node_paths=PackedStringArray("player", "level_geometry", "punishments", "primary_entry_portal", "level_portals", "zones_parent", "zones", "broadcasts_parent")]
 script = ExtResource("1_dd1ob")
 level_id = "test-level"
@@ -152,7 +168,7 @@ broadcasts_parent = NodePath("Broadcasts")
 [node name="Player" parent="." instance=ExtResource("3_m6mav")]
 process_mode = 3
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0145968, -0.00857759, 0.00070858)
-transportation_abilities = SubResource("Resource_vupyu")
+transportation_abilities = SubResource("Resource_0qu4m")
 transportation_mode = SubResource("Resource_pgxau")
 
 [node name="LevelGeometry" type="Node3D" parent="."]
@@ -863,11 +879,9 @@ direction = 4
 
 [node name="Side DOWN" parent="LevelGeometry/Elevation 0/Node (0, 0, 0)" instance=ExtResource("9_4mxkc")]
 
-[node name="Side WEST" type="Node3D" parent="LevelGeometry/Elevation 0/Node (0, 0, 0)" node_paths=PackedStringArray("anchor") instance=ExtResource("17_vupyu")]
+[node name="Side WEST" parent="LevelGeometry/Elevation 0/Node (0, 0, 0)" instance=ExtResource("17_vupyu")]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 0, 0, 0)
-script = ExtResource("18_hp2am")
 direction = 3
-anchor = NodePath("GridAnchor")
 
 [node name="Node (-1, 0, 0)" parent="LevelGeometry/Elevation 0" instance=ExtResource("4_myev5")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.5, 0, 0)
@@ -4253,13 +4267,13 @@ direction = 4
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, -2.5, -5)
 coordinates = Vector3i(-2, -1, -2)
 
-[node name="Side EAST" parent="LevelGeometry/Elevation -1/Node (-2, -1, -2)" instance=ExtResource("12_fh06p")]
-transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 0, 0, 0)
-direction = 4
-
 [node name="Side DOWN" parent="LevelGeometry/Elevation -1/Node (-2, -1, -2)" instance=ExtResource("9_4mxkc")]
 
-[node name="Side SOUTH" parent="LevelGeometry/Elevation -1/Node (-2, -1, -2)" instance=ExtResource("17_vupyu")]
+[node name="Side EAST" parent="LevelGeometry/Elevation -1/Node (-2, -1, -2)" instance=ExtResource("22_dj7w5")]
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 0, 0, 0)
+direction = 4
+
+[node name="Side SOUTH" parent="LevelGeometry/Elevation -1/Node (-2, -1, -2)" instance=ExtResource("24_hlfpo")]
 transform = Transform3D(-1, 0, -1.509958e-07, 0, 1, 0, 1.509958e-07, 0, -1, 0, 0, 0)
 direction = 2
 
@@ -10091,4 +10105,4 @@ metadata/_custom_type_script = "uid://huxje2j21g1c"
 [node name="Material Overrides" type="Node" parent="." node_paths=PackedStringArray("level")]
 script = ExtResource("63_ytmnc")
 level = NodePath("..")
-_overrides = Array[ExtResource("64_bt6hk")]([SubResource("Resource_ytmnc"), SubResource("Resource_hlfpo"), SubResource("Resource_ndjow")])
+_overrides = Array[ExtResource("64_bt6hk")]([SubResource("Resource_ytmnc"), SubResource("Resource_hlfpo"), SubResource("Resource_ndjow"), SubResource("Resource_k7vkx"), SubResource("Resource_ihkrm")])
