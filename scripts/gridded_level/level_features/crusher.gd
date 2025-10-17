@@ -38,6 +38,7 @@ static func phase_from_int(phase_value: int) -> Phase:
 @export var _live: LiveMode = LiveMode.TURN_BASED
 @export var _live_tick_duration_msec: int = 500
 @export var _add_anchors_when_exhausted: bool = false
+@export var _anchor_position_overshoot: float
 
 var _phase: Phase = Phase.RETRACTED:
     set(value):
@@ -68,6 +69,7 @@ var _phase: Phase = Phase.RETRACTED:
 var _phase_ticks: int
 var _exposed: Array[GridEntity]
 var _last_tick: int
+var _anchored: bool
 
 func _ready() -> void:
     super._ready()
@@ -182,9 +184,14 @@ func get_next_phase() -> Phase:
         Phase.RETRACTED:
             return Phase.CRUSHING
         Phase.CRUSHING:
+            if !available() && _add_anchors_when_exhausted && !_anchored:
+                _add_anchors()
             return Phase.CRUSHED
         Phase.CRUSHED:
             if !available():
+                if _add_anchors_when_exhausted && !_anchored:
+                    _add_anchors()
+
                 return Phase.CRUSHED
             return Phase.RETRACTING
         Phase.RETRACTING:
@@ -206,6 +213,37 @@ func get_animation() -> String:
         _:
             push_error("Unknown phase %s" % _phase)
             return _retracted_resting_anim
+
+func _add_anchors() -> void:
+    _anchored = true
+    var grid_node: GridNode = GridNode.find_node_parent(self, true)
+    for direction: CardinalDirections.CardinalDirection in CardinalDirections.ALL_DIRECTIONS:
+        var inv_direction: CardinalDirections.CardinalDirection = CardinalDirections.invert(direction)
+        var neighbour: GridNode = grid_node.neighbour(direction)
+        if neighbour == null:
+            continue
+
+        match neighbour.has_side(inv_direction):
+            GridNode.NodeSideState.DOOR, GridNode.NodeSideState.SOLID:
+                continue
+
+        print_debug("[Crusher] Node %s asks %s to add an anchor in direction %s because its side states is %s" % [
+            grid_node,
+            neighbour,
+            CardinalDirections.name(inv_direction),
+            neighbour.has_side(inv_direction)
+        ])
+        var anchor: GridAnchor = GridAnchor.new()
+        anchor.direction = inv_direction
+        anchor.required_transportation_mode = TransportationMode.create_from_direction(inv_direction)
+        if neighbour.add_anchor(anchor):
+            anchor.global_position = (
+                neighbour.get_center_pos() +
+                _anchor_position_overshoot * CardinalDirections.direction_to_vector(inv_direction) +
+                CardinalDirections.direction_to_vector(inv_direction) * grid_node.get_level().node_size * 0.5
+            )
+        else:
+            anchor.queue_free()
 
 func trigger(_entity: GridEntity, _movement: Movement.MovementType) -> void:
     # We don't trigger this way

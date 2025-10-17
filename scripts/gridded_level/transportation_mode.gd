@@ -77,3 +77,16 @@ func intersection(other: TransportationMode) -> int:
 
 func humanize(localized: bool = false) -> String:
     return ", ".join(get_flag_names(localized))
+
+static func create_from_direction(direction: CardinalDirections.CardinalDirection) -> TransportationMode:
+    var new_mode: TransportationMode = TransportationMode.new()
+    if CardinalDirections.is_planar_cardinal(direction):
+        new_mode.set_flag(WALL_WALKING)
+    elif direction == CardinalDirections.CardinalDirection.UP:
+        new_mode.set_flag(CEILING_WALKING)
+    elif direction == CardinalDirections.CardinalDirection.DOWN:
+        new_mode.set_flag(WALKING)
+    elif direction == CardinalDirections.CardinalDirection.NONE:
+        new_mode.set_flag(FLYING)
+
+    return new_mode

@@ -238,9 +238,29 @@ func add_anchor(anchor: GridAnchor) -> bool:
 
         return _anchors[anchor.direction] == anchor
 
+    var old_anchor: GridAnchor = _anchors.get(anchor.direction)
     var success: bool = _anchors.set(anchor.direction, anchor)
     if (success):
-        anchor.reparent(self, true)
+        if !_sides.has(anchor.direction):
+            var side: GridNodeSide = GridNodeSide.new()
+            side.infer_direction_from_rotation = false
+            side.anchor = anchor
+            side.direction = anchor.direction
+            _sides[anchor.direction] = side
+
+            side.add_child(anchor)
+            self.add_child(side)
+        else:
+            if !_sides[anchor.direction].update_anchor(anchor):
+                if old_anchor == null:
+                    @warning_ignore_start("return_value_discarded")
+                    _anchors.erase(anchor.direction)
+                    @warning_ignore_restore("return_value_discarded")
+                else:
+                    _anchors[anchor.direction] = old_anchor
+                return false
+
+            self.add_child(anchor)
 
     return success
 

@@ -16,6 +16,23 @@ func _ready() -> void:
 var _parent_node: GridNode
 var _inverse_parent_node: GridNode
 
+func update_anchor(new_anchor: GridAnchor) -> bool:
+    if new_anchor.direction == direction:
+        anchor = new_anchor
+    elif new_anchor.direction == CardinalDirections.invert(direction):
+        negative_anchor = anchor
+    else:
+        push_error("%s cannot be set as an anchor of %s because it has direction %s which isn't parallell to %s" % [
+            new_anchor,
+            self,
+            CardinalDirections.name(new_anchor.direction),
+            CardinalDirections.name(direction),
+        ])
+        return false
+
+    return true
+
+
 func get_side_parent_grid_node() -> GridNode:
     if _parent_node == null:
         _parent_node = GridNode.find_node_parent(self, false)
