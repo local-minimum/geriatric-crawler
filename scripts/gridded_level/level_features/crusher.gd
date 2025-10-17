@@ -37,6 +37,7 @@ static func phase_from_int(phase_value: int) -> Phase:
 
 @export var _live: LiveMode = LiveMode.TURN_BASED
 @export var _live_tick_duration_msec: int = 500
+@export var _add_anchors_when_exhausted: bool = false
 
 var _phase: Phase = Phase.RETRACTED:
     set(value):
@@ -70,6 +71,9 @@ var _last_tick: int
 
 func _ready() -> void:
     super._ready()
+
+    var side: GridNodeSide = GridNodeSide.find_node_side_parent(self, true)
+    _add_anchors_when_exhausted = get_bool_override(side, "add_anchors_when_exhausted", _add_anchors_when_exhausted)
 
     if __SignalBus.on_change_node.connect(_handle_change_node) != OK:
         push_error("Failed to connect change node")

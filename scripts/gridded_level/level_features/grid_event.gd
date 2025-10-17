@@ -21,10 +21,17 @@ func _init() -> void:
 
 func _ready() -> void:
     var side: GridNodeSide = GridNodeSide.find_node_side_parent(self, true)
+    _repeatable = get_bool_override(side, "repeatable", _repeatable)
+    _trigger_entire_node = get_bool_override(side, "trigger_entire_node", _trigger_entire_node)
+
+func get_bool_override(side: GridNodeSide, key: String, default: bool) -> bool:
     if side != null:
-        if side.has_meta("repeatable"):
-            _repeatable = side.get_meta("repeatable")
-            print_debug("[Grid Event] %s overrides if repeatable of %s to %s" % [side, self, _repeatable])
+        if side.has_meta(key):
+            var override: bool = side.get_meta(key)
+            print_debug("[Grid Event] %s overrides '%s' of %s from %s to %s" % [side, key, self, default, override])
+            return override
+
+    return default
 
 func available() -> bool: return _repeatable || !_triggered
 
