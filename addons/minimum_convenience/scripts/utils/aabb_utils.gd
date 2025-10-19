@@ -44,6 +44,36 @@ static func closest_surface_point(box: AABB, point: Vector3) -> Vector3:
         clampf(point.z, box.position.z, box.end.z),
     )
 
+static func opposite_surface_point(box: AABB, point: Vector3) -> Vector3:
+    if box.has_point(point):
+        var corners: Array[Vector3] = box_corners(box)
+        corners.sort_custom(
+            func (a: Vector3, b: Vector3) -> bool:
+                return a.distance_squared_to(point) > b.distance_squared_to(point)
+        )
+        var p: Plane = Plane((corners[1] - corners[0]).cross(corners[2] - corners[0]).normalized(), corners[0])
+        return p.project(point)
+
+    var x: float = clampf(point.x, box.position.x, box.end.x)
+    var y: float = clampf(point.y, box.position.y, box.end.y)
+    var z: float = clampf(point.z, box.position.z, box.end.z)
+
+    if x == box.position.x:
+        x = box.end.x
+    elif x == box.end.x:
+        x = box.position.x
+
+    if y == box.position.y:
+        y = box.end.y
+    elif y == box.end.y:
+        y = box.position.y
+
+    if z == box.position.z:
+        z = box.end.z
+    elif z == box.end.z:
+        z = box.position.z
+
+    return Vector3(x, y, z)
 
 static func create_around(center: Vector3, size: Vector3) -> AABB:
     return AABB(center - size * 0.5, size)

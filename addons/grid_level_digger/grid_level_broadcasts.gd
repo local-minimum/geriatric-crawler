@@ -477,13 +477,28 @@ func _draw_highlight_target(
             if caster != null:
                 var from: Vector3 = AABBUtils.closest_surface_point(caster_bounds, bounds.get_center())
                 var to: Vector3 = AABBUtils.closest_surface_point(bounds, from)
+                var normal: Vector3 = Vector3.UP
+                var direction: Vector3 = (to - from).normalized()
+                if abs(direction.y) > 0.7:
+                    var furthest: Vector3 = AABBUtils.opposite_surface_point(caster_bounds, bounds.get_center())
+                    normal = ((Vector3.ONE - direction) * (to - furthest).normalized()).normalized()
+                    normal *= -1
+
                 var arrow: MeshInstance3D = DebugDraw.arrow(
                     level,
                     from,
                     to,
                     arrow_color,
+                    0.1,
+                    0.2,
+                    0.15,
+                    normal,
                 )
                 _contract_highlights.append(arrow)
+                print_debug("[GLD Broadcasts] Drawing arrow from %s to %s (%s -> %s, normal %s)" % [caster, node, from, to, normal])
+            else:
+                print_debug("[GLD Broadcasts] Cannot draw arrow since there's no caster available for %s" % [node])
+
             print_debug("[GLD Broadcasts] reciever %s added %s" % [node, bounds])
         else:
             print_debug("[GLD Broadcasts] reciever %s has no node3d parent" % node)
