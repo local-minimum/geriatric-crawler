@@ -19,6 +19,16 @@ const ALL_DIRECTIONS: Array[CardinalDirection] = [
     CardinalDirection.DOWN,
 ]
 
+const ALL_DIRECTIONS_AND_NONE: Array[CardinalDirection] = [
+    CardinalDirection.NONE,
+    CardinalDirection.NORTH,
+    CardinalDirection.SOUTH,
+    CardinalDirection.WEST,
+    CardinalDirection.EAST,
+    CardinalDirection.UP,
+    CardinalDirection.DOWN,
+]
+
 const ALL_PLANAR_DIRECTIONS: Array[CardinalDirection] = [
     CardinalDirection.NORTH,
     CardinalDirection.SOUTH,
