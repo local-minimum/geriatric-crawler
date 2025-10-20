@@ -1,12 +1,7 @@
-extends Node
+extends SignalBusCore
 class_name SignalBus
 
 @warning_ignore_start("unused_signal")
-
-# Settings
-signal on_update_input_mode(method: BindingHints.InputMode)
-signal on_update_handedness(handedness: AccessibilitySettings.Handedness)
-
 # Critical fails
 signal on_critical_level_corrupt(level_id: String)
 
@@ -27,64 +22,12 @@ signal on_change_room_complete(new_room: Spaceship.Room)
 # Trading market
 signal on_market_updated(market: TradingMarket)
 
-# Saving and loading
-signal on_before_save()
-signal on_save_complete()
-signal on_before_load()
-signal on_load_complete()
-signal on_load_fail()
-
-# Scene transition
-signal on_scene_transition_initiate(target_scene: String)
-signal on_scene_transition_progress(progress: float)
-signal on_scene_transition_complete(target_scene: String)
-signal on_scene_transition_fail(target_scene: String)
-signal on_scene_transition_new_scene_ready()
-
 # Robot
 signal on_robot_death(robot: Robot)
 signal on_robot_complete_fight(robot: Robot)
 signal on_robot_loaded(robot: Robot)
 signal on_robot_exploration_damage(robot: Robot, damage: int)
 signal on_robot_gain_ability(robot: Robot, ability: RobotAbility)
-
-# Exploration
-# -> Level
-signal on_change_player(level: GridLevel, player: GridPlayer)
-signal on_level_loaded(level: GridLevel)
-signal on_level_unloaded(level: GridLevel)
-
-# -> Zone
-signal on_enter_zone(zone: LevelZone, entity: GridEntity)
-signal on_exit_zone(zone: LevelZone, entity: GridEntity)
-signal on_stay_zone(zone: LevelZone, entity: GridEntity)
-
-# -> Exploration Message
-## General purpose messaging to any who may be interested
-signal on_broadcast_message(id: String, message: String)
-
-# -> Grid Entity
-signal on_move_start(entity: GridEntity, from: Vector3i, translation_direction: CardinalDirections.CardinalDirection)
-signal on_move_end(entity: GridEntity)
-signal on_update_orientation(
-    entity: GridEntity,
-    old_down: CardinalDirections.CardinalDirection,
-    down: CardinalDirections.CardinalDirection,
-    old_forward: CardinalDirections.CardinalDirection,
-    forward: CardinalDirections.CardinalDirection,
-)
-signal on_cinematic(entity: GridEntity, cinematic: bool)
-
-# -> Gride Node Feature
-signal on_change_node(feature: GridNodeFeature)
-signal on_change_anchor(feature: GridNodeFeature)
-
-# --> Teleporter
-signal on_teleporter_arrive_entity(teleporter: GridTeleporter, entity: GridEntity)
-
-# -> Interactable
-signal on_allow_interactions(interactable: Interactable)
-signal on_disallow_interactions(interactable: Interactable)
 
 # Battle
 signal on_entity_join_battle(entity: BattleEntity)

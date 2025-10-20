@@ -262,6 +262,8 @@ func add_anchor(anchor: GridAnchor) -> bool:
 
             self.add_child(anchor)
 
+        __SignalBus.on_add_anchor.emit(self, anchor)
+
     return success
 
 func get_grid_anchor(direction: CardinalDirections.CardinalDirection) -> GridAnchor:

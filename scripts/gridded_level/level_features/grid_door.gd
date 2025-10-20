@@ -1,8 +1,6 @@
 extends GridEvent
 class_name GridDoor
 
-signal on_door_state_chaged()
-
 @export var animator: AnimationPlayer
 
 enum OpenAutomation { NONE, WALK_INTO, PROXIMITY, INTERACT }
@@ -274,17 +272,19 @@ func _check_autoclose(entity: GridEntity) -> void:
 
 func close_door() -> void:
     print_debug("Close %s" % self)
+    var prev_state: LockState = lock_state
     lock_state = LockState.CLOSED
     animator.play(_close_animation, 0.5)
     await get_tree().create_timer(0.5).timeout
-    on_door_state_chaged.emit()
+    __SignalBus.on_door_state_chaged.emit(self, prev_state, lock_state)
 
 func open_door() -> void:
     print_debug("Open %s" % self)
+    var prev_state: LockState = lock_state
     lock_state = LockState.OPEN
     animator.play(_open_animation, 0.5)
     await get_tree().create_timer(0.5).timeout
-    on_door_state_chaged.emit()
+    __SignalBus.on_door_state_chaged.emit(self, prev_state, lock_state)
 
 func toggle_door() -> void:
     if lock_state == LockState.LOCKED:
@@ -336,8 +336,9 @@ func attempt_door_unlock(puller: CameraPuller) -> void:
     else:
         NotificationsManager.info(tr("NOTICE_DOOR_UNLOCKED"), tr("USED_ITEM").format({"item": KeyMaster.instance.get_description(key_id)}))
 
+    var prev_state: LockState = lock_state
     lock_state = LockState.CLOSED
-    on_door_state_chaged.emit()
+    __SignalBus.on_door_state_chaged.emit(self, prev_state, lock_state)
     open_door()
 
 func _trigger_hacking_prompt(puller: CameraPuller) -> void:

@@ -33,7 +33,7 @@ class_name GridDoorReader
 
 func _ready() -> void:
     is_interactable = false
-    if door.on_door_state_chaged.connect(_sync_reader_display) != OK:
+    if __SignalBus.on_door_state_chaged.connect(_handle_door_state_chage) != OK:
         print_debug("%s could not connect to door state changes" % self)
 
     if __SignalBus.on_level_loaded.connect(_sync_reader_display) != OK:
@@ -85,6 +85,10 @@ func _get_needed_texture() -> Texture:
 
 
     return no_entry_door_tex
+
+func _handle_door_state_chage(grid_door: GridDoor, _from: GridDoor.LockState, _to: GridDoor.LockState) -> void:
+    if grid_door == door:
+        _sync_reader_display()
 
 func _sync_reader_display(_level: GridLevel = null) -> void:
     var mat: StandardMaterial3D = mesh.get_surface_override_material(display_material_idx)

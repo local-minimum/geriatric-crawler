@@ -87,10 +87,8 @@ func _exit_tree() -> void:
 
 func _level_loaded(level: GridLevel) -> void:
     _level = level
-
-    for door: GridDoor in _level.doors():
-        if !door.on_door_state_chaged.is_connected(_update_map) && door.on_door_state_chaged.connect(_update_map) != OK:
-            push_error("Failed to connect door state change")
+    if __SignalBus.on_door_state_chaged.is_connected(_handle_update_lock_state) && __SignalBus.on_door_state_chaged.connect(_handle_update_lock_state) != OK:
+        push_error("Failed to connect door state change")
 
 func _handle_teleport(_teleporter: GridTeleporter, entity: GridEntity) -> void:
     if entity == _player:
@@ -104,6 +102,9 @@ func _connect_new_player(level: GridLevel, player: GridPlayer) -> void:
 
 static func _limits_mapping(zone: LevelZone) -> bool:
     return zone.limits_mapping
+
+func _handle_update_lock_state(_door: GridDoor, _from: GridDoor.LockState, _to: GridDoor.LockState) -> void:
+    _update_map()
 
 func _handle_move_end(entity: GridEntity) -> void:
     if entity is not GridPlayer || entity != _player || entity == null:
