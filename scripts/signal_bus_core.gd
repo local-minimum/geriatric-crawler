@@ -58,6 +58,7 @@ signal on_change_node(feature: GridNodeFeature)
 signal on_change_anchor(feature: GridNodeFeature)
 
 # --> Teleporter
+signal on_teleporter_activate(teleporter: GridTeleporter, entity: GridEntity, target: GridTeleporter)
 signal on_teleporter_arrive_entity(teleporter: GridTeleporter, entity: GridEntity)
 
 # -> Interactable

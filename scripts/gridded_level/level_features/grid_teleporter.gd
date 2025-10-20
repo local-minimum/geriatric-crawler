@@ -15,6 +15,9 @@ class_name GridTeleporter
 
 @export var mid_time_delay_uncinematic: float = 0.1
 
+var can_teleport: bool:
+    get():
+        return !_triggered || _repeatable || exit != null
 
 func _ready() -> void:
     super._ready()
@@ -44,13 +47,19 @@ func load_save_data(data: Dictionary) -> void:
     var triggered: bool = DictionaryUtils.safe_getb(data, _TRIGGERED_KEY, false, false)
     _triggered = triggered
 
+func active_for_side(side: CardinalDirections.CardinalDirection) -> bool:
+    if _trigger_entire_node:
+        return true
+
+    return anchor_direction == side || _trigger_sides.has(side)
+
 func should_trigger(
     _entity: GridEntity,
     _from: GridNode,
     _from_side: CardinalDirections.CardinalDirection,
     _to_side: CardinalDirections.CardinalDirection,
 ) -> bool:
-    if exit == null:
+    if exit == null || _triggered && !_repeatable:
         return false
 
     if _entity is GridPlayer:
@@ -121,6 +130,8 @@ func _show_effect(entity: GridEntity) -> void:
 func _handle_teleport(entity: GridEntity) -> void:
     if !_teleporting.has(entity):
         return
+
+    __SignalBus.on_teleporter_activate.emit(self, entity, exit)
 
     if instant:
         _arrive_entity(entity)

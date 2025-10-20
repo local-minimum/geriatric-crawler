@@ -29,10 +29,9 @@ var _id: int = 0
 
 # TODO: emergency rescue fall moves doesn't include hitting a 1x1 tower and then push to side because side nodes will not have a down
 # TODO: Update crawler code to respect falling in transportaion mode
-# TODO: Connect to dynamic adding an anchor
-# TODO: Windows that may be crossed by some? It could be that a window is always open and blocks entry from all anchor sides
 # TODO: Ramps/Stairs  that are similar to teleporters
-# TODO: Teleporters
+# TODO: Teleporters node.get_teleporter(direction)...
+# TODO: Remember all move directions to get from a to b...
 
 func initialize_graph(
     level: GridLevel,
@@ -57,8 +56,13 @@ func initialize_graph(
                         GridNode.NodeSideState.NONE, GridNode.NodeSideState.ILLUSORY:
                             var to: GridNode = from.neighbour(CardinalDirections.CardinalDirection.DOWN)
                             if to != null:
-                                _add_grid_node(to)
-                                connect_points(_lookup[from], _lookup[to], false)
+                                var tele: GridTeleporter = to.get_teleporter(CardinalDirections.CardinalDirection.NONE)
+                                if tele != null:
+                                    # TODO: figure out final node or anchor and connect, also add to list of teleportings!
+                                    pass
+                                else:
+                                    _add_grid_node(to)
+                                    connect_points(_lookup[from], _lookup[to], false)
 
                         # Land
                         GridNode.NodeSideState.SOLID:
