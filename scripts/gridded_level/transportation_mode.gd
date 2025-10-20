@@ -9,12 +9,13 @@ const WALL_WALKING : int = 8
 const CEILING_WALKING : int = 16
 const SQUEEZING : int = 32
 const SWIMMING : int = 64
+const FALLING : int = 128
 
-const ALL_FLAGS: Array[int] = [WALKING, FLYING, CLIMBING, WALL_WALKING, CEILING_WALKING, SQUEEZING, SWIMMING]
+const ALL_FLAGS: Array[int] = [WALKING, FLYING, CLIMBING, WALL_WALKING, CEILING_WALKING, SQUEEZING, SWIMMING, FALLING]
 
 const EXOTIC_WALKS: Array[int] = [WALL_WALKING, CEILING_WALKING]
 
-@export_flags("Walking", "Flying", "Climbing", "Wall Walking", "Ceiling Walking", "Squeezing", "Swimming")
+@export_flags("Walking", "Flying", "Climbing", "Wall Walking", "Ceiling Walking", "Squeezing", "Swimming", "Falling")
 var mode: int = 0
 
 func set_flag(flag: int) -> void:
@@ -47,6 +48,17 @@ func get_flags() -> Array[int]:
 
     return flags
 
+func can_walk(direction: CardinalDirections.CardinalDirection) -> bool:
+    match direction:
+        CardinalDirections.CardinalDirection.NONE:
+            return has_flag(FLYING)
+        CardinalDirections.CardinalDirection.DOWN:
+            return has_flag(WALKING)
+        CardinalDirections.CardinalDirection.UP:
+            return has_flag(CEILING_WALKING)
+        _:
+            return has_flag(WALL_WALKING)
+
 static func get_flag_name(flag: int, localized: bool = false) -> String:
     match flag:
         NONE: return __GlobalGameState.tr("TRANSPORTATION_MODE_NONE") if localized else "None"
@@ -57,6 +69,7 @@ static func get_flag_name(flag: int, localized: bool = false) -> String:
         CEILING_WALKING: return __GlobalGameState.tr("TRANSPORTATION_MODE_CEILING_WALKING") if localized else "Ceiling Walking"
         SQUEEZING: return __GlobalGameState.tr("TRANSPORTATION_MODE_SQUEEZING") if localized else "Squeezing"
         SWIMMING: return __GlobalGameState.tr("TRANSPORTATION_MODE_SWIMMING") if localized else "Swimming"
+        FALLING: return __GlobalGameState.tr("TRANSPORTATION_MODE_FALLING") if localized else "Falling"
         _:
             push_error("%s is not a transportation mode flag")
             print_stack()
@@ -78,7 +91,7 @@ func intersection(other: TransportationMode) -> int:
 func humanize(localized: bool = false) -> String:
     return ", ".join(get_flag_names(localized))
 
-static func create_from_direction(direction: CardinalDirections.CardinalDirection) -> TransportationMode:
+static func create_from_direction(direction: CardinalDirections.CardinalDirection, fly_in_air: bool = true) -> TransportationMode:
     var new_mode: TransportationMode = TransportationMode.new()
     if CardinalDirections.is_planar_cardinal(direction):
         new_mode.set_flag(WALL_WALKING)
@@ -87,6 +100,9 @@ static func create_from_direction(direction: CardinalDirections.CardinalDirectio
     elif direction == CardinalDirections.CardinalDirection.DOWN:
         new_mode.set_flag(WALKING)
     elif direction == CardinalDirections.CardinalDirection.NONE:
-        new_mode.set_flag(FLYING)
+        if fly_in_air:
+            new_mode.set_flag(FLYING)
+        else:
+            new_mode.set_flag(FALLING)
 
     return new_mode
