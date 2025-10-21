@@ -22,8 +22,31 @@ var _node_lookup: Dictionary[int, GridNode]
 var _anchor_lookup: Dictionary[int, GridAnchor]
 var _lookup: Dictionary[Node3D, int]
 var _door_connections: Dictionary[GridDoor, Array]
+var _door_sequences: Array[DoorSequence]
 var _emergency_moves: Dictionary[int, Array]
 var _transportation_mode: TransportationMode
+var _connection_to_direction: Dictionary[int, Dictionary]
+
+class DoorSequence:
+    var from: int
+    var to: int
+    var first_door: GridDoor
+    var second_door: GridDoor
+
+    @warning_ignore_start("shadowed_variable")
+    func _init(from: int, to: int, first_door: GridDoor, second_door: GridDoor) -> void:
+        @warning_ignore_restore("shadowed_variable")
+        self.from = from
+        self.to = to
+        self.first_door = first_door
+        self.second_door = second_door
+
+    var open: bool:
+        get():
+            return first_door.lock_state == GridDoor.LockState.OPEN && second_door.lock_state == GridDoor.LockState.OPEN
+
+    static func create_filter(from_id: int, to_id: int) -> Callable:
+        return func (seq: DoorSequence) -> bool: return seq.from == from_id && seq.to == to_id
 
 var _id: int = 0
 
@@ -62,7 +85,7 @@ func initialize_graph(
                                     pass
                                 else:
                                     _add_grid_node(to)
-                                    connect_points(_lookup[from], _lookup[to], false)
+                                    _add_connection(_lookup[from], _lookup[to], CardinalDirections.CardinalDirection.DOWN)
 
                         # Land
                         GridNode.NodeSideState.SOLID:
@@ -70,7 +93,7 @@ func initialize_graph(
                                 var anchor: GridAnchor = from.get_grid_anchor(CardinalDirections.CardinalDirection.DOWN)
                                 if anchor != null:
                                     _add_anchor(anchor)
-                                    connect_points(_lookup[from], _lookup[anchor], false)
+                                    _add_connection(_lookup[from], _lookup[anchor], CardinalDirections.CardinalDirection.DOWN)
                                 else:
                                     # Land to the side
                                     for direction: CardinalDirections.CardinalDirection in CardinalDirections.orthogonals(side):
@@ -85,7 +108,7 @@ func initialize_graph(
                                         match from.has_side(direction):
                                             GridNode.NodeSideState.NONE, GridNode.NodeSideState.ILLUSORY:
                                                 _add_anchor(anchor_to)
-                                                connect_points(_lookup[from], _lookup[anchor_to], false)
+                                                _add_connection(_lookup[from], _lookup[anchor_to], CardinalDirections.CardinalDirection.DOWN)
                                                 _add_emergency_mode(from, anchor_to)
 
                                             GridNode.NodeSideState.DOOR:
@@ -93,11 +116,12 @@ func initialize_graph(
                                                 if door != null:
                                                     _add_anchor(anchor_to)
 
+
                                                     if door.lock_state == GridDoor.LockState.OPEN:
-                                                        connect_points(_lookup[from], _lookup[anchor_to], false)
+                                                        _add_connection(_lookup[from], _lookup[anchor_to], CardinalDirections.CardinalDirection.DOWN)
                                                         _add_emergency_mode(from, anchor_to)
 
-                                                    _add_door_connection(door, from, anchor_to)
+                                                    _add_door_connection(door, from, anchor_to, direction)
 
                         # Fall through door
                         GridNode.NodeSideState.DOOR:
@@ -107,8 +131,8 @@ func initialize_graph(
                                 if to != null:
                                     _add_grid_node(to)
 
-                                    if _evaluate_and_add_door(door, CardinalDirections.CardinalDirection.NONE, from, to):
-                                        connect_points(_lookup[from], _lookup[to], false)
+                                    if _evaluate_and_add_door(door, CardinalDirections.CardinalDirection.NONE, from, to, CardinalDirections.CardinalDirection.DOWN):
+                                        _add_connection(_lookup[from], _lookup[to], CardinalDirections.CardinalDirection.DOWN)
 
                 # Flying modes
                 else:
@@ -120,7 +144,7 @@ func initialize_graph(
                             # Fly to neighbouring node
                             GridNode.NodeSideState.NONE:
                                 _add_grid_node(to)
-                                connect_points(_lookup[from], _lookup[to], false)
+                                _add_connection(_lookup[from], _lookup[to], direction)
 
                             # Land
                             GridNode.NodeSideState.SOLID:
@@ -128,13 +152,13 @@ func initialize_graph(
                                     var anchor: GridAnchor = from.get_grid_anchor(direction)
                                     if anchor != null:
                                         _add_anchor(anchor)
-                                        connect_points(_lookup[from], _lookup[anchor], false)
+                                        _add_connection(_lookup[from], _lookup[anchor], direction)
 
                             # Fly through doors
                             GridNode.NodeSideState.DOOR:
                                 _add_grid_node(to)
-                                if _evaluate_and_add_door(from.get_door(direction), CardinalDirections.CardinalDirection.NONE, from, to):
-                                    connect_points(_lookup[from], _lookup[to], false)
+                                if _evaluate_and_add_door(from.get_door(direction), CardinalDirections.CardinalDirection.NONE, from, to, direction):
+                                    _add_connection(_lookup[from], _lookup[to], direction)
 
             else:
                 var from_anchor: GridAnchor = from.get_grid_anchor(side)
@@ -150,7 +174,7 @@ func initialize_graph(
                     # Start flying or jump into node center
                     elif direction == CardinalDirections.invert(side):
                         if _can_jump(transportation_mode, direction):
-                            connect_points(_lookup[from_anchor], _lookup[from], false)
+                            _add_connection(_lookup[from_anchor], _lookup[from], direction)
 
                     # Walk along the current side in some direction
                     else:
@@ -169,13 +193,13 @@ func initialize_graph(
                                                 # We presumably were on this side already but lets double check
                                                 if transportation_mode.can_walk(side):
                                                     _add_anchor(to_anchor)
-                                                    connect_points(_lookup[from_anchor], _lookup[to_anchor], false)
+                                                    _add_connection(_lookup[from_anchor], _lookup[to_anchor], direction)
                                                 elif _can_jump(transportation_mode, direction):
                                                     _add_grid_node(to)
-                                                    connect_points(_lookup[from_anchor], _lookup[to], false)
+                                                    _add_connection(_lookup[from_anchor], _lookup[to], direction)
                                             elif _can_jump(transportation_mode, direction):
                                                 _add_grid_node(to)
-                                                connect_points(_lookup[from_anchor], _lookup[to], false)
+                                                _add_connection(_lookup[from_anchor], _lookup[to], direction)
 
                                         GridNode.NodeSideState.NONE:
                                             # Check and do outer corner walk
@@ -190,30 +214,30 @@ func initialize_graph(
                                                             GridNode.NodeSideState.SOLID:
                                                                 if final_anchor != null:
                                                                     _add_anchor(final_anchor)
-                                                                    connect_points(_lookup[from_anchor], _lookup[final_anchor], false)
+                                                                    _add_connection(_lookup[from_anchor], _lookup[final_anchor], direction)
                                                                 elif _can_jump(transportation_mode, direction):
                                                                     _add_grid_node(to)
-                                                                    connect_points(_lookup[from_anchor], _lookup[to], false)
+                                                                    _add_connection(_lookup[from_anchor], _lookup[to], direction)
                                                             GridNode.NodeSideState.DOOR, GridNode.NodeSideState.NONE, GridNode.NodeSideState.ILLUSORY:
                                                                 if _can_jump(transportation_mode, direction):
                                                                     _add_grid_node(to)
-                                                                    connect_points(_lookup[from_anchor], _lookup[to], false)
+                                                                    _add_connection(_lookup[from_anchor], _lookup[to], direction)
                                                     elif _can_jump(transportation_mode, direction):
                                                         _add_grid_node(to)
-                                                        connect_points(_lookup[from_anchor], _lookup[to], false)
+                                                        _add_connection(_lookup[from_anchor], _lookup[to], direction)
 
                                                 # If we cannot walk the outer corner target surface we need to jump
                                                 # We need to allow jumping even if final doesn't exist if the entity can fly
                                                 # Also down might not be in the direction of side...
                                                 elif _can_jump(transportation_mode, direction):
                                                     _add_grid_node(to)
-                                                    connect_points(_lookup[from_anchor], _lookup[to], false)
+                                                    _add_connection(_lookup[from_anchor], _lookup[to], direction)
 
 
                                             # This shouldn't really happen if we were anchored to that side before but...
                                             elif _can_jump(transportation_mode, direction):
                                                 _add_grid_node(to)
-                                                connect_points(_lookup[from_anchor], _lookup[to], false)
+                                                _add_connection(_lookup[from_anchor], _lookup[to], direction)
 
                                         GridNode.NodeSideState.DOOR:
                                             # TODO: This doesn't cover outer corner through door!
@@ -228,17 +252,18 @@ func initialize_graph(
                                                     CardinalDirections.CardinalDirection.NONE,
                                                     from_anchor,
                                                     to,
+                                                    direction,
                                                 ):
-                                                    connect_points(_lookup[from_anchor], _lookup[to], false)
+                                                    _add_connection(_lookup[from_anchor], _lookup[to], direction)
                                             # We really don't care that "down" is a door, if we can fly we can fly
                                             elif transportation_mode.has_flag(TransportationMode.FLYING):
-                                                connect_points(_lookup[from_anchor], _lookup[to], false)
+                                                _add_connection(_lookup[from_anchor], _lookup[to], direction)
 
                             GridNode.NodeSideState.SOLID:
                                 var anchor: GridAnchor = from.get_grid_anchor(direction)
                                 if anchor != null && transportation_mode.can_walk(direction):
                                     _add_anchor(anchor)
-                                    connect_points(_lookup[from_anchor], _lookup[anchor], false)
+                                    _add_connection(_lookup[from_anchor], _lookup[anchor], direction)
 
                             GridNode.NodeSideState.DOOR:
                                 var door: GridDoor = from.get_door(direction)
@@ -254,16 +279,16 @@ func initialize_graph(
                                                 # We presumably were on this side already but lets double check
                                                 if transportation_mode.can_walk(side):
                                                     _add_anchor(to_anchor)
-                                                    if _evaluate_and_add_door(door, side, from_anchor, to_anchor):
-                                                        connect_points(_lookup[from_anchor], _lookup[to_anchor], false)
+                                                    if _evaluate_and_add_door(door, side, from_anchor, to_anchor, direction):
+                                                        _add_connection(_lookup[from_anchor], _lookup[to_anchor], direction)
                                                 elif _can_jump(transportation_mode, direction) :
                                                     _add_grid_node(to)
-                                                    if _evaluate_and_add_door(door, side, from_anchor, to):
-                                                        connect_points(_lookup[from_anchor], _lookup[to], false)
+                                                    if _evaluate_and_add_door(door, side, from_anchor, to, direction):
+                                                        _add_connection(_lookup[from_anchor], _lookup[to], direction)
                                             elif _can_jump(transportation_mode, direction):
                                                 _add_grid_node(to)
-                                                if _evaluate_and_add_door(door, side, from_anchor, to):
-                                                    connect_points(_lookup[from_anchor], _lookup[to], false)
+                                                if _evaluate_and_add_door(door, side, from_anchor, to, direction):
+                                                    _add_connection(_lookup[from_anchor], _lookup[to], direction)
 
                                         GridNode.NodeSideState.NONE:
                                             # Check and do outer corner walk
@@ -277,52 +302,54 @@ func initialize_graph(
                                                         GridNode.NodeSideState.SOLID:
                                                             if final_anchor != null:
                                                                 _add_anchor(final_anchor)
-                                                                if _evaluate_and_add_door(door, side, from_anchor, final_anchor):
-                                                                    connect_points(_lookup[from_anchor], _lookup[final_anchor], false)
+                                                                if _evaluate_and_add_door(door, side, from_anchor, final_anchor, direction):
+                                                                    _add_connection(_lookup[from_anchor], _lookup[final_anchor], direction)
                                                                 continue
                                                             elif _can_jump(transportation_mode, direction):
                                                                 _add_grid_node(to)
-                                                                if _evaluate_and_add_door(door, side, from_anchor, to):
-                                                                    connect_points(_lookup[from_anchor], _lookup[to], false)
+                                                                if _evaluate_and_add_door(door, side, from_anchor, to, direction):
+                                                                    _add_connection(_lookup[from_anchor], _lookup[to], direction)
                                                         GridNode.NodeSideState.DOOR, GridNode.NodeSideState.NONE, GridNode.NodeSideState.ILLUSORY:
                                                             if _can_jump(transportation_mode, direction):
                                                                 _add_grid_node(to)
-                                                                if _evaluate_and_add_door(door, side, from_anchor, to):
-                                                                    connect_points(_lookup[from_anchor], _lookup[to], false)
+                                                                if _evaluate_and_add_door(door, side, from_anchor, to, direction):
+                                                                    _add_connection(_lookup[from_anchor], _lookup[to], direction)
 
                                                 # If we cannot walk the outer corner target surface we need to jump
                                                 # We need to allow jumping even if final doesn't exist if the entity can fly
                                                 # Also down might not be in the direction of side...
                                                 elif _can_jump(transportation_mode, direction):
                                                     _add_grid_node(to)
-                                                    if _evaluate_and_add_door(door, side, from_anchor, to):
-                                                        connect_points(_lookup[from_anchor], _lookup[to], false)
+                                                    if _evaluate_and_add_door(door, side, from_anchor, to, direction):
+                                                        _add_connection(_lookup[from_anchor], _lookup[to], direction)
 
                                             # This shouldn't really happen if we were anchored to that side before but...
                                             elif _can_jump(transportation_mode, direction):
                                                 _add_grid_node(to)
-                                                if _evaluate_and_add_door(door, side, from_anchor, to):
-                                                    connect_points(_lookup[from_anchor], _lookup[to], false)
+                                                if _evaluate_and_add_door(door, side, from_anchor, to, direction):
+                                                    _add_connection(_lookup[from_anchor], _lookup[to], direction)
 
                                         GridNode.NodeSideState.DOOR:
                                             _add_grid_node(to)
 
+                                            # Outer corner through two doors
+                                            var new_anchor_direction: CardinalDirections.CardinalDirection = CardinalDirections.pitch_down(direction, side)[1]
+                                            var final_anchor: GridAnchor = final.get_grid_anchor(new_anchor_direction)
+                                            if final_anchor != null && _transportation_mode.can_walk(new_anchor_direction):
+                                                _add_anchor(final_anchor)
+                                                if _evaluate_and_add_doors(door, to.get_door(side), side, side, from_anchor, to, direction):
+                                                    _add_connection(_lookup[from_anchor], _lookup[final_anchor], direction)
+
                                             # This is a bit special... Imagine we are on the floor and there's a door in the floor in front of us
                                             # We are not allowed to jump out into the air above it, unless the door is open and allows us to fall through it
                                             # But this only adds the connection to jumping out above it. The falling bit is another connection
-                                            if side == CardinalDirections.CardinalDirection.DOWN && transportation_mode.has_flag(TransportationMode.FALLING):
-                                                if _evaluate_and_add_door(door, side, from_anchor, to):
-                                                    if _evaluate_and_add_door(
-                                                        to.get_door(side),
-                                                        CardinalDirections.CardinalDirection.NONE,
-                                                        from_anchor,
-                                                        to,
-                                                    ):
-                                                        connect_points(_lookup[from_anchor], _lookup[to], false)
+                                            elif side == CardinalDirections.CardinalDirection.DOWN && transportation_mode.has_flag(TransportationMode.FALLING):
+                                                if _evaluate_and_add_doors(door, to.get_door(side), side, CardinalDirections.CardinalDirection.NONE, from_anchor, to, direction):
+                                                    _add_connection(_lookup[from_anchor], _lookup[to], direction)
                                             # We really don't care that "down" is a door, if we can fly we can fly
                                             elif transportation_mode.has_flag(TransportationMode.FLYING):
-                                                if _evaluate_and_add_door(door, side, from_anchor, to):
-                                                    connect_points(_lookup[from_anchor], _lookup[to], false)
+                                                if _evaluate_and_add_door(door, side, from_anchor, to, direction):
+                                                    _add_connection(_lookup[from_anchor], _lookup[to], direction)
 
 
         if Time.get_ticks_msec() - t0 > 500:
@@ -338,6 +365,27 @@ func initialize_graph(
 
     ready = true
 
+func _add_connection(
+    from: int,
+    to: int,
+    direction: CardinalDirections.CardinalDirection,
+    bidirectional: bool = false,
+    invese_direction: CardinalDirections.CardinalDirection = CardinalDirections.CardinalDirection.NONE,
+) -> void:
+    connect_points(from, to, bidirectional)
+    if _connection_to_direction.has(from):
+        _connection_to_direction[from][to] = direction
+    else:
+        var cons: Dictionary[int, CardinalDirections.CardinalDirection] = { to: direction }
+        _connection_to_direction[from] = cons
+
+    if bidirectional:
+        if _connection_to_direction.has(to):
+            _connection_to_direction[to][from] = invese_direction
+        else:
+            var cons: Dictionary[int, CardinalDirections.CardinalDirection] = { from: invese_direction }
+            _connection_to_direction[to] = cons
+
 func _handle_door_state_change(door: GridDoor, from: GridDoor.LockState, to: GridDoor.LockState) -> void:
     if !_door_connections.has(door):
         return
@@ -345,165 +393,264 @@ func _handle_door_state_change(door: GridDoor, from: GridDoor.LockState, to: Gri
     var connections: Array[Array] = _door_connections[door]
     if from != GridDoor.LockState.OPEN && to == GridDoor.LockState.OPEN:
         for connection: Array[int] in connections:
-            connect_points(connection[0], connection[1], false)
+            # Connection directions have already been regiestered when everything was setup
+            var sequence: int = _door_sequences.find_custom(DoorSequence.create_filter(connection[0], connection[1]))
+            if sequence < 0 || _door_sequences[sequence].open:
+                connect_points(connection[0], connection[1], false)
     elif from == GridDoor.LockState.OPEN && to != GridDoor.LockState.OPEN:
         for connection: Array[int] in connections:
-            disconnect_points(connection[0], connection[1])
+            var sequence: int = _door_sequences.find_custom(DoorSequence.create_filter(connection[0], connection[1]))
+            if sequence < 0 || !_door_sequences[sequence].open:
+                disconnect_points(connection[0], connection[1])
 
 func _handle_add_anchor(grid_node: GridNode, anchor: GridAnchor) -> void:
     _add_anchor(anchor)
 
-    for side: CardinalDirections.CardinalDirection in CardinalDirections.ALL_DIRECTIONS_AND_NONE:
-        if side == anchor.direction:
-            if !_transportation_mode.can_walk(side):
-                # Add emergency falling stuff
-                _add_grid_node(grid_node)
+    if !_transportation_mode.can_walk(anchor.direction) && anchor.direction == CardinalDirections.CardinalDirection.DOWN:
+        # Add emergency falling stuff
+        _add_grid_node(grid_node)
 
+        for neighbour_direction: CardinalDirections.CardinalDirection in CardinalDirections.ALL_PLANAR_DIRECTIONS:
+            var neighbour: GridNode = grid_node.neighbour(neighbour_direction)
+            if neighbour == null:
+                continue
+
+            var neighbour_anchor: GridAnchor = neighbour.get_grid_anchor(CardinalDirections.CardinalDirection.DOWN)
+            if neighbour_anchor != null:
+                continue
+
+            match grid_node.has_side(neighbour_direction):
+                GridNode.NodeSideState.NONE, GridNode.NodeSideState.ILLUSORY:
+                    _add_anchor(neighbour_anchor)
+                    if !are_points_connected(_lookup[grid_node], _lookup[neighbour_anchor], false):
+                        _add_connection(_lookup[grid_node], _lookup[neighbour_anchor], neighbour_direction)
+                        _add_emergency_mode(grid_node, neighbour_anchor)
+
+                GridNode.NodeSideState.DOOR:
+                    _add_anchor(neighbour_anchor)
+                    if !are_points_connected(_lookup[grid_node], _lookup[neighbour_anchor], false):
+                        if _evaluate_and_add_door(grid_node.get_door(neighbour_direction), CardinalDirections.CardinalDirection.NONE, grid_node, neighbour_anchor, neighbour_direction):
+                            _add_connection(_lookup[grid_node], _lookup[neighbour_anchor], neighbour_direction)
+                        _add_emergency_mode(grid_node, neighbour_anchor)
+
+    # Add connections out of new anchor!
+    for direction: CardinalDirections.CardinalDirection in CardinalDirections.ALL_DIRECTIONS:
+        if direction == anchor.direction:
+            continue
+
+        elif direction == CardinalDirections.invert(anchor.direction):
+            # Into node center logic
+            if _can_jump(_transportation_mode, direction):
+                _add_grid_node(grid_node)
+                # Only flying entities can land on not down, and non-flying entities cannot jump up
+                # So only flying are bidirectional
+                _add_connection(_lookup[anchor], _lookup[grid_node], direction, _transportation_mode.has_flag(TransportationMode.FLYING), CardinalDirections.invert(direction))
+
+            # Resqueue falling (separate if because flying could potentially fall)
+            if anchor.direction == CardinalDirections.CardinalDirection.DOWN && _transportation_mode.has_flag(TransportationMode.FALLING):
                 for neighbour_direction: CardinalDirections.CardinalDirection in CardinalDirections.ALL_PLANAR_DIRECTIONS:
                     var neighbour: GridNode = grid_node.neighbour(neighbour_direction)
                     if neighbour == null:
                         continue
 
-                    var neighbour_anchor: GridAnchor = neighbour.get_grid_anchor(CardinalDirections.CardinalDirection.DOWN)
-                    if neighbour_anchor != null:
-                        continue
-
-                    match grid_node.has_side(neighbour_direction):
+                    match neighbour.has_side(CardinalDirections.invert(neighbour_direction)):
                         GridNode.NodeSideState.NONE, GridNode.NodeSideState.ILLUSORY:
-                            _add_anchor(neighbour_anchor)
-                            if !are_points_connected(_lookup[grid_node], _lookup[neighbour_anchor], false):
-                                connect_points(_lookup[grid_node], _lookup[neighbour_anchor], false)
-                                _add_emergency_mode(grid_node, neighbour_anchor)
+                            _add_grid_node(neighbour)
+                            _add_connection(_lookup[neighbour], _lookup[anchor], CardinalDirections.invert(direction))
+                            _add_emergency_mode(neighbour, anchor)
 
                         GridNode.NodeSideState.DOOR:
-                            _add_anchor(neighbour_anchor)
-                            if !are_points_connected(_lookup[grid_node], _lookup[neighbour_anchor], false):
-                                if _evaluate_and_add_door(grid_node.get_door(neighbour_direction), CardinalDirections.CardinalDirection.NONE, grid_node, neighbour_anchor):
-                                    connect_points(_lookup[grid_node], _lookup[neighbour_anchor], false)
-                                _add_emergency_mode(grid_node, neighbour_anchor)
-                continue
+                            _add_grid_node(neighbour)
+                            if _evaluate_and_add_door(
+                                neighbour.get_door(CardinalDirections.invert(neighbour_direction)),
+                                CardinalDirections.CardinalDirection.NONE,
+                                neighbour,
+                                anchor,
+                                CardinalDirections.invert(neighbour_direction),
+                            ):
+                                _add_connection(_lookup[neighbour], _lookup[anchor], CardinalDirections.invert(direction))
 
-            # Add connections out of new anchor!
-            for direction: CardinalDirections.CardinalDirection in CardinalDirections.ALL_DIRECTIONS:
-                if direction == side:
-                    continue
+                            _add_emergency_mode(neighbour, anchor)
 
-                elif direction == CardinalDirections.invert(side):
-                    # Into node center logic
-                    if _can_jump(_transportation_mode, direction):
-                        _add_grid_node(grid_node)
-                        # Only flying entities can land on not down, and non-flying entities cannot jump up
-                        # So only flying are bidirectional
-                        connect_points(_lookup[anchor], _lookup[grid_node], _transportation_mode.has_flag(TransportationMode.FLYING))
+            continue
 
-                    # Resqueue falling (separate if because flying could potentially fall)
-                    if side == CardinalDirections.CardinalDirection.DOWN && _transportation_mode.has_flag(TransportationMode.FALLING):
-                        for neighbour_direction: CardinalDirections.CardinalDirection in CardinalDirections.ALL_PLANAR_DIRECTIONS:
-                            var neighbour: GridNode = grid_node.neighbour(neighbour_direction)
-                            if neighbour == null:
-                                continue
+        match grid_node.has_side(direction):
+            GridNode.NodeSideState.SOLID:
+                var to_anchor: GridAnchor = grid_node.get_grid_anchor(direction)
+                if _transportation_mode.can_walk(direction) && to_anchor != null:
+                    _add_anchor(to_anchor)
+                    # Note: This is bidirectional
+                    _add_connection(_lookup[anchor], _lookup[to_anchor], direction, true, CardinalDirections.invert(direction))
 
-                            match neighbour.has_side(CardinalDirections.invert(neighbour_direction)):
-                                GridNode.NodeSideState.NONE, GridNode.NodeSideState.ILLUSORY:
-                                    _add_grid_node(neighbour)
-                                    connect_points(_lookup[neighbour], _lookup[anchor], false)
-                                    _add_emergency_mode(neighbour, anchor)
+                elif _can_jump(_transportation_mode, direction):
+                    _add_grid_node(grid_node)
+                    # Only flying entities can land on not down, and non-flying entities cannot jump up
+                    # So only flying are bidirectional
+                    _add_connection(_lookup[anchor], _lookup[grid_node], direction, _transportation_mode.has_flag(TransportationMode.FLYING), CardinalDirections.invert(direction))
 
-                                GridNode.NodeSideState.DOOR:
-                                    _add_grid_node(neighbour)
-                                    if _evaluate_and_add_door(
-                                        neighbour.get_door(CardinalDirections.invert(neighbour_direction)),
-                                        CardinalDirections.CardinalDirection.NONE,
-                                        neighbour,
-                                        anchor
-                                    ):
-                                        connect_points(_lookup[neighbour], _lookup[anchor], false)
+                elif anchor.direction == CardinalDirections.CardinalDirection.DOWN && _transportation_mode.has_flag(TransportationMode.FALLING):
+                    # Falling entities can land
+                    _add_grid_node(grid_node)
+                    # This isn't bidirectional because it's only non flying, but falling entities that are landing on this surface
+                    _add_connection(_lookup[grid_node], _lookup[anchor], direction)
 
-                                    _add_emergency_mode(neighbour, anchor)
+            GridNode.NodeSideState.NONE:
+                var neighbour: GridNode = grid_node.neighbour(direction)
+                if neighbour != null:
+                    var final: GridNode = neighbour.neighbour(anchor.direction)
+                    var neighbour_anchor: GridAnchor = neighbour.get_grid_anchor(anchor.direction)
+                    match neighbour.has_side(anchor.direction):
+                        GridNode.NodeSideState.SOLID:
+                            if neighbour_anchor != null && _transportation_mode.can_walk(anchor.direction):
+                                _add_anchor(neighbour_anchor)
+                                # Should be bidirectional
+                                _add_connection(_lookup[anchor], _lookup[neighbour_anchor], direction, true, CardinalDirections.invert(direction))
+                            elif _can_jump(_transportation_mode, direction):
+                                _add_connection(_lookup[anchor], _lookup[neighbour], direction)
 
-                    continue
+                        GridNode.NodeSideState.NONE:
+                            var new_anchor_direction: CardinalDirections.CardinalDirection = CardinalDirections.pitch_down(direction, anchor.direction)[1]
 
-                match grid_node.has_side(direction):
-                    GridNode.NodeSideState.SOLID:
-                        var to_anchor: GridAnchor = grid_node.get_grid_anchor(direction)
-                        if _transportation_mode.can_walk(direction) && to_anchor != null:
-                            _add_anchor(to_anchor)
-                            # Note: This is bidirectional
-                            connect_points(_lookup[anchor], _lookup[to_anchor])
+                            if _transportation_mode.can_walk(new_anchor_direction) && final != null:
+                                    var final_anchor: GridAnchor = final.get_grid_anchor(new_anchor_direction)
 
-                        elif _can_jump(_transportation_mode, direction):
-                            _add_grid_node(grid_node)
-                            # Only flying entities can land on not down, and non-flying entities cannot jump up
-                            # So only flying are bidirectional
-                            connect_points(_lookup[anchor], _lookup[grid_node], _transportation_mode.has_flag(TransportationMode.FLYING))
+                                    match final.has_side(new_anchor_direction):
+                                        GridNode.NodeSideState.SOLID:
+                                            if final_anchor != null:
+                                                _add_anchor(final_anchor)
+                                                _add_connection(_lookup[anchor], _lookup[final_anchor], direction)
+                                            elif _can_jump(_transportation_mode, direction):
+                                                _add_grid_node(neighbour)
+                                                _add_connection(_lookup[anchor], _lookup[neighbour], direction)
+                                        GridNode.NodeSideState.DOOR, GridNode.NodeSideState.NONE, GridNode.NodeSideState.ILLUSORY:
+                                            if _can_jump(_transportation_mode, direction):
+                                                _add_grid_node(neighbour)
+                                                _add_connection(_lookup[anchor], _lookup[neighbour], direction)
+                            elif _can_jump(_transportation_mode, direction):
+                                _add_grid_node(neighbour)
+                                _add_connection(_lookup[anchor], _lookup[neighbour], direction)
 
-                        elif side == CardinalDirections.CardinalDirection.DOWN && _transportation_mode.has_flag(TransportationMode.FALLING):
-                            # Falling entities can land
-                            _add_grid_node(grid_node)
-                            # This isn't bidirectional because it's only non flying, but falling entities that are landing on this surface
-                            connect_points(_lookup[grid_node], _lookup[anchor], false)
+                        GridNode.NodeSideState.DOOR:
+                            var new_anchor_direction: CardinalDirections.CardinalDirection = CardinalDirections.pitch_down(direction, anchor.direction)[1]
 
-                    GridNode.NodeSideState.NONE:
-                        var neighbour: GridNode = grid_node.neighbour(direction)
-                        if neighbour != null:
-                            var final: GridNode = neighbour.neighbour(side)
-                            var neighbour_anchor: GridAnchor = neighbour.get_grid_anchor(side)
-                            match neighbour.has_side(side):
-                                GridNode.NodeSideState.SOLID:
-                                    if neighbour_anchor != null && _transportation_mode.can_walk(side):
-                                        _add_anchor(neighbour_anchor)
-                                        # Should be bidirectional
-                                        connect_points(_lookup[anchor], _lookup[neighbour_anchor])
-                                    elif _can_jump(_transportation_mode, direction):
-                                        connect_points(_lookup[anchor], _lookup[neighbour], false)
+                            if _transportation_mode.can_walk(new_anchor_direction) && final != null:
+                                var final_anchor: GridAnchor = final.get_grid_anchor(new_anchor_direction)
 
-                                GridNode.NodeSideState.NONE:
-                                    var new_anchor_direction: CardinalDirections.CardinalDirection = CardinalDirections.pitch_down(direction, side)[1]
-
-                                    if _transportation_mode.can_walk(new_anchor_direction) && final != null:
-                                            var final_anchor: GridAnchor = final.get_grid_anchor(new_anchor_direction)
-
-                                            match final.has_side(new_anchor_direction):
-                                                GridNode.NodeSideState.SOLID:
-                                                    if final_anchor != null:
-                                                        _add_anchor(final_anchor)
-                                                        connect_points(_lookup[anchor], _lookup[final_anchor])
-                                                    elif _can_jump(_transportation_mode, direction):
-                                                        _add_grid_node(neighbour)
-                                                        connect_points(_lookup[anchor], _lookup[neighbour], false)
-                                                GridNode.NodeSideState.DOOR, GridNode.NodeSideState.NONE, GridNode.NodeSideState.ILLUSORY:
-                                                    if _can_jump(_transportation_mode, direction):
-                                                        _add_grid_node(neighbour)
-                                                        connect_points(_lookup[anchor], _lookup[neighbour], false)
-                                    elif _can_jump(_transportation_mode, direction):
-                                        _add_grid_node(neighbour)
-                                        connect_points(_lookup[anchor], _lookup[neighbour], false)
-
-                                GridNode.NodeSideState.DOOR:
-                                    var new_anchor_direction: CardinalDirections.CardinalDirection = CardinalDirections.pitch_down(direction, side)[1]
-
-                                    if _transportation_mode.can_walk(new_anchor_direction) && final != null:
-                                        var final_anchor: GridAnchor = final.get_grid_anchor(new_anchor_direction)
-
-                                        match final.has_side(new_anchor_direction):
-                                            GridNode.NodeSideState.SOLID:
-                                                if final_anchor != null:
-                                                    _add_anchor(final_anchor)
-                                                    if _evaluate_and_add_door(neighbour.get_door(side), side, anchor, final_anchor):
-                                                        connect_points(_lookup[anchor], _lookup[final_anchor])
-                                                elif _can_jump(_transportation_mode, direction):
-                                                    _add_grid_node(neighbour)
-                                                    connect_points(_lookup[anchor], _lookup[neighbour], false)
-                                            GridNode.NodeSideState.DOOR, GridNode.NodeSideState.NONE, GridNode.NodeSideState.ILLUSORY:
-                                                if _can_jump(_transportation_mode, direction):
-                                                    _add_grid_node(neighbour)
-                                                    connect_points(_lookup[anchor], _lookup[neighbour], false)
-                                    elif _can_jump(_transportation_mode, direction):
-                                        _add_grid_node(neighbour)
-                                        connect_points(_lookup[anchor], _lookup[neighbour], false)
+                                match final.has_side(new_anchor_direction):
+                                    GridNode.NodeSideState.SOLID:
+                                        if final_anchor != null:
+                                            _add_anchor(final_anchor)
+                                            var door: GridDoor = neighbour.get_door(anchor.direction)
+                                            if _evaluate_and_add_door(door, anchor.direction, anchor, final_anchor, direction):
+                                                _add_connection(_lookup[anchor], _lookup[final_anchor], direction)
+                                            if _evaluate_and_add_door(door, new_anchor_direction, final_anchor, anchor, CardinalDirections.invert(anchor.direction)):
+                                                _add_connection( _lookup[final_anchor], _lookup[anchor], CardinalDirections.invert(anchor.direction))
+                                        elif _can_jump(_transportation_mode, direction):
+                                            _add_grid_node(neighbour)
+                                            _add_connection(_lookup[anchor], _lookup[neighbour], direction)
+                                    GridNode.NodeSideState.DOOR, GridNode.NodeSideState.NONE, GridNode.NodeSideState.ILLUSORY:
+                                        if _can_jump(_transportation_mode, direction):
+                                            _add_grid_node(neighbour)
+                                            _add_connection(_lookup[anchor], _lookup[neighbour], direction)
+                            elif _can_jump(_transportation_mode, direction):
+                                _add_grid_node(neighbour)
+                                _add_connection(_lookup[anchor], _lookup[neighbour], direction)
 
 
-        # Remove previous connections blocked by anchor
+            GridNode.NodeSideState.DOOR:
+                var door: GridDoor = grid_node.get_door(direction)
+                var to: GridNode = grid_node.neighbour(direction)
+                if to != null:
+                    var to_anchor: GridAnchor = to.get_grid_anchor(anchor.direction)
+                    var final: GridNode = to.neighbour(anchor.direction)
+
+                    match to.has_side(anchor.direction):
+                        GridNode.NodeSideState.SOLID:
+                            # Normal walk along the side
+                            if to_anchor != null:
+                                # We presumably were on this side already but lets double check
+                                if _transportation_mode.can_walk(anchor.direction):
+                                    _add_anchor(to_anchor)
+                                    if _evaluate_and_add_door(door, anchor.direction, anchor, to_anchor, direction):
+                                        _add_connection(_lookup[anchor], _lookup[to_anchor], direction)
+                                    if _evaluate_and_add_door(door, anchor.direction, to_anchor, anchor, CardinalDirections.invert(direction)):
+                                        _add_connection(_lookup[anchor], _lookup[to_anchor], CardinalDirections.invert(direction))
+                                elif _can_jump(_transportation_mode, direction):
+                                    _add_grid_node(to)
+                                    if _evaluate_and_add_door(door, anchor.direction, anchor, to, direction):
+                                        _add_connection(_lookup[anchor], _lookup[to], direction)
+                            elif _can_jump(_transportation_mode, direction):
+                                _add_grid_node(to)
+                                if _evaluate_and_add_door(door, anchor.direction, anchor, to, direction):
+                                    _add_connection(_lookup[anchor], _lookup[to], direction)
+
+                        GridNode.NodeSideState.NONE:
+                            # Check and do outer corner walk
+                            if _transportation_mode.can_walk(anchor.direction):
+                                var new_anchor_direction: CardinalDirections.CardinalDirection = CardinalDirections.pitch_down(direction, anchor.direction)[1]
+
+                                if _transportation_mode.can_walk(new_anchor_direction) && final != null:
+                                    var final_anchor: GridAnchor = final.get_grid_anchor(new_anchor_direction)
+
+                                    match to.has_side(new_anchor_direction):
+                                        GridNode.NodeSideState.SOLID:
+                                            if final_anchor != null:
+                                                _add_anchor(final_anchor)
+                                                if _evaluate_and_add_door(door, anchor.direction, anchor, final_anchor, direction):
+                                                    _add_connection(_lookup[anchor], _lookup[final_anchor], direction)
+                                                if _evaluate_and_add_door(door, new_anchor_direction, final_anchor, anchor, CardinalDirections.invert(anchor.direction)):
+                                                    _add_connection(_lookup[final_anchor], _lookup[anchor], CardinalDirections.invert(anchor.direction))
+                                            elif _can_jump(_transportation_mode, direction):
+                                                _add_grid_node(to)
+                                                if _evaluate_and_add_door(door, anchor.direction, anchor, to, direction):
+                                                    _add_connection(_lookup[anchor], _lookup[to], direction)
+                                        GridNode.NodeSideState.DOOR, GridNode.NodeSideState.NONE, GridNode.NodeSideState.ILLUSORY:
+                                            if _can_jump(_transportation_mode, direction):
+                                                _add_grid_node(to)
+                                                if _evaluate_and_add_door(door, anchor.direction, anchor, to, direction):
+                                                    _add_connection(_lookup[anchor], _lookup[to], direction)
+
+                                # If we cannot walk the outer corner target surface we need to jump
+                                # We need to allow jumping even if final doesn't exist if the entity can fly
+                                # Also down might not be in the direction of side...
+                                elif _can_jump(_transportation_mode, direction):
+                                    _add_grid_node(to)
+                                    if _evaluate_and_add_door(door, anchor.direction, anchor, to, direction):
+                                        _add_connection(_lookup[anchor], _lookup[to], direction)
+
+                            # This shouldn't really happen if we were anchored to that side before but...
+                            elif _can_jump(_transportation_mode, direction):
+                                _add_grid_node(to)
+                                if _evaluate_and_add_door(door, anchor.direction, anchor, to, direction):
+                                    _add_connection(_lookup[anchor], _lookup[to], direction)
+
+                        GridNode.NodeSideState.DOOR:
+                            _add_grid_node(to)
+
+                            # Outer corner through two doors
+                            var new_anchor_direction: CardinalDirections.CardinalDirection = CardinalDirections.pitch_down(direction, anchor.direction)[1]
+                            var final_anchor: GridAnchor = final.get_grid_anchor(new_anchor_direction)
+                            if final_anchor != null && _transportation_mode.can_walk(new_anchor_direction):
+                                _add_anchor(final_anchor)
+                                if _evaluate_and_add_doors(door, to.get_door(anchor.direction), anchor.direction, anchor.direction, anchor, to, direction):
+                                    _add_connection(_lookup[anchor], _lookup[final_anchor], direction)
+                                if _evaluate_and_add_doors(door, to.get_door(anchor.direction), new_anchor_direction, new_anchor_direction, to, anchor, CardinalDirections.invert(anchor.direction)):
+                                    _add_connection(_lookup[final_anchor], _lookup[anchor], CardinalDirections.invert(anchor.direction))
+
+                            # This is a bit special... Imagine we are on the floor and there's a door in the floor in front of us
+                            # We are not allowed to jump out into the air above it, unless the door is open and allows us to fall through it
+                            # But this only adds the connection to jumping out above it. The falling bit is another connection
+                            elif anchor.direction == CardinalDirections.CardinalDirection.DOWN && _transportation_mode.has_flag(TransportationMode.FALLING):
+                                if _evaluate_and_add_doors(door, to.get_door(anchor.direction), anchor.direction, CardinalDirections.CardinalDirection.NONE, anchor, to, direction):
+                                    _add_connection(_lookup[anchor], _lookup[to], direction)
+                            # We really don't care that "down" is a door, if we can fly we can fly
+                            elif _transportation_mode.has_flag(TransportationMode.FLYING):
+                                if _evaluate_and_add_door(door, anchor.direction, anchor, to, direction):
+                                    _add_connection(_lookup[anchor], _lookup[to], direction)
+
+
+    # Remove previous connections blocked by anchor
+    for side: CardinalDirections.CardinalDirection in CardinalDirections.ALL_DIRECTIONS_AND_NONE:
         var from_id: int = -1
         var from_anchor: GridAnchor
         if side == CardinalDirections.CardinalDirection.NONE:
@@ -541,21 +688,52 @@ func _handle_add_anchor(grid_node: GridNode, anchor: GridAnchor) -> void:
 func _can_jump(transportation_mode: TransportationMode, direction: CardinalDirections.CardinalDirection) -> bool:
     return transportation_mode.has_flag(TransportationMode.FLYING) || transportation_mode.has_flag(TransportationMode.FALLING) && direction != CardinalDirections.CardinalDirection.UP
 
-func _evaluate_and_add_door(door: GridDoor, entry_down: CardinalDirections.CardinalDirection, from: Node3D, to: Node3D) -> bool:
-    if door == null:
+# TODO: Outer corner chained doors doesn't do logic correctly
+func _evaluate_and_add_door(
+    door: GridDoor,
+    entry_down: CardinalDirections.CardinalDirection,
+    from: Node3D,
+    to: Node3D,
+    direction: CardinalDirections.CardinalDirection,
+) -> bool:
+    if door == null || !door.block_traversal_anchor_sides.has(entry_down):
         return false
 
-    _add_door_connection(door, from, to)
+    _add_door_connection(door, from, to, direction)
 
-    return door.lock_state == GridDoor.LockState.OPEN && !door.block_traversal_anchor_sides.has(entry_down)
+    return door.lock_state == GridDoor.LockState.OPEN
+
+func _evaluate_and_add_doors(
+    door: GridDoor,
+    second_door: GridDoor,
+    entry_down: CardinalDirections.CardinalDirection,
+    second_entry_down: CardinalDirections.CardinalDirection,
+    from: Node3D,
+    to: Node3D,
+    direction: CardinalDirections.CardinalDirection,
+) -> bool:
+    if door == null || second_door == null || door.block_traversal_anchor_sides.has(entry_down) || second_door.block_traversal_anchor_sides.has(second_entry_down):
+        return false
+
+    _door_sequences.append(DoorSequence.new(_lookup[from], _lookup[to], door, second_door))
+    _add_door_connection(door, from, to, direction)
+    _add_door_connection(second_door, from, to, direction)
+
+    return door.lock_state == GridDoor.LockState.OPEN
 
 
-func _add_door_connection(door: GridDoor, from: Node3D, to: Node3D) -> void:
+func _add_door_connection(door: GridDoor, from: Node3D, to: Node3D, direction: CardinalDirections.CardinalDirection) -> void:
     var connection: Array[int] = [_lookup[from], _lookup[to]]
     if _door_connections.has(door):
         _door_connections[door].append(connection)
     else:
         _door_connections[door] = [connection] as Array[Array]
+
+    if _connection_to_direction.has(_lookup[from]):
+        _connection_to_direction[_lookup[from]][_lookup[to]] = direction
+    else:
+        var cons: Dictionary[int, CardinalDirections.CardinalDirection] = { _lookup[to]: direction }
+        _connection_to_direction[_lookup[from]] = cons
 
 func _add_emergency_mode(from: Node3D, to: Node3D) -> void:
     if _emergency_moves.has(_lookup[from]):
