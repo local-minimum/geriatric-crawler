@@ -183,3 +183,16 @@ func _process(delta: float) -> void:
         return
 
     effect.global_rotation += CardinalDirections.direction_to_vector(anchor_direction) * delta * rotation_speed
+
+func get_exit_target() -> Node3D:
+    if exit == null:
+        return null
+
+    var exit_node: GridNode = exit.get_grid_node()
+    if exit_node == null:
+        return null
+
+    if exit.anchor_direction == CardinalDirections.CardinalDirection.NONE:
+        return exit_node
+
+    return exit_node.get_grid_anchor(exit.anchor_direction)

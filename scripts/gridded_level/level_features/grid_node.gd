@@ -51,14 +51,19 @@ func get_door(direction: CardinalDirections.CardinalDirection) -> GridDoor:
 
 var _teleporter_inited: bool
 var _teleporters: Dictionary[CardinalDirections.CardinalDirection, GridTeleporter]
-func get_teleporter(direction: CardinalDirections.CardinalDirection, for_player: bool = true) -> GridTeleporter:
+func get_active_teleporter(
+    direction: CardinalDirections.CardinalDirection,
+    for_player: bool = true,
+    omit_by_direction: bool = false,
+    omit_if_active_direction: CardinalDirections.CardinalDirection = CardinalDirections.CardinalDirection.NONE,
+) -> GridTeleporter:
     if !_teleporter_inited:
         _teleporter_inited = true
         for teleporter: GridTeleporter in find_children("", "GridTeleporter"):
             _teleporters[teleporter.anchor_direction] = teleporter
 
     var _valid_check: Callable = func (tele: GridTeleporter) -> bool:
-        if !tele.can_teleport || !tele.active_for_side(direction):
+        if !tele.can_teleport || !tele.active_for_side(direction) || omit_by_direction && tele.active_for_side(omit_if_active_direction):
             return false
 
         if for_player:

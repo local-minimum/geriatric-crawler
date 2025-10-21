@@ -360,7 +360,7 @@ func _draw() -> void:
                         )
 
                     if _show_features:
-                        var teleporter: GridTeleporter = node.get_teleporter(direction)
+                        var teleporter: GridTeleporter = node.get_active_teleporter(direction)
                         if teleporter != null:
                             var offset: Vector3 = (side_plane as Vector3) * node_half_size * 0.35
                             var up: Vector3 = CardinalDirections.direction_to_vector(direction)

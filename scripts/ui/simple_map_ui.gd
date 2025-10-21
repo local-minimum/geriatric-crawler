@@ -150,7 +150,7 @@ func _draw() -> void:
                             [Vector2.ZERO],
                         )
 
-                var teleporter: GridTeleporter = node.get_teleporter(_player.down)
+                var teleporter: GridTeleporter = node.get_active_teleporter(_player.down)
                 if teleporter != null:
                     var offset: Vector2 = cell * 0.25
                     print_debug("Teleporter at %s with radius %s" % [tile_center, offset])
