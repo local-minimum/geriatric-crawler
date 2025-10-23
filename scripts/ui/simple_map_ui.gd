@@ -15,11 +15,11 @@ class_name SimpleMapUI
 @export_range(4, 20) var wanted_columns: int = 10
 @export_range(4, 20) var wanted_rows: int = 8
 
-var _player: GridPlayer
+var _player: GridPlayerCore
 var _seen: Array[Vector3i]
 var _show_features: bool
 
-func trigger_redraw(player: GridPlayer, seens_coordinates: Array[Vector3i], show_features: bool) -> void:
+func trigger_redraw(player: GridPlayerCore, seens_coordinates: Array[Vector3i], show_features: bool) -> void:
     _player = player
     _seen = seens_coordinates
     _show_features = show_features
@@ -114,7 +114,7 @@ func _draw() -> void:
 
             if _show_features:
 
-                var ramp: GridRamp = node.get_ramp(_player.down)
+                var ramp: GridRampCore = node.get_ramp(_player.down)
                 var floor_below_ramp: bool = false
                 if floor_state == GridNode.NodeSideState.NONE:
                     var down_neighbour: GridNode = level.get_grid_node(CardinalDirections.translate(game_coords, _player.down))

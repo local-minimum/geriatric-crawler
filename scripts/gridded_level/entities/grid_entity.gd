@@ -82,7 +82,6 @@ func block_concurrent_movement() -> void:
 func remove_concurrent_movement_block() -> void:
     _block_concurrent = false
 
-
 func force_movement(movement: Movement.MovementType) -> bool:
     if _start_movement(movement, true):
         return attempt_movement(movement, false, true)

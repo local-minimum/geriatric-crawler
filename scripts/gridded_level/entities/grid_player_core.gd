@@ -75,6 +75,9 @@ var _repeat_movement: Array[Movement.MovementType] = []
 func is_alive() -> bool:
     return true
 
+func kill() -> void:
+    pass
+
 func _input(event: InputEvent) -> void:
     if transportation_mode.mode == TransportationMode.NONE:
         return

@@ -1,7 +1,7 @@
 extends Control
 class_name IsometricMapUI
 
-var _player: GridPlayer
+var _player: GridPlayerCore
 var _seen: Array[Vector3i]
 
 @export var draw_box_half: Vector3i = Vector3i(3, 1, 3)
@@ -33,7 +33,7 @@ var _seen: Array[Vector3i]
 
 var _show_features: bool
 
-func trigger_redraw(player: GridPlayer, seens_coordinates: Array[Vector3i], show_features: bool) -> void:
+func trigger_redraw(player: GridPlayerCore, seens_coordinates: Array[Vector3i], show_features: bool) -> void:
     _player = player
     _seen = seens_coordinates
     _show_features = show_features
@@ -76,7 +76,7 @@ func _draw() -> void:
         secondary.z = elevation_plane.z
 
     var _drawn_doors: Array[GridDoorCore] = []
-    var _drawn_ramps: Array[GridRamp] = []
+    var _drawn_ramps: Array[GridRampCore] = []
 
     # var draw_function: Callable = _create_orthographic_draw_function(player_coordinates, player_up, primary, secondary)
     var draw_function: Callable = _create_isometric_draw_function(player_coordinates, player_up, primary, secondary)
@@ -131,7 +131,7 @@ func _draw() -> void:
                     var sign_flipped_plane: Vector3i = VectorUtils.flip_sign_first_non_null(side_plane)
 
                     if _show_features:
-                        var ramp: GridRamp = node.get_ramp(direction)
+                        var ramp: GridRampCore = node.get_ramp(direction)
                         if ramp != null:
                             if _drawn_ramps.has(ramp):
                                 continue

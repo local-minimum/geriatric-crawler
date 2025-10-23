@@ -1,7 +1,5 @@
 extends GridEvent
-class_name GridRamp
-
-@export var climbing_requirement: int = 0
+class_name GridRampCore
 
 @export var up_direction: CardinalDirections.CardinalDirection = CardinalDirections.CardinalDirection.UP
 
@@ -324,13 +322,8 @@ func blocks_entry_translation(
     if super.blocks_entry_translation(entity, from, move_direction, to_side):
         return true
 
-    if entity is GridPlayer:
-        var player: GridPlayer = entity
-        if player.robot.get_skill_level(RobotAbility.SKILL_CLIMBING) < climbing_requirement:
-            if !silent:
-                NotificationsManager.warn(tr("NOTICE_INACCESSIBLE"), tr("INSUFFICIENT_LEVEL"))
-                print_debug("Entry to ramp blocked by too low climbing-skill")
-            return true
+    if !_can_climb(entity, silent):
+        return true
 
     var expected_from: Vector3i = CardinalDirections.translate(
         CardinalDirections.translate(coordinates(), up_direction),
@@ -355,3 +348,6 @@ func blocks_entry_translation(
     if !silent:
         print_debug("Not entering ramp at %s from %s was %s" % [coordinates(), expected_from, from.coordinates])
     return false
+
+func _can_climb(_entity: GridEntity, _silent: bool) -> bool:
+    return true

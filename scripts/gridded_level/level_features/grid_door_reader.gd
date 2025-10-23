@@ -108,7 +108,7 @@ func _sync_reader_display(_level: GridLevel = null) -> void:
 
 func _in_range(event_position: Vector3) -> bool:
     var level: GridLevel = door.get_level()
-    var player: GridPlayer = level.player
+    var player: GridPlayerCore = level.player
 
     if player.cinematic:
         return false

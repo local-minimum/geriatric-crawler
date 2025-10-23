@@ -46,7 +46,7 @@ func _handle_update_input_mode(mode: BindingHints.InputMode) -> void:
     queue_redraw()
 
 func _handle_cinematic(entity: GridEntity, cinematic: bool) -> void:
-    if entity is not GridPlayer:
+    if entity is not GridPlayerCore:
         return
 
     _cinematic = cinematic
@@ -69,7 +69,7 @@ func _handle_disallow_interaction(interactable: Interactable) -> void:
         queue_redraw()
 
 func _handle_move_start(entity: GridEntity, _from: Vector3i, _translation_direction: CardinalDirections.CardinalDirection) -> void:
-    if entity is not GridPlayer:
+    if entity is not GridPlayerCore:
         return
 
     var was_interacting: bool = _interacting
@@ -81,7 +81,7 @@ func _handle_move_start(entity: GridEntity, _from: Vector3i, _translation_direct
         queue_redraw()
 
 func _handle_move_end(entity: GridEntity) -> void:
-    if entity is not GridPlayer:
+    if entity is not GridPlayerCore:
         return
 
     _moving = false

@@ -7,7 +7,7 @@ class_name CameraPuller
 
 var _tween: Tween
 
-func grab_player(player: GridPlayer, on_grabbed_complete: Variant = null, auto_release: bool = false, speed: float = 1.0) -> void:
+func grab_player(player: GridPlayerCore, on_grabbed_complete: Variant = null, auto_release: bool = false, speed: float = 1.0) -> void:
     player.cinematic = true
 
     var cam: Camera3D = player.camera
@@ -56,7 +56,7 @@ func grab_player(player: GridPlayer, on_grabbed_complete: Variant = null, auto_r
             @warning_ignore_restore("unsafe_cast")
 
 
-func release_player(player: GridPlayer, on_released_complete: Variant = null, speed: float = 1.0, release_from_cinematic: bool = true) -> void:
+func release_player(player: GridPlayerCore, on_released_complete: Variant = null, speed: float = 1.0, release_from_cinematic: bool = true) -> void:
     var cam: Camera3D = player.camera
 
     if _tween != null:

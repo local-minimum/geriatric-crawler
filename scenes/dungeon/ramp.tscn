@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://dt4v126jk07y8"]
 
-[ext_resource type="Script" uid="uid://b8ewgty4lcw6y" path="res://scripts/gridded_level/level_features/grid_ramp.gd" id="1_ahf4m"]
+[ext_resource type="Script" uid="uid://b8ewgty4lcw6y" path="res://scripts/gc/level_features/grid_ramp.gd" id="1_ahf4m"]
 [ext_resource type="PackedScene" uid="uid://d1hvyppfcbfng" path="res://models/ramp.fbx" id="2_p5bm5"]
 
 [node name="Ramp" type="Node3D"]

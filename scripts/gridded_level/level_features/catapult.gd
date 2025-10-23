@@ -57,8 +57,8 @@ func _release_entity(entity: GridEntity, immediate_uncinematic: bool = false) ->
             push_warning("Failed to crash entity %s %s" % [entity.name, _crash_direction])
 
     if _orient_entity:
-        if entity is GridPlayer:
-            var player: GridPlayer = entity
+        if entity is GridPlayerCore:
+            var player: GridPlayerCore = entity
             player.stand_up()
 
     if immediate_uncinematic:
@@ -94,8 +94,8 @@ func _handle_move_end(entity: GridEntity) -> void:
         Phase.CENTERING:
             print_debug("[Catapult %s] %s centered" % [coordinates(), entity.name])
             if _orient_entity:
-                if entity is GridPlayer:
-                    var player: GridPlayer = entity
+                if entity is GridPlayerCore:
+                    var player: GridPlayerCore = entity
                     player.duck()
 
                 var fly_direction: CardinalDirections.CardinalDirection = field_direction
@@ -214,7 +214,7 @@ func _managed_entity(entity: GridEntity) -> bool:
     if _managed_entities.get(entity) == self:
         return false
 
-    if entity is GridPlayer:
+    if entity is GridPlayerCore:
         return _targets != Targets.ENEMY
     else:
         return _targets != Targets.PLAYER

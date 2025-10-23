@@ -125,7 +125,7 @@ func _handle_change_node(feature: GridNodeFeature) -> void:
         _exposed.erase(entity)
 
 func _handle_move_end(entity: GridEntity) -> void:
-    if entity is not GridPlayer || _managed:
+    if entity is not GridPlayerCore || _managed:
         return
 
     if _live == LiveMode.TURN_BASED && !_managed:
@@ -166,9 +166,9 @@ func _check_crushing() -> void:
             )
 
         if !moved:
-            if exposed is GridPlayer:
-                var player: GridPlayer = exposed
-                player.robot.kill()
+            if exposed is GridPlayerCore:
+                var player: GridPlayerCore = exposed
+                player.kill()
             elif exposed is GridEncounterCore:
                 var encounter: GridEncounterCore = exposed
                 encounter.kill()

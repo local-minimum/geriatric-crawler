@@ -82,11 +82,11 @@ func get_active_teleporter(
     return alternatives[idx]
 
 var _ramps_inited: bool
-var _ramps: Dictionary[CardinalDirections.CardinalDirection, GridRamp]
-func get_ramp(direction: CardinalDirections.CardinalDirection) -> GridRamp:
+var _ramps: Dictionary[CardinalDirections.CardinalDirection, GridRampCore]
+func get_ramp(direction: CardinalDirections.CardinalDirection) -> GridRampCore:
     if !_ramps_inited:
         _ramps_inited = true
-        for ramp: GridRamp in find_children("", "GridRamp"):
+        for ramp: GridRampCore in find_children("", "GridRampCore"):
             _ramps[CardinalDirections.invert(ramp.up_direction)] = ramp
             _ramps[ramp.upper_exit_direction] = ramp
 

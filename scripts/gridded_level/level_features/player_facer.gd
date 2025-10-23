@@ -29,7 +29,7 @@ func _ready() -> void:
 
     _connect_player_tracking(get_level(), null)
 
-func _connect_player_tracking(level: GridLevelCore, _player: GridPlayer) -> void:
+func _connect_player_tracking(level: GridLevelCore, _player: GridPlayerCore) -> void:
     if level == null:
         push_error("%s is not part of a level" % name)
         return
@@ -44,7 +44,7 @@ func _track_player(
     _from: Vector3i,
     _translation_direction: CardinalDirections.CardinalDirection,
 ) -> void:
-    if entity is not GridPlayer:
+    if entity is not GridPlayerCore:
         return
 
     var level: GridLevel = get_level()
@@ -55,7 +55,7 @@ func _track_player(
     _track = true
 
 func _end_track_player(entity: GridEntity) -> void:
-    if entity is not GridPlayer:
+    if entity is not GridPlayerCore:
         return
 
     var level: GridLevel = get_level()

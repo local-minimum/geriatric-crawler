@@ -62,7 +62,7 @@ func should_trigger(
     if exit == null || _triggered && !_repeatable:
         return false
 
-    if _entity is GridPlayer:
+    if _entity is GridPlayerCore:
         return teleports_player
     return teleports_non_players
 

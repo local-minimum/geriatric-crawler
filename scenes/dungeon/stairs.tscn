@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://cd55qnu3gk7he"]
 
-[ext_resource type="Script" uid="uid://b8ewgty4lcw6y" path="res://scripts/gridded_level/level_features/grid_ramp.gd" id="1_y13gc"]
+[ext_resource type="Script" uid="uid://b8ewgty4lcw6y" path="res://scripts/gc/level_features/grid_ramp.gd" id="1_y13gc"]
 [ext_resource type="PackedScene" uid="uid://5e0kekaq3dlp" path="res://models/stairs.fbx" id="2_y13gc"]
 
 [node name="Stairs" type="Node3D"]
