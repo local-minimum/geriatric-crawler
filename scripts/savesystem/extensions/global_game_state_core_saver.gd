@@ -23,7 +23,6 @@ func retrieve_data(_extentsion_save_data: Dictionary) -> Dictionary:
 func initial_data(_extentsion_save_data: Dictionary) -> Dictionary:
     return {}
 
-
 func load_from_data(extentsion_save_data: Dictionary) -> void:
     var credits: int = DictionaryUtils.safe_geti(extentsion_save_data, _CREDITS_KEY, 0, false)
     __GlobalGameState.set_credits(credits)
