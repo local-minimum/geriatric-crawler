@@ -97,6 +97,10 @@ func _collect_save_data(save_data: Dictionary) -> Dictionary:
     }
 
     for extension: SaveExtension in extensions + late_extensions:
+        if extension == null:
+            push_warning("save system %s has empty extension slot" % self)
+            continue
+
         var key: String = extension.get_key()
         if key.is_empty():
             continue
@@ -165,6 +169,10 @@ func _load_save_data_or_default_initial_data(slot: int) -> Dictionary:
     }
 
     for extension: SaveExtension in extensions:
+        if extension == null:
+            push_warning("save system %s has empty extension slot" % self)
+            continue
+
         var key: String = extension.get_key()
         if key.is_empty():
             continue
@@ -191,6 +199,10 @@ func _load_slot_into_cache(slot: int) -> bool:
 
     if save_version.lower(current_version):
         for migration: SaveVersionMigration in migrations:
+            if migration == null:
+                push_warning("Save system %s has empty migration slot" % self)
+                continue
+
             if migration.applicable(save_version):
                 data = migration.migrate_save(data)
 
@@ -253,6 +265,10 @@ func load_cached_save() -> bool:
 
     # Load late extension save data
     for extension: SaveExtension in late_extensions:
+        if extension == null:
+            push_warning("save system %s has empty late extension slot" % self)
+            continue
+
         var key: String = extension.get_key()
         if key.is_empty():
             continue
