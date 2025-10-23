@@ -33,7 +33,8 @@ func initial_data(_extentsion_save_data: Dictionary) -> Dictionary:
 func load_from_data(extentsion_save_data: Dictionary) -> void:
     var credits: int = DictionaryUtils.safe_geti(extentsion_save_data, _CREDITS_KEY, 0, false)
     var loans: int = DictionaryUtils.safe_geti(extentsion_save_data, _LOANS_KEY, 0, false)
-    __GlobalGameState.set_credits(credits, loans)
+    __GlobalGameState.set_credits(credits)
+    __GlobalGameState.set_loans(loans)
 
     var interest_rate: int = DictionaryUtils.safe_geti(extentsion_save_data, _INTEREST_RATE_KEY, GlobalGameState.BASE_INTEREST_RATE, false)
     __GlobalGameState.set_interest_rate(interest_rate)

@@ -19,6 +19,8 @@ class_name BalanceSheetUI
 func _enter_tree() -> void:
     if __SignalBus.on_update_credits.connect(_handle_credits_update) != OK:
         push_error("Could not listen to credits change")
+    if __SignalBus.on_update_loans.connect(_handle_loans_update) != OK:
+        push_error("Could not listen to loans change")
     if __SignalBus.on_update_day.connect(_handle_update_day) != OK:
         push_error("Could not listen to update day")
     if __SignalBus.on_update_interest_rate.connect(_handle_update_interest_rate) != OK:
@@ -35,7 +37,8 @@ func _enter_tree() -> void:
     _sync()
 
 func _sync() -> void:
-    _handle_credits_update(__GlobalGameState.total_credits, __GlobalGameState.loans)
+    _handle_credits_update(__GlobalGameState.total_credits)
+    _handle_loans_update(__GlobalGameState.loans)
     _handle_update_rent(__GlobalGameState.rent)
     _update_balance()
     _handle_update_day(__GlobalGameState.year, __GlobalGameState.month, __GlobalGameState.day_of_month, __GlobalGameState.days_until_end_of_month)
@@ -52,12 +55,15 @@ func _handle_update_rent(new_rent: int) -> void:
     rent_value.text = GlobalGameState.credits_with_sign(-new_rent)
     debits_value.text = GlobalGameState.credits_with_sign(-(new_rent + __GlobalGameState.calculate_interest()))
 
-func _handle_credits_update(total_credits: int, loans: int) -> void:
-    credits_value.text = GlobalGameState.credits_with_sign(total_credits)
+func _handle_loans_update(loans: int) -> void:
     loans_value.text = GlobalGameState.credits_with_sign(loans)
     var interest: int = __GlobalGameState.calculate_interest()
     interest_value.text = GlobalGameState.credits_with_sign(-interest)
     debits_value.text = GlobalGameState.credits_with_sign(-(__GlobalGameState.rent + interest))
+    _update_balance()
+
+func _handle_credits_update(total_credits: int) -> void:
+    credits_value.text = GlobalGameState.credits_with_sign(total_credits)
     _update_balance()
 
 func _update_balance() -> void:

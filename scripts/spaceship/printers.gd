@@ -53,7 +53,7 @@ func _handle_update_inventory(inventory: Inventory, _id: String, _amount: float,
         return
     _sync_panels()
 
-func _handle_update_credits(_credits: int, _loans: int) -> void:
+func _handle_update_credits(_credits: int) -> void:
     _sync_panels()
 
 func _handle_increment_day(_day_of_month: int, _remaining_days: int) -> void:

@@ -5,12 +5,8 @@ class_name SignalBus
 # Critical fails
 signal on_critical_level_corrupt(level_id: String)
 
-# Time
-signal on_update_day(year: int, month: int, day_of_month: int, days_until_end_of_month: int)
-signal on_increment_day(day_of_month: int, days_until_end_of_month: int)
-
-# Credits $$$
-signal on_update_credits(credits: int, loans: int)
+# Loans $$$
+signal on_update_loans(loans: int)
 signal on_update_interest_rate(rate_points: int)
 signal on_update_rent(rent: int)
 

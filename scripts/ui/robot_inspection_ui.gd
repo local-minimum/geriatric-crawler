@@ -38,7 +38,7 @@ func _handle_robot_complete_fight(robot: Robot) -> void:
     if visible:
         _robot_skill_tree.sync(robot, __GlobalGameState.total_credits)
 
-func _handle_update_credits(credits: int, _loans: int) -> void:
+func _handle_update_credits(credits: int) -> void:
     if visible:
         _credits_label.text = GlobalGameState.credits_with_sign(credits)
         if _player != null:

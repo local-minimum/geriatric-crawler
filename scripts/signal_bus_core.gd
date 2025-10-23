@@ -6,6 +6,13 @@ class_name SignalBusCore
 signal on_update_input_mode(method: BindingHints.InputMode)
 signal on_update_handedness(handedness: AccessibilitySettings.Handedness)
 
+# Time
+signal on_update_day(year: int, month: int, day_of_month: int, days_until_end_of_month: int)
+signal on_increment_day(day_of_month: int, days_until_end_of_month: int)
+
+# Credits $$$
+signal on_update_credits(credits: int)
+
 # Saving and loading
 signal on_before_save()
 signal on_save_complete()

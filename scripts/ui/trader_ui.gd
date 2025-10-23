@@ -42,7 +42,7 @@ func _handle_room_change_coomplete(_new_room: Spaceship.Room) -> void:
         hide()
         _buy_and_sell.hide()
 
-func _handle_update_credits(credits: int, _loans: int) -> void:
+func _handle_update_credits(credits: int) -> void:
     if visible:
         _sync_access_marked_button()
 
