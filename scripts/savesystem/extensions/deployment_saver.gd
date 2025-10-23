@@ -72,8 +72,8 @@ func load_from_data(extentsion_save_data: Dictionary) -> void:
         if robot != null:
             robot.excursions += 1
 
-    if ExplorationScene.instance != null:
-        var level: GridLevel = ExplorationScene.instance.level
+    if GCExplorationSceneUI.instance != null:
+        var level: GridLevel = GCExplorationSceneUI.instance.level
         var player: GridPlayer = level.player
         if RobotsPool.instance != null:
             player.robot.load_from_data(RobotsPool.instance.get_robot(robot_id))

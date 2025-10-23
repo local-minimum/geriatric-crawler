@@ -15,8 +15,8 @@ func retrieve_data(_extentsion_save_data: Dictionary) -> Dictionary:
 
     var save: Dictionary = _extentsion_save_data.merged(RobotsPool.instance.collect_save_data(), true)
 
-    if ExplorationScene.instance != null:
-        var robot: Robot = ExplorationScene.instance.level.player.robot
+    if GCExplorationSceneUI.instance != null:
+        var robot: Robot = GCExplorationSceneUI.instance.level.player.robot
         save[robot.robot_id] = robot.collect_save_data()
 
     return save

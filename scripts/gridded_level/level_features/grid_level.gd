@@ -69,10 +69,6 @@ func _ready() -> void:
     else:
         print_debug("Level %s has %s nodes" % [name, _nodes.size()])
 
-    var exploration: ExplorationScene = ExplorationScene.find_exploration_scene(self)
-    if exploration != null:
-        exploration.level = self
-
 func _enter_tree() -> void:
     if active_level != null && active_level != self:
         active_level.queue_free()

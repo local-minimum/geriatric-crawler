@@ -1,7 +1,7 @@
 [gd_scene load_steps=23 format=3 uid="uid://5mvkmlsl4h3x"]
 
 [ext_resource type="PackedScene" uid="uid://dx6ngxriyyq7l" path="res://scenes/ui/ui_debug_settings.tscn" id="1_6lmoa"]
-[ext_resource type="Script" uid="uid://da6tnwd64dup6" path="res://scripts/exploration_scene.gd" id="1_w7kg7"]
+[ext_resource type="Script" uid="uid://da6tnwd64dup6" path="res://scripts/ui/exploration_scene_ui.gd" id="1_w7kg7"]
 [ext_resource type="PackedScene" uid="uid://xqedv5aeal6n" path="res://scenes/exploration_save_system.tscn" id="2_n04bd"]
 [ext_resource type="PackedScene" uid="uid://d3iceirfj21qw" path="res://scenes/ui/exploration_ui.tscn" id="4_kbxam"]
 [ext_resource type="PackedScene" uid="uid://eoj51yv61yas" path="res://scenes/exploration_view.tscn" id="5_6lmoa"]
@@ -94,8 +94,7 @@ render_target_update_mode = 4
 
 [node name="Exploration View" parent="Exploration View/SubViewportContainer/SubViewport" instance=ExtResource("5_6lmoa")]
 
-[node name="DebugSettingsUI" parent="Exploration View/SubViewportContainer/SubViewport" node_paths=PackedStringArray("exploration_view", "settings") instance=ExtResource("1_6lmoa")]
-exploration_view = NodePath("../Exploration View")
+[node name="DebugSettingsUI" parent="Exploration View/SubViewportContainer/SubViewport" node_paths=PackedStringArray("settings") instance=ExtResource("1_6lmoa")]
 settings = NodePath("../../../../Settings")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="Exploration View/SubViewportContainer/SubViewport"]
@@ -119,12 +118,11 @@ horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 2
 
-[node name="Exploration UI" parent="." node_paths=PackedStringArray("exploration_view", "battle", "inspect_robot_ui") instance=ExtResource("4_kbxam")]
+[node name="Exploration UI" parent="." node_paths=PackedStringArray("battle", "inspect_robot_ui") instance=ExtResource("4_kbxam")]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.82
 offset_left = 0.0
-exploration_view = NodePath("../Exploration View/SubViewportContainer/SubViewport/Exploration View")
 battle = NodePath("../Battle Mode")
 inspect_robot_ui = NodePath("../Robot Inspection UI")
 

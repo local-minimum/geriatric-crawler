@@ -1,7 +1,7 @@
 extends Node
-class_name ExplorationScene
+class_name GCExplorationSceneUI
 
-static var instance: ExplorationScene
+static var instance: GCExplorationSceneUI
 
 @export var settings: GameSettings
 
@@ -14,7 +14,10 @@ static var instance: ExplorationScene
 
 var _view_split: float
 
-var level: GridLevel
+var level: GridLevel:
+    get():
+        return GridLevel.active_level
+
 var level_ready: bool:
     get():
         return level != null
@@ -104,17 +107,17 @@ func _post_death_tween() -> void:
     if !(__SceneSwapper as SceneSwapper).transition_to_next_scene():
         push_error("Failed to return to hub")
 
-static func find_exploration_scene(current: Node, inclusive: bool = true) ->  ExplorationScene:
-    if inclusive && current is ExplorationScene:
-        return current as ExplorationScene
+static func find_exploration_scene(current: Node, inclusive: bool = true) ->  GCExplorationSceneUI:
+    if inclusive && current is GCExplorationSceneUI:
+        return current as GCExplorationSceneUI
 
     var parent: Node = current.get_parent()
 
     if parent == null:
         return null
 
-    if parent is ExplorationScene:
-        return parent as ExplorationScene
+    if parent is GCExplorationSceneUI:
+        return parent as GCExplorationSceneUI
 
     return find_exploration_scene(parent, false)
 
