@@ -22,7 +22,7 @@ const UNKNOWN_LEVEL_ID: String = "--unknown--"
 
 @export var broadcasts_parent: Node
 
-@export var player: GridPlayer:
+@export var player: GridPlayerCore:
     set(value):
         player = value
         __SignalBus.on_change_player.emit(self, value)

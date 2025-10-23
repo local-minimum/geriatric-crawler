@@ -35,13 +35,20 @@ func _process(_delta: float) -> void:
     if _available && Time.get_ticks_msec() > _next_update:
         _calculate_values()
 
-func _handle_level_loaded(level: GridLevel) -> void:
+func _handle_level_loaded(level: GridLevelCore) -> void:
     print_debug("[Geiger Counter] Got new level %s" % level)
-    _sync_available(level.player.robot if level.player != null else null)
+    if level.player is GridPlayer:
+        var player: GridPlayer = level.player
+        _sync_available(player.robot)
+    else:
+        _sync_available(null)
 
-func _handle_change_player(_level: GridLevel, player: GridPlayer) -> void:
+func _handle_change_player(_level: GridLevelCore, player: GridPlayerCore) -> void:
     print_debug("[Geiger Counter] Got new player %s" % player)
-    _sync_available(player.robot)
+    if player is GridPlayer:
+        _sync_available((player as GridPlayer).robot)
+    else:
+        _sync_available(null)
 
 func _sync_available(robot: Robot) -> void:
     _available = robot.get_skill_level(RobotAbility.SKILL_GEIGER) > 0

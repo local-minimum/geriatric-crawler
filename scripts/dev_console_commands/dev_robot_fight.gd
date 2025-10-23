@@ -10,15 +10,16 @@ func _ready() -> void:
 
 var _robot: Robot
 
-func _handle_level_unloaded(_level: GridLevel) -> void:
+func _handle_level_unloaded(_level: GridLevelCore) -> void:
     _robot = null
 
 func _handle_robot_loaded(robot: Robot) -> void:
     _robot = robot
 
-func _handle_level_loaded(level: GridLevel) -> void:
+func _handle_level_loaded(level: GridLevelCore) -> void:
     if level.player != null:
-        _robot = level.player.robot
+        var player: GridPlayer = level.player
+        _robot = player.robot
     else:
         _robot = null
 

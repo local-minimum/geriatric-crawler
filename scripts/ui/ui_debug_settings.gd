@@ -100,12 +100,14 @@ func _on_tank_animations_toggled(toggled_on: bool) -> void:
 
 
 func _on_wall_walking_toggled(toggled_on: bool) -> void:
-    level.player.override_wall_walking = toggled_on
+    if level.player is GridPlayer:
+        (level.player as GridPlayer).override_wall_walking = toggled_on
 
 func _on_ceiling_walking_toggled(toggled_on: bool) -> void:
     if toggled_on:
         wall_walking.button_pressed = true
-    level.player.override_ceiling_walking = toggled_on
+    if level.player is GridPlayer:
+        (level.player as GridPlayer).override_ceiling_walking = toggled_on
 
 
 func _on_jump_off_walls_toggled(toggled_on: bool) -> void:

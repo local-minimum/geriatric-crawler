@@ -9,8 +9,6 @@ class_name SimpleMapUI
 @export var illusion_color: Color
 @export var wall_color: Color
 
-@export var exploration_ui: ExplorationUI
-
 @export var cell_padding: float = 1
 @export var player_marker_padding: float = 4
 

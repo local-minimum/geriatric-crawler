@@ -35,6 +35,9 @@ func _ready() -> void:
 
     super()
 
+func is_alive() -> bool:
+    return robot.is_alive()
+
 func _handle_robot_death(dead_robot: Robot) -> void:
     if robot == dead_robot:
         print_debug("[Grid Player] We are dead")

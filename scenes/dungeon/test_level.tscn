@@ -9935,8 +9935,9 @@ script = ExtResource("9_myev5")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.7, 0)
 mesh = SubResource("QuadMesh_s5loo")
 
-[node name="Battle Trigger" type="Node" parent="Encounters/Target Dummy Blob"]
+[node name="Battle Trigger" type="Node" parent="Encounters/Target Dummy Blob" node_paths=PackedStringArray("enemies")]
 script = ExtResource("10_rvj20")
+enemies = [NodePath("Target Dummy AI")]
 hide_encounter_on_trigger = true
 metadata/_custom_type_script = "uid://b3kob7bivk342"
 
@@ -9984,8 +9985,9 @@ script = ExtResource("9_myev5")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.7, 0)
 mesh = SubResource("QuadMesh_kmgg5")
 
-[node name="Repeat Battle Trigger" type="Node" parent="Encounters/Multi Encounter Repeat"]
+[node name="Repeat Battle Trigger" type="Node" parent="Encounters/Multi Encounter Repeat" node_paths=PackedStringArray("enemies")]
 script = ExtResource("10_rvj20")
+enemies = [NodePath("Target Dummy AI"), NodePath("Target Dummy AI (2)")]
 metadata/_custom_type_script = "uid://b3kob7bivk342"
 
 [node name="Target Dummy AI" type="Node" parent="Encounters/Multi Encounter Repeat/Repeat Battle Trigger" node_paths=PackedStringArray("deck", "brain", "_target_system")]
@@ -10057,8 +10059,9 @@ metadata/_custom_type_script = "uid://bqahhkn6dpex"
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.706822, 0)
 mesh = SubResource("QuadMesh_jqdjk")
 
-[node name="BattleModeTrigger" type="Node" parent="Encounters/Killer Moving Encounter"]
+[node name="BattleModeTrigger" type="Node" parent="Encounters/Killer Moving Encounter" node_paths=PackedStringArray("enemies")]
 script = ExtResource("10_rvj20")
+enemies = [NodePath("Killer AI")]
 hide_encounter_on_trigger = true
 metadata/_custom_type_script = "uid://dmpqfljj24gh6"
 

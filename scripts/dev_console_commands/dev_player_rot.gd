@@ -6,12 +6,12 @@ func _ready() -> void:
     if __SignalBus.on_level_unloaded.connect(_handle_level_unloaded) != OK:
         push_error("Failed to connect level unloaded")
 
-var _level: GridLevel
+var _level: GridLevelCore
 
-func _handle_level_loaded(level: GridLevel) -> void:
+func _handle_level_loaded(level: GridLevelCore) -> void:
     _level = level
 
-func _handle_level_unloaded(level: GridLevel) -> void:
+func _handle_level_unloaded(level: GridLevelCore) -> void:
     if _level == level:
         _level = null
 
@@ -36,7 +36,7 @@ func execute(parameters: String, console: MinimumDevConsole) -> bool:
         console.output_error("There's no level loaded with a player character")
         return true
 
-    var player: GridPlayer = _level.player
+    var player: GridPlayerCore = _level.player
 
     var duration: float = max(0.0, 0.5 if parts.size() < 3 else parts[2].to_float())
 

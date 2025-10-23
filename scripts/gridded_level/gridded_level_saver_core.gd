@@ -1,39 +1,36 @@
 extends LevelSaver
+class_name GriddedLevelSaverCore
 
 const _LEVEL_ID_KEY: String = "id"
 const _PLAYER_KEY: String = "player"
 const _ENCOUNTERS_KEY: String = "encounters"
 const _EVENTS_KEY: String = "events"
-const _PUNISHMENT_DECK_KEY: String = "punishments"
-const _CORPSE_KEY: String = "corpse"
 
-const _PLAYER_SCENE: String = "res://scenes/dungeon/player.tscn"
+
+@export var _player_scene: String = "res://scenes/dungeon/player.tscn"
 
 @export var persistant_group: String = "Persistant"
 
 @export var encounter_group: String = "Encounter"
 
-@export var level: GridLevel
+@export var level: GridLevelCore
 
 func _ready() -> void:
     if level == null:
-        var node: Node = get_tree().get_first_node_in_group(GridLevel.LEVEL_GROUP)
-        if node != null && node is GridLevel:
+        var node: Node = get_tree().get_first_node_in_group(GridLevelCore.LEVEL_GROUP)
+        if node != null && node is GridLevelCore:
             level = node
         else:
-            push_warning("Could not find a level in '%s', won't be able to load level saves" % GridLevel.LEVEL_GROUP)
+            push_warning("Could not find a level in '%s', won't be able to load level saves" % GridLevelCore.LEVEL_GROUP)
 
 func get_level_id() -> String:
     _ready()
     if level == null:
-        return GridLevel.UNKNOWN_LEVEL_ID
+        return GridLevelCore.UNKNOWN_LEVEL_ID
 
     return level.level_id
 
 func get_level_to_load() -> String:
-    if !level.player.robot.is_alive():
-        return SpaceshipSaver.LEVEL_NAME
-
     if level.activated_exit_portal != null:
         var target: String = level.activated_exit_portal.exit_level_target
         if target.is_empty():
@@ -43,9 +40,6 @@ func get_level_to_load() -> String:
     return get_level_id()
 
 func get_level_to_load_entry_portal_id() -> String:
-    if !level.player.robot.is_alive():
-        return ""
-
     if level.activated_exit_portal != null:
         return level.activated_exit_portal.exit_level_target_portal
 
@@ -59,17 +53,12 @@ func collect_save_state() -> Dictionary:
     var save_state: Dictionary = {
         _ENCOUNTERS_KEY: encounters_save,
         _EVENTS_KEY: events_save,
-        _PUNISHMENT_DECK_KEY: level.punishments.collect_save_data(),
     }
 
-    var corpse_data: Dictionary
-    if _create_corpse(corpse_data):
-        save_state[_CORPSE_KEY] = corpse_data
-
     for persistable: Node in get_tree().get_nodes_in_group(persistant_group):
-        if persistable is GridPlayer:
-            var player: GridPlayer = persistable
-            if !player.robot.is_alive():
+        if persistable is GridPlayerCore:
+            var player: GridPlayerCore = persistable
+            if !player.is_alive():
                 continue
 
             if save_state.has(_PLAYER_KEY):
@@ -77,7 +66,7 @@ func collect_save_state() -> Dictionary:
 
             var player_save: Dictionary = player.save()
             if level.activated_exit_portal != null:
-                GridPlayer.strip_save_of_transform_data(player_save)
+                GridPlayerCore.strip_save_of_transform_data(player_save)
             save_state[_PLAYER_KEY] = player_save
 
 
@@ -102,33 +91,16 @@ func collect_save_state() -> Dictionary:
 
     return save_state
 
-func _create_corpse(save: Dictionary) -> bool:
-    if level.player.robot.is_alive():
-        if level.corpse != null && level.corpse.has_loot():
-            save.merge(level.corpse.collect_save_data(), true)
-
-            return true
-
-        return false
-
-    save[GCCorpse.CORPSE_COORDINATES_KEY] = level.player.coordinates()
-    save[GCCorpse.CORPSE_INVENTORY_KEY] = Inventory.active_inventory.collect_save_data()
-    save[GCCorpse.CORPSE_MODEL_KEY] = level.player.robot.model.id
-    save[GCCorpse.CORPSE_NAME_KEY] = level.player.robot.given_name
-
-    return true
-
 func get_initial_save_state() -> Dictionary:
     var player_save: Dictionary = level.player.initial_state()
     if level.activated_exit_portal != null:
-        GridPlayer.strip_save_of_transform_data(player_save)
+        GridPlayerCore.strip_save_of_transform_data(player_save)
 
     var save_state: Dictionary = {
         _LEVEL_ID_KEY: level.level_id,
         _PLAYER_KEY: player_save,
         _ENCOUNTERS_KEY: {}, # We just assume they are as they should be
         _EVENTS_KEY: {},
-        _PUNISHMENT_DECK_KEY: []
     }
 
     return save_state
@@ -157,14 +129,15 @@ func load_from_save(save_data: Dictionary, entry_portal_id: String) -> void:
 
         persistable.queue_free()
 
-    var player_node: GridPlayer = null
+    var player_node: GridPlayerCore = null
 
     var player_save: Dictionary = DictionaryUtils.safe_getd(save_data, _PLAYER_KEY)
-    if !GridPlayer.valid_save_data(player_save):
-        GridPlayer.extend_save_with_portal_entry(player_save, level.entry_portal)
+    if !GridPlayerCore.valid_save_data(player_save):
+        GridPlayerCore.extend_save_with_portal_entry(player_save, level.entry_portal)
 
     if !player_save.is_empty():
-        player_node = preload(_PLAYER_SCENE).instantiate()
+        var scene: PackedScene = load(_player_scene)
+        player_node = scene.instantiate()
         player_node.name = "Player Blob"
         level.add_child(player_node)
         player_node.load_from_save(level, player_save)
@@ -203,13 +176,5 @@ func load_from_save(save_data: Dictionary, entry_portal_id: String) -> void:
                 event.load_save_data({})
                 if !events_save.is_empty():
                     push_warning("Event '%s' not present in save" % event.save_key())
-
-    level.punishments.load_from_save(DictionaryUtils.safe_geta(save_data, _PUNISHMENT_DECK_KEY, []))
-
-    var corpse_save: Dictionary = DictionaryUtils.safe_getd(save_data, _CORPSE_KEY, {}, false)
-    if !corpse_save.is_empty():
-        var corpse_scene: PackedScene = load("res://scenes/dungeon/corpse.tscn")
-        var corpse: GCCorpse = corpse_scene.instantiate()
-        corpse.load_from_save(level, corpse_save)
 
     level.emit_loaded = true

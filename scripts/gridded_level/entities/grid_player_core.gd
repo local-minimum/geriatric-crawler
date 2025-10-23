@@ -72,6 +72,9 @@ func _sync_level_entry() -> void:
 
 var _repeat_movement: Array[Movement.MovementType] = []
 
+func is_alive() -> bool:
+    return true
+
 func _input(event: InputEvent) -> void:
     if transportation_mode.mode == TransportationMode.NONE:
         return
@@ -258,7 +261,7 @@ static func valid_save_data(save_data: Dictionary) -> bool:
         save_data.has(_COORDINATES_KEY) &&
         save_data.has(_DOWN_KEY))
 
-func load_from_save(level: GridLevel, save_data: Dictionary) -> void:
+func load_from_save(level: GridLevelCore, save_data: Dictionary) -> void:
     if !valid_save_data(save_data):
         push_error("Player save data is not valid %s" % save_data)
         return

@@ -37,7 +37,7 @@ func _ready() -> void:
         push_error("Failed to connect robot exploration damage")
 
 
-    _connect_player(_exploration_ui.level.player, _exploration_ui.battle.battle_player)
+    _connect_player(_exploration_ui.player, _exploration_ui.battle.battle_player)
 
 func _gui_input(event: InputEvent) -> void:
     if !_hovered || !event.is_pressed() || event.is_echo():
@@ -61,7 +61,7 @@ func _handle_new_level(level: GridLevel) -> void:
     if _exploration_ui.level != level:
         _exploration_ui.level = level
 
-    _handle_new_player(level, level.player)
+    _handle_new_player(level, _exploration_ui.player)
 
 func _handle_new_player(_level: GridLevel, player: GridPlayer) -> void:
     _sync_robot.call_deferred(player.robot)
@@ -70,7 +70,7 @@ func _connect_player(grid_player: GridPlayer, _battle_player: BattlePlayer, omit
 
     if !omit_connecting_robot:
         # sync robot also called from new player
-        _handle_new_player(_exploration_ui.level, _exploration_ui.level.player)
+        _handle_new_player(_exploration_ui.level, _exploration_ui.player)
     else:
         _sync_robot.call_deferred(grid_player.robot)
 
@@ -122,13 +122,13 @@ func _handle_on_death(entity: BattleEntity) -> void:
         _sync_health(entity)
 
 func _handle_on_complete_fight(robot: Robot) -> void:
-    if robot == _exploration_ui.level.player.robot:
+    if robot == _exploration_ui.robot:
         _sync_level(robot)
 
 func _handle_on_robot_loaded(robot: Robot) -> void:
-    if robot == _exploration_ui.level.player.robot:
-        print_debug("Handling robot loaded %s (%s, %s)" % [robot.given_name, _exploration_ui.level.player, _exploration_ui.battle.battle_player])
-        _connect_player(_exploration_ui.level.player, _exploration_ui.battle.battle_player, true)
+    if robot == _exploration_ui.robot:
+        print_debug("Handling robot loaded %s (%s, %s)" % [robot.given_name, _exploration_ui.player, _exploration_ui.battle.battle_player])
+        _connect_player(_exploration_ui.player, _exploration_ui.battle.battle_player, true)
 
 var _hovered: bool = false
 

@@ -62,6 +62,9 @@ func get_highest_scoring_live_enemy() -> BattleEnemy:
 ## Thing that happesn when an encounter is triggered.
 ## Returns if could trigger
 func invoke(triggering_encounter: GridEncounter, player: GridEntity) -> bool:
+    if player is not GridPlayer:
+        return false
+
     print_debug("Entering battle with %s" % triggering_encounter.name)
 
     @warning_ignore_start("return_value_discarded")
@@ -70,7 +73,7 @@ func invoke(triggering_encounter: GridEncounter, player: GridEntity) -> bool:
 
     level = triggering_encounter.get_level()
     level.paused = true
-    BattleMode.instance.enter_battle(self, level.player.robot)
+    BattleMode.instance.enter_battle(self, (player as GridPlayer).robot)
     return true
 
 func complete() -> void:

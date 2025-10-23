@@ -6,12 +6,12 @@ func _ready() -> void:
     if __SignalBus.on_level_unloaded.connect(_handle_level_unloaded) != OK:
         push_error("Failed to connect level unloaded")
 
-var _level: GridLevel
+var _level: GridLevelCore
 
-func _handle_level_loaded(level: GridLevel) -> void:
+func _handle_level_loaded(level: GridLevelCore) -> void:
     _level = level
 
-func _handle_level_unloaded(level: GridLevel) -> void:
+func _handle_level_unloaded(level: GridLevelCore) -> void:
     if _level == level:
         _level = null
 
@@ -41,7 +41,7 @@ func _move_step(steps: int) -> bool:
     if _level == null || _level.player == null:
         return false
 
-    var player: GridPlayer = _level.player
+    var player: GridPlayerCore = _level.player
 
     var coords: Vector3i = CardinalDirections.translate(player.coordinates(), player.look_direction, steps)
 

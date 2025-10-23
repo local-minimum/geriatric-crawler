@@ -4,19 +4,31 @@ class_name  ExplorationUI
 var level: GridLevel:
     get():
         if level == null:
-            level = GridLevel.active_level
+            level = GridLevelCore.active_level
         return level
 
 @export var battle: BattleMode
 
 @export var inspect_robot_ui: RobotInspectionUI
 
+var player: GridPlayer:
+    get():
+        if level.player is GridPlayer:
+            return (level.player as GridPlayer)
+        return null
+
+var robot: Robot:
+    get():
+        if level.player is GridPlayer:
+            return (level.player as GridPlayer).robot
+        return null
+
 func _ready() -> void:
-    level = GridLevel.active_level
+    level = GridLevelCore.active_level
     if __SignalBus.on_level_loaded.connect(_handle_new_level) != OK:
         push_error("Failed to connect level loaded")
 
-func _handle_new_level(new: GridLevel) -> void:
+func _handle_new_level(new: GridLevelCore) -> void:
     level = new
 
 func _on_turn_left_pressed() -> void:
@@ -52,4 +64,10 @@ func _on_back_button_up() -> void:
     level.player.clear_held_movement(Movement.MovementType.BACK)
 
 func inspect_robot() -> void:
-    inspect_robot_ui.inspect(level.player, level.player.robot, battle.battle_player, __GlobalGameState.total_credits)
+    if level.player is GridPlayer:
+        inspect_robot_ui.inspect(
+            level.player as GridPlayer,
+            (level.player as GridPlayer).robot,
+            battle.battle_player,
+            __GlobalGameState.total_credits,
+        )

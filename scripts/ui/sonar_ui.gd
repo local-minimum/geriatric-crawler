@@ -27,7 +27,7 @@ func _ready() -> void:
     if __SignalBus.on_robot_gain_ability.connect(_handle_robot_gain_ability) != OK:
         push_error("Failed to connect robot gain ability")
 
-    _sync(exploration_ui.level.player.robot)
+    _sync(exploration_ui.robot)
 
 func _handle_robot_gain_ability(robot: Robot, ability: RobotAbility) -> void:
     if ability.id == RobotAbility.SKILL_SONAR:
@@ -48,7 +48,7 @@ func _reset_sonar(_level: GridLevel = null) -> void:
 
 func _populate_astar() -> void:
     var level: GridLevel = exploration_ui.level
-    var player: GridEntity = exploration_ui.level.player
+    var player: GridEntity = exploration_ui.player
 
     for g_node: GridNode in level.nodes():
         var coords: Vector3i = g_node.coordinates
@@ -121,7 +121,7 @@ func _calculate_detection() -> void:
         if _update_detect_based_on_coords(coords, player_coords, look_vector):
             return
 
-    if exploration_ui.level.player.robot.get_skill_level(RobotAbility.SKILL_SONAR) < 2:
+    if exploration_ui.robot.get_skill_level(RobotAbility.SKILL_SONAR) < 2:
         return
 
     for side: GridNodeSide in level.illusory_sides():

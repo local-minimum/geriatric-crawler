@@ -49,7 +49,7 @@ func _ready() -> void:
     effect.prepare(self)
 
 func _check_colliding_anchor(feature: GridNodeFeature) -> void:
-    if feature is not GridPlayer || encounter_mode != EncounterMode.ANCHOR:
+    if feature is not GridPlayerCore || encounter_mode != EncounterMode.ANCHOR:
         return
 
     if feature.get_grid_node() == get_grid_node() && feature.get_grid_anchor() == get_grid_anchor():
@@ -57,7 +57,7 @@ func _check_colliding_anchor(feature: GridNodeFeature) -> void:
             _trigger(feature as GridEntity)
 
 func _check_colliding_node(feature: GridNodeFeature) -> void:
-    if feature is not GridPlayer:
+    if feature is not GridPlayerCore:
         return
 
     var is_on_node: bool = feature.get_grid_node() == get_grid_node()
@@ -108,7 +108,7 @@ func _valid_save_data(save_data: Dictionary) -> bool:
         save_data.has(_COORDINATES_KEY) &&
         save_data.has(_DOWN_KEY))
 
-func load_from_save(level: GridLevel, save_data: Dictionary) -> void:
+func load_from_save(level: GridLevelCore, save_data: Dictionary) -> void:
     if !_valid_save_data(save_data):
         _reset_starting_condition()
         return

@@ -28,11 +28,11 @@ func _ready() -> void:
 
 func _handle_robot_gain_ability(robot: Robot, ability: RobotAbility) -> void:
     if ability.id == RobotAbility.SKILL_MAPPING:
-        _sync_robot(exploration_ui.level.player, robot)
+        _sync_robot(exploration_ui.player, robot)
 
 func _handle_loaded() -> void:
     clear()
-    _sync_robot(exploration_ui.level.player, exploration_ui.level.player.robot)
+    _sync_robot(exploration_ui.player, exploration_ui.robot)
 
 func clear() -> void:
     for direction: CardinalDirections.CardinalDirection in CardinalDirections.ALL_DIRECTIONS:
@@ -265,4 +265,4 @@ func _get_coordinates(label_position: CompassCardinalLabelPosition) -> Vector2:
 
 func _process(_delta: float) -> void:
     if !_inited:
-        _sync_robot.call_deferred(exploration_ui.level.player, exploration_ui.level.player.robot)
+        _sync_robot.call_deferred(exploration_ui.player, exploration_ui.robot)
