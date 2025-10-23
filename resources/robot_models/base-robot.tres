@@ -13,7 +13,7 @@
 [ext_resource type="Resource" uid="uid://c2kaiyaateugc" path="res://resources/robot_abilities/battle/slots-2.tres" id="10_hy16j"]
 [ext_resource type="Resource" uid="uid://duokj17pplsq" path="res://resources/robot_abilities/exploration/climbing-3.tres" id="11_fqkop"]
 [ext_resource type="Script" uid="uid://jgu3xyjxonbb" path="res://scripts/robot_production_cost.gd" id="12_tkruh"]
-[ext_resource type="Script" uid="uid://cqlxwfe858g4h" path="res://scripts/card_battle/battle_card_data.gd" id="14_yn8ue"]
+[ext_resource type="Script" uid="uid://cqlxwfe858g4h" path="res://scripts/gc/card_battle/battle_card_data.gd" id="14_yn8ue"]
 [ext_resource type="Resource" uid="uid://dcob2h4luvnbl" path="res://resources/player_cards/card_defrag-5.tres" id="15_xq3od"]
 [ext_resource type="Resource" uid="uid://bc3f2625tdj67" path="res://resources/player_cards/card_defrag-70.tres" id="16_uvny6"]
 [ext_resource type="Resource" uid="uid://duylk5tm5e1wb" path="res://resources/player_cards/card_defrag-120.tres" id="17_ytk6q"]

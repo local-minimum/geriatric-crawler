@@ -1,7 +1,7 @@
 [gd_scene load_steps=12 format=3 uid="uid://s73lghpvdp2r"]
 
 [ext_resource type="Texture2D" uid="uid://d14rk0grbqxnd" path="res://sprites/cards/suits/card-background.png" id="1_bh02m"]
-[ext_resource type="Script" uid="uid://cem1vylwvgpi5" path="res://scripts/card_battle/battle_card.gd" id="2_b5gog"]
+[ext_resource type="Script" uid="uid://cem1vylwvgpi5" path="res://scripts/gc/card_battle/battle_card.gd" id="2_b5gog"]
 [ext_resource type="Texture2D" uid="uid://bidbhd7uamqmy" path="res://sprites/cards/suits/card-suits-electric.png" id="3_y5m5q"]
 [ext_resource type="Texture2D" uid="uid://bqppb7vypu3pc" path="res://sprites/cards/suits/card-suits-metal.png" id="4_8ngic"]
 [ext_resource type="Texture2D" uid="uid://kormwgrr17px" path="res://sprites/cards/suits/card-suits-data.png" id="5_r8ph8"]

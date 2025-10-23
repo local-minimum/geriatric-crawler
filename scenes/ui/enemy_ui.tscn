@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://dgaxg8fe12ckw"]
 
-[ext_resource type="Script" uid="uid://n703i4pjhesr" path="res://scripts/card_battle/battle_entity_ui.gd" id="1_ioeec"]
+[ext_resource type="Script" uid="uid://n703i4pjhesr" path="res://scripts/gc/card_battle/battle_entity_ui.gd" id="1_ioeec"]
 
 [node name="EnemyUI" type="VBoxContainer" node_paths=PackedStringArray("healthUI", "defenceUI", "icon", "nameUI")]
 custom_minimum_size = Vector2(200, 0)

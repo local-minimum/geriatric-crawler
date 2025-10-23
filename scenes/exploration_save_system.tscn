@@ -5,7 +5,7 @@
 [ext_resource type="Script" uid="uid://dk1kwquttgwfc" path="res://scripts/savesystem/migrations/migrate_save_v0.0.2.gd" id="2_gk5mi"]
 [ext_resource type="Script" uid="uid://b5qjiwnmmx7i3" path="res://scripts/gc/gridded_level_saver.gd" id="3_a0ogi"]
 [ext_resource type="Script" uid="uid://bjkpx0v0d0vky" path="res://addons/minimum_convenience/scripts/version.gd" id="3_dvfyy"]
-[ext_resource type="Script" uid="uid://c2ktk27vk655o" path="res://scripts/card_battle/battle_mode_saver.gd" id="4_fhslq"]
+[ext_resource type="Script" uid="uid://c2ktk27vk655o" path="res://scripts/gc/card_battle/battle_mode_saver.gd" id="4_fhslq"]
 [ext_resource type="Script" uid="uid://qjheystlwhef" path="res://scripts/savesystem/extensions/robot_mapper_saver.gd" id="6_ma5ye"]
 [ext_resource type="Script" uid="uid://clmlakb50km2n" path="res://scripts/savesystem/extensions/inventory_saver.gd" id="7_681h2"]
 [ext_resource type="Script" uid="uid://tgtpk0qo2xx7" path="res://scripts/savesystem/extensions/global_game_state_saver.gd" id="7_v64ur"]

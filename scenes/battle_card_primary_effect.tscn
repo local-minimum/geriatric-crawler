@@ -1,7 +1,7 @@
 [gd_scene load_steps=13 format=3 uid="uid://djae4tchc2egh"]
 
 [ext_resource type="Texture2D" uid="uid://bwji56lm10win" path="res://sprites/buttons/separator.png" id="1_8c5r0"]
-[ext_resource type="Script" uid="uid://kvo84h4w7equ" path="res://scripts/card_battle/battle_card_primary_effect_ui.gd" id="1_k8m2r"]
+[ext_resource type="Script" uid="uid://kvo84h4w7equ" path="res://scripts/gc/card_battle/battle_card_primary_effect_ui.gd" id="1_k8m2r"]
 [ext_resource type="Texture2D" uid="uid://ckidaqyma5ffe" path="res://sprites/buttons/attack.png" id="2_5a182"]
 [ext_resource type="Texture2D" uid="uid://b3auykqkm1vfi" path="res://sprites/buttons/heal.png" id="3_avod4"]
 [ext_resource type="Texture2D" uid="uid://dhuxse7e4kf3q" path="res://sprites/buttons/shield.png" id="4_fqq7e"]

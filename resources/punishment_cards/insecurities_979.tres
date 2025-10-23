@@ -1,7 +1,7 @@
 [gd_resource type="Resource" script_class="BattleCardData" load_steps=3 format=3 uid="uid://bdwpemc2r72sv"]
 
-[ext_resource type="Script" uid="uid://b1hgbfym62rba" path="res://scripts/card_battle/battle_card_primary_effect.gd" id="1_n418j"]
-[ext_resource type="Script" uid="uid://cqlxwfe858g4h" path="res://scripts/card_battle/battle_card_data.gd" id="2_xw1ws"]
+[ext_resource type="Script" uid="uid://b1hgbfym62rba" path="res://scripts/gc/card_battle/battle_card_primary_effect.gd" id="1_n418j"]
+[ext_resource type="Script" uid="uid://cqlxwfe858g4h" path="res://scripts/gc/card_battle/battle_card_data.gd" id="2_xw1ws"]
 
 [resource]
 script = ExtResource("2_xw1ws")
