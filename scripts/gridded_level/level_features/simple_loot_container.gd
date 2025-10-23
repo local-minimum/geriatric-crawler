@@ -57,7 +57,7 @@ func _handle_loooting(entity: GridEntity) -> void:
 
     _looted = _inv.inventory.add_many_to_inventory(_contents)
 
-    var key_ring: KeyRing = get_level().player.key_ring
+    var key_ring: KeyRingCore = get_level().player.key_ring
     for id: String in _contents:
         if KeyRing.is_key(id):
             var amount: int = ceili(_contents[id])

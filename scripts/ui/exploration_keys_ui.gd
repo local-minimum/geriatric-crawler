@@ -6,7 +6,7 @@ var _chained_boxes: ChainedVBoxes
 
 var _previous_keys: Array[Control]
 
-func list_keys(key_ring: KeyRing) -> void:
+func list_keys(key_ring: KeyRingCore) -> void:
     for key: Control in _previous_keys:
         key.queue_free()
 

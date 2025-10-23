@@ -19,7 +19,7 @@ var camera_wanted_position: Vector3:
 
 @export_range(0, 1) var _duck_camera_height: float = 0.5
 
-@export var key_ring: KeyRing
+@export var key_ring: KeyRingCore
 
 func _ready() -> void:
     if __SignalBus.on_cinematic.connect(_handle_cinematic) != OK:

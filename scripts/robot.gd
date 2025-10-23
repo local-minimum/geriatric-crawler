@@ -78,7 +78,7 @@ func available_upgrade_slots() -> int:
 func get_obtained_abilities(level: int) -> Array[RobotAbility]:
     return _data.obtained_upgrades.filter(func (ability: RobotAbility) -> bool: return model.find_skill_level(ability) == level)
 
-func keys() -> KeyRing:
+func keys() -> KeyRingCore:
     return _player.key_ring
 
 ## Number of fights completed on the current level
