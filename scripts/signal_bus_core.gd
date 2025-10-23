@@ -35,7 +35,7 @@ signal on_exit_zone(zone: LevelZone, entity: GridEntity)
 signal on_stay_zone(zone: LevelZone, entity: GridEntity)
 
 # -> Grid Door
-signal on_door_state_chaged(door: GridDoor, from: GridDoor.LockState, to: GridDoor.LockState)
+signal on_door_state_chaged(door: GridDoorCore, from: GridDoorCore.LockState, to: GridDoorCore.LockState)
 
 # -> Exploration Message
 ## General purpose messaging to any who may be interested

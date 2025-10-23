@@ -1,12 +1,12 @@
 extends GridEvent
 class_name GridDoorSentinel
 
-var door: GridDoor
+var door: GridDoorCore
 
 var door_face: CardinalDirections.CardinalDirection
 
-var automation: GridDoor.OpenAutomation
-var close_automation: GridDoor.CloseAutomation
+var automation: GridDoorCore.OpenAutomation
+var close_automation: GridDoorCore.CloseAutomation
 
 func _ready() -> void:
     super._ready()
@@ -52,17 +52,17 @@ func blocks_entry_translation(
     _silent: bool = false,
 ) -> bool:
     return CardinalDirections.invert(move_direction) == door_face && (
-        door.lock_state != GridDoor.LockState.OPEN ||
+        door.lock_state != GridDoorCore.LockState.OPEN ||
         door.block_traversal_anchor_sides.has(entity.get_grid_anchor_direction())
     )
 
 func blocks_exit_translation(
     exit_direction: CardinalDirections.CardinalDirection,
 ) -> bool:
-    return exit_direction == door_face && door.lock_state != GridDoor.LockState.OPEN
+    return exit_direction == door_face && door.lock_state != GridDoorCore.LockState.OPEN
 
 func anchorage_blocked(side: CardinalDirections.CardinalDirection) -> bool:
-    return side == door_face && door.lock_state == GridDoor.LockState.OPEN || super.anchorage_blocked(side)
+    return side == door_face && door.lock_state == GridDoorCore.LockState.OPEN || super.anchorage_blocked(side)
 
 func manages_triggering_translation() -> bool:
     return false
@@ -73,19 +73,19 @@ func trigger(entity: GridEntity, movement: Movement.MovementType) -> void:
 
     super.trigger(entity, movement)
 
-    if close_automation == GridDoor.CloseAutomation.PROXIMITY:
+    if close_automation == GridDoorCore.CloseAutomation.PROXIMITY:
         _monitor_entity_for_closing(entity)
-    elif close_automation == GridDoor.CloseAutomation.END_WALK:
+    elif close_automation == GridDoorCore.CloseAutomation.END_WALK:
         if !_check_traversing_autoclose.has(entity):
             _check_traversing_autoclose.append(entity)
 
-    if door.lock_state == GridDoor.LockState.CLOSED:
-        if automation == GridDoor.OpenAutomation.PROXIMITY:
+    if door.lock_state == GridDoorCore.LockState.CLOSED:
+        if automation == GridDoorCore.OpenAutomation.PROXIMITY:
             print_debug("Sentinel opens %s" % door)
             door.open_door()
             return
 
-    if automation == GridDoor.OpenAutomation.WALK_INTO:
+    if automation == GridDoorCore.OpenAutomation.WALK_INTO:
         if !_check_onto_closed.has(entity):
             _check_onto_closed.append(entity)
         return
@@ -127,14 +127,14 @@ func _check_traversing_door_should_autoclose(
     if entity.coordinates() != coordinates():
         _check_traversing_autoclose.erase(entity)
 
-    if from == coordinates() && translation_direction == door_face && door.lock_state == GridDoor.LockState.OPEN:
+    if from == coordinates() && translation_direction == door_face && door.lock_state == GridDoorCore.LockState.OPEN:
         if !_check_move_end_do_autoclose.has(entity):
             _check_move_end_do_autoclose.append(entity)
 
 func _do_autoclose(entity: GridEntity) -> void:
     _check_move_end_do_autoclose.erase(entity)
 
-    if door.lock_state == GridDoor.LockState.OPEN:
+    if door.lock_state == GridDoorCore.LockState.OPEN:
         door.close_door()
 
 func _check_autoclose(entity: GridEntity) -> void:
@@ -147,7 +147,7 @@ func _check_autoclose(entity: GridEntity) -> void:
     door.proximate_entitites.erase(entity)
     _check_move_end_autoclose.erase(entity)
 
-    if door.proximate_entitites.is_empty() && door.lock_state == GridDoor.LockState.OPEN:
+    if door.proximate_entitites.is_empty() && door.lock_state == GridDoorCore.LockState.OPEN:
         print_debug("%s close door" % self)
         door.close_door()
         return

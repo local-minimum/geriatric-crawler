@@ -176,6 +176,12 @@ func get_active_zones(coordinates: Vector3i) -> Array[LevelZone]:
             return zone.covers(coordinates)
     )
 
+var _doors: Array[GridDoor] = []
+func doors() -> Array[GridDoor]:
+    if _doors.is_empty():
+        for door: GridDoor in find_children("", "GridDoor"):
+            _doors.append(door)
+    return _doors
 #endregion Features
 
 #region Static methos

@@ -34,8 +34,8 @@ func _attach_to_side() -> void:
                 GridNode.NodeSideState.NONE:
                     continue
                 GridNode.NodeSideState.DOOR:
-                    var door: GridDoor = node.get_door(direction)
-                    if door.lock_state == GridDoor.LockState.OPEN:
+                    var door: GridDoorCore = node.get_door(direction)
+                    if door.lock_state == GridDoorCore.LockState.OPEN:
                         print_debug("[Zone Effect Manager] Open door of %s %s" % [node.name, CardinalDirections.name(direction)])
                         ## TODO: How to handle dynamics of open or closed door?
                         continue

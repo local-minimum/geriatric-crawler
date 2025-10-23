@@ -13,9 +13,9 @@ func _enter_tree() -> void:
     if __SignalBus.on_change_node.connect(_handle_change_node) != OK:
         push_error("Failed to connect move start")
 
-func get_level() -> GridLevel:
+func get_level() -> GridLevelCore:
     if nodes.is_empty():
-        return GridLevel.find_level_parent(self, false)
+        return GridLevelCore.find_level_parent(self, false)
     return nodes[0].get_level()
 
 func _passes_filter(feature: GridNodeFeature) -> bool:
@@ -23,7 +23,7 @@ func _passes_filter(feature: GridNodeFeature) -> bool:
         EntityFilter.ENTITIES:
             return feature is GridEntity
         EntityFilter.PLAYER:
-            return feature is GridPlayer
+            return feature is GridPlayerCore
         EntityFilter.ENEMIES:
             if feature is GridEncounter:
                 var encounter: GridEncounter = feature

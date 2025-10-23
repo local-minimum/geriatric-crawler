@@ -6,13 +6,6 @@ class_name GridLevel
 
 var corpse: GCCorpse
 
-var _doors: Array[GridDoor] = []
-func doors() -> Array[GridDoor]:
-    if _doors.is_empty():
-        for door: GridDoor in find_children("", "GridDoor"):
-            _doors.append(door)
-    return _doors
-
 func alive_enemies() -> Array[BattleEnemy]:
     var enemies: Array[BattleEnemy]
 

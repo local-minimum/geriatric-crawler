@@ -75,7 +75,7 @@ func _draw() -> void:
     else:
         secondary.z = elevation_plane.z
 
-    var _drawn_doors: Array[GridDoor] = []
+    var _drawn_doors: Array[GridDoorCore] = []
     var _drawn_ramps: Array[GridRamp] = []
 
     # var draw_function: Callable = _create_orthographic_draw_function(player_coordinates, player_up, primary, secondary)
@@ -175,7 +175,7 @@ func _draw() -> void:
 
                     match node.has_side(direction):
                         GridNode.NodeSideState.DOOR:
-                            var door: GridDoor = node.get_door(direction)
+                            var door: GridDoorCore = node.get_door(direction)
                             draw_filled = false
 
                             if _show_features:
@@ -190,7 +190,7 @@ func _draw() -> void:
                                     # We should not be able to get here
                                     continue
 
-                                var draw_outline: bool = door.lock_state == GridDoor.LockState.OPEN
+                                var draw_outline: bool = door.lock_state == GridDoorCore.LockState.OPEN
                                 var door_shape: PackedVector3Array = []
 
                                 if (
@@ -237,7 +237,7 @@ func _draw() -> void:
                                     draw_outline,
                                     outline_factor,
                                 )
-                            elif door != null && door.lock_state == GridDoor.LockState.OPEN:
+                            elif door != null && door.lock_state == GridDoorCore.LockState.OPEN:
                                 continue
                             else:
                                 color = floor_color if draw_filled else other_side_color

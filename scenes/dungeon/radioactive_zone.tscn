@@ -1,8 +1,8 @@
 [gd_scene load_steps=4 format=3 uid="uid://bo7t6vucyhsis"]
 
-[ext_resource type="Script" uid="uid://cucjl8ggwmr27" path="res://scripts/gridded_level/level_zone.gd" id="1_3mdkm"]
-[ext_resource type="Script" uid="uid://nwboqus623bv" path="res://scripts/gridded_level/zone_damage.gd" id="2_0t4ii"]
-[ext_resource type="Script" uid="uid://pjier4k5y3rs" path="res://scripts/gridded_level/zone_effect_manager.gd" id="3_wlcb8"]
+[ext_resource type="Script" uid="uid://cucjl8ggwmr27" path="res://scripts/gridded_level/zones/level_zone.gd" id="1_3mdkm"]
+[ext_resource type="Script" uid="uid://nwboqus623bv" path="res://scripts/gc/zone_damage.gd" id="2_0t4ii"]
+[ext_resource type="Script" uid="uid://pjier4k5y3rs" path="res://scripts/gridded_level/zones/zone_effect_manager.gd" id="3_wlcb8"]
 
 [node name="Radioactive Zone" type="Node3D"]
 script = ExtResource("1_3mdkm")

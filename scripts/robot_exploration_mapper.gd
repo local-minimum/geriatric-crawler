@@ -104,7 +104,7 @@ func _connect_new_player(level: GridLevelCore, player: GridPlayerCore) -> void:
 static func _limits_mapping(zone: LevelZone) -> bool:
     return zone.limits_mapping
 
-func _handle_update_lock_state(_door: GridDoor, _from: GridDoor.LockState, _to: GridDoor.LockState) -> void:
+func _handle_update_lock_state(_door: GridDoorCore, _from: GridDoorCore.LockState, _to: GridDoorCore.LockState) -> void:
     _update_map()
 
 func _handle_move_end(entity: GridEntity) -> void:

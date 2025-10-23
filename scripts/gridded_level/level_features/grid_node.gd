@@ -9,7 +9,7 @@ var level: GridLevel
 
 var _anchors: Dictionary[CardinalDirections.CardinalDirection, GridAnchor] = {}
 var _sides: Dictionary[CardinalDirections.CardinalDirection, GridNodeSide] = {}
-var _doors: Dictionary[CardinalDirections.CardinalDirection, GridDoor] = {}
+var _doors: Dictionary[CardinalDirections.CardinalDirection, GridDoorCore] = {}
 
 func _ready() -> void:
     if level == null:
@@ -28,7 +28,7 @@ func _init_doors() -> void:
 
     _doors_inited = true
     _doors.clear()
-    for door: GridDoor in find_children("", "GridDoor"):
+    for door: GridDoorCore in find_children("", "GridDoorCore"):
         _doors[door.get_side()] = door
 
     for direction: CardinalDirections.CardinalDirection in CardinalDirections.ALL_DIRECTIONS:
@@ -40,12 +40,12 @@ func _init_doors() -> void:
             continue
         n._init_doors()
 
-        var ndoor: GridDoor = n.get_door(CardinalDirections.invert(direction))
+        var ndoor: GridDoorCore = n.get_door(CardinalDirections.invert(direction))
         if ndoor != null:
             _doors[direction] = ndoor
 
 
-func get_door(direction: CardinalDirections.CardinalDirection) -> GridDoor:
+func get_door(direction: CardinalDirections.CardinalDirection) -> GridDoorCore:
     _init_doors()
     return _doors.get(direction)
 

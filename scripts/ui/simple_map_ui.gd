@@ -87,8 +87,8 @@ func _draw() -> void:
                     var seen_other_side: bool = _seen.has(CardinalDirections.translate(game_coords, _player.down))
                     color = illusion_color if seen_other_side else ground_color
                 GridNode.NodeSideState.DOOR:
-                    var floor_door: GridDoor = node.get_door(_player.down)
-                    var open: bool = floor_door == null || floor_door.lock_state == GridDoor.LockState.OPEN
+                    var floor_door: GridDoorCore = node.get_door(_player.down)
+                    var open: bool = floor_door == null || floor_door.lock_state == GridDoorCore.LockState.OPEN
                     if _show_features:
                         color = no_floor_color if open else feature_color
                     else:
@@ -168,10 +168,10 @@ func _draw() -> void:
 
             for direction: CardinalDirections.CardinalDirection in map_directions:
                 if _show_features:
-                    var wall_door: GridDoor = node.get_door(direction)
+                    var wall_door: GridDoorCore = node.get_door(direction)
 
                     if wall_door != null:
-                        var open: bool = wall_door.lock_state == GridDoor.LockState.OPEN
+                        var open: bool = wall_door.lock_state == GridDoorCore.LockState.OPEN
                         const open_fraction: float = 0.15
                         if _player.look_direction == direction:
                             if open:
@@ -219,8 +219,8 @@ func _draw() -> void:
                         else:
                             draw_line(c1, c4, illusion_color if seen_other_side else wall_color, 2)
 
-            var door: GridDoor = node.get_door(_player.down)
-            if door != null && door.lock_state == GridDoor.LockState.OPEN && _show_features:
+            var door: GridDoorCore = node.get_door(_player.down)
+            if door != null && door.lock_state == GridDoorCore.LockState.OPEN && _show_features:
                 draw_polyline(
                     [
                         c1.lerp(tile_center, 0.15),

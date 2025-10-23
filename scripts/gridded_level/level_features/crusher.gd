@@ -149,8 +149,8 @@ func _check_crushing() -> void:
         GridNode.NodeSideState.ILLUSORY, GridNode.NodeSideState.NONE:
             neighbour = node.neighbour(crush_direction)
         GridNode.NodeSideState.DOOR:
-            var door: GridDoor = node.get_door(crush_direction)
-            if door != null && door.lock_state == GridDoor.LockState.OPEN:
+            var door: GridDoorCore = node.get_door(crush_direction)
+            if door != null && door.lock_state == GridDoorCore.LockState.OPEN:
                 neighbour = node.neighbour(crush_direction)
 
     for exposed: GridEntity in _exposed:

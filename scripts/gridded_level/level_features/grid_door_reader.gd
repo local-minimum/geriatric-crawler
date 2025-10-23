@@ -53,32 +53,32 @@ func _get_locked_texture() -> Texture:
 
 func _get_needed_texture() -> Texture:
     match door.get_opening_automation(self):
-        GridDoor.OpenAutomation.NONE:
+        GridDoorCore.OpenAutomation.NONE:
             is_interactable = false
             match door.lock_state:
-                GridDoor.LockState.OPEN:
+                GridDoorCore.LockState.OPEN:
                     return open_door_tex
                 _:
                     return no_entry_door_tex
-        GridDoor.OpenAutomation.WALK_INTO:
+        GridDoorCore.OpenAutomation.WALK_INTO:
             is_interactable = true
             match door.lock_state:
-                GridDoor.LockState.LOCKED:
+                GridDoorCore.LockState.LOCKED:
                     return _get_locked_texture()
                 _:
                     return walk_into_door_tex
-        GridDoor.OpenAutomation.PROXIMITY:
+        GridDoorCore.OpenAutomation.PROXIMITY:
             match door.lock_state:
-                GridDoor.LockState.LOCKED:
+                GridDoorCore.LockState.LOCKED:
                     is_interactable = true
                     return _get_locked_texture()
                 _:
                     is_interactable = false
                     return automatic_door_tex
-        GridDoor.OpenAutomation.INTERACT:
+        GridDoorCore.OpenAutomation.INTERACT:
             is_interactable = true
             match door.lock_state:
-                GridDoor.LockState.LOCKED:
+                GridDoorCore.LockState.LOCKED:
                     return _get_locked_texture()
                 _:
                     return click_to_open_tex
@@ -86,7 +86,7 @@ func _get_needed_texture() -> Texture:
 
     return no_entry_door_tex
 
-func _handle_door_state_chage(grid_door: GridDoor, _from: GridDoor.LockState, _to: GridDoor.LockState) -> void:
+func _handle_door_state_chage(grid_door: GridDoorCore, _from: GridDoorCore.LockState, _to: GridDoorCore.LockState) -> void:
     if grid_door == door:
         _sync_reader_display()
 
@@ -137,7 +137,7 @@ func _in_range(event_position: Vector3) -> bool:
     )
 
 func execute_interation() -> void:
-    if door.lock_state == GridDoor.LockState.LOCKED:
+    if door.lock_state == GridDoorCore.LockState.LOCKED:
         @warning_ignore_start("return_value_discarded")
         door.attempt_door_unlock(camera_puller)
         @warning_ignore_restore("return_value_discarded")
