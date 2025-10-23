@@ -169,8 +169,8 @@ func _check_crushing() -> void:
             if exposed is GridPlayer:
                 var player: GridPlayer = exposed
                 player.robot.kill()
-            elif exposed is GridEncounter:
-                var encounter: GridEncounter = exposed
+            elif exposed is GridEncounterCore:
+                var encounter: GridEncounterCore = exposed
                 encounter.kill()
 
 func _sync_blocking_retracted() -> void:

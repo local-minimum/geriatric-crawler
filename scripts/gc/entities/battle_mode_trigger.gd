@@ -6,7 +6,7 @@ var level: GridLevel
 @export var enemies: Array[BattleEnemy]
 @export var reward_environmental_kill: bool = true
 
-func prepare(_encounter: GridEncounter) -> void:
+func prepare(_encounter: GridEncounterCore) -> void:
     var focus: BattleEnemy = get_highest_scoring_live_enemy()
     if focus == null:
         var mat: StandardMaterial3D = _encounter.graphics.get_active_material(0)
@@ -61,7 +61,7 @@ func get_highest_scoring_live_enemy() -> BattleEnemy:
 
 ## Thing that happesn when an encounter is triggered.
 ## Returns if could trigger
-func invoke(triggering_encounter: GridEncounter, player: GridEntity) -> bool:
+func invoke(triggering_encounter: GridEncounterCore, player: GridEntity) -> bool:
     if player is not GridPlayer:
         return false
 

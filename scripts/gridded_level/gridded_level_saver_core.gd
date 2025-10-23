@@ -71,8 +71,8 @@ func collect_save_state() -> Dictionary:
 
 
     for encounter_node: Node in get_tree().get_nodes_in_group(encounter_group):
-        if encounter_node is GridEncounter:
-            var encounter: GridEncounter = encounter_node
+        if encounter_node is GridEncounterCore:
+            var encounter: GridEncounterCore = encounter_node
 
             if encounters_save.has(encounter.encounter_id):
                 push_error("Level %s has duplicate encounters with id '%s'" % [get_level_id(), encounter.encounter_id])
@@ -153,8 +153,8 @@ func load_from_save(save_data: Dictionary, entry_portal_id: String) -> void:
         encounters_save = encounters_data
 
     for encounter_node: Node in get_tree().get_nodes_in_group(encounter_group):
-        if encounter_node is GridEncounter:
-            var encounter: GridEncounter = encounter_node
+        if encounter_node is GridEncounterCore:
+            var encounter: GridEncounterCore = encounter_node
             if encounters_save.has(encounter.encounter_id):
                 # This requires that the new player instance has been loaded and set on the level
                 encounter.load_from_save(level, encounters_save[encounter.encounter_id])

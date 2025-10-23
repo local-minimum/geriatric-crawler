@@ -1,14 +1,15 @@
 extends GridEntity
-class_name GridEncounter
+class_name GridEncounterCore
 
 static var _TRIGGERED_KEY: String = "triggered"
-static var _ENEMY_GAINED_CARDS_KEY: String = "gained-cards"
 static var _ID_KEY: String = "id"
 
 enum EncounterMode { NEVER, NODE, ANCHOR }
+enum EncounterType { ENEMY, NPC, OTHER }
 
 ## When encounters trigger, be it never, when player collides on same node, or when player collides on same anchor
 @export var encounter_mode: EncounterMode = EncounterMode.NODE
+@export var encounter_type: EncounterType = EncounterType.ENEMY
 
 @export var encounter_id: String
 
@@ -94,10 +95,6 @@ func save() -> Dictionary:
         _TRIGGERED_KEY: _triggered,
     }
 
-    var enemy_cards: Dictionary[String, Array] = _collect_enemy_gained_cards()
-    if !enemy_cards.is_empty():
-        data[_ENEMY_GAINED_CARDS_KEY] = enemy_cards
-
     return data
 
 func _valid_save_data(save_data: Dictionary) -> bool:
@@ -146,9 +143,6 @@ func load_from_save(level: GridLevelCore, save_data: Dictionary) -> void:
     sync_position()
     orient()
 
-    var enemy_cards: Dictionary = DictionaryUtils.safe_getd(save_data, _ENEMY_GAINED_CARDS_KEY, {}, false)
-    _load_enemy_cards(enemy_cards)
-
     print_debug("Loaded %s from %s" % [encounter_id, save_data])
 
 func _reset_starting_condition() -> void:
@@ -166,83 +160,7 @@ func _reset_starting_condition() -> void:
     sync_position()
     orient()
 
-    var trigger: BattleModeTrigger = effect
-    for enemy: BattleEnemy in trigger.enemies:
-        enemy.deck.restore_start_deck()
-
     _triggered = false
-
-func _load_enemy_cards(enemy_cards: Dictionary) -> void:
-    if effect is not BattleModeTrigger:
-        return
-
-    var trigger: BattleModeTrigger = effect
-    for enemy: BattleEnemy in trigger.enemies:
-        enemy.deck.restore_start_deck()
-
-        var enemy_gained_cards: Array = DictionaryUtils.safe_geta(enemy_cards, enemy.id, [], false)
-        for id: Variant in enemy_gained_cards:
-            if id is not String:
-                push_warning("%s is not a string value (expected on %s in %s)" % [id, enemy_gained_cards])
-                continue
-
-            var card_id: String = id
-            var card: BattleCardData = BattleCardData.get_card_by_id(BattleCardData.CardCategory.Enemy, card_id, enemy.variant_id)
-            if card == null:
-                card = BattleCardData.get_card_by_id(BattleCardData.CardCategory.Punishment, card_id)
-                if card == null:
-                    push_warning("%s (%s): %s couldn't be found among enemy or punishment cards" % [enemy.variant_id, enemy.id, card_id])
-                elif card.card_owner != BattleCardData.Owner.ENEMY:
-                    push_warning("%s is not an enemy card but %s" % [card_id, BattleCardData.name_owner(card.card_owner)])
-                else:
-                    enemy.deck.gain_card(card)
-            else:
-                enemy.deck.gain_card(card)
-
-func _collect_enemy_gained_cards() -> Dictionary[String, Array]:
-    if effect is not BattleModeTrigger:
-        return {}
-
-    var trigger: BattleModeTrigger = effect
-
-    var cards: Dictionary[String, Array] = {}
-
-    for enemy: BattleEnemy in trigger.enemies:
-        var enemy_cards: Array[String] = enemy.deck.get_gained_card_ids()
-        if enemy_cards.is_empty():
-            continue
-
-        cards[enemy.id] = enemy_cards
-
-    return cards
 
 func kill() -> void:
     _triggered = true
-
-    if effect is BattleModeTrigger:
-        var trigger: BattleModeTrigger = effect
-        if trigger.reward_environmental_kill:
-            for enemy: BattleEnemy in trigger.enemies:
-                __GlobalGameState.deposit_credits(enemy.carried_credits)
-
-    if repeatable:
-        var node: GridNode = get_grid_node()
-        if node == null:
-            push_error("Encounter %s is out of bounds at %s, killed and repeatable!" % [name, coordinates()])
-            return
-
-        for direction: CardinalDirections.CardinalDirection in CardinalDirections.ALL_DIRECTIONS:
-            if node.may_exit(self, direction, true, true):
-                var neighbour: GridNode = node.neighbour(direction)
-                if neighbour == null:
-                    continue
-
-                if neighbour.may_enter(self, node, direction, get_grid_anchor_direction(), false, true, true):
-                    var anchor: GridAnchor = neighbour.get_grid_anchor(get_grid_anchor_direction())
-                    if anchor != null:
-                        set_grid_anchor(anchor)
-                    else:
-                        set_grid_node(neighbour)
-
-                    sync_position()
-                    break

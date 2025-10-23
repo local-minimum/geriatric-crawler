@@ -25,9 +25,9 @@ func _passes_filter(feature: GridNodeFeature) -> bool:
         EntityFilter.PLAYER:
             return feature is GridPlayerCore
         EntityFilter.ENEMIES:
-            if feature is GridEncounter:
-                var encounter: GridEncounter = feature
-                return encounter.effect is BattleModeTrigger
+            if feature is GridEncounterCore:
+                var encounter: GridEncounterCore = feature
+                return encounter.encounter_type == GridEncounterCore.EncounterType.ENEMY
 
             return false
         _:
