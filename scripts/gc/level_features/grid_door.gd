@@ -104,45 +104,18 @@ func needs_saving() -> bool:
 func save_key() -> String:
     return "d-%s-%s" % [coordinates(), CardinalDirections.name(_door_face)]
 
-const _LOCK_STATE_KEY: String = "lock"
-const _TRIGGERED_KEY: String = "triggered"
 const _HACKING_ALPHABET_KEY: String = "hacking-alphabet"
 const _HACKING_PASSPHRASE_KEY: String = "hacking-passkey"
 
 func collect_save_data() -> Dictionary:
-    return {
-        _LOCK_STATE_KEY: lock_state,
-        _TRIGGERED_KEY: _triggered,
+    var data: Dictionary = super.collect_save_data()
+    return data.merged({
         _HACKING_ALPHABET_KEY: _hacking_alphabet,
         _HACKING_PASSPHRASE_KEY: _hacking_passphrase
-    }
-
-func _deserialize_lockstate(state: int) -> LockState:
-    match state:
-        0: return LockState.LOCKED
-        1: return LockState.CLOSED
-        2: return LockState.OPEN
-        _:
-            push_error("State %s is not a serialized lockstate, using initial lock state" % state)
-            return _inital_lock_state
+    }, true)
 
 func load_save_data(data: Dictionary) -> void:
-    print_debug("Door %s loads from %s" % [self, data])
-    _triggered = DictionaryUtils.safe_getb(data, _TRIGGERED_KEY, false, false)
     _hacking_alphabet = DictionaryUtils.safe_get_packed_string_array(data, _HACKING_ALPHABET_KEY, [], false)
     _hacking_passphrase = DictionaryUtils.safe_get_packed_string_array(data, _HACKING_PASSPHRASE_KEY, [], false)
 
-    var lock_state_int: int = DictionaryUtils.safe_geti(data, _LOCK_STATE_KEY, _inital_lock_state, false)
-    lock_state = _deserialize_lockstate(lock_state_int)
-
-    print_debug("Door %s loads with state %s" % [self, lock_state_name(lock_state)])
-    if lock_state == LockState.OPEN:
-        animator.play(_opened_animation)
-    else:
-        animator.play(_closed_animation)
-
-    if _close_automation == CloseAutomation.PROXIMITY:
-        var coords: Vector3i = coordinates()
-        for entity: GridEntity in get_level().grid_entities:
-            if entity != null && coords == entity.coordinates():
-                _monitor_entity_for_proximity_closing(entity)
+    super.load_save_data(data)

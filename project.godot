@@ -22,7 +22,7 @@ config/icon="res://icon.svg"
 
 __InkRuntime="*res://addons/inkgd/ink_runtime.gd"
 __GlobalGameState="*res://scripts/global_game_state.gd"
-__SignalBus="*res://scripts/signal_bus.gd"
+__SignalBus="*res://scripts/gc/signal_bus.gd"
 __SaveSystemWrapper="*res://scripts/savesystem/save_system_wrapper.gd"
 __SceneSwapper="*res://scenes/scene_swapper.tscn"
 __BindingHints="*res://scenes/binding_hints.tscn"

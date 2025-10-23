@@ -305,3 +305,47 @@ func attempt_door_unlock(_puller: CameraPuller) -> bool:
     __SignalBus.on_door_state_chaged.emit(self, prev_state, lock_state)
     open_door()
     return true
+
+
+func needs_saving() -> bool:
+    return true
+
+func save_key() -> String:
+    return "d-%s-%s" % [coordinates(), CardinalDirections.name(_door_face)]
+
+const _LOCK_STATE_KEY: String = "lock"
+const _TRIGGERED_KEY: String = "triggered"
+
+func collect_save_data() -> Dictionary:
+    return {
+        _LOCK_STATE_KEY: lock_state,
+        _TRIGGERED_KEY: _triggered,
+    }
+
+func _deserialize_lockstate(state: int) -> LockState:
+    match state:
+        0: return LockState.LOCKED
+        1: return LockState.CLOSED
+        2: return LockState.OPEN
+        _:
+            push_error("State %s is not a serialized lockstate, using initial lock state" % state)
+            return _inital_lock_state
+
+func load_save_data(data: Dictionary) -> void:
+    print_debug("Door %s loads from %s" % [self, data])
+    _triggered = DictionaryUtils.safe_getb(data, _TRIGGERED_KEY, false, false)
+
+    var lock_state_int: int = DictionaryUtils.safe_geti(data, _LOCK_STATE_KEY, _inital_lock_state, false)
+    lock_state = _deserialize_lockstate(lock_state_int)
+
+    print_debug("Door %s loads with state %s" % [self, lock_state_name(lock_state)])
+    if lock_state == LockState.OPEN:
+        animator.play(_opened_animation)
+    else:
+        animator.play(_closed_animation)
+
+    if _close_automation == CloseAutomation.PROXIMITY:
+        var coords: Vector3i = coordinates()
+        for entity: GridEntity in get_level().grid_entities:
+            if entity != null && coords == entity.coordinates():
+                _monitor_entity_for_proximity_closing(entity)
