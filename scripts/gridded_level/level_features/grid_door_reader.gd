@@ -1,7 +1,7 @@
 extends Interactable
 class_name GridDoorReader
 
-@export var door: GridDoor
+@export var door: GridDoorCore
 
 @export var is_negative_side: bool
 
@@ -43,12 +43,12 @@ func _ready() -> void:
 
 func _get_locked_texture() -> Texture:
     var key: String = door.key_id
-    match KeyMaster.instance.get_key_model_id(key):
+    match KeyMasterCore.instance.get_key_model_id(key):
         1: return locked_door_tex_model1
         2: return locked_door_tex_model2
         3: return locked_door_tex_model3
         _:
-            push_warning("Key %s has model id %s which we don't know how to draw" % [key, KeyMaster.instance.get_key_model_id(key)])
+            push_warning("Key %s has model id %s which we don't know how to draw" % [key, KeyMasterCore.instance.get_key_model_id(key)])
             return locked_door_tex_model1
 
 func _get_needed_texture() -> Texture:
@@ -138,6 +138,8 @@ func _in_range(event_position: Vector3) -> bool:
 
 func execute_interation() -> void:
     if door.lock_state == GridDoor.LockState.LOCKED:
+        @warning_ignore_start("return_value_discarded")
         door.attempt_door_unlock(camera_puller)
+        @warning_ignore_restore("return_value_discarded")
     else:
         door.toggle_door()

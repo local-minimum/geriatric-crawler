@@ -20,7 +20,7 @@ func list_keys(key_ring: KeyRing) -> void:
         label.bbcode_enabled = true
         label.fit_content = true
         label.text = "[b]%s[/b][p align=right][code]%s[/code][/p]" % [
-            KeyMaster.instance.get_description(key_id),
+            KeyMasterCore.instance.get_description(key_id),
             keys[key_id],
         ]
         label.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED

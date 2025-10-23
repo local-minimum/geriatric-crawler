@@ -15,10 +15,10 @@ func consume_key(key: String) -> bool:
 func gain(key: String, amount: int = 1) -> void:
     if _keys.has(key):
         _keys[key] += amount
-        NotificationsManager.info(tr("NOTICE_KEYRING"), tr("GAINED_KEY_COUNT").format({"key": KeyMaster.instance.get_description(key), "amount": amount}))
+        NotificationsManager.info(tr("NOTICE_KEYRING"), tr("GAINED_KEY_COUNT").format({"key": KeyMasterCore.instance.get_description(key), "amount": amount}))
     else:
         _keys[key] = amount
-        NotificationsManager.important(tr("NOTICE_KEYRING"), tr("GAINED_NEW_KEY_COUNT").format({"key": KeyMaster.instance.get_description(key), "amount": amount}))
+        NotificationsManager.important(tr("NOTICE_KEYRING"), tr("GAINED_NEW_KEY_COUNT").format({"key": KeyMasterCore.instance.get_description(key), "amount": amount}))
 
 func collect_save_data() -> Dictionary[String, int]:
     return _keys.duplicate()

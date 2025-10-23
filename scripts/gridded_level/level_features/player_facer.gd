@@ -29,7 +29,7 @@ func _ready() -> void:
 
     _connect_player_tracking(get_level(), null)
 
-func _connect_player_tracking(level: GridLevel, _player: GridPlayer) -> void:
+func _connect_player_tracking(level: GridLevelCore, _player: GridPlayer) -> void:
     if level == null:
         push_error("%s is not part of a level" % name)
         return

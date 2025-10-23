@@ -124,7 +124,7 @@ func _handle_move_end(entity: GridEntity) -> void:
     _forwards_ranges = _get_potential_damages_at(entity.get_level(), neighbour.coordinates)
     _complete_move_end()
 
-func _get_potential_damages_at(level: GridLevel, coordinates: Vector3i) -> Array[Array]:
+func _get_potential_damages_at(level: GridLevelCore, coordinates: Vector3i) -> Array[Array]:
     var ranges: Array[Array]
     for zone: LevelZone in level.get_active_zones(coordinates):
         for dmg: ZoneDamage in zone.find_children("", "ZoneDamage"):
