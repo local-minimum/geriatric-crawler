@@ -1,6 +1,6 @@
 [gd_scene load_steps=6 format=3 uid="uid://1w5dmmqk2s7j"]
 
-[ext_resource type="Script" uid="uid://cfhojfqqu0l6p" path="res://scripts/gridded_level/level_features/corpse.gd" id="1_pdi0t"]
+[ext_resource type="Script" uid="uid://cfhojfqqu0l6p" path="res://scripts/gc/level_features/corpse.gd" id="1_pdi0t"]
 [ext_resource type="Script" uid="uid://dexigkhejxn1h" path="res://scripts/gridded_level/level_features/player_facer.gd" id="2_i56ut"]
 [ext_resource type="Texture2D" uid="uid://40vaht1fqqob" path="res://sprites/enemies/corpse.png" id="3_8r4te"]
 

@@ -95,7 +95,8 @@ func _handle_new_player(level: GridLevel, _player: GridPlayer) -> void:
 
 func _handle_new_level(level: GridLevel) -> void:
     if level.player != null:
-        robot = GridLevel.active_level.player.robot
+        var player: GridPlayer = GridLevel.active_level.player
+        robot = player.robot
         battle_player.use_robot(robot)
 
 func get_battling() -> bool:

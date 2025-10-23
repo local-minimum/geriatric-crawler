@@ -86,7 +86,7 @@ func add_to_inventory(id: String, amount: float, notify: bool = true) -> bool:
     if notify:
         NotificationsManager.info(
             tr("NOTICE_INVENTORY"),
-            tr("GAINED_ITEM").format({"item": "%10.2f %s [b]%s[/b]" % [amount, LootableManager.unit(id) , LootableManager.translate(id)]}),
+            tr("GAINED_ITEM").format({"item": "%10.2f %s [b]%s[/b]" % [amount, GCLootableManager.unit(id) , GCLootableManager.translate(id)]}),
             5000,
         )
     return true
@@ -119,7 +119,7 @@ func remove_from_inventory(id: String, amount: float, accept_less: bool = false,
     if notify:
         NotificationsManager.info(
             tr("NOTICE_INVENTORY"),
-            tr("LOST_ITEM").format({"item": "%4.3f %s [b]%s[/b]" % [amount, LootableManager.unit(id), LootableManager.translate(id)]}),
+            tr("LOST_ITEM").format({"item": "%4.3f %s [b]%s[/b]" % [amount, GCLootableManager.unit(id), GCLootableManager.translate(id)]}),
             5000,
         )
 

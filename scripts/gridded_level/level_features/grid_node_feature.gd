@@ -13,11 +13,11 @@ var _anchor: GridAnchor
 
 var _inited: bool
 
-func get_level() -> GridLevel:
+func get_level() -> GridLevelCore:
     if _node != null:
         return _node.get_level()
 
-    return GridLevel.find_level_parent(self, false)
+    return GridLevelCore.find_level_parent(self, false)
 
 func get_grid_node() -> GridNode:
     if _anchor != null:

@@ -27,11 +27,11 @@ func _common_setup(stock: Stockpile, callback: Callable, fixed_amount: float, ca
     _callback = callback
     _cancel_callback = cancel_callback
 
-    _comodity.text = LootableManager.translate(stock.item_id)
+    _comodity.text = GCLootableManager.translate(stock.item_id)
 
     _current_price.text = "%s / %s" % [
         GlobalGameState.credits_with_sign(stock.price),
-        LootableManager.unit(stock.item_id, true),
+        GCLootableManager.unit(stock.item_id, true),
     ]
 
     _volume.text = ""

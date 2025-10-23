@@ -1,5 +1,5 @@
 extends GridEvent
-class_name Corpse
+class_name GCCorpse
 
 @export var avatar: Node
 
@@ -40,7 +40,7 @@ func load_from_save(level: GridLevel, save: Dictionary) -> void:
     var coords: Vector3i = DictionaryUtils.safe_getv3i(save, CORPSE_COORDINATES_KEY)
     var node: GridNode = level.get_grid_node(coords)
 
-    print_debug("[Corpse] loading corpse from %s" % save)
+    print_debug("[GCCorpse] loading corpse from %s" % save)
 
     if node == null:
         push_error("Cannot load corpse due to %s not inside level" % coords)

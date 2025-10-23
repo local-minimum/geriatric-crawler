@@ -22,9 +22,9 @@ signal on_scene_transition_new_scene_ready()
 
 # Exploration
 # -> Level
-signal on_change_player(level: GridLevel, player: GridPlayer)
-signal on_level_loaded(level: GridLevel)
-signal on_level_unloaded(level: GridLevel)
+signal on_change_player(level: GridLevelCore, player: GridPlayerCore)
+signal on_level_loaded(level: GridLevelCore)
+signal on_level_unloaded(level: GridLevelCore)
 
 # -> Grid Node
 signal on_add_anchor(node: GridNode, anchor: GridAnchor)

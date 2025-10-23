@@ -60,9 +60,9 @@ func update_limited_buy(limited_buy: float = -1) -> void:
     else:
         _need.visible = true
         if roundf(limited_buy) == limited_buy:
-            _need.text = tr("NEED_AMOUNT").format({"amount": "%s %s" % [roundi(limited_buy), LootableManager.unit(item_id)]})
+            _need.text = tr("NEED_AMOUNT").format({"amount": "%s %s" % [roundi(limited_buy), GCLootableManager.unit(item_id)]})
         else:
-            _need.text = tr("NEED_AMOUNT").format({"amount": "%.2f %s" % [limited_buy, LootableManager.unit(item_id)]})
+            _need.text = tr("NEED_AMOUNT").format({"amount": "%.2f %s" % [limited_buy, GCLootableManager.unit(item_id)]})
 
 func set_need_text(text: String) -> void:
     _need.text = text
@@ -78,7 +78,7 @@ func track_stock(item_id: String, market: TradingMarket, limited_buy: float = -1
     set_sell_state()
     update_limited_buy(limited_buy)
 
-    _title.text = LootableManager.translate(item_id).to_upper()
+    _title.text = GCLootableManager.translate(item_id).to_upper()
 
     _handle_market_tick(market)
 

@@ -301,7 +301,7 @@ func attempt_door_unlock(puller: CameraPuller) -> void:
 
     var player: GridPlayer = get_level().player
 
-    var key_ring: KeyRing = player.key_ring
+    var key_ring: KeyRingCore = player.key_ring
     if key_ring == null || !key_ring.has_key(key_id):
         NotificationsManager.warn(tr("NOTICE_DOOR_LOCKED"), tr("MISSING_ITEM").format({"item": KeyMaster.instance.get_description(key_id)}))
 
@@ -372,8 +372,8 @@ func _trigger_hacking_prompt(puller: CameraPuller) -> void:
                     puller.release_player(player),
                 func () -> void:
                     var robot: Robot = player.robot
-                    var enemies: Array[BattleEnemy] = get_level().alive_enemies()
-                    var punishments: PunishmentDeck = get_level().punishments
+                    var enemies: Array[BattleEnemy] = (get_level() as GridLevel).alive_enemies()
+                    var punishments: PunishmentDeck = (get_level() as GridLevel).punishments
                     for _idx: int in range(HackingGame.danger_to_drawn_cards_count(_hacking_danger)):
                         var card: BattleCardData = punishments.get_random_card()
                         if card == null:

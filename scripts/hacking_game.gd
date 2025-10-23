@@ -635,7 +635,7 @@ func get_potential_bomb_target(center: Vector2i) -> Array[Vector2i]:
     return targets
 
 func bomb_coords(coords: Array[Vector2i]) -> void:
-    if coords.size() == 0 || _inv.inventory.remove_from_inventory(LootableManager.ITEM_HACKING_BOMB, 1.0, false, false) != 1.0:
+    if coords.size() == 0 || _inv.inventory.remove_from_inventory(GCLootableManager.ITEM_HACKING_BOMB, 1.0, false, false) != 1.0:
         return
 
     var found: int = 0
@@ -656,7 +656,7 @@ func bomb_coords(coords: Array[Vector2i]) -> void:
 
     if skill != null && skill.skill_level > 0:
         if randi_range(0, 10) < found:
-            if !_inv.inventory.add_to_inventory(LootableManager.ITEM_HACKING_BOMB, 1.0, false):
+            if !_inv.inventory.add_to_inventory(GCLootableManager.ITEM_HACKING_BOMB, 1.0, false):
                 push_warning("Could not regain bomb")
             else:
                 NotificationsManager.important(tr(skill.skill_name), tr("HACKING_BOMB_REFUNDED"))
@@ -665,7 +665,7 @@ func bomb_coords(coords: Array[Vector2i]) -> void:
 
 
 func use_worm() -> bool:
-    return _inv.inventory.remove_from_inventory(LootableManager.ITEM_HACKING_WORM, 1.0, false, false) == 1.0
+    return _inv.inventory.remove_from_inventory(GCLootableManager.ITEM_HACKING_WORM, 1.0, false, false) == 1.0
 
 func worm_consume(coordinates: Vector2i) -> int:
     if !has_coordinates(coordinates):

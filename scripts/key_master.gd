@@ -21,7 +21,7 @@ func _exit_tree() -> void:
         instance = null
 
 func get_description(key: String) -> String:
-    return _key_descriptions.get(key, LootableManager.translate(LootableManager.ITEM_GENERIC_KEY))
+    return _key_descriptions.get(key, GCLootableManager.translate(GCLootableManager.ITEM_GENERIC_KEY))
 
 func get_key_model_id(key: String) -> int:
     return _key_models.get(key, 1)

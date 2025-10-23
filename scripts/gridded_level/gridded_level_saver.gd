@@ -111,10 +111,10 @@ func _create_corpse(save: Dictionary) -> bool:
 
         return false
 
-    save[Corpse.CORPSE_COORDINATES_KEY] = level.player.coordinates()
-    save[Corpse.CORPSE_INVENTORY_KEY] = Inventory.active_inventory.collect_save_data()
-    save[Corpse.CORPSE_MODEL_KEY] = level.player.robot.model.id
-    save[Corpse.CORPSE_NAME_KEY] = level.player.robot.given_name
+    save[GCCorpse.CORPSE_COORDINATES_KEY] = level.player.coordinates()
+    save[GCCorpse.CORPSE_INVENTORY_KEY] = Inventory.active_inventory.collect_save_data()
+    save[GCCorpse.CORPSE_MODEL_KEY] = level.player.robot.model.id
+    save[GCCorpse.CORPSE_NAME_KEY] = level.player.robot.given_name
 
     return true
 
@@ -209,7 +209,7 @@ func load_from_save(save_data: Dictionary, entry_portal_id: String) -> void:
     var corpse_save: Dictionary = DictionaryUtils.safe_getd(save_data, _CORPSE_KEY, {}, false)
     if !corpse_save.is_empty():
         var corpse_scene: PackedScene = load("res://scenes/dungeon/corpse.tscn")
-        var corpse: Corpse = corpse_scene.instantiate()
+        var corpse: GCCorpse = corpse_scene.instantiate()
         corpse.load_from_save(level, corpse_save)
 
     level.emit_loaded = true

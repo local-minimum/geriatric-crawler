@@ -20,7 +20,7 @@ var prefer_2d: bool:
         prefer_2d = value
         _update_map()
 
-var _level: GridLevel
+var _level: GridLevelCore
 var _player: GridPlayer
 
 var _level_id: String
@@ -49,8 +49,8 @@ func _ready() -> void:
     if __SignalBus.on_move_end.connect(_handle_move_end) != OK:
         push_error("Failed to connect on move end")
 
-    _level_loaded.call_deferred(GridLevel.active_level)
-    _connect_new_player.call_deferred(GridLevel.active_level, GridLevel.active_level.player)
+    _level_loaded.call_deferred(GridLevelCore.active_level)
+    _connect_new_player.call_deferred(GridLevelCore.active_level, GridLevelCore.active_level.player)
 
 func _handle_robot_gain_ability(_robot: Robot, ability: RobotAbility) -> void:
     if ability.id == RobotAbility.SKILL_MAPPING:
@@ -63,7 +63,7 @@ func history() -> Array[Vector3i]:
         hist.append(_seen[(_last_seen_idx + hist_idx) % size])
     return hist
 
-func level_id() -> String: return _level.level_id if _level != null else GridLevel.UNKNOWN_LEVEL_ID
+func level_id() -> String: return _level.level_id if _level != null else GridLevelCore.UNKNOWN_LEVEL_ID
 
 func load_history(history_level_id: String, new_history: Array[Vector3i]) -> void:
     _level_id = history_level_id
@@ -85,7 +85,7 @@ func _exit_tree() -> void:
     if __SignalBus.on_teleporter_arrive_entity.is_connected(_handle_teleport):
         __SignalBus.on_teleporter_arrive_entity.disconnect(_handle_teleport)
 
-func _level_loaded(level: GridLevel) -> void:
+func _level_loaded(level: GridLevelCore) -> void:
     _level = level
     if __SignalBus.on_door_state_chaged.is_connected(_handle_update_lock_state) && __SignalBus.on_door_state_chaged.connect(_handle_update_lock_state) != OK:
         push_error("Failed to connect door state change")
@@ -94,9 +94,10 @@ func _handle_teleport(_teleporter: GridTeleporter, entity: GridEntity) -> void:
     if entity == _player:
         _handle_move_end(entity)
 
-func _connect_new_player(level: GridLevel, player: GridPlayer) -> void:
+func _connect_new_player(level: GridLevelCore, player: GridPlayerCore) -> void:
     if _level == level:
-        _player = level.player
+        if player is GridPlayer:
+            _player = player
         _handle_move_end(_player)
         print_debug("[Exploration Mapper] Connected %s to map" % _player)
 
@@ -107,13 +108,13 @@ func _handle_update_lock_state(_door: GridDoor, _from: GridDoor.LockState, _to: 
     _update_map()
 
 func _handle_move_end(entity: GridEntity) -> void:
-    if entity is not GridPlayer || entity != _player || entity == null:
+    if entity is not GridPlayerCore || entity != _player || entity == null:
         return
 
     var coords: Vector3i = entity.coordinates()
     _enter_new_coordinates(coords)
 
-    var level: GridLevel = _player.get_level()
+    var level: GridLevelCore = _player.get_level()
 
     if level.has_active_zone_for(coords, _limits_mapping):
         _update_map()
