@@ -1,6 +1,6 @@
 [gd_scene load_steps=89 format=3 uid="uid://dwqcwbgj8p6q0"]
 
-[ext_resource type="Script" uid="uid://dqe42q7uub84r" path="res://scripts/gridded_level/level_features/grid_level.gd" id="1_dd1ob"]
+[ext_resource type="Script" uid="uid://dqe42q7uub84r" path="res://scripts/gc/level_features/grid_level.gd" id="1_dd1ob"]
 [ext_resource type="PackedScene" uid="uid://bfoog3fb4v5ij" path="res://scenes/dungeon/player.tscn" id="3_m6mav"]
 [ext_resource type="Script" uid="uid://b8a6yvndcxtpa" path="res://scripts/gridded_level/transportation_mode.gd" id="4_840jk"]
 [ext_resource type="PackedScene" uid="uid://pqu2j7bbrsdh" path="res://scenes/dungeon/basic_node.tscn" id="4_myev5"]
@@ -42,7 +42,7 @@
 [ext_resource type="Script" uid="uid://qbk2psf0rmnw" path="res://scripts/card_battle/battle_strategy.gd" id="22_sy7nh"]
 [ext_resource type="PackedScene" uid="uid://h4wicnumysl8" path="res://scenes/dungeon/basic_wall_flatter2.tscn" id="24_hlfpo"]
 [ext_resource type="Script" uid="uid://6vnrccj8frlq" path="res://scripts/card_battle/battle_enemy_target_system.gd" id="25_s5loo"]
-[ext_resource type="Script" uid="uid://bl72bpxm44td8" path="res://scripts/key_master.gd" id="32_wymjw"]
+[ext_resource type="Script" uid="uid://bl72bpxm44td8" path="res://scripts/gc/key_master.gd" id="32_wymjw"]
 [ext_resource type="Resource" uid="uid://ctc6pq4wyhidi" path="res://resources/enemy_cards/killer_cards/killer-cleanup-130.tres" id="34_dnq43"]
 [ext_resource type="Script" uid="uid://bk8s8268riiuc" path="res://scripts/card_battle/punishment_deck.gd" id="34_dw5j8"]
 [ext_resource type="Texture2D" uid="uid://bykk6cgl118r1" path="res://sprites/enemies/killer.png" id="34_rljv5"]
@@ -153,18 +153,18 @@ target_scene_file_path = "res://scenes/dungeon/basic_wall_flatter2.tscn"
 relative_path = "MeshInstance3D"
 known_usage_path = "Elevation -1/Node (-2, -1, -2)/Side SOUTH"
 
-[node name="TestLevel" type="Node3D" node_paths=PackedStringArray("player", "level_geometry", "punishments", "primary_entry_portal", "level_portals", "zones_parent", "zones", "broadcasts_parent")]
+[node name="TestLevel" type="Node3D" node_paths=PackedStringArray("punishments", "level_geometry", "primary_entry_portal", "level_portals", "zones_parent", "zones", "broadcasts_parent", "player")]
 script = ExtResource("1_dd1ob")
+punishments = NodePath("PunishmentDeck")
 level_id = "test-level"
 node_size = Vector3(2.5, 2.5, 2.5)
-player = NodePath("Player")
 level_geometry = NodePath("LevelGeometry")
-punishments = NodePath("PunishmentDeck")
 primary_entry_portal = NodePath("LevelGeometry/Elevation 0/Node (0, 0, 2)/Airlock")
 level_portals = [NodePath("LevelGeometry/Elevation 0/Node (0, 0, 2)/Airlock"), NodePath("LevelGeometry/Elevation 1/Node (5, 1, -2)/Airlock")]
 zones_parent = NodePath("Zones")
 zones = [NodePath("Zones/Radioactive Zone")]
 broadcasts_parent = NodePath("Broadcasts")
+player = NodePath("Player")
 
 [node name="Player" parent="." instance=ExtResource("3_m6mav")]
 process_mode = 3
@@ -564,13 +564,13 @@ direction = 2
 
 [node name="door" parent="LevelGeometry/Elevation 0/Node (3, 0, 1)" instance=ExtResource("14_wymjw")]
 transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -1.23292, 0, 0)
-_back_automation = 3
-_close_automation = 2
-_inital_lock_state = 0
+_hacking_danger = 2
 _door_face = 3
 block_traversal_anchor_sides = Array[int]([1, 2])
+_inital_lock_state = 0
 key_id = "key_purple"
-_hacking_danger = 2
+_back_automation = 3
+_close_automation = 2
 
 [node name="Node (4, 0, 1)" parent="LevelGeometry/Elevation 0" instance=ExtResource("4_myev5")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 0, 2.5)
@@ -9935,9 +9935,8 @@ script = ExtResource("9_myev5")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.7, 0)
 mesh = SubResource("QuadMesh_s5loo")
 
-[node name="Battle Trigger" type="Node" parent="Encounters/Target Dummy Blob" node_paths=PackedStringArray("enemies")]
+[node name="Battle Trigger" type="Node" parent="Encounters/Target Dummy Blob"]
 script = ExtResource("10_rvj20")
-enemies = [NodePath("Target Dummy AI")]
 hide_encounter_on_trigger = true
 metadata/_custom_type_script = "uid://b3kob7bivk342"
 
@@ -9985,9 +9984,8 @@ script = ExtResource("9_myev5")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.7, 0)
 mesh = SubResource("QuadMesh_kmgg5")
 
-[node name="Repeat Battle Trigger" type="Node" parent="Encounters/Multi Encounter Repeat" node_paths=PackedStringArray("enemies")]
+[node name="Repeat Battle Trigger" type="Node" parent="Encounters/Multi Encounter Repeat"]
 script = ExtResource("10_rvj20")
-enemies = [NodePath("Target Dummy AI"), NodePath("Target Dummy AI (2)")]
 metadata/_custom_type_script = "uid://b3kob7bivk342"
 
 [node name="Target Dummy AI" type="Node" parent="Encounters/Multi Encounter Repeat/Repeat Battle Trigger" node_paths=PackedStringArray("deck", "brain", "_target_system")]
@@ -10059,9 +10057,8 @@ metadata/_custom_type_script = "uid://bqahhkn6dpex"
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.706822, 0)
 mesh = SubResource("QuadMesh_jqdjk")
 
-[node name="BattleModeTrigger" type="Node" parent="Encounters/Killer Moving Encounter" node_paths=PackedStringArray("enemies")]
+[node name="BattleModeTrigger" type="Node" parent="Encounters/Killer Moving Encounter"]
 script = ExtResource("10_rvj20")
-enemies = [NodePath("Killer AI")]
 hide_encounter_on_trigger = true
 metadata/_custom_type_script = "uid://dmpqfljj24gh6"
 

@@ -1,7 +1,7 @@
 [gd_scene load_steps=10 format=3 uid="uid://ddhx074rsdkqs"]
 
 [ext_resource type="PackedScene" uid="uid://dd2j8au35b3wp" path="res://models/door.fbx" id="1_lp1wk"]
-[ext_resource type="Script" uid="uid://dj1tm7t4vdpaq" path="res://scripts/gridded_level/level_features/grid_door.gd" id="2_4le7t"]
+[ext_resource type="Script" uid="uid://dj1tm7t4vdpaq" path="res://scripts/gc/level_features/grid_door.gd" id="2_4le7t"]
 [ext_resource type="PackedScene" uid="uid://cxrcj6wtm65b0" path="res://scenes/dungeon/door_pole_card_reader.tscn" id="3_hkdc4"]
 
 [sub_resource type="Animation" id="Animation_4le7t"]
