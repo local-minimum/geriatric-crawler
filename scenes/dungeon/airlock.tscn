@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://cjhediv47ntbx" path="res://scripts/gridded_level/level_features/level_portal.gd" id="1_1a7ct"]
 [ext_resource type="PackedScene" uid="uid://cmmumrllwixa" path="res://models/airlockdoor.fbx" id="2_6weax"]
-[ext_resource type="Script" uid="uid://ca24gxv56p7a" path="res://scripts/gridded_level/level_features/airlock_button.gd" id="3_6weax"]
+[ext_resource type="Script" uid="uid://ca24gxv56p7a" path="res://scripts/gridded_level/interactions/exit_level_interaction.gd" id="3_6weax"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_6weax"]
 

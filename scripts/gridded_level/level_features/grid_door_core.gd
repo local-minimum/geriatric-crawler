@@ -126,7 +126,7 @@ func _add_back_sentinel() -> void:
     neighbour.add_child(sentinel)
     neighbour.add_grid_event(sentinel)
 
-func get_opening_automation(reader: GridDoorReader) -> OpenAutomation:
+func get_opening_automation(reader: GridDoorInteraction) -> OpenAutomation:
     if reader.is_negative_side:
         print_debug("door %s's reader %s is negative side %s" % [self, reader, _back_automation])
         return _back_automation

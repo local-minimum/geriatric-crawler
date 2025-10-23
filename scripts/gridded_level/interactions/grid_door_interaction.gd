@@ -1,5 +1,5 @@
 extends Interactable
-class_name GridDoorReader
+class_name GridDoorInteraction
 
 @export var door: GridDoorCore
 
@@ -90,7 +90,10 @@ func _handle_door_state_chage(grid_door: GridDoorCore, _from: GridDoorCore.LockS
     if grid_door == door:
         _sync_reader_display()
 
-func _sync_reader_display(_level: GridLevel = null) -> void:
+func _sync_reader_display(_level: GridLevelCore = null) -> void:
+    if mesh == null:
+        return
+
     var mat: StandardMaterial3D = mesh.get_surface_override_material(display_material_idx)
     if mat == null:
         mat = StandardMaterial3D.new()
@@ -107,7 +110,7 @@ func _sync_reader_display(_level: GridLevel = null) -> void:
     mesh.set_surface_override_material(display_material_idx, mat)
 
 func _in_range(event_position: Vector3) -> bool:
-    var level: GridLevel = door.get_level()
+    var level: GridLevelCore = door.get_level()
     var player: GridPlayerCore = level.player
 
     if player.cinematic:

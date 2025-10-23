@@ -1,5 +1,5 @@
 extends Interactable
-class_name AirlockButton
+class_name ExitLevelInteraction
 
 @export var portal: LevelPortal
 

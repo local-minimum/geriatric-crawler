@@ -1,7 +1,7 @@
 [gd_scene load_steps=11 format=3 uid="uid://cxrcj6wtm65b0"]
 
 [ext_resource type="PackedScene" uid="uid://dvylchbo3q43j" path="res://models/door-pole-card-reader.fbx" id="1_cwvrh"]
-[ext_resource type="Script" uid="uid://y52tibb7romd" path="res://scripts/gridded_level/level_features/grid_door_reader.gd" id="2_iqnlb"]
+[ext_resource type="Script" uid="uid://y52tibb7romd" path="res://scripts/gridded_level/interactions/grid_door_interaction.gd" id="2_iqnlb"]
 [ext_resource type="Texture2D" uid="uid://d1287mvsy4nr4" path="res://sprites/doors/door-reader-icons-automatic.png" id="3_t0i7i"]
 [ext_resource type="Texture2D" uid="uid://b1sdqv34srk1q" path="res://sprites/doors/door-reader-icons-bump.png" id="4_h2uq7"]
 [ext_resource type="Texture2D" uid="uid://0jt68rne7028" path="res://sprites/doors/door-reader-icons-no-entry.png" id="5_livh6"]
