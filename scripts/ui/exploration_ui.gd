@@ -1,8 +1,6 @@
 extends Panel
 class_name  ExplorationUI
 
-@export var exploration_view: ExplorationView
-
 var level: GridLevel:
     get():
         if level == null:
@@ -15,10 +13,10 @@ var level: GridLevel:
 
 func _ready() -> void:
     level = GridLevel.active_level
-    if exploration_view.on_change_level.connect(_handle_new_level) != OK:
-        push_error("Failed to connect level change")
+    if __SignalBus.on_level_loaded.connect(_handle_new_level) != OK:
+        push_error("Failed to connect level loaded")
 
-func _handle_new_level(_old: GridLevel, new: GridLevel) -> void:
+func _handle_new_level(new: GridLevel) -> void:
     level = new
 
 func _on_turn_left_pressed() -> void:

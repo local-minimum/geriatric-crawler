@@ -1,7 +1,5 @@
 extends Node
 
-@export var exploration_view: ExplorationView
-
 @export var menu_base: Control
 
 @export var menu_button: Control
@@ -50,12 +48,12 @@ func _ready() -> void:
     _on_hide_setting_menu.call_deferred()
 
     level = GridLevel.active_level
-    if exploration_view.on_change_level.connect(_handle_new_level) != OK:
-        push_error("Failed to connect level switching")
+    if __SignalBus.on_level_loaded.connect(_handle_new_level) != OK:
+        push_error("Failed to connect level loaded")
 
     _sync.call_deferred()
 
-func _handle_new_level(_old: GridLevel, new: GridLevel) -> void:
+func _handle_new_level(new: GridLevel) -> void:
     level = new
     _sync()
 
