@@ -6,7 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://pqu2j7bbrsdh" path="res://scenes/dungeon/basic_node.tscn" id="4_myev5"]
 [ext_resource type="PackedScene" uid="uid://b3heljhlu4hop" path="res://scenes/dungeon/basic_wall.tscn" id="6_5axwy"]
 [ext_resource type="PackedScene" uid="uid://deupet1cvom4e" path="res://scenes/dungeon/basic_ceiling.tscn" id="8_72dvb"]
-[ext_resource type="Script" uid="uid://4tbbs5wj6vj7" path="res://scripts/gridded_level/level_features/simple_loot_container.gd" id="8_j1mj1"]
+[ext_resource type="Script" uid="uid://4tbbs5wj6vj7" path="res://scripts/gc/level_features/simple_loot_container.gd" id="8_j1mj1"]
 [ext_resource type="Script" uid="uid://bqahhkn6dpex" path="res://scripts/gc/entities/grid_encounter.gd" id="8_kmgg5"]
 [ext_resource type="PackedScene" uid="uid://ds0fqw6fso67w" path="res://scenes/dungeon/basic_floor.tscn" id="9_4mxkc"]
 [ext_resource type="Texture2D" uid="uid://ca81d0hg5b0p" path="res://sprites/treasure-chest-open.png" id="9_7gan6"]
@@ -242,7 +242,7 @@ coordinates = Vector3i(2, 0, -1)
 [node name="Side EAST" parent="LevelGeometry/Elevation 0/Node (2, 0, -1)" instance=ExtResource("6_5axwy")]
 transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 0, 0, 0)
 direction = 4
-illosory = true
+illusory = true
 
 [node name="Side UP" parent="LevelGeometry/Elevation 0/Node (2, 0, -1)" instance=ExtResource("8_72dvb")]
 

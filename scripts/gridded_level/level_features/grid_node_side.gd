@@ -5,7 +5,7 @@ class_name GridNodeSide
 @export var infer_direction_from_rotation: bool = true
 @export var anchor: GridAnchor
 @export var negative_anchor: GridAnchor
-@export var illosory: bool
+@export var illusory: bool
 
 func is_two_sided() -> bool:
     return negative_anchor != null

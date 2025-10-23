@@ -46,7 +46,7 @@ func _handle_saved() -> void:
         __SignalBus.on_load_fail.disconnect(_fail_exit_level)
 
 func _fail_exit_level() -> void:
-    var level: GridLevel = get_level()
+    var level: GridLevelCore = get_level()
     NotificationsManager.warn(tr(fail_exit_notice_title), tr(fail_exit_notice_message))
 
     if level.activated_exit_portal == self:

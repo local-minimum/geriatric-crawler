@@ -5,7 +5,7 @@ class_name GridNode
 
 @export var entry_requires_anchor: bool = true
 
-var level: GridLevel
+var level: GridLevelCore
 
 var _anchors: Dictionary[CardinalDirections.CardinalDirection, GridAnchor] = {}
 var _sides: Dictionary[CardinalDirections.CardinalDirection, GridNodeSide] = {}
@@ -13,14 +13,15 @@ var _doors: Dictionary[CardinalDirections.CardinalDirection, GridDoorCore] = {}
 
 func _ready() -> void:
     if level == null:
-        level = GridLevel.find_level_parent(self)
+        level = GridLevelCore.find_level_parent(self)
 
-func get_level() -> GridLevel:
+func get_level() -> GridLevelCore:
     if level == null:
-        level = GridLevel.find_level_parent(self)
+        level = GridLevelCore.find_level_parent(self)
 
     return level
 
+#region Features
 var _doors_inited: bool
 func _init_doors() -> void:
     if _doors_inited:
@@ -91,7 +92,9 @@ func get_ramp(direction: CardinalDirections.CardinalDirection) -> GridRampCore:
             _ramps[ramp.upper_exit_direction] = ramp
 
     return _ramps.get(direction)
+#enregion Features
 
+#region Sides
 enum NodeSideState { NONE, SOLID, ILLUSORY, DOOR }
 func has_side(direction: CardinalDirections.CardinalDirection) -> NodeSideState:
     _init_sides_and_anchors()
@@ -102,7 +105,7 @@ func has_side(direction: CardinalDirections.CardinalDirection) -> NodeSideState:
 
     if _sides.has(direction):
         # print_debug("Node %s has side %s" % [coordinates, CardinalDirections.name(direction)])
-        return NodeSideState.ILLUSORY if _sides[direction].illosory else NodeSideState.SOLID
+        return NodeSideState.ILLUSORY if _sides[direction].illusory else NodeSideState.SOLID
 
     var neighbour_node: GridNode = neighbour(direction)
     if neighbour_node == null:
@@ -111,16 +114,17 @@ func has_side(direction: CardinalDirections.CardinalDirection) -> NodeSideState:
     var inverted: CardinalDirections.CardinalDirection = CardinalDirections.invert(direction)
     if neighbour_node._sides.has(inverted):
         # print_debug("Node %s has side %s from neighbour %s" % [coordinates, CardinalDirections.name(direction), neighbour_node])
-        return NodeSideState.ILLUSORY if neighbour_node._sides[inverted].illosory else NodeSideState.SOLID
+        return NodeSideState.ILLUSORY if neighbour_node._sides[inverted].illusory else NodeSideState.SOLID
 
     return NodeSideState.NONE
 
 func _is_illusory_side(direction: CardinalDirections.CardinalDirection) -> bool:
-    return _sides.has(direction) && _sides[direction].illosory
+    return _sides.has(direction) && _sides[direction].illusory
 
 func illusory_sides() -> Array[GridNodeSide]:
     _init_sides_and_anchors()
-    return _sides.values().filter(func (side: GridNodeSide) -> bool: return side.illosory)
+    return _sides.values().filter(func (side: GridNodeSide) -> bool: return side.illusory)
+#endregion Sides
 
 #region Events
 var _events: Array[GridEvent]

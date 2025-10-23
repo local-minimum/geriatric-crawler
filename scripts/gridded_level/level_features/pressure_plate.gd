@@ -43,7 +43,7 @@ func _handle_feature_move(feature: GridNodeFeature) -> void:
 
 
 func trigger(_entity: GridEntity, _movement: Movement.MovementType) -> void:
-    # We don't trigger this way
+    # We don't trigger this way because it happens too early in that case
     pass
 
 const _TRIGGERED_KEY: String = "triggered"
