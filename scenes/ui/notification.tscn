@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://b8sa3ncwh7x2b"]
 
-[ext_resource type="Script" uid="uid://dw4dlxccimty6" path="res://scripts/ui/notifications/notification_ui.gd" id="1_5bafy"]
+[ext_resource type="Script" uid="uid://dw4dlxccimty6" path="res://addons/minimum_convenience/scripts/notifications/notification_ui.gd" id="1_5bafy"]
 [ext_resource type="Texture2D" uid="uid://cgijt2to15yms" path="res://sprites/kenny game icons/cross.png" id="2_jvqrl"]
 
 [node name="Notification" type="HBoxContainer" node_paths=PackedStringArray("_background", "title", "close_button")]

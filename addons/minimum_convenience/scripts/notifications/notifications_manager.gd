@@ -18,6 +18,8 @@ enum NotificationType { INFO, IMPORTANT, WARNING }
 
 @export var _min_time_visible_message: float = 400
 
+@export var inherit_queue: bool
+
 static var _waiting_callbacks: Array[Callable] = []
 
 static func await_manager(on_update_manager_callback: Callable) -> void:
@@ -59,8 +61,6 @@ static func force_remove_message(id: String) -> bool:
         return false
 
     return active_manager._force_remove_message_by_id(id)
-
-@export var inherit_queue: bool
 
 class NotificationData:
     var id: String

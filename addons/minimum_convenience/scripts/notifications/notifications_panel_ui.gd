@@ -5,11 +5,12 @@ class_name NotificationsPanelUI
 
 @export_range(0, 2) var _tween_offset_width_factor: float = 1.2
 
-var _notification: PackedScene = preload("res://scenes/ui/notification.tscn")
+@export var _notifications_resource: String = "res://scenes/ui/notification.tscn"
 
 var _left_anchor: float
 var _right_anchor: float
 var _tween_from_direction: float = -1
+var _notification: PackedScene
 
 func _enter_tree() -> void:
     _left_anchor = anchor_left
@@ -19,6 +20,8 @@ func _enter_tree() -> void:
         push_error("Failed to connect update handedness")
 
 func _ready() -> void:
+    _notification = load(_notifications_resource)
+
     if NotificationsManager.active_manager == null:
         NotificationsManager.await_manager(_handle_update_manager)
     else:
