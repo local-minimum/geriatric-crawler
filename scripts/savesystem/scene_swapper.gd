@@ -2,7 +2,7 @@ extends Node
 class_name SceneSwapper
 
 @export var scenes: Dictionary[String, String]
-@export var fallback_scene_id: String = "hub-spaceship"
+@export var fallback_scene_id: String = "hub"
 
 enum Phase { IDLE, LOADING_PACKED_SCENE, SWAPPING_ROOT, WAIT_TO_LOAD_NEW_SCENE, SWAPPING_COMPLETE }
 
@@ -84,6 +84,7 @@ func _check_loading_next_scene() -> void:
         ResourceLoader.ThreadLoadStatus.THREAD_LOAD_IN_PROGRESS:
             if progress.size() == 1:
                 __SignalBus.on_scene_transition_progress.emit(progress[0])
+
         ResourceLoader.ThreadLoadStatus.THREAD_LOAD_LOADED:
             print_debug("[SceneSwapper] Packed scene loaded")
             var scene: PackedScene = ResourceLoader.load_threaded_get(_loading_resource_path)
@@ -102,6 +103,7 @@ func _check_loading_next_scene() -> void:
         ResourceLoader.ThreadLoadStatus.THREAD_LOAD_FAILED:
             push_error("Loading scene '%s', thread failed" % _loading_resource_path)
             _handle_fail_and_reset()
+
         ResourceLoader.ThreadLoadStatus.THREAD_LOAD_INVALID_RESOURCE:
             push_error("Loading scene '%s', failed due to invalid resource" % _loading_resource_path)
             _handle_fail_and_reset()

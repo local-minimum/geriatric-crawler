@@ -3,7 +3,7 @@
 [ext_resource type="PackedScene" uid="uid://c0qmcq36iacog" path="res://addons/minimum_dev_console/scenes/example_dev_console.tscn" id="1_gcis2"]
 [ext_resource type="Script" uid="uid://1oqck0dge37k" path="res://scripts/dev_console_commands/dev_credits.gd" id="2_0be3j"]
 [ext_resource type="Script" uid="uid://u6qv42vcbeyp" path="res://addons/minimum_dev_console/src/minimum_dev_command_cateogry.gd" id="3_4dryq"]
-[ext_resource type="Script" uid="uid://disv351t4kkxa" path="res://scripts/dev_console_commands/dev_robot_fight.gd" id="4_fk3y3"]
+[ext_resource type="Script" uid="uid://disv351t4kkxa" path="res://scripts/gc/dev_console_commands/dev_robot_fight.gd" id="4_fk3y3"]
 [ext_resource type="Script" uid="uid://b4epnmpst224s" path="res://scripts/dev_console_commands/dev_player_blink.gd" id="5_mcioo"]
 [ext_resource type="Script" uid="uid://mq6pe6ye8odp" path="res://scripts/dev_console_commands/dev_player_rot.gd" id="6_kpxas"]
 [ext_resource type="Script" uid="uid://cypvqaxbcaqeh" path="res://scripts/dev_console_commands/dev_speed.gd" id="6_tqlsn"]

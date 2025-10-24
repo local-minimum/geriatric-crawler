@@ -1,6 +1,8 @@
 extends Node
 class_name SaveSystemWrapper
 
+# TODO: Why is this not a static class?
+
 func autosave() -> void:
     if SaveSystem.instance == null:
         push_error("No save system loaded")

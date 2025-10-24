@@ -10,6 +10,7 @@ scenes = Dictionary[String, String]({
 "hub-spaceship": "res://scenes/spaceship.tscn",
 "test-level": "res://scenes/exploration-scene.tscn"
 })
+fallback_scene_id = "hub-spaceship"
 metadata/_custom_type_script = "uid://dwl1o53cp3rtt"
 
 [node name="LoadingOverlay" type="CanvasLayer" parent="." node_paths=PackedStringArray("_progress_label")]
