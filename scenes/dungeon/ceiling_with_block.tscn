@@ -4,7 +4,7 @@
 [ext_resource type="Script" uid="uid://bsjvh2o2oob57" path="res://scripts/gridded_level/level_features/grid_anchor.gd" id="2_igvhk"]
 [ext_resource type="Script" uid="uid://b8a6yvndcxtpa" path="res://scripts/gridded_level/transportation_mode.gd" id="3_caj3p"]
 [ext_resource type="PackedScene" uid="uid://1apehu5b0b8f" path="res://scenes/dungeon/concreteslab_withblock_anims.tscn" id="4_4srmy"]
-[ext_resource type="Script" uid="uid://coe1i68jqote4" path="res://scripts/broadcast_receiver.gd" id="5_igvhk"]
+[ext_resource type="Script" uid="uid://coe1i68jqote4" path="res://scripts/gridded_level/broadcasts/broadcast_receiver.gd" id="5_igvhk"]
 
 [sub_resource type="Resource" id="Resource_p0hg4"]
 script = ExtResource("3_caj3p")

@@ -65,7 +65,7 @@
 [ext_resource type="Resource" uid="uid://dp3g7x083gv0t" path="res://resources/punishment_cards/insecurities_959.tres" id="47_gbgif"]
 [ext_resource type="Resource" uid="uid://bdwpemc2r72sv" path="res://resources/punishment_cards/insecurities_979.tres" id="48_24aia"]
 [ext_resource type="Resource" uid="uid://bm3cpmpqe3u6h" path="res://resources/punishment_cards/insecurities_999.tres" id="49_yofnv"]
-[ext_resource type="Script" uid="uid://huxje2j21g1c" path="res://scripts/broadcast_contract.gd" id="61_uhp52"]
+[ext_resource type="Script" uid="uid://huxje2j21g1c" path="res://scripts/gridded_level/broadcasts/broadcast_contract.gd" id="61_uhp52"]
 [ext_resource type="Script" uid="uid://c831gkti0wysb" path="res://addons/grid_level_digger/level_material_overrides.gd" id="63_ytmnc"]
 [ext_resource type="Script" uid="uid://d4jalrj3vayrc" path="res://addons/grid_level_digger/material_override.gd" id="64_bt6hk"]
 [ext_resource type="Material" uid="uid://q68n4457kjxn" path="res://materials/carbon/carbon.tres" id="65_ytmnc"]
