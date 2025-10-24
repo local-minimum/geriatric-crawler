@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://du4xj4oj03lov"]
 
-[ext_resource type="Script" uid="uid://cwsyehrsh4x7e" path="res://scripts/spaceship/robot_selection_option.gd" id="1_rukny"]
+[ext_resource type="Script" uid="uid://cwsyehrsh4x7e" path="res://scripts/gc/spaceship/robot_selection_option.gd" id="1_rukny"]
 
 [node name="Robot Select Option" type="MarginContainer" node_paths=PackedStringArray("given_name", "model_name", "button")]
 script = ExtResource("1_rukny")
