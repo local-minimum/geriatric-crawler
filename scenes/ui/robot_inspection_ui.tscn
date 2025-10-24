@@ -5,9 +5,9 @@
 [ext_resource type="Script" uid="uid://5lsjirgudi0w" path="res://scripts/ui/robot_skill_tree_ui.gd" id="3_4hdtw"]
 [ext_resource type="Script" uid="uid://dhyp3nywuq17h" path="res://scripts/ui/inspect_battle_deck_ui.gd" id="3_k77c0"]
 [ext_resource type="PackedScene" uid="uid://qvbyso8n7n8j" path="res://scenes/ui/robot_skill_level_ui.tscn" id="4_yfo5l"]
-[ext_resource type="Script" uid="uid://bkudjqfkkgxlw" path="res://scripts/ui/exploration_inventory_ui.gd" id="5_0f0fp"]
+[ext_resource type="Script" uid="uid://bkudjqfkkgxlw" path="res://scripts/gc/ui/exploration_inventory_ui.gd" id="5_0f0fp"]
 [ext_resource type="Script" uid="uid://c55ba5lckbxlc" path="res://scripts/ui/chained_vboxes.gd" id="6_4hdtw"]
-[ext_resource type="Script" uid="uid://physen830gip" path="res://scripts/ui/exploration_keys_ui.gd" id="7_yfo5l"]
+[ext_resource type="Script" uid="uid://physen830gip" path="res://scripts/gc/ui/exploration_keys_ui.gd" id="7_yfo5l"]
 
 [sub_resource type="Curve" id="Curve_7mycd"]
 _data = [Vector2(0, 0.0905457), 0.0, 0.0, 0, 0, Vector2(0.330494, 0.571257), 0.0, 0.0, 0, 0, Vector2(0.681431, 0.693384), 0.593166, 0.593166, 0, 0, Vector2(1, 0.914251), 0.00953312, 0.0, 0, 0]

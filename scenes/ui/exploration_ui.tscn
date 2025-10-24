@@ -1,6 +1,6 @@
 [gd_scene load_steps=20 format=3 uid="uid://d3iceirfj21qw"]
 
-[ext_resource type="Script" uid="uid://dng6kx20nqasv" path="res://scripts/ui/exploration_ui.gd" id="1_jvesw"]
+[ext_resource type="Script" uid="uid://dng6kx20nqasv" path="res://scripts/gc/ui/exploration_ui.gd" id="1_jvesw"]
 [ext_resource type="Texture2D" uid="uid://37t534r3ua0p" path="res://sprites/kenny game icons/open-xflipped.png" id="2_m3jmt"]
 [ext_resource type="PackedScene" uid="uid://boccd8l2p0s0r" path="res://scenes/ui/exploration_robot_info_ui.tscn" id="2_rfm22"]
 [ext_resource type="Script" uid="uid://ccd5c8wiv7kia" path="res://scripts/ui/simple_map_ui.gd" id="3_4stpx"]

@@ -1,27 +1,11 @@
 extends Panel
-class_name  ExplorationUI
+class_name  ExplorationUICore
 
-var level: GridLevel:
+var level: GridLevelCore:
     get():
         if level == null:
             level = GridLevelCore.active_level
         return level
-
-@export var battle: BattleMode
-
-@export var inspect_robot_ui: RobotInspectionUI
-
-var player: GridPlayer:
-    get():
-        if level.player is GridPlayer:
-            return (level.player as GridPlayer)
-        return null
-
-var robot: Robot:
-    get():
-        if level.player is GridPlayer:
-            return (level.player as GridPlayer).robot
-        return null
 
 func _ready() -> void:
     level = GridLevelCore.active_level
@@ -62,12 +46,3 @@ func _on_back_button_down() -> void:
 
 func _on_back_button_up() -> void:
     level.player.clear_held_movement(Movement.MovementType.BACK)
-
-func inspect_robot() -> void:
-    if level.player is GridPlayer:
-        inspect_robot_ui.inspect(
-            level.player as GridPlayer,
-            (level.player as GridPlayer).robot,
-            battle.battle_player,
-            __GlobalGameState.total_credits,
-        )

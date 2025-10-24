@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://boccd8l2p0s0r"]
 
-[ext_resource type="Script" uid="uid://ds0xko5iuludm" path="res://scripts/ui/exploration_robot_ui.gd" id="1_3owbm"]
+[ext_resource type="Script" uid="uid://ds0xko5iuludm" path="res://scripts/gc/ui/exploration_robot_ui.gd" id="1_3owbm"]
 
 [node name="RobotInfo" type="VBoxContainer" node_paths=PackedStringArray("_name_label", "_model_label", "_health_label", "_level_label")]
 mouse_default_cursor_shape = 2

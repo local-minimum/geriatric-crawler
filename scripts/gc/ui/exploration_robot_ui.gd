@@ -57,13 +57,13 @@ func _click_robot() -> void:
 func _handle_robot_exploration_damage(robot: Robot, _damage: int) -> void:
     _sync_robot(robot)
 
-func _handle_new_level(level: GridLevel) -> void:
+func _handle_new_level(level: GridLevelCore) -> void:
     if _exploration_ui.level != level:
         _exploration_ui.level = level
 
     _handle_new_player(level, _exploration_ui.player)
 
-func _handle_new_player(_level: GridLevel, player: GridPlayer) -> void:
+func _handle_new_player(_level: GridLevelCore, player: GridPlayer) -> void:
     _sync_robot.call_deferred(player.robot)
 
 func _connect_player(grid_player: GridPlayer, _battle_player: BattlePlayer, omit_connecting_robot: bool = false) -> void:
