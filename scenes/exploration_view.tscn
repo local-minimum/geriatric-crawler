@@ -1,7 +1,7 @@
 [gd_scene load_steps=7 format=3 uid="uid://eoj51yv61yas"]
 
 [ext_resource type="PackedScene" uid="uid://dwqcwbgj8p6q0" path="res://scenes/dungeon/test_level.tscn" id="1_u78tq"]
-[ext_resource type="Script" uid="uid://b8eg248j7jnfr" path="res://scripts/ui/fader_ui.gd" id="3_tlp0i"]
+[ext_resource type="Script" uid="uid://b8eg248j7jnfr" path="res://scripts/ui/effects/fader_ui.gd" id="3_tlp0i"]
 [ext_resource type="Script" uid="uid://bvqfk07xb2q3f" path="res://scripts/ui/interaction_ui.gd" id="4_0mkka"]
 [ext_resource type="FontFile" uid="uid://bothlw1ybsqx1" path="res://fonts/absolute_10_v1/Absolute 10.ttf" id="5_fclip"]
 

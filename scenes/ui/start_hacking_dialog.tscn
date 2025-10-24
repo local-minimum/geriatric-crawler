@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://bb0220nki3rb5"]
 
-[ext_resource type="Script" uid="uid://bx14ue51xv4pc" path="res://scripts/ui/start_hacking_dialog.gd" id="1_6kgdf"]
+[ext_resource type="Script" uid="uid://bx14ue51xv4pc" path="res://scripts/gc/ui/hacking/start_hacking_dialog.gd" id="1_6kgdf"]
 
 [sub_resource type="FontVariation" id="FontVariation_6lmoa"]
 variation_embolden = 1.26

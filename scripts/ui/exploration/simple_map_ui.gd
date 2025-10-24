@@ -45,7 +45,7 @@ func _draw() -> void:
     var center_map_coords: Vector2i = Vector2i(columns / 2, rows / 2)
     @warning_ignore_restore("integer_division")
 
-    var level: GridLevel = _player.get_level()
+    var level: GridLevelCore = _player.get_level()
 
     var map_x_min: float = center.x - center_coords_position.x * cell_length
     var map_x_max: float = center.x + (columns - center_coords_position.x) * cell_length

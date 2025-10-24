@@ -1,8 +1,8 @@
 [gd_scene load_steps=7 format=3 uid="uid://tdh164rk30bx"]
 
 [ext_resource type="Script" uid="uid://cw7q1gwdhyf8p" path="res://scripts/ui/tutorial_ui.gd" id="1_0gj5e"]
-[ext_resource type="Script" uid="uid://bfv42ir0f6kca" path="res://scripts/ui/peephole.gd" id="2_idc43"]
-[ext_resource type="Script" uid="uid://bahguhui1nyi0" path="res://scripts/ui/target_outliner.gd" id="3_yfs3x"]
+[ext_resource type="Script" uid="uid://bfv42ir0f6kca" path="res://scripts/ui/effects/peephole.gd" id="2_idc43"]
+[ext_resource type="Script" uid="uid://bahguhui1nyi0" path="res://scripts/ui/effects/target_outliner.gd" id="3_yfs3x"]
 [ext_resource type="Texture2D" uid="uid://dwdbddokbcnl7" path="res://sprites/kenny game icons/left.png" id="4_0vgye"]
 [ext_resource type="Texture2D" uid="uid://dog5ren3gjxpj" path="res://sprites/kenny game icons/right.png" id="5_ybqcr"]
 

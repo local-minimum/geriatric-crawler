@@ -1,9 +1,9 @@
 [gd_scene load_steps=13 format=3 uid="uid://ueqtmtn8vb0v"]
 
-[ext_resource type="Script" uid="uid://crchgnovga7nc" path="res://scripts/ui/robot_inspection_ui.gd" id="1_j3vuf"]
+[ext_resource type="Script" uid="uid://crchgnovga7nc" path="res://scripts/gc/ui/robot/robot_inspection_ui.gd" id="1_j3vuf"]
 [ext_resource type="Texture2D" uid="uid://cgijt2to15yms" path="res://sprites/kenny game icons/cross.png" id="2_0f0fp"]
-[ext_resource type="Script" uid="uid://5lsjirgudi0w" path="res://scripts/ui/robot_skill_tree_ui.gd" id="3_4hdtw"]
-[ext_resource type="Script" uid="uid://dhyp3nywuq17h" path="res://scripts/ui/inspect_battle_deck_ui.gd" id="3_k77c0"]
+[ext_resource type="Script" uid="uid://5lsjirgudi0w" path="res://scripts/gc/ui/robot/robot_skill_tree_ui.gd" id="3_4hdtw"]
+[ext_resource type="Script" uid="uid://dhyp3nywuq17h" path="res://scripts/gc/ui/battle/inspect_battle_deck_ui.gd" id="3_k77c0"]
 [ext_resource type="PackedScene" uid="uid://qvbyso8n7n8j" path="res://scenes/ui/robot_skill_level_ui.tscn" id="4_yfo5l"]
 [ext_resource type="Script" uid="uid://bkudjqfkkgxlw" path="res://scripts/gc/ui/exploration_inventory_ui.gd" id="5_0f0fp"]
 [ext_resource type="Script" uid="uid://c55ba5lckbxlc" path="res://scripts/ui/chained_vboxes.gd" id="6_4hdtw"]

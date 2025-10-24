@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://dmnwxi7fmruws"]
 
-[ext_resource type="Script" uid="uid://sg48vqp6eaqn" path="res://scripts/ui/robot_skill_ui.gd" id="1_7qv8u"]
+[ext_resource type="Script" uid="uid://sg48vqp6eaqn" path="res://scripts/gc/ui/robot/robot_skill_ui.gd" id="1_7qv8u"]
 [ext_resource type="Texture2D" uid="uid://426qf31enipp" path="res://icon.svg" id="2_64ol8"]
 
 [node name="Skill 1" type="MarginContainer" node_paths=PackedStringArray("_icon", "_title", "_description", "_buy_button", "_background")]

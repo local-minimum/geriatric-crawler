@@ -22,7 +22,7 @@
 [ext_resource type="Script" uid="uid://cewd737qkspe7" path="res://scripts/gc/savesystem/chap_saver.gd" id="11_yckko"]
 [ext_resource type="PackedScene" uid="uid://q20bgg1ae3nh" path="res://scenes/spaceship/trader_ui.tscn" id="12_t2qrf"]
 [ext_resource type="PackedScene" uid="uid://dfm0ddffm6xoj" path="res://scenes/spaceship/buy_sell_ui.tscn" id="13_44jdn"]
-[ext_resource type="Script" uid="uid://bowpiyq67d4o1" path="res://scripts/ui/line_graph.gd" id="13_t2qrf"]
+[ext_resource type="Script" uid="uid://bowpiyq67d4o1" path="res://scripts/ui/plots/line_graph.gd" id="13_t2qrf"]
 [ext_resource type="Script" uid="uid://dddgx760pvv7h" path="res://scripts/gc/spaceship/spaceship_saver.gd" id="14_csm47"]
 [ext_resource type="Script" uid="uid://clmlakb50km2n" path="res://scripts/gc/savesystem/inventory_saver.gd" id="15_d22a7"]
 [ext_resource type="Script" uid="uid://dftf4h6eyrsio" path="res://scripts/inventory.gd" id="15_tst1b"]

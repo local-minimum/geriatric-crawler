@@ -1,7 +1,7 @@
 [gd_scene load_steps=6 format=3 uid="uid://qvbyso8n7n8j"]
 
-[ext_resource type="Script" uid="uid://bx8cbkyycyukx" path="res://scripts/ui/robot_skill_level_ui.gd" id="1_2ad7f"]
-[ext_resource type="Script" uid="uid://n24o3x64dhoh" path="res://scripts/ui/robot_skill_level_fights_ui.gd" id="2_kis4d"]
+[ext_resource type="Script" uid="uid://bx8cbkyycyukx" path="res://scripts/gc/ui/robot/robot_skill_level_ui.gd" id="1_2ad7f"]
+[ext_resource type="Script" uid="uid://n24o3x64dhoh" path="res://scripts/gc/ui/robot/robot_skill_level_fights_ui.gd" id="2_kis4d"]
 [ext_resource type="Texture2D" uid="uid://bwji56lm10win" path="res://sprites/buttons/separator.png" id="2_vsixo"]
 [ext_resource type="PackedScene" uid="uid://dmnwxi7fmruws" path="res://scenes/ui/robot_skill_ui.tscn" id="3_2ad7f"]
 [ext_resource type="Texture2D" uid="uid://dko4nx3ayjyjr" path="res://sprites/buttons/bonus.png" id="3_kis4d"]

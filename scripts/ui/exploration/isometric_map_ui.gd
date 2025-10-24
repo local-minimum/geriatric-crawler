@@ -46,7 +46,7 @@ func _draw() -> void:
     if _player == null:
         return
 
-    var level: GridLevel = _player.get_level()
+    var level: GridLevelCore = _player.get_level()
 
     var node_half_size: Vector3 = Vector3.ONE * 0.47
 

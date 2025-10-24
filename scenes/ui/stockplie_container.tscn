@@ -1,9 +1,9 @@
 [gd_scene load_steps=6 format=3 uid="uid://dngtwctu5jl6n"]
 
-[ext_resource type="Script" uid="uid://dqavxe0mdq0a" path="res://scripts/ui/stockpile_ui.gd" id="1_2aavq"]
+[ext_resource type="Script" uid="uid://dqavxe0mdq0a" path="res://scripts/gc/ui/stockpile_ui.gd" id="1_2aavq"]
 [ext_resource type="Theme" uid="uid://clwuiynrim13h" path="res://themes/dialog_theme.tres" id="1_7ur2b"]
 [ext_resource type="Texture2D" uid="uid://b2dvpmo316i0l" path="res://sprites/kenny game icons/upRight.png" id="2_y2ol5"]
-[ext_resource type="Script" uid="uid://bowpiyq67d4o1" path="res://scripts/ui/line_graph.gd" id="3_7ur2b"]
+[ext_resource type="Script" uid="uid://bowpiyq67d4o1" path="res://scripts/ui/plots/line_graph.gd" id="3_7ur2b"]
 [ext_resource type="Texture2D" uid="uid://bm8p8oa78pasu" path="res://sprites/kenny game icons/arrowRight.png" id="3_y2ol5"]
 
 [node name="Stockplie Container" type="PanelContainer" node_paths=PackedStringArray("_title", "_average", "_trend", "_trend_arrow", "_price", "_graph", "_need", "_buy_button", "_sell_button")]

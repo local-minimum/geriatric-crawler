@@ -103,7 +103,7 @@ var detect_dist: int
 var facing_detected: bool
 
 func _calculate_detection() -> void:
-    var level: GridLevel = exploration_ui.level
+    var level: GridLevelCore = exploration_ui.level
     if level.player == null:
         return
 
