@@ -1,36 +1,25 @@
 extends Node
+class_name UIDebugSettingsCore
 
 @export var menu_base: Control
-
 @export var menu_button: Control
 
-# Movement
+@export_category("Movement")
 @export var queue_moves: CheckButton
-
 @export var replays: CheckButton
-
 @export var replays_replace: CheckButton
-
 @export var smooth_movement: CheckButton
-
 @export var concurrent_turns: CheckButton
-
 @export var tank_movement: CheckButton
-
 @export var speed: HSlider
 
-# Camera
+@export_category("Camera")
 @export var fov: HSlider
-
 @export var handedness: CheckButton
 
 # Gameplay
-@export var wall_walking: CheckButton
-
-@export var ceiling_walking: CheckButton
-
+@export_category("Gameplay")
 @export var jump_off: CheckButton
-
 @export var settings: GameSettings
 
 var inited: bool
@@ -43,17 +32,17 @@ func _on_hide_setting_menu() -> void:
     menu_base.hide()
     menu_button.show()
 
-var level: GridLevel
+var level: GridLevelCore
 func _ready() -> void:
     _on_hide_setting_menu.call_deferred()
 
-    level = GridLevel.active_level
+    level = GridLevelCore.active_level
     if __SignalBus.on_level_loaded.connect(_handle_new_level) != OK:
         push_error("Failed to connect level loaded")
 
     _sync.call_deferred()
 
-func _handle_new_level(new: GridLevel) -> void:
+func _handle_new_level(new: GridLevelCore) -> void:
     level = new
     _sync()
 
@@ -90,24 +79,12 @@ func _on_new_hold_replaces_toggled(toggled_on: bool) -> void:
 func _on_smooth_movement_toggled(toggled_on: bool) -> void:
     level.player.instant_step = !toggled_on
 
-
 func _on_concurrent_turning_toggled(toggled_on: bool) -> void:
     level.player.concurrent_turns = toggled_on
 
 
 func _on_tank_animations_toggled(toggled_on: bool) -> void:
     level.player.planner.tank_movement = toggled_on
-
-
-func _on_wall_walking_toggled(toggled_on: bool) -> void:
-    if level.player is GridPlayer:
-        (level.player as GridPlayer).override_wall_walking = toggled_on
-
-func _on_ceiling_walking_toggled(toggled_on: bool) -> void:
-    if toggled_on:
-        wall_walking.button_pressed = true
-    if level.player is GridPlayer:
-        (level.player as GridPlayer).override_ceiling_walking = toggled_on
 
 
 func _on_jump_off_walls_toggled(toggled_on: bool) -> void:

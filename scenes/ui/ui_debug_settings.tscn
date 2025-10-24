@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://dx6ngxriyyq7l"]
 
-[ext_resource type="Script" uid="uid://bsps2ppohebhk" path="res://scripts/ui/ui_debug_settings.gd" id="1_16j0k"]
+[ext_resource type="Script" uid="uid://bsps2ppohebhk" path="res://scripts/gc/ui/ui_debug_settings.gd" id="1_16j0k"]
 [ext_resource type="Texture2D" uid="uid://426qf31enipp" path="res://icon.svg" id="1_japon"]
 
 [node name="DebugSettingsUI" type="CanvasLayer" node_paths=PackedStringArray("menu_base", "menu_button", "queue_moves", "replays", "replays_replace", "smooth_movement", "concurrent_turns", "tank_movement", "speed", "fov", "handedness", "wall_walking", "ceiling_walking", "jump_off")]
