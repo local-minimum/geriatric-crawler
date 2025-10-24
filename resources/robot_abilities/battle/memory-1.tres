@@ -1,6 +1,6 @@
 [gd_resource type="Resource" script_class="RobotAbility" load_steps=2 format=3 uid="uid://br0wnot24fw1b"]
 
-[ext_resource type="Script" uid="uid://0qri7op4mfno" path="res://scripts/robot_ability.gd" id="1_rb5fa"]
+[ext_resource type="Script" uid="uid://0qri7op4mfno" path="res://scripts/gc/robot/robot_ability.gd" id="1_rb5fa"]
 
 [resource]
 script = ExtResource("1_rb5fa")

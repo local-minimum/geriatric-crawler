@@ -4,7 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://37t534r3ua0p" path="res://sprites/kenny game icons/open-xflipped.png" id="2_m3jmt"]
 [ext_resource type="PackedScene" uid="uid://boccd8l2p0s0r" path="res://scenes/ui/exploration_robot_info_ui.tscn" id="2_rfm22"]
 [ext_resource type="Script" uid="uid://ccd5c8wiv7kia" path="res://scripts/ui/exploration/simple_map_ui.gd" id="3_4stpx"]
-[ext_resource type="Script" uid="uid://dcq4t1cqwva08" path="res://scripts/robot_exploration_mapper.gd" id="3_2458l"]
+[ext_resource type="Script" uid="uid://dcq4t1cqwva08" path="res://scripts/gc/robot/robot_exploration_mapper.gd" id="3_2458l"]
 [ext_resource type="Script" uid="uid://b2qf0ijhlf7yh" path="res://scripts/ui/plots/linear_gauge_ui.gd" id="3_cj7t8"]
 [ext_resource type="PackedScene" uid="uid://dbvjynwqexkui" path="res://scenes/ui/compass_ui.tscn" id="3_eifl5"]
 [ext_resource type="Script" uid="uid://dgpd7jxisqmya" path="res://scripts/gc/ui/sonar_ui.gd" id="3_ld1f6"]

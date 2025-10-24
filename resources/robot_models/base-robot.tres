@@ -1,6 +1,6 @@
 [gd_resource type="Resource" script_class="RobotModel" load_steps=27 format=3 uid="uid://1ifcryeo70to"]
 
-[ext_resource type="Script" uid="uid://0qri7op4mfno" path="res://scripts/robot_ability.gd" id="1_1eohl"]
+[ext_resource type="Script" uid="uid://0qri7op4mfno" path="res://scripts/gc/robot/robot_ability.gd" id="1_1eohl"]
 [ext_resource type="Resource" uid="uid://bu0oc7qbq770" path="res://resources/robot_abilities/battle/slots-1.tres" id="2_sdgkc"]
 [ext_resource type="Resource" uid="uid://8aoyvdht0msx" path="res://resources/robot_abilities/exploration/sonar-2.tres" id="3_wa3qh"]
 [ext_resource type="Resource" uid="uid://bb6ggj7saxcw8" path="res://resources/robot_abilities/exploration/climbing-1.tres" id="4_sj7dq"]
@@ -12,7 +12,7 @@
 [ext_resource type="Resource" uid="uid://br0wnot24fw1b" path="res://resources/robot_abilities/battle/memory-1.tres" id="9_mkho0"]
 [ext_resource type="Resource" uid="uid://c2kaiyaateugc" path="res://resources/robot_abilities/battle/slots-2.tres" id="10_hy16j"]
 [ext_resource type="Resource" uid="uid://duokj17pplsq" path="res://resources/robot_abilities/exploration/climbing-3.tres" id="11_fqkop"]
-[ext_resource type="Script" uid="uid://jgu3xyjxonbb" path="res://scripts/robot_production_cost.gd" id="12_tkruh"]
+[ext_resource type="Script" uid="uid://jgu3xyjxonbb" path="res://scripts/gc/robot/robot_production_cost.gd" id="12_tkruh"]
 [ext_resource type="Script" uid="uid://cqlxwfe858g4h" path="res://scripts/gc/card_battle/battle_card_data.gd" id="14_yn8ue"]
 [ext_resource type="Resource" uid="uid://dcob2h4luvnbl" path="res://resources/player_cards/card_defrag-5.tres" id="15_xq3od"]
 [ext_resource type="Resource" uid="uid://bc3f2625tdj67" path="res://resources/player_cards/card_defrag-70.tres" id="16_uvny6"]
@@ -23,7 +23,7 @@
 [ext_resource type="Resource" uid="uid://dyw8d4pex4rg1" path="res://resources/player_cards/card_recharge-735.tres" id="21_fb3ak"]
 [ext_resource type="Resource" uid="uid://dxetlv5x2uqs5" path="res://resources/player_cards/card_slam-95.tres" id="22_yl06e"]
 [ext_resource type="Resource" uid="uid://dwadtd6nwvwd5" path="res://resources/player_cards/card_slam-150.tres" id="23_nrs8v"]
-[ext_resource type="Script" uid="uid://cy6jm0o40d2qm" path="res://scripts/robot_model.gd" id="24_3l7vf"]
+[ext_resource type="Script" uid="uid://cy6jm0o40d2qm" path="res://scripts/gc/robot/robot_model.gd" id="24_3l7vf"]
 [ext_resource type="Resource" uid="uid://cuqk7tuums5ds" path="res://resources/player_cards/card_slam-810.tres" id="24_sb7hp"]
 
 [sub_resource type="Resource" id="Resource_4thyo"]
