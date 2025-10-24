@@ -1,7 +1,6 @@
 extends Control
-class_name CompassUI
+class_name CompassUICore
 
-@export var exploration_ui: ExplorationUI
 @export var cardinal_north: Control
 @export var cardinal_south: Control
 @export var cardinal_west: Control
@@ -14,8 +13,6 @@ class_name CompassUI
 @export var _vertical_label_offset: float = -14
 @export var _horizontal_label_offset: float = -10
 
-var _inited: bool = false
-
 func _ready() -> void:
     if __SignalBus.on_load_complete.connect(_handle_loaded) != OK:
         push_error("Failed to connect load complete")
@@ -23,43 +20,25 @@ func _ready() -> void:
     if __SignalBus.on_update_orientation.connect(_handle_update_orientation) != OK:
         push_error("Failed to connect on move start")
 
-    if __SignalBus.on_robot_gain_ability.connect(_handle_robot_gain_ability) != OK:
-        push_error("Failed to connect robot gain ability")
-
-func _handle_robot_gain_ability(robot: Robot, ability: RobotAbility) -> void:
-    if ability.id == RobotAbility.SKILL_MAPPING:
-        _sync_robot(exploration_ui.player, robot)
-
 func _handle_loaded() -> void:
     clear()
-    _sync_robot(exploration_ui.player, exploration_ui.robot)
 
 func clear() -> void:
     for direction: CardinalDirections.CardinalDirection in CardinalDirections.ALL_DIRECTIONS:
         _get_cardinal(direction).global_position = _get_coordinates(CompassCardinalLabelPosition.UP)
 
+var _orinentation_handled: bool
+
 func _handle_update_orientation(
-    entity: GridEntity,
+    _entity: GridEntity,
     old_down: CardinalDirections.CardinalDirection,
     down: CardinalDirections.CardinalDirection,
     old_forward: CardinalDirections.CardinalDirection,
     forward: CardinalDirections.CardinalDirection,
 ) -> void:
-    var player: GridPlayer = null
-    if entity is GridPlayer:
-        player = entity
-        if player.robot.get_skill_level(RobotAbility.SKILL_MAPPING) < 1:
-            visible = false
-            return
-    else:
-        return
-
     # print_debug("[Compass] Player rotated %s and %s" % [CardinalDirections.name(down), CardinalDirections.name(forward)])
     visible = true
-
-    if !_inited:
-        _sync_robot(player, player.robot)
-        return
+    _orinentation_handled = true
 
     if down == old_down || old_down == CardinalDirections.CardinalDirection.NONE:
         if old_forward != CardinalDirections.CardinalDirection.NONE:
@@ -69,50 +48,7 @@ func _handle_update_orientation(
     elif forward == old_down || down == old_forward:
         _animate_pitch_rotation(old_down, old_forward, forward)
     else:
-        _sync_robot(player, player.robot)
-
-func _sync_robot(player: GridPlayer, robot: Robot) -> void:
-    if robot == null || robot.get_skill_level(RobotAbility.SKILL_MAPPING) < 1:
-        print_debug("[Compass] %s doesn't have enough mapping skill %s" % [robot.given_name, robot.get_skill_level(RobotAbility.SKILL_MAPPING)])
-        visible = false
-        return
-
-    var rect: Rect2 = get_global_rect()
-    if rect.size.x == 0 || rect.size.y == 0:
-        return
-
-    visible = true
-
-    # print_debug("[Compass] sync of %s look %s down %s (%s)" % [robot.given_name, CardinalDirections.name(player.look_direction), CardinalDirections.name(player.down), _inited])
-
-    var left_coords: Vector2 = _get_coordinates(CompassCardinalLabelPosition.LEFT)
-    var mid_coords: Vector2 = _get_coordinates(CompassCardinalLabelPosition.MID)
-    var right_coords: Vector2 = _get_coordinates(CompassCardinalLabelPosition.RIGHT)
-
-    var mid: CardinalDirections.CardinalDirection = player.look_direction
-    var left: CardinalDirections.CardinalDirection = CardinalDirections.yaw_ccw(player.look_direction, player.down)[0]
-    var right: CardinalDirections.CardinalDirection = CardinalDirections.yaw_cw(player.look_direction, player.down)[0]
-
-    # print_debug("[Compass] left %s = %s mid %s = %s right %s = %s" % [
-    #    _get_cardinal(left), left_coords, _get_cardinal(mid), mid_coords, _get_cardinal(right), right_coords])
-
-    if mid != CardinalDirections.CardinalDirection.NONE:
-        _get_cardinal(mid).global_position = mid_coords
-    if left != CardinalDirections.CardinalDirection.NONE:
-        _get_cardinal(left).global_position = left_coords
-    if right != CardinalDirections.CardinalDirection.NONE:
-        _get_cardinal(right).global_position = right_coords
-
-    var up_coords: Vector2 = _get_coordinates(CompassCardinalLabelPosition.UP)
-    for direction: CardinalDirections.CardinalDirection in CardinalDirections.ALL_DIRECTIONS:
-        if direction == mid || direction == left || direction == right:
-            continue
-
-        _get_cardinal(direction).global_position = up_coords
-
-        # print_debug("[Compass] %s = %s" % [_get_cardinal(direction), up_coords])
-
-    _inited = true
+        _orinentation_handled = false
 
 func _animate_roll_rotation(
     old_down: CardinalDirections.CardinalDirection,
@@ -262,7 +198,3 @@ func _get_coordinates(label_position: CompassCardinalLabelPosition) -> Vector2:
         _:
             push_error("Position %s not handled" % label_position)
             return center
-
-func _process(_delta: float) -> void:
-    if !_inited:
-        _sync_robot.call_deferred(exploration_ui.player, exploration_ui.robot)

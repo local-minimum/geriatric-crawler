@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://dfm0ddffm6xoj"]
 
 [ext_resource type="Theme" uid="uid://clwuiynrim13h" path="res://themes/dialog_theme.tres" id="1_ftpno"]
-[ext_resource type="Script" uid="uid://b33exoxbyjnbv" path="res://scripts/ui/buy_sell_ui.gd" id="2_iqbj7"]
+[ext_resource type="Script" uid="uid://b33exoxbyjnbv" path="res://scripts/gc/ui/buy_sell_ui.gd" id="2_iqbj7"]
 
 [node name="Buy Sell UI" type="PanelContainer" node_paths=PackedStringArray("_comodity", "_current_price", "_volume", "_total_price", "_buy_sell_button")]
 custom_minimum_size = Vector2(450, 0)

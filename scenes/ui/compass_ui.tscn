@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://dbvjynwqexkui"]
 
-[ext_resource type="Script" uid="uid://b8urty4ia3p2j" path="res://scripts/ui/compass_ui.gd" id="1_fsw68"]
+[ext_resource type="Script" uid="uid://b8urty4ia3p2j" path="res://scripts/gc/ui/compass_ui.gd" id="1_fsw68"]
 
 [node name="CompassModule" type="ColorRect" node_paths=PackedStringArray("cardinal_north", "cardinal_south", "cardinal_west", "cardinal_east", "cardinal_up", "cardinal_down")]
 clip_contents = true
