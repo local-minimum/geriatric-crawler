@@ -9,7 +9,7 @@
 [ext_resource type="PackedScene" uid="uid://dbvjynwqexkui" path="res://scenes/ui/compass_ui.tscn" id="3_eifl5"]
 [ext_resource type="Script" uid="uid://dgpd7jxisqmya" path="res://scripts/gc/ui/sonar_ui.gd" id="3_ld1f6"]
 [ext_resource type="Texture2D" uid="uid://cev0382nhv46i" path="res://sprites/kenny game icons/arrowUp.png" id="3_rfm22"]
-[ext_resource type="Script" uid="uid://3ce8a8hkpfeg" path="res://scripts/geiger_counter.gd" id="4_6uh6s"]
+[ext_resource type="Script" uid="uid://3ce8a8hkpfeg" path="res://scripts/gc/geiger_counter.gd" id="4_6uh6s"]
 [ext_resource type="Texture2D" uid="uid://davhidpjbpjq2" path="res://sprites/kenny game icons/open.png" id="4_eifl5"]
 [ext_resource type="FontFile" uid="uid://bothlw1ybsqx1" path="res://fonts/absolute_10_v1/Absolute 10.ttf" id="4_isccj"]
 [ext_resource type="Texture2D" uid="uid://bowjve07f2wq0" path="res://sprites/kenny game icons/arrowLeft.png" id="5_4stpx"]

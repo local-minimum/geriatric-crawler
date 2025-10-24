@@ -8,7 +8,7 @@
 [ext_resource type="PackedScene" uid="uid://sx8om7lfql6j" path="res://scenes/battle_mode.tscn" id="5_47t46"]
 [ext_resource type="Shader" uid="uid://cnwtqg2e242pg" path="res://shaders/pixelate.gdshader" id="5_160vf"]
 [ext_resource type="PackedScene" uid="uid://ueqtmtn8vb0v" path="res://scenes/ui/robot_inspection_ui.tscn" id="6_w7kg7"]
-[ext_resource type="Script" uid="uid://dftf4h6eyrsio" path="res://scripts/inventory.gd" id="7_hdcgk"]
+[ext_resource type="Script" uid="uid://dftf4h6eyrsio" path="res://scripts/gc/inventory.gd" id="7_hdcgk"]
 [ext_resource type="Script" uid="uid://cune3lm2ngiy1" path="res://addons/minimum_convenience/scripts/notifications/notifications_manager.gd" id="8_7qmp0"]
 [ext_resource type="PackedScene" uid="uid://ia54ogrqwfbr" path="res://scenes/ui/robot_exploration_damage_ui.tscn" id="8_gl6i3"]
 [ext_resource type="Script" uid="uid://bkky4nqo47eiv" path="res://addons/minimum_convenience/scripts/notifications/notifications_panel_ui.gd" id="9_t2qw5"]

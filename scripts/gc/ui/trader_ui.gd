@@ -18,8 +18,8 @@ var _stocks: Dictionary[String, StockpileUI]
 var _trading_ticks: int = 0
 var _orders: Dictionary[String, float]
 var _limited_stock: Dictionary[String, float]
-var _categorized_ids: Dictionary[GCLootableManager.LootClass, Array]
-var _categories: Dictionary[GCLootableManager.LootClass, Label]
+var _categorized_ids: Dictionary[LootableManager.LootClass, Array]
+var _categories: Dictionary[LootableManager.LootClass, Label]
 
 const _SMALL_VALUE: float = 0.00001
 
@@ -107,14 +107,14 @@ func _process_orders(market: TradingMarket) -> void:
             if __GlobalGameState.withdraw_credits(cost):
                 var bought: float = _orders[stock_id] - remainder[0]
                 if !_ship.inventory.add_to_inventory(stock_id, bought):
-                    NotificationsManager.warn(tr("NOTICE_INVENTORY"), tr("FAILED_GAIN_ITEM").format({"item": GCLootableManager.translate(stock_id, ceili(bought))}))
+                    NotificationsManager.warn(tr("NOTICE_INVENTORY"), tr("FAILED_GAIN_ITEM").format({"item": LootableManager.translate(stock_id, ceili(bought))}))
                     remainder = [0]
         elif cost < 0:
             var sold: float = absf(_orders[stock_id] - remainder[0])
             if _ship.inventory.remove_from_inventory(stock_id, sold, false) != 0:
                 __GlobalGameState.deposit_credits(cost)
             else:
-                NotificationsManager.warn(tr("NOTICE_MARKET"), tr("FAILED_SELL_ITEM").format({"item": GCLootableManager.translate(stock_id, ceili(sold))}))
+                NotificationsManager.warn(tr("NOTICE_MARKET"), tr("FAILED_SELL_ITEM").format({"item": LootableManager.translate(stock_id, ceili(sold))}))
                 remainder = [0]
 
         if absf(remainder[0]) > _SMALL_VALUE:
@@ -135,13 +135,13 @@ func _process_orders(market: TradingMarket) -> void:
 
                 if !showed_out_of_stock && _limited_stock.values().all(func (value: float) -> bool: return absf(value) < _SMALL_VALUE):
                     UIUtils.clear_control(_stockpiles_container)
-                    _add_header_label(GCLootableManager.LootClass.NONE, tr("ALL_COMMODITIES_BOUGHT"))
+                    _add_header_label(LootableManager.LootClass.NONE, tr("ALL_COMMODITIES_BOUGHT"))
                     _end_market_access()
 
 func _remove_item_from_category(stock_ui: StockpileUI) -> void:
     stock_ui.hide()
 
-    for category: GCLootableManager.LootClass in _categorized_ids:
+    for category: LootableManager.LootClass in _categorized_ids:
         var ids: Array[String] = _categorized_ids[category]
         if ids.has(stock_ui.item_id) && ids.all(
             func (id: String) -> bool:
@@ -187,7 +187,7 @@ func _sync_wait_button() -> void:
     else:
         _wait_tick_button.visible = false
 
-func _add_header_label(category: GCLootableManager.LootClass, text: String) -> void:
+func _add_header_label(category: LootableManager.LootClass, text: String) -> void:
     var category_title: Label = Label.new()
     category_title.text = text
     category_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -204,19 +204,19 @@ func _setup_stock() -> void:
 
     if _limited_stock.is_empty():
         var ids: Array[String] = _ship.trading_market.list_stock_ids()
-        _categorized_ids = GCLootableManager.categorize(ids)
+        _categorized_ids = LootableManager.categorize(ids)
     else:
-        _categorized_ids = GCLootableManager.categorize(_limited_stock.keys())
+        _categorized_ids = LootableManager.categorize(_limited_stock.keys())
 
     var scene: PackedScene = load(_STOCKPILE_UI)
 
     if _categorized_ids.is_empty():
-        _add_header_label(GCLootableManager.LootClass.NONE, tr("NO_COMMODITIES_AVAILABLE"))
+        _add_header_label(LootableManager.LootClass.NONE, tr("NO_COMMODITIES_AVAILABLE"))
 
-    for category: GCLootableManager.LootClass in _categorized_ids:
+    for category: LootableManager.LootClass in _categorized_ids:
         var items: Array[String] = _categorized_ids[category]
 
-        _add_header_label(category, GCLootableManager.translate_cateogry(category, 999))
+        _add_header_label(category, LootableManager.translate_cateogry(category, 999))
 
         for stock_id: String in items:
             var stock: StockpileUI = scene.instantiate()

@@ -50,9 +50,9 @@ func _list_inventory() -> void:
         label.bbcode_enabled = true
         label.fit_content = true
         label.text = "[b]%s[/b][p align=right][code]%1.2f %s[/code][/p]" % [
-            GCLootableManager.translate(listing.id),
+            LootableManager.translate(listing.id),
             listing.amount,
-            GCLootableManager.unit(listing.id),
+            LootableManager.unit(listing.id),
         ]
         label.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
 

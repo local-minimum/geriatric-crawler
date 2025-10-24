@@ -1,4 +1,4 @@
-class_name GCLootableManager
+class_name LootableManager
 
 enum LootClass {
     NONE,

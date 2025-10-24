@@ -25,7 +25,7 @@
 [ext_resource type="Script" uid="uid://bowpiyq67d4o1" path="res://scripts/ui/plots/line_graph.gd" id="13_t2qrf"]
 [ext_resource type="Script" uid="uid://dddgx760pvv7h" path="res://scripts/gc/spaceship/spaceship_saver.gd" id="14_csm47"]
 [ext_resource type="Script" uid="uid://clmlakb50km2n" path="res://scripts/gc/savesystem/inventory_saver.gd" id="15_d22a7"]
-[ext_resource type="Script" uid="uid://dftf4h6eyrsio" path="res://scripts/inventory.gd" id="15_tst1b"]
+[ext_resource type="Script" uid="uid://dftf4h6eyrsio" path="res://scripts/gc/inventory.gd" id="15_tst1b"]
 [ext_resource type="Script" uid="uid://dh2gnvehpl1wc" path="res://scripts/gc/spaceship/robots_pool.gd" id="17_0xuuw"]
 [ext_resource type="Resource" uid="uid://bh75cac6e2j77" path="res://resources/robot_models/starter.tres" id="20_i1do7"]
 [ext_resource type="Script" uid="uid://cloq81xps7tex" path="res://scripts/gc/savesystem/deployment_saver.gd" id="21_8k34q"]

@@ -60,9 +60,9 @@ func _enter_tree() -> void:
     _inv = Inventory.InventorySubscriber.new()
 
 func _ready() -> void:
-    _worms_label.text = GCLootableManager.translate(GCLootableManager.ITEM_HACKING_WORM, 999)
-    _bombs_label.text = GCLootableManager.translate(GCLootableManager.ITEM_HACKING_BOMB, 999)
-    _proxies_label.text = GCLootableManager.translate(GCLootableManager.ITEM_HACKING_PROXY, 99)
+    _worms_label.text = LootableManager.translate(LootableManager.ITEM_HACKING_WORM, 999)
+    _bombs_label.text = LootableManager.translate(LootableManager.ITEM_HACKING_BOMB, 999)
+    _proxies_label.text = LootableManager.translate(LootableManager.ITEM_HACKING_PROXY, 99)
 
     _instance = self
     _instance.hide()
@@ -83,11 +83,11 @@ func _sync_player_info(attempts: int) -> void:
     _sync()
 
 func _sync() -> void:
-    _worms_count.text = "%03d" % roundi(_inv.inventory.get_item_count(GCLootableManager.ITEM_HACKING_WORM))
+    _worms_count.text = "%03d" % roundi(_inv.inventory.get_item_count(LootableManager.ITEM_HACKING_WORM))
 
-    _bombs_count.text = "%03d" % roundi(_inv.inventory.get_item_count(GCLootableManager.ITEM_HACKING_BOMB))
+    _bombs_count.text = "%03d" % roundi(_inv.inventory.get_item_count(LootableManager.ITEM_HACKING_BOMB))
 
-    var proxies: int = roundi(_inv.inventory.get_item_count(GCLootableManager.ITEM_HACKING_PROXY))
+    var proxies: int = roundi(_inv.inventory.get_item_count(LootableManager.ITEM_HACKING_PROXY))
     _proxies_count.text = "%03d" % proxies
     _deploy_proxies_button.disabled = proxies == 0 || _danger == HackingGame.Danger.LOW
 
@@ -103,7 +103,7 @@ func _on_confirmed() -> void:
     _on_hack.call()
 
 func _on_deploy_proxy_button_pressed() -> void:
-    if _inv.inventory.remove_from_inventory(GCLootableManager.ITEM_HACKING_PROXY, 1.0) != 1.0:
+    if _inv.inventory.remove_from_inventory(LootableManager.ITEM_HACKING_PROXY, 1.0) != 1.0:
         NotificationsManager.warn(tr("NOTICE_HACKING_PROXY"), tr("HACKING_PROXY_FAILED_DEPLOY"))
         _sync()
         return
